@@ -1,38 +1,53 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.*;
-
-import risk.engine.guishared.RiskFileFilter;
-import risk.engine.guishared.AboutDialog;
-
-import javax.swing.JFrame;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FocusTraversalPolicy;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-import javax.swing.JLayeredPane;
-
-import javax.swing.JFileChooser;
-
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ImageIcon;
-import java.awt.event.*;
 import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
 import javax.swing.AbstractButton;
-
 import javax.swing.JOptionPane; // just needed for testing
-import java.awt.*;
 import java.util.ResourceBundle;
-
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.Document;
 import javax.swing.text.AttributeSet;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> New Game Frame for FlashGUI </p>
@@ -110,7 +125,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	 */
 	public NewGameFrame(Risk r)
 	{
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		myrisk=r;
 
@@ -691,13 +706,13 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			g.drawString( name, 10, 20);
 
 
-			if (type == risk.engine.core.Player.PLAYER_HUMAN) {
+			if (type == Player.PLAYER_HUMAN) {
 				g.drawString( resb.getString("newgame.player.type.human"), 120, 20);
 			}
-			else if (type == risk.engine.core.Player.PLAYER_AI_EASY) {
+			else if (type == Player.PLAYER_AI_EASY) {
 				g.drawString( resb.getString("newgame.player.type.easyai"), 120, 20);
 			}
-			else if (type == risk.engine.core.Player.PLAYER_AI_HARD) {
+			else if (type == Player.PLAYER_AI_HARD) {
 				g.drawString( resb.getString("newgame.player.type.hardai"), 120, 20);
 			}
 			else {
@@ -824,7 +839,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		}
 		else if (e.getSource()==defaultMap) {
 
-			myrisk.parser("choosemap " + risk.engine.core.RiskGame.getDefaultMap() );
+			myrisk.parser("choosemap " + RiskGame.getDefaultMap() );
 
 		}
 		else if (e.getSource()==chooseCards) {
@@ -840,7 +855,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		}
 		else if (e.getSource()==defaultCards) {
 
-			myrisk.parser("choosecards " + risk.engine.core.RiskGame.getDefaultCards() );
+			myrisk.parser("choosecards " + RiskGame.getDefaultCards() );
 
 		}
 		else if (e.getSource()==resetplayers) {
@@ -874,7 +889,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			Component[] players = PlayersPanel.getComponents();
 
 			if (
-					(players.length >= 2 && players.length <= risk.engine.core.RiskGame.MAX_PLAYERS )
+					(players.length >= 2 && players.length <= RiskGame.MAX_PLAYERS )
 					// || (players.length == 2 && domination.isSelected() && ((playerPanel)players[0]).getType() == 0 && ((playerPanel)players[1]).getType() == 0 )
 			) {
 

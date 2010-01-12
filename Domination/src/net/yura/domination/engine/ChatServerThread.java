@@ -1,11 +1,14 @@
 // Yura Mamyrin, Group D
 
-package risk.engine;
+package net.yura.domination.engine;
 
-import java.net.*;
-import java.io.*;
-import risk.engine.core.RiskGame;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.LinkedList;
+import net.yura.domination.engine.core.RiskGame;
 
 /**
  * <p> Chat Server Thread </p>
@@ -65,7 +68,7 @@ public class ChatServerThread extends Thread {
 
 			}
 
-			if (version.equals(risk.engine.core.RiskGame.NETWORK_VERSION)) {
+			if (version.equals(RiskGame.NETWORK_VERSION)) {
 
 				// Create a separate thread to handle the incomming socket data      
 				myReaderThread = new ChatReader(inChat, myChatArea, myIndex);
@@ -83,7 +86,7 @@ public class ChatServerThread extends Thread {
 			}
 			else {
 
-				outChat.println( "ERROR version missmatch, server: "+risk.engine.core.RiskGame.NETWORK_VERSION+", and client: "+version );
+				outChat.println( "ERROR version missmatch, server: "+RiskGame.NETWORK_VERSION+", and client: "+version );
 
 			}
 

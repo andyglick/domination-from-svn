@@ -1,11 +1,11 @@
 // Yura Mamyrin, Group D
 
-package risk.engine.core;
+package net.yura.domination.engine.core;
 
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.net.InetAddress;
+import java.awt.Color;
+import java.io.Serializable;
+import java.util.Vector;
+import risk.engine.core.Statistic;
 
 /**
  * <p> Risk Player </p>

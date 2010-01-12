@@ -1,11 +1,8 @@
-package risk.engine.translation;
+package net.yura.domination.engine.translation;
 
-import java.util.ResourceBundle;
 import java.util.Locale;
-import java.util.MissingResourceException;
-import risk.engine.RiskUtil;
-import java.util.PropertyResourceBundle;
-import java.io.IOException;
+import java.util.ResourceBundle;
+import net.yura.domination.engine.RiskUtil;
 
 /**
  * just a small class keeping the only resource

@@ -1,43 +1,32 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
-
-import risk.engine.*;
-
-import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.awt.event.MouseEvent;
-import java.awt.Graphics;
-import javax.swing.JPanel;
-import java.awt.Toolkit;
-import java.awt.Dimension;
-import javax.swing.JLayeredPane;
-import java.awt.event.MouseListener;
-import javax.swing.JTextField;
-import java.awt.Frame;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+package net.yura.domination.ui.FlashGUI;
 
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Color;
-
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
 import java.text.AttributedString;
 import java.awt.font.LineBreakMeasurer;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
 
 /**
- * <p> Mission Dialog for FlashGUI </p>
+ * Mission Dialog for FlashGUI
  * @author Yura Mamyrin
  */
-
 public class MissionDialog extends JDialog implements MouseListener {
 
     private BufferedImage mission;

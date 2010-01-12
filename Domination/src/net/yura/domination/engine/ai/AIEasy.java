@@ -1,11 +1,9 @@
 // Yura Mamyrin
 
-package risk.engine.ai;
+package net.yura.domination.engine.ai;
 
-import risk.engine.*;
-import risk.engine.core.*;
-
-import java.util.*;
+import java.util.Vector;
+import net.yura.domination.engine.core.Country;
 
 /**
  * <p> Class for AIEasyPlayer </p>

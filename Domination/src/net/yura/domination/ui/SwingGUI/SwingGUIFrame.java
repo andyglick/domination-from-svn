@@ -1,24 +1,13 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.*;
-import risk.engine.guishared.*;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Vector;
-import java.util.ResourceBundle;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.guishared.AboutDialog;
 
 /**
  * <p> Swing GUI Main Frame </p>

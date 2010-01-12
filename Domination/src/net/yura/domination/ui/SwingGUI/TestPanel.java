@@ -1,25 +1,37 @@
 // Yura Mamyrin
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.*;
-import risk.engine.core.*;
-import risk.engine.ai.AIPlayer;
-import risk.engine.guishared.PicturePanel;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.filechooser.*;
-import java.awt.image.BufferedImage;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.ui.FlashGUI.MainMenu;
 
 /**
  * @author Yura Mamyrin
@@ -317,7 +329,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		}
 		else if (a.getActionCommand().equals("flash")) {
 
-			risk.ui.FlashGUI.MainMenu.newMainMenuFrame( myrisk, JFrame.DISPOSE_ON_CLOSE );
+			MainMenu.newMainMenuFrame( myrisk, JFrame.DISPOSE_ON_CLOSE );
 
 		}
 

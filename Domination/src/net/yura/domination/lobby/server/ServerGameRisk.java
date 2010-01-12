@@ -1,10 +1,4 @@
-package risk.lobby.server;
-
-import risk.engine.Risk;
-import risk.engine.ai.AIPlayer;
-
-import risk.engine.core.RiskGame;
-import risk.engine.core.Player;
+package net.yura.domination.lobby.server;
 
 import org.lobby.server.TurnBasedGame;
 
@@ -13,14 +7,11 @@ import java.util.Vector;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-
-//import risk.ui.Increment1GUI.Increment1Frame;
-//import risk.ui.SimpleGUI.RiskGUI;
-
 import java.util.Map;
 import java.util.HashMap;
-
-import java.io.Serializable;
+import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 public class ServerGameRisk extends TurnBasedGame {
 

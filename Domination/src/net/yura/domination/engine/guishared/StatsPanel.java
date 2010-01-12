@@ -1,25 +1,23 @@
 // Yura Mamyrin
 
-package risk.engine.guishared;
-
-import risk.engine.core.*;
-import risk.engine.Risk;
+package net.yura.domination.engine.guishared;
 
 import java.util.Vector;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 /**
- * <p> Statistics Graphs Panel </p>
+ * Statistics Graphs Panel
  * @author Yura Mamyrin
  */
-
 public class StatsPanel extends JPanel {
 
     //private int spX;

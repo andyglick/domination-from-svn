@@ -1,10 +1,9 @@
 // Yura Mamyrin, Group D
 
-package risk.engine;
+package net.yura.domination.engine;
 
-import java.io.*;
-import java.net.*;
-import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * <p> Display Thread </p>

@@ -1,4 +1,4 @@
-package risk.lobby.client;
+package net.yura.domination.lobby.client;
 
 import org.lobby.client.*;
 import risk.ui.FlashGUI.FlashRiskAdapter;

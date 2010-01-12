@@ -1,4 +1,4 @@
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -6,11 +6,15 @@ import javax.swing.JMenu;
 import javax.swing.JButton;
 import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.event.*;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
-import risk.engine.guishared.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
+import net.yura.domination.engine.guishared.ErdeAnsicht;
+import net.yura.domination.engine.guishared.PicturePanel;
 
 /**
  * @author Yura Mamyrin

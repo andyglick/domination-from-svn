@@ -1,6 +1,6 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.Increment1GUI;
+package net.yura.domination.ui.Increment1GUI;
 
 import java.awt.print.Pageable;
 import java.awt.print.Printable;

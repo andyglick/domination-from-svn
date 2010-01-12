@@ -1,4 +1,4 @@
-package risk.lobby.server;
+package net.yura.domination.lobby.server;
 
 import risk.engine.Risk;
 import risk.engine.RiskUtil;

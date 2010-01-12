@@ -1,33 +1,39 @@
 // Yura Mamyrin, Group D
 
-package risk.engine;
+package net.yura.domination.engine;
 
-import risk.engine.core.*;
-import risk.engine.guishared.*;
-import risk.engine.ai.AIPlayer;
-
-import java.util.StringTokenizer;
+import java.applet.Applet;
 import java.awt.Color;
-import java.util.Vector;
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.awt.Toolkit;
-import javax.crypto.SealedObject;
+import java.util.StringTokenizer;
+import java.util.Vector;
 import javax.crypto.NullCipher;
-import java.util.Enumeration;
-import java.applet.Applet;
-import javax.swing.JFileChooser;
-import java.awt.Frame;
-import javax.swing.JOptionPane;
-import javax.swing.JComboBox;
-import java.awt.Container;
-import java.util.Properties;
-import java.awt.Dimension;
-import javax.swing.UIManager;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import javax.crypto.SealedObject;
+import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Mission;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Main Risk Class </p>
@@ -77,7 +83,7 @@ public class Risk extends Thread {
 	public Risk(Applet a) {
 		super(RiskUtil.getGameName()+"-GAME-THREAD");
 
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		setupMapsDir(a);
 

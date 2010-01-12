@@ -1,11 +1,10 @@
-package risk.engine.translation;
+package net.yura.domination.engine.translation;
 
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.io.IOException;
-import java.net.URL;
-import risk.engine.RiskUtil;
+import net.yura.domination.engine.RiskUtil;
 
 /**
  * Translation services for maps:

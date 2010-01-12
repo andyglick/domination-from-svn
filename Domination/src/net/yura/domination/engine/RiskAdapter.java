@@ -1,6 +1,6 @@
 // Yura Mamyrin, Group D
 
-package risk.engine;
+package net.yura.domination.engine;
 
 /**
  * <p> Risk Adapter </p>

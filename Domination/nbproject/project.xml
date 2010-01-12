@@ -5,7 +5,9 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Domination</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-            <source-roots/>
+            <source-roots>
+                <root id="src.src.dir"/>
+            </source-roots>
             <test-roots/>
         </data>
     </configuration>
