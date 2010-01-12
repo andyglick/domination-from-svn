@@ -1,0 +1,2 @@
+appletviewer FlashGUI.htm
+pause

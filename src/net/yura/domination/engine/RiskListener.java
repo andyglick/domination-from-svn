@@ -1,0 +1,34 @@
+// Yura Mamyrin, Group D
+
+package risk.engine;
+
+/**
+ * <p> Risk Listener </p>
+ * @author Yura Mamyrin
+ */
+
+public interface RiskListener {
+
+    public void sendMessage(String output, boolean a, boolean b);
+    public void needInput(int s);
+    public void noInput();
+    public void setGameStatus(String state);
+    public void newGame(boolean t);
+    public void startGame(boolean s);
+    public void closeGame();
+    public void setSlider(int min, int c1num, int c2num);
+    public void armiesLeft(int l, boolean s);
+    public void showDice(int n, boolean w);
+    public void showMapPic(java.awt.Image p);
+    public void showCardsFile(String c, boolean m);
+    public void serverState(boolean s);
+    public void openBattle(int c1num, int c2num);
+    public void closeBattle();
+    public void addPlayer(int type, String name, java.awt.Color color, String ip);
+    public void delPlayer(String name);
+    public void showDiceResults(int[] att, int[] def);
+    public void setNODAttacker(int n);
+    public void setNODDefender(int n);
+    public void sendDebug(String a);
+    public void showMessageDialog(String a);
+}
