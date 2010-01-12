@@ -1,14 +1,20 @@
 // Yura Mamyrin, Group D
 
-package risk.engine.core;
+package net.yura.domination.engine.core;
 
-import java.util.*;
-import java.io.*;
 import java.awt.Color;
-import java.net.URL;
-
-//import java.beans.XMLEncoder;
-//import java.beans.XMLDecoder;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.translation.MapTranslator;
 
 /**
  * <p> Risk Game Main Class </p>
@@ -1444,7 +1450,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("Starting Load Map...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader( risk.engine.RiskUtil.openMapStream(filename)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(filename)));
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1485,7 +1491,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					String id=st.nextToken(); //System.out.print(name+"\n"); // testing
 
 					// get translation
-					String name = risk.engine.translation.MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
+					String name = MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
 
 					int noa=Integer.parseInt( st.nextToken() ); //System.out.print(noa+"\n"); // testing
 					Color color=getColor( st.nextToken() ); //System.out.print(color.toString()+"\n"); // testing
@@ -1510,7 +1516,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					String id=st.nextToken(); //System.out.print(name+"\n"); // testing
 
 					// get translation
-					String name = risk.engine.translation.MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
+					String name = MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
 
 					int continent = Integer.parseInt(st.nextToken());
 					int x = Integer.parseInt(st.nextToken());
@@ -1605,7 +1611,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			f = defaultMap;
 		}
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(risk.engine.RiskUtil.openMapStream(f)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(f)));
 
 
 /*
@@ -1689,7 +1695,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		mapfile = f;
 		bufferin.close();
 
-		risk.engine.translation.MapTranslator.setMap( f );
+		MapTranslator.setMap( f );
 
 		return returnvalue;
 
@@ -1741,7 +1747,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("Starting load cards and missions...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(risk.engine.RiskUtil.openMapStream(filename)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(filename)));
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1812,7 +1818,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					Continent c3 = getMissionContinentfromString( s6 );
 
 					String missioncode=s1+"-"+noc+"-"+noa+"-"+s4+"-"+s5+"-"+s6;
-					String description=risk.engine.translation.MapTranslator.getTranslatedMissionName(missioncode);
+					String description=MapTranslator.getTranslatedMissionName(missioncode);
 
 					if (description==null) {
 
@@ -1905,7 +1911,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			f = defaultCards;
 		}
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(risk.engine.RiskUtil.openMapStream(f)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(f)));
 
 
 /*
@@ -1977,7 +1983,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		cardsfile = f;
 		bufferin.close();
 
-		risk.engine.translation.MapTranslator.setCards( f );
+		MapTranslator.setCards( f );
 
 		return yesmissions;
 
@@ -2021,7 +2027,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public static RiskGame loadGame(String file) throws Exception {
 		RiskGame game = null;
 		//try {
-			InputStream filein = risk.engine.RiskUtil.getLoadFileInputStream(file);
+			InputStream filein = RiskUtil.getLoadFileInputStream(file);
 			ObjectInputStream objectin = new ObjectInputStream(filein);
 			game = (RiskGame) objectin.readObject();
 			objectin.close();
@@ -2057,7 +2063,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		try {
 
-			risk.engine.RiskUtil.saveFile(file,this);
+			RiskUtil.saveFile(file,this);
 
 			//XMLEncoder e = new XMLEncoder( new BufferedOutputStream( new FileOutputStream(file)));
 			//e.writeObject(this);

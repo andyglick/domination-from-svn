@@ -1,4 +1,4 @@
-package risk.engine;
+package net.yura.domination.engine;
 
 import java.io.InputStream;
 import java.io.IOException;

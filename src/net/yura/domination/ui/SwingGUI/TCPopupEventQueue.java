@@ -1,4 +1,4 @@
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
 import java.awt.*;
 import java.awt.event.*;

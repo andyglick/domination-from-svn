@@ -1,24 +1,12 @@
 // Yura Mamyrin
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import java.awt.Frame;
+import javax.swing.JApplet;
+import javax.swing.SwingUtilities;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * @author Yura Mamyrin
@@ -50,7 +38,7 @@ public class FlashGUIApplet extends JApplet {
 		String lang = getParameter("lang");
 		if (lang !=null) {
 
-			risk.engine.translation.TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
+			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
 
 		}
 

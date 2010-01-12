@@ -1,8 +1,6 @@
 // Yura Mamyrin
 
-package risk.engine.guishared;
-
-import risk.engine.Risk;
+package net.yura.domination.engine.guishared;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -17,25 +15,19 @@ import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import java.awt.Frame;
-import java.awt.Rectangle;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.io.File;
-import risk.engine.RiskUtil;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
- * <p> About Dialog </p>
+ * About Dialog
  * @author Yura Mamyrin
  */
-
-
 public class AboutDialog extends JDialog {
 
 	private JPanel contentPane = new JPanel();
@@ -65,7 +57,7 @@ public class AboutDialog extends JDialog {
 	public AboutDialog(Frame parent, boolean modal, String product, String v) {
 		super(parent, modal);
 
-		java.util.ResourceBundle resb = risk.engine.translation.TranslationBundle.getBundle();
+		java.util.ResourceBundle resb = TranslationBundle.getBundle();
 
 		String version=resb.getString("about.version")+" " + v;
 		String author = " Yura Mamyrin (yura@yura.net)";

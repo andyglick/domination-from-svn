@@ -1,8 +1,8 @@
 // Yura Mamyrin, Group D
 
-package risk.engine.core;
+package net.yura.domination.engine.core;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
  * <p> Risk Card </p>

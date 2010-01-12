@@ -1,13 +1,7 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.*;
-import risk.engine.core.Country;
-
-import javax.swing.JDialog;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -18,18 +12,19 @@ import java.awt.event.ActionEvent;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Color;
-
 import java.awt.RenderingHints;
-
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
-
+import java.awt.image.BufferedImage;
+import javax.swing.JDialog;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Move Dialog for FlashGUI </p>
@@ -152,7 +147,7 @@ public class MoveDialog extends JDialog {
 	 */
 	private void initGUI()
 	{
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 

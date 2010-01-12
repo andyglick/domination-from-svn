@@ -1,24 +1,21 @@
 // Yura Mamyrin
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.*;
-import risk.engine.core.*;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import java.awt.image.BufferedImage;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
-import javax.imageio.ImageIO;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import net.yura.domination.engine.RiskUtil;
 
 /**
  * @author Yura Mamyrin

@@ -1,9 +1,8 @@
-package risk.engine.ai;
+package net.yura.domination.engine.ai;
 
-import risk.engine.*;
-import risk.engine.core.*;
-
-import java.util.*;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 public class AIPlayer {
 

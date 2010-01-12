@@ -1,53 +1,39 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.Increment1GUI;
+package net.yura.domination.ui.Increment1GUI;
 
-import risk.engine.*;
-import risk.engine.guishared.AboutDialog;
-
-import javax.swing.JFrame;
-import java.awt.event.WindowEvent;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import java.awt.Rectangle;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Vector;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import javax.swing.UIManager;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.JRootPane;
-
-import java.awt.Image;
-import java.util.Vector;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
-
-import java.io.File;
-import java.awt.image.BufferedImage;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskAdapter;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.guishared.AboutDialog;
 
 /**
  * <p> Increment1 GUI </p>

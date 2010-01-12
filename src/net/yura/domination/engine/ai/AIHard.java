@@ -1,11 +1,11 @@
 //  Group D
 
-package risk.engine.ai;
+package net.yura.domination.engine.ai;
 
-import risk.engine.*;
-import risk.engine.core.*;
-
-import java.util.*;
+import java.util.Vector;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
 
 /**
  * <p> Class for AIHardPlayer </p>

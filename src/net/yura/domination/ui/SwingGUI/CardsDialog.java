@@ -1,21 +1,38 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.core.Card;
-import risk.engine.core.Country;
-import risk.engine.Risk;
-import risk.engine.guishared.PicturePanel;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.Vector;
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Cards Dialog for Swing GUI </p>
@@ -53,7 +70,7 @@ public class CardsDialog extends JDialog {
 	canTrade=ct;
 	pp=p;
 
-	resb = risk.engine.translation.TranslationBundle.getBundle();
+	resb = TranslationBundle.getBundle();
 
 	tradeButton = new JButton(resb.getString("cards.trade"));
 	tradeButton.setEnabled(false);

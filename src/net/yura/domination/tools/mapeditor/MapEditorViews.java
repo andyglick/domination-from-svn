@@ -1,50 +1,41 @@
 // Yura Mamyrin
 
-package risk.tools.mapeditor;
+package net.yura.domination.tools.mapeditor;
 
-import risk.engine.*;
-import risk.engine.core.*;
-
-import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.awt.event.MouseEvent;
-import java.awt.Graphics;
-import javax.swing.JPanel;
-import java.awt.Toolkit;
-import java.awt.Dimension;
-import javax.swing.JLayeredPane;
-import java.awt.event.MouseListener;
-import javax.swing.JTextField;
-import java.awt.Frame;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTabbedPane;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
 import java.awt.BorderLayout;
-import javax.swing.AbstractListModel;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.JToolBar;
-import javax.swing.JOptionPane;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JSpinner;
-import javax.swing.JColorChooser;
 import java.awt.Color;
-import javax.swing.JTextArea;
-import java.util.List;
-import java.util.Vector;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.HashMap;
-import javax.swing.event.ListSelectionListener;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Mission;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 /**
  * <p> Options Dialog for SwingGUI </p>

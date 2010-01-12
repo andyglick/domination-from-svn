@@ -1,9 +1,9 @@
 // Yura Mamyrin, Group D
 
-package risk.engine;
+package net.yura.domination.engine;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * <p> Chat Reader </p>

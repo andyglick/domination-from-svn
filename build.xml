@@ -42,6 +42,7 @@
 	<property name="dir.build.game" location="${dir.build}/game"/>
 	<property name="dir.oldmanual" location="${basedir}/help"/>
 	<property name="dir.dist" location="dist"/>
+	<property name="dir.source" location="src"/>
 
 	<property name="file.src" location="${dir.dist}/src.zip"/>
 
@@ -88,8 +89,8 @@
 		<mkdir dir="${dir.build.classes}"/>
 
 		<!-- compile the classes -->
-		<javac debug="on" srcdir="${basedir}" destdir="${dir.build.classes}" excludes="installer/**,risk/lobby/**" 
-		source="1.4" target="1.4" classpath="resources/jnlp.jar"/>
+		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**" 
+		source="1.4" target="1.4" classpath="lib/jnlp.jar;lib/TranslationTool.jar"/>
 		<!-- copy translation files -->
 		<copy todir="${dir.build.classes}/risk/engine/translation">
 			<fileset dir="risk/engine/translation" includes="*.properties" />

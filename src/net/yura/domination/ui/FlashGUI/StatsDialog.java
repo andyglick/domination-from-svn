@@ -1,37 +1,20 @@
 // Yura Mamyrin
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.guishared.*;
-
-import risk.engine.*;
-import risk.engine.core.RiskGame;
-
-import javax.swing.JDialog;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.awt.Graphics;
-import javax.swing.JPanel;
 import java.awt.Dimension;
-import javax.swing.JButton;
 import java.awt.Frame;
-import java.awt.event.ActionListener;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Color;
-
-import java.awt.RenderingHints;
-
-import java.awt.Polygon;
-import java.awt.geom.Ellipse2D;
-import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.guishared.StatsPanel;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Move Dialog for FlashGUI </p>
@@ -68,7 +51,7 @@ public class StatsDialog extends JDialog implements ActionListener {
 	 */
 	private void initGUI()
 	{
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		setTitle( resb.getString("swing.tab.statistics") );
 

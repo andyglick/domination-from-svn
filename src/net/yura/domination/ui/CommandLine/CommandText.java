@@ -1,10 +1,15 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.CommandLine;
+package net.yura.domination.ui.CommandLine;
 
-import risk.engine.*;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskAdapter;
+import net.yura.domination.engine.RiskUtil;
 
 /**
  * <p> Command Line Interface for Risk </p>

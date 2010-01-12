@@ -1,4 +1,4 @@
-package risk.engine.guishared;
+package net.yura.domination.engine.guishared;
 
 import java.io.*;
 

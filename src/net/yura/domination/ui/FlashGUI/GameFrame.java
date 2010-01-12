@@ -1,51 +1,47 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
-
-import risk.engine.guishared.*;
-
-import risk.engine.*;
-import risk.engine.core.Country;
-import risk.engine.core.RiskGame;
+package net.yura.domination.ui.FlashGUI;
 
 import javax.swing.JFrame;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import javax.swing.JLayeredPane;
 import javax.swing.event.MouseInputListener;
-
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Insets;
-import java.awt.event.*;
-
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.AlphaComposite;
-
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import java.awt.RenderingHints;
-import javax.swing.JOptionPane;
 import java.awt.BorderLayout;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Vector;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
- * <p> Game Frame for FlashGUI </p>
+ * Game Frame for FlashGUI
  * @author Yura Mamyrin
  */
-
 public class GameFrame extends JFrame implements MouseInputListener,KeyListener {
 
 	private BufferedImage game;
@@ -153,7 +149,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 	 */
 	private void initGUI() {
 
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		// set title
 		setTitle("yura.net " + RiskUtil.getGameName() ); // resb.getString("game.title")

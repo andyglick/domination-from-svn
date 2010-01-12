@@ -1,12 +1,6 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
-
-import risk.engine.guishared.*;
-
-import risk.engine.*;
-import risk.engine.core.Country;
-import risk.engine.core.RiskGame;
+package net.yura.domination.ui.FlashGUI;
 
 import java.awt.Image;
 import java.awt.Color;
@@ -15,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
-import java.io.*;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
@@ -27,9 +20,16 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JFileChooser;
+import java.io.IOException;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskListener;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.SimplePrintStream;
+
 /**
  * <p> Risk Listener for FlashGUI </p>
  * @author Yura Mamyrin

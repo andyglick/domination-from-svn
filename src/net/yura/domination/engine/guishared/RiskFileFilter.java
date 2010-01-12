@@ -1,9 +1,10 @@
 // Yura Mamyrin, Group D
 
-package risk.engine.guishared;
+package net.yura.domination.engine.guishared;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Risk File Filter </p>
@@ -51,7 +52,7 @@ public class RiskFileFilter extends FileFilter {
 	 */
 	public String getDescription()
 	{
-		java.util.ResourceBundle resb = risk.engine.translation.TranslationBundle.getBundle();
+		java.util.ResourceBundle resb = TranslationBundle.getBundle();
 
 		String name;
 

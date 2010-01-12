@@ -1,22 +1,10 @@
-package risk.engine;
-
-import risk.engine.core.*;
-import risk.engine.guishared.*;
-import risk.engine.ai.AIPlayer;
+package net.yura.domination.engine;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.util.StringTokenizer;
 import java.awt.Color;
 import java.util.Vector;
-import java.io.*;
-import java.net.*;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.awt.Toolkit;
-import javax.crypto.SealedObject;
-import javax.crypto.NullCipher;
-import java.util.Enumeration;
 import java.applet.Applet;
 import javax.swing.JFileChooser;
 import java.awt.Frame;
@@ -25,11 +13,34 @@ import javax.swing.JComboBox;
 import java.awt.Container;
 import java.util.Properties;
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.HashMap;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.BrowserLauncher;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 public class RiskUtil {
 
@@ -498,7 +509,7 @@ public class RiskUtil {
 
 			// Messages 
 			Object[] message = new Object[] { 
-				risk.engine.translation.TranslationBundle.getBundle().getString("core.error.applet"),
+				TranslationBundle.getBundle().getString("core.error.applet"),
 				combobox
 			};
 
@@ -565,7 +576,7 @@ public class RiskUtil {
 
 			fc.setFileFilter(new RiskFileFilter(extension));
 
-			int returnVal = fc.showDialog( frame , risk.engine.translation.TranslationBundle.getBundle().getString("mainmenu.loadgame.loadbutton"));
+			int returnVal = fc.showDialog( frame , TranslationBundle.getBundle().getString("mainmenu.loadgame.loadbutton"));
 			if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
 
 				java.io.File file = fc.getSelectedFile();
@@ -675,7 +686,7 @@ public class RiskUtil {
 	public static void showAppletWarning(Frame frame) {
 
 		JOptionPane.showMessageDialog(frame,
-			risk.engine.translation.TranslationBundle.getBundle().getString("core.error.applet")
+			TranslationBundle.getBundle().getString("core.error.applet")
 		);
 
 	}
@@ -684,7 +695,7 @@ public class RiskUtil {
 
 		if (applet!=null) {
 
-			throw new Exception("\n"+risk.engine.translation.TranslationBundle.getBundle().getString("core.error.applet"));
+			throw new Exception("\n"+TranslationBundle.getBundle().getString("core.error.applet"));
 
 		}
 
@@ -756,7 +767,7 @@ public class RiskUtil {
 
 	public static String getSystemInfoText() {
 
-		ResourceBundle resb = risk.engine.translation.TranslationBundle.getBundle();
+		ResourceBundle resb = TranslationBundle.getBundle();
 
 		String netInfo,patch,home,cpu,name,info;
 
@@ -799,7 +810,7 @@ public class RiskUtil {
 		}
 
 
-		return		" " + Risk.RISK_VERSION + " (save: " + risk.engine.core.RiskGame.SAVE_VERSION + " network: "+risk.engine.core.RiskGame.NETWORK_VERSION+") \n" +
+		return		" " + Risk.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
 				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + "\n" +
 				" " + netInfo + " \n" +
 				" " + System.getProperty("os.name") + " " + System.getProperty("os.version") +" "+ patch + " on " + System.getProperty("os.arch") + " \n" +
@@ -1112,7 +1123,7 @@ return Color.white;
 
 	public static void parseArgs(String[] args) {
 
-		risk.engine.translation.TranslationBundle.parseArgs(args);
+		TranslationBundle.parseArgs(args);
 
 		for (int nA = 0; nA < args.length; nA++ ) {
 

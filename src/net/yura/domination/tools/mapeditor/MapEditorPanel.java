@@ -1,23 +1,9 @@
 // Yura Mamyrin
 
-package risk.tools.mapeditor;
-
-import risk.engine.*;
-import risk.engine.core.*;
-
-import risk.engine.guishared.PicturePanel;
-
-import java.io.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
+package net.yura.domination.tools.mapeditor;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.awt.image.BufferedImage;
 import java.awt.Dimension;
 import java.awt.Color;
@@ -25,20 +11,23 @@ import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.net.URL;
-import java.awt.Rectangle;
-import java.net.URI;
 import java.awt.AlphaComposite;
 import java.awt.image.IndexColorModel;
 import java.awt.BasicStroke;
-
+import java.awt.Rectangle;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
+import javax.swing.event.MouseInputListener;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
 
 /**
  * @author Yura Mamyrin
  */
-
 public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWheelListener {
 
 	public static final int MODE_MOVE = 0;

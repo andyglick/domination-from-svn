@@ -1,20 +1,49 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.SimpleGUI;
+package net.yura.domination.ui.SimpleGUI;
 
-import risk.engine.guishared.*;
-
-import risk.engine.*;
-
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.swing.event.MouseInputListener;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskAdapter;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.RiskFileFilter;
 
 /**
  * <p> Simple GUI for Risk </p>

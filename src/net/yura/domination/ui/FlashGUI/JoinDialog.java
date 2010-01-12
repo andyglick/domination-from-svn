@@ -1,13 +1,7 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.*;
-
-import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import java.awt.event.MouseEvent;
 import java.awt.Graphics;
 import javax.swing.JPanel;
@@ -18,21 +12,23 @@ import javax.swing.JTextField;
 import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Color;
-
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
+import javax.swing.JDialog;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
- * <p> Join Game for FlashGUI </p>
+ * Join Game for FlashGUI
  * @author Yura Mamyrin
  */
-
 public class JoinDialog extends JDialog implements MouseInputListener
 {
 
@@ -53,7 +49,7 @@ public class JoinDialog extends JDialog implements MouseInputListener
 
 		serverField = new JTextField( r.getRiskConfig("default.host") );
 
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		myrisk=r;
 

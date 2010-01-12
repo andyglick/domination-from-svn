@@ -1,14 +1,61 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.*;
-import risk.engine.ai.AIPlayer;
-import risk.engine.core.RiskGame;
-import risk.engine.core.Continent;
-import risk.engine.guishared.*;
-
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ResourceBundle;
+import java.util.Vector;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputListener;
@@ -16,15 +63,18 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Vector;
-import java.util.ResourceBundle;
-import java.net.URL;
-
-import risk.tools.mapeditor.MapEditor;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskAdapter;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.engine.guishared.SimplePrintStream;
+import net.yura.domination.engine.guishared.StatsPanel;
+import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.tools.mapeditor.MapEditor;
 
 /**
  * <p> Swing GUI Main Frame </p>
@@ -44,7 +94,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 	// TRUE GUI GLOBAL THINGS:
 
-	private ResourceBundle resbundle = risk.engine.translation.TranslationBundle.getBundle();
+	private ResourceBundle resbundle = TranslationBundle.getBundle();
 
 	private Risk myrisk;
 
@@ -180,7 +230,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		addTab(debugTab);
 		addTab( new TestPanel(myrisk,pp) );
 		addTab(editorTab);
-		addTab( new risk.tools.translation.MessageTool() );
+		addTab( new TranslationToolPanel() );
 		addTab(new BugsPanel());
 
 		final JPanel oddpanelbug = new JPanel();
@@ -2842,10 +2892,10 @@ public void setNODDefender(int n) {}
 */
 			data = new Object[6][3];
 
-			for (int cc=1;cc<=risk.engine.core.RiskGame.MAX_PLAYERS;cc++) {
+			for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
 
 				data[cc-1][0] = myrisk.getRiskConfig("default.player"+cc+".name");
-				data[cc-1][1] = findColor( risk.engine.core.RiskGame.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
+				data[cc-1][1] = findColor( RiskGame.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
 				data[cc-1][2] = findType( myrisk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
 
 			}
@@ -3231,7 +3281,7 @@ public void setNODDefender(int n) {}
 							boolean setupOK=true;
 							String error="";
 
-							if (players.getRowCount() >= 2 && players.getRowCount() <= risk.engine.core.RiskGame.MAX_PLAYERS) {
+							if (players.getRowCount() >= 2 && players.getRowCount() <= RiskGame.MAX_PLAYERS) {
 
 								for (int c=0; c < players.getRowCount(); c++) {
 									for (int b=(c+1); b < players.getRowCount(); b++) {
@@ -3410,19 +3460,19 @@ public void setNODDefender(int n) {}
 		}
 		public String findType(int t) {
 
-				if (t == risk.engine.core.Player.PLAYER_HUMAN) {
+				if (t == Player.PLAYER_HUMAN) {
 					return resbundle.getString("newgame.player.type.human");
 				}
 
-				if (t == risk.engine.core.Player.PLAYER_AI_CRAP) {
+				if (t == Player.PLAYER_AI_CRAP) {
 					return resbundle.getString("newgame.player.type.crapai");
 				}
 
-				if (t == risk.engine.core.Player.PLAYER_AI_EASY) {
+				if (t == Player.PLAYER_AI_EASY) {
 					return resbundle.getString("newgame.player.type.easyai");
 				}
 
-				if (t == risk.engine.core.Player.PLAYER_AI_HARD) {
+				if (t == Player.PLAYER_AI_HARD) {
 					return resbundle.getString("newgame.player.type.hardai");
 				}
 

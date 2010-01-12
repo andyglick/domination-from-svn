@@ -1,17 +1,7 @@
 // Yura Mamyrin
 
-package risk.tools.mapeditor;
+package net.yura.domination.tools.mapeditor;
 
-import risk.engine.*;
-import risk.engine.core.*;
-import risk.engine.guishared.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Dimension;
@@ -19,14 +9,48 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Frame;
 import java.awt.Color;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
 import javax.imageio.ImageIO;
 import java.awt.Cursor;
-
-import risk.ui.SwingGUI.SwingGUITab;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Mission;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.ui.SwingGUI.SwingGUITab;
 
 /**
  * @author Yura Mamyrin
@@ -356,7 +380,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			rg.addPlayer(
 				Player.PLAYER_HUMAN,
 				"PLAYER"+c,
-				risk.engine.core.RiskGame.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
+				RiskGame.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
 				null
 			);
 

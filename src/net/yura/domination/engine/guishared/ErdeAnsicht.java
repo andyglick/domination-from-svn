@@ -1,6 +1,6 @@
 // source: http://n.ethz.ch/student/simonbr/mathinfo_applets_erde.html
 
-package risk.engine.guishared;
+package net.yura.domination.engine.guishared;
 
 import java.awt.event.*;
 import java.awt.*;

@@ -1,22 +1,33 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
+package net.yura.domination.ui.FlashGUI;
 
-import risk.engine.guishared.*;
 
-import risk.engine.Risk;
-import risk.engine.RiskUtil;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.MouseInputListener;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Main Menu for FlashGUI </p>
@@ -56,7 +67,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 	private JLabel lobby;
 
-	private java.util.ResourceBundle resBundle = risk.engine.translation.TranslationBundle.getBundle();
+	private java.util.ResourceBundle resBundle = TranslationBundle.getBundle();
 
 	private boolean showLobby;
 	private Cursor hand;
@@ -351,7 +362,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 				case MainMenu.BUTTON_HELP: {
 
 					try {
-						RiskUtil.openDocs( risk.engine.translation.TranslationBundle.getBundle().getString( "helpfiles.flash" ) );
+						RiskUtil.openDocs( TranslationBundle.getBundle().getString( "helpfiles.flash" ) );
 					}
 					catch(Exception e) {
 						JOptionPane.showMessageDialog( RiskUtil.findParentFrame(this) ,"Unable to open manual: "+e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
@@ -655,7 +666,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		gui.setContentPane( mm );
 		gui.setIconImage(Toolkit.getDefaultToolkit().getImage( AboutDialog.class.getResource("icon.gif") ));
-		gui.setTitle( risk.engine.translation.TranslationBundle.getBundle().getString( "mainmenu.title"));
+		gui.setTitle( TranslationBundle.getBundle().getString( "mainmenu.title"));
 		gui.setResizable(false);
 		gui.pack();
 

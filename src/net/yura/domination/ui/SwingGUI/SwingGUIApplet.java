@@ -1,24 +1,10 @@
 // Yura Mamyrin
 
-package risk.ui.SwingGUI;
+package net.yura.domination.ui.SwingGUI;
 
-import risk.engine.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import javax.swing.JApplet;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * @author Yura Mamyrin
@@ -50,7 +36,7 @@ public class SwingGUIApplet extends JApplet {
 		String lang = getParameter("lang");
 		if (lang !=null) {
 
-			risk.engine.translation.TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
+			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
 
 		}
 

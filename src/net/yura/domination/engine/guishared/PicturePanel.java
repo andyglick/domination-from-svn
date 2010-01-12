@@ -1,17 +1,17 @@
 // Yura Mamyrin, Group D
 
-package risk.engine.guishared;
+package net.yura.domination.engine.guishared;
 
-import risk.engine.*;
-
-import risk.engine.core.Card;
-import risk.engine.core.Country;
-import risk.engine.core.Player;
-import risk.engine.core.RiskGame;
-
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
@@ -22,7 +22,15 @@ import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.util.Vector;
 import java.net.URL;
-import java.awt.geom.AffineTransform;
+import javax.swing.JPanel;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.translation.TranslationBundle;
+
 
 /**
  * <p> Picture Panel </p>
@@ -61,7 +69,7 @@ public class PicturePanel extends JPanel {
 
 		myrisk=r;
 
-		this.strCountry = risk.engine.translation.TranslationBundle.getBundle().getString( "picturepanel.country");
+		this.strCountry = TranslationBundle.getBundle().getString( "picturepanel.country");
 
 		img = null;
 		map = null;

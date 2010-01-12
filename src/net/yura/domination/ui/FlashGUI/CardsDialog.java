@@ -1,11 +1,6 @@
 // Yura Mamyrin, Group D
 
-package risk.ui.FlashGUI;
-
-import risk.engine.*;
-import risk.engine.core.*;
-
-import risk.engine.guishared.*;
+package net.yura.domination.ui.FlashGUI;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -16,7 +11,6 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.Graphics;
 import javax.swing.JScrollPane;
 import java.util.Vector;
@@ -31,27 +25,26 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-
-// THIS DOES NOT WORK IN JAVA 1.3
-import javax.imageio.ImageIO;
-
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.RenderingHints;
 import java.awt.AlphaComposite;
-
 import java.text.AttributedString;
 import java.awt.font.LineBreakMeasurer;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
-
 import java.awt.Component;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
- * <p> Cards Dialog for FlashGUI </p>
+ * Cards Dialog for FlashGUI
  * @author Yura Mamyrin
  */
-
 public class CardsDialog extends JDialog {
 
 	private Risk myrisk;
@@ -133,7 +126,7 @@ public class CardsDialog extends JDialog {
 	/** This method is called from within the constructor to initialize the dialog. */
 	private void initGUI()
 	{
-		resb = risk.engine.translation.TranslationBundle.getBundle();
+		resb = TranslationBundle.getBundle();
 
 		setTitle(resb.getString("cards.title"));
 		setResizable(false);

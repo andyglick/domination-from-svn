@@ -1,9 +1,11 @@
-package risk.engine;
+package net.yura.domination.engine;
 
-import java.util.*;
-
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 /**
  * <p> Chat Area </p>
