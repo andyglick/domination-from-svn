@@ -1,1 +1,1 @@
-java -cp @game.name@.jar risk.ui.SimpleGUI.RiskGUI
+java -cp @game.name@.jar net.yura.domination.ui.SimpleGUI.RiskGUI
