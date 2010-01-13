@@ -1,1 +1,1 @@
-java -cp @game.name@.jar risk.ui.CommandLine.CommandText
+java -cp @game.name@.jar net.yura.domination.ui.CommandLine.CommandText

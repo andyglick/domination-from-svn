@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Domination" default="distribution" basedir=".">
+<project name="Domination" default="jar" basedir=".">
 	<!--
 		Domination ant build file
 		http://domination.sourceforge.net
@@ -29,6 +29,11 @@
 	<property name="game.defaultcards" value="risk.cards"/>
 	-->
 
+	<filter token="game.version" value="${game.version}"/>
+	<filter token="game.name" value="${game.name}"/>
+        <filter token="game.website" value="${game.website}"/>
+        <filter token="game.defaultmap" value="${game.defaultmap}"/>
+        <filter token="game.defaultcards" value="${game.defaultcards}"/>
 
 	<property name="dir.build" location="build"/>
 
@@ -40,7 +45,7 @@
 	<property name="dir.build.manual" location="${dir.build}/manual"/>
 	<!-- all required dirs and files will be copied to there before packing the zip -->
 	<property name="dir.build.game" location="${dir.build}/game"/>
-	<property name="dir.oldmanual" location="${basedir}/help"/>
+	<property name="dir.oldmanual" location="${basedir}/game/${game.name}/help"/>
 	<property name="dir.dist" location="dist"/>
 	<property name="dir.source" location="src"/>
 
@@ -71,60 +76,207 @@
 	<available file="${dir.lobby.dist.server}" property="dir.lobby.dist.server.available"/>
 	<available file="${dir.lobby.dist.client}" property="dir.lobby.dist.client.available"/>
 
+
+
+
+
+
+	<target name="classes" description="compiles all the classes">
+
+		<mkdir dir="${dir.build.classes}"/>
+                <mkdir dir="${dir.dist}"/>
+
+		<!-- compile the classes -->
+		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**" 
+		source="1.4" target="1.4" classpath="lib/jnlp.jar;lib/TranslationTool.jar"/>
+
+                <!-- copy translation files and other shared files -->
+		<copy todir="${dir.build.classes}" filtering="true">
+			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java"/>
+		</copy>
+
+		<!-- copy images -->
+		<copy todir="${dir.build.classes}">
+			<fileset dir="game/${game.name}/jar" includes="**/*.*"/>
+		</copy>
+	</target>
+
+	<target name="distribution.jar"
+		description="creates the basic jar file with the classes"
+		depends="classes">
+
+		<jar destfile="${dir.dist}/${game.name}.jar"
+			basedir="${dir.build.classes}"
+			manifest="${dir.source}/META-INF/MANIFEST.MF"/>
+	</target>
+
+	<target name="game"
+		description="copies all the necessary files for the game to one directory, from which it can be played then"
+		depends="distribution.jar"><!-- ,manual -->
+
+		<delete dir="${dir.build.game}"/>
+		<mkdir dir="${dir.build.game}"/>
+
+		<copy file="ChangeLog.txt" todir="${dir.build.game}"/>
+		<copy file="BugTrack.txt" todir="${dir.build.game}"/>
+		<copy file="gpl.txt" todir="${dir.build.game}"/>
+
+		<copy file="res/commands.txt" todir="${dir.build.game}" filtering="true"/>
+		<copy file="res/ReadMe.txt" todir="${dir.build.game}" filtering="true"/>
+		<copy file="res/game.ini" todir="${dir.build.game}" filtering="true"/>
+
+<!--		<copy todir="${dir.build.game}/manual">
+			<fileset dir="${dir.build.manual}"/>
+		</copy>-->
+		<copy todir="${dir.build.game}/help">
+			<fileset dir="${dir.oldmanual}"/>
+		</copy>
+
+		<mkdir dir="${dir.build.game}/maps"/>
+		<copy todir="${dir.build.game}/maps">
+			<fileset dir="game/${game.name}/maps" includes="**/*.*"/><!-- excludes="**/risk2*,**/godstorm*,**/board*,**/aa*,**/risk2210*" -->
+		</copy>
+
+		<mkdir dir="${dir.build.game}/resources"/>
+		<copy todir="${dir.build.game}/resources">
+			<fileset dir="${basedir}/res/icons" includes="**/*.*" />
+		</copy>
+
+		<mkdir dir="${dir.build.game}/saves"/>
+
+		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
+
+		<copy todir="${dir.build.game}" filtering="true">
+			<!-- script start files for easy starting -->
+			<fileset dir="${basedir}/res/scripts"/>
+			<fileset dir="${basedir}/res/html"/>
+		</copy>
+		<!-- remember the installer chmod in installer/izpack/install.xml -->
+		<chmod file="${dir.build.game}/*.sh" perm="ugo+x" />
+
+	</target>
+
+	<target name="distribution.source.zip"
+		description="creates a zip with all the java files">
+
+		<zip destfile="${file.src}">
+			<fileset dir="${basedir}" includes="**/*.java,risk/engine/ChatServerLayout.gif"/>
+		</zip>
+	</target>
+
+	<target name="distribution.zip"
+		description="creates the normal zip distribution file which includes the jar"
+		depends="game,distribution.source.zip">
+
+		<copy file="${file.src}" todir="${dir.build.game}"/>
+		<mkdir dir="${dir.build.game}/saves"/>
+		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
+ 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" />
+		</zip>
+	</target>
+
+	<target name="jar"
+		description="generates distribution packages"
+		depends="distribution.zip,distribution.izpack,lobby">
+	</target>
+
+
+
+
+
+
+	<target name="distribution.izpack"
+		description="creates the java-based installer (.jar file)"
+		depends="distribution.izpack.available,distribution.izpack.unavailable"
+	>
+		<!-- just a switch for available and unavailable -->
+	</target>
+
+	<target name="distribution.izpack.available"
+		description="creates the java-based installer (.jar file)"
+		if="izpack.available"
+		>
+
+		<copy todir="${dir.build}" overwrite="true" filtering="true">
+			<fileset dir="${basedir}/installer/izpack" includes="install.xml,shortcutSpec.xml,Unix_shortcutSpec.xml"/>
+		</copy>
+
+		<!-- Allows us to use the IzPack Ant task -->
+		<taskdef name="izpack" classpath="${izpack.compiler}"
+				classname="com.izforge.izpack.ant.IzPackTask"/>
+
+		<!-- generate the installation package -->
+		<izpack input="${dir.build}/install.xml"
+			output="${dir.dist}/${game.name}_install_${game.version}.jar"
+			installerType="standard"
+			basedir="${dir.build.game}"
+			izPackDir="${basedir}/installer/izpack/"
+		/>
+
+		<antcall target="distribution.exe"/>
+
+	</target>
+
+	<target name="distribution.izpack.unavailable"
+		description="Small notice"
+		unless="izpack.available">
+		<echo>
+The izPack installer is not available on your system.
+Get it from http://www.izforge.com/izpack/ if you want
+to create the graphical installer.
+Copy the standalone installer jar to
+${basedir}/installer/izpack/standalone-compiler.jar
+############################################################
+		</echo>
+	</target>
+
+
+	<target name="distribution.exe" depends="distribution.jsmooth.available,distribution.jsmooth.unavailable"/>
+
+	<target name="distribution.jsmooth.available"
+		description="Generates a Windows .exe file from the izPack installer"
+		if="jsmooth.available">
+
+		<!-- load the ant task -->
+		<taskdef name="jsmoothgen"
+			classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+			classpath="${basedir}/installer/jsmooth/jsmoothgen-ant.jar"/>
+
+		<copy todir="${dir.build}" file="${basedir}/installer/jsmooth/installer.jsmooth" overwrite="true" filtering="true"/>
+
+
+		<!-- compile the exe file -->
+		<jsmoothgen project="${dir.build}/installer.jsmooth"
+		skeletonroot="${basedir}/installer/jsmooth/skeletons"/>
+
+		<move file="${dir.build}/${game.name}_install_${game.version}.exe" todir="${dir.dist}"/>
+
+	</target>
+
+	<target name="distribution.jsmooth.unavailable"
+		description="Small notice"
+		unless="jsmooth.available">
+		<echo>
+The jsmooth installer is not available on your system.
+Get it from http://jsmooth.sourceforge.net/ if you want
+to create the windows exe installer.
+Copy the standalone installer jar to
+${basedir}/installer/jsmooth/jsmoothgen-ant.jar
+############################################################
+		</echo>
+	</target>
+
+
+
+
+
 	<xmlcatalog>
 		<dtd
 			publicId="-//OASIS//DTD DocBook XML V4.2//EN"
 			location="${basedir}/newhelp/dtd/docbookx.dtd"/>
 	</xmlcatalog>
 
-
-	<filter token="game.name" value="${game.name}"/>
-	<filter token="game.version" value="${game.version}"/>
-
-
-	<target name="classes"
-		description="compiles all the classes"
-		depends="init">
-
-		<mkdir dir="${dir.build.classes}"/>
-
-		<!-- compile the classes -->
-		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**" 
-		source="1.4" target="1.4" classpath="lib/jnlp.jar;lib/TranslationTool.jar"/>
-		<!-- copy translation files -->
-		<copy todir="${dir.build.classes}/risk/engine/translation">
-			<fileset dir="risk/engine/translation" includes="*.properties" />
-		</copy>
-		<!-- settings -->
-		<copy todir="${dir.build.classes}/risk/engine" filtering="true">
-			<fileset dir="risk/engine" includes="*.ini" />
-		</copy>
-		<!-- copy images -->
-		<copy todir="${dir.build.classes}/risk/ui/FlashGUI">
-			<fileset dir="risk/ui/FlashGUI" includes="*.jpg,*.gif"/>
-		</copy>
-		<copy todir="${dir.build.classes}/risk/ui/Increment1GUI">
-			<fileset dir="risk/ui/Increment1GUI" includes="*.png"/>
-		</copy>
-		<copy todir="${dir.build.classes}/risk/engine/guishared">
-			<fileset dir="risk/engine/guishared" includes="*.gif,*.png"/>
-		</copy>
-		<copy todir="${dir.build.classes}/risk/ui/SimpleGUI">
-			<fileset dir="risk/ui/SimpleGUI" includes="*.png"/>
-		</copy>
-		<copy todir="${dir.build.classes}/risk/ui/SwingGUI">
-			<fileset dir="risk/ui/SwingGUI" includes="*.gif,*.jpg"/>
-		</copy>
-		<copy todir="${dir.build.classes}/risk/tools/translation">
-			<fileset dir="risk/tools/translation" includes="*.gif,*.png"/>
-		</copy>
-	</target>
-
-
-
-	<target name="manual"
-		description="compiles the manual from docbook into html"
-		depends="init" >
+	<target name="manual" description="compiles the manual from docbook into html">
 
 		<delete dir="${dir.build.manual}"/>
 		<mkdir dir="${dir.build.manual}"/>
@@ -154,30 +306,10 @@
 
 
 
-	<target name="distribution"
-		description="generates distribution packages"
-		depends="distribution.zip,distribution.izpack,lobby">
-	</target>
 
-
-
-	<target name="jar"
-		description="creates the basic jar file with the classes"
-		depends="classes">
-
-		<jar destfile="${dir.dist}/${game.name}.jar"
-			basedir="${dir.build.classes}"
-			manifest="META-INF/MANIFEST.MF"/>
-	</target>
-
-
-
-
-
-
-
-
-
+        <!-- ###################################################################
+        ############################### LOBBY ##################################
+        #################################################################### -->
 
 	<target name="lobby"
 		description="creates Game lobby jar"
@@ -266,9 +398,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<jar destfile="${dir.dist}/${game.name}Client.jar"
 			basedir="${dir.build.lobby.client.classes}"/>
 
-
 		<antcall target="lobby.client.dist"/>
-
 	</target>
 
 	<target name="lobby.server.jars" depends="lobby.server.classes">
@@ -279,7 +409,6 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 			basedir="${dir.build.lobby.server.classes}"/>
 
 		<antcall target="lobby.server.dist"/>
-
 	</target>
 
 
@@ -312,190 +441,10 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 
 
-	<target name="distribution.izpack"
-		description="creates the java-based installer (.jar file)"
-		depends="distribution.izpack.available,distribution.izpack.unavailable"
-	>
-		<!-- just a switch for available and unavailable -->
-	</target>
 
-
-	<target name="distribution.izpack.available"
-		description="creates the java-based installer (.jar file)"
-		if="izpack.available"
-		>
-
-		<copy todir="${dir.build}" overwrite="true" filtering="true">
-			<fileset dir="${basedir}/installer/izpack" includes="install.xml,shortcutSpec.xml,Unix_shortcutSpec.xml"/>
-		</copy>
-
-		<!-- Allows us to use the IzPack Ant task -->
-		<taskdef name="izpack" classpath="${izpack.compiler}"
-				classname="com.izforge.izpack.ant.IzPackTask"/>
-
-		<!-- generate the installation package -->
-		<izpack input="${dir.build}/install.xml"
-			output="${dir.dist}/${game.name}_install_${game.version}.jar"
-			installerType="standard"
-			basedir="${dir.build.game}"
-			izPackDir="${basedir}/installer/izpack/"
-		/>
-
-		<antcall target="distribution.exe"/>
-
-	</target>
-
-	<target name="distribution.izpack.unavailable"
-		description="Small notice"
-		unless="izpack.available">
-		<echo>
-The izPack installer is not available on your system.
-Get it from http://www.izforge.com/izpack/ if you want
-to create the graphical installer.
-Copy the standalone installer jar to
-${basedir}/installer/izpack/standalone-compiler.jar
-############################################################
-		</echo>
-	</target>
-
-
-	<target name="distribution.exe" depends="distribution.jsmooth.available,distribution.jsmooth.unavailable"/>
-
-
-	<target name="distribution.jsmooth.available"
-		description="Generates a Windows .exe file from the izPack installer"
-		if="jsmooth.available">
-
-		<!-- load the ant task -->
-		<taskdef name="jsmoothgen"
-			classname="net.charabia.jsmoothgen.ant.JSmoothGen"
-			classpath="${basedir}/installer/jsmooth/jsmoothgen-ant.jar"/>
-
-		<copy todir="${dir.build}" file="${basedir}/installer/jsmooth/installer.jsmooth" overwrite="true" filtering="true"/>
-
-
-		<!-- compile the exe file -->
-		<jsmoothgen project="${dir.build}/installer.jsmooth"
-		skeletonroot="${basedir}/installer/jsmooth/skeletons"/>
-
-		<move file="${dir.build}/${game.name}_install_${game.version}.exe" todir="${dir.dist}"/>
-
-	</target>
-
-	<target name="distribution.jsmooth.unavailable"
-		description="Small notice"
-		unless="jsmooth.available">
-		<echo>
-The jsmooth installer is not available on your system.
-Get it from http://jsmooth.sourceforge.net/ if you want
-to create the windows exe installer.
-Copy the standalone installer jar to
-${basedir}/installer/jsmooth/jsmoothgen-ant.jar
-############################################################
-		</echo>
-	</target>
-
-
-
-	<target name="game"
-		description="copies all the necessary files for the game to one directory, from which it can be played then"
-		depends="jar"><!-- ,manual -->
-
-		<delete dir="${dir.build.game}"/>
-		<mkdir dir="${dir.build.game}"/>
-
-		<copy file="BugTrack.txt" todir="${dir.build.game}"/>
-		<copy file="gpl.txt" todir="${dir.build.game}"/>
-		<copy file="commands.txt" todir="${dir.build.game}"/>
-		<copy file="ChangeLog.txt" todir="${dir.build.game}"/>
-		<copy file="ReadMe.txt" todir="${dir.build.game}"/>
-		<copy file="game.ini" todir="${dir.build.game}"/>
-
-<!--		<copy todir="${dir.build.game}/manual">
-			<fileset dir="${dir.build.manual}"/>
-		</copy>-->
-		<copy todir="${dir.build.game}/help">
-			<fileset dir="${dir.oldmanual}"/>
-		</copy>
-
-		<mkdir dir="${dir.build.game}/maps"/>
-		<copy todir="${dir.build.game}/maps">
-			<fileset dir="maps" includes="**/*.*" excludes="**/risk2*,**/godstorm*,**/board*,**/aa*,**/risk2210*"/>
-		</copy>
-
-		<mkdir dir="${dir.build.game}/resources"/>
-		<copy todir="${dir.build.game}/resources">
-			<fileset dir="${basedir}/resources" includes="icon.ico,icon.png" />
-		</copy>
-
-		<mkdir dir="${dir.build.game}/saves"/>
-
-		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
-
-		<copy todir="${dir.build.game}" filtering="true">
-			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/resources/scripts_jar"/>
-			<fileset dir="${basedir}/resources/html_jar"/>
-		</copy>
-		<!-- remember the installer chmod in installer/izpack/install.xml -->
-		<chmod file="${dir.build.game}/*.sh" perm="ugo+x" />
-
-	</target>
-
-
-
-	<target name="distribution.source.zip"
-		description="creates a zip with all the java files">
-
-		<zip destfile="${file.src}">
-			<fileset dir="${basedir}" includes="**/*.java,risk/engine/ChatServerLayout.gif"/>
-		</zip>
-	</target>
-
-
-
-	<target name="distribution.zip"
-		description="creates the normal zip distribution file which includes the jar"
-		depends="jar,distribution.source.zip,game">
-
-		<copy file="${file.src}" todir="${dir.build.game}"/>
-		<mkdir dir="${dir.build.game}/saves"/> 
-		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
- 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" />
-		</zip>
-	</target>
-
-
-
-	<target name="clean"
-		description="Removes all the generated classes and files" >
-
+	<target name="clean" description="Removes all the generated classes and files" >
 		<delete dir="${dir.build}" includeemptydirs="true"/>
+                <delete dir="${dir.dist}" includeemptydirs="true"/>
 	</target>
-
-
-
-	<target name="distclean"
-		description="Removes the distribution directory" >
-
-		<delete dir="${dir.dist}" includeemptydirs="true"/>
-	</target>
-
-
-
-	<target name="cleanall"
-		description="Cleans all things generated by this build file"
-		depends="clean,distclean" >
-
-	</target>
-
-
-
-	<target name="init"
-		description="Generates all the necessary directories">
-
-		<mkdir dir="${dir.dist}"/>
-	</target>
-
 
 </project>
