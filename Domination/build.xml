@@ -15,19 +15,19 @@
 	<property name="game.version" value="1.1.0.0"/>
 
 
-
+        <!-- -->
 	<property name="game.name" value="Domination"/>
 	<property name="game.website" value="http://domination.sf.net/"/>
 	<property name="game.defaultmap" value="luca.map"/>
 	<property name="game.defaultcards" value="risk.cards"/>
+        <!-- -->
 
-
-	<!--
+	<!-- - ->
 	<property name="game.name" value="Risk"/>
 	<property name="game.website" value="http://risk.sf.net/"/>
 	<property name="game.defaultmap" value="board.map"/>
 	<property name="game.defaultcards" value="risk.cards"/>
-	-->
+	<!- - -->
 
 	<filter token="game.version" value="${game.version}"/>
 	<filter token="game.name" value="${game.name}"/>
@@ -36,12 +36,7 @@
         <filter token="game.defaultcards" value="${game.defaultcards}"/>
 
 	<property name="dir.build" location="build"/>
-
 	<property name="dir.build.classes" location="${dir.build}/classes"/>
-
-	<property name="dir.build.lobby.client.classes" location="${dir.build}/lobby/clientclasses"/>
-	<property name="dir.build.lobby.server.classes" location="${dir.build}/lobby/serverclasses"/>
-
 	<property name="dir.build.manual" location="${dir.build}/manual"/>
 	<!-- all required dirs and files will be copied to there before packing the zip -->
 	<property name="dir.build.game" location="${dir.build}/game"/>
@@ -51,32 +46,38 @@
 
 	<property name="file.src" location="${dir.dist}/src.zip"/>
 
-	<!-- if the izpack installer jar is available -->
+
+        <!-- if the izpack installer jar is available -->
 	<property name="izpack.compiler" value="${basedir}/installer/izpack/standalone-compiler.jar"/>
 	<property name="jsmooth.compiler" value="${basedir}/installer/jsmooth/jsmoothgen-ant.jar"/>
-
-	<property name="dir.lobby.dist.server" location="../Lobby/dist/server"/>
-	<property name="dir.lobby.dist.client" location="../Lobby/dist/client"/>
-
-	<property file="build.properties" />
-
-
 
 	<available file="${izpack.compiler}" property="izpack.available"/>
 	<available file="${jsmooth.compiler}" property="jsmooth.available"/>
 
+
+
 	<condition property="lobby.available">
 	  <and>
-	    <available file="LobbyServer.jar" property="lobby.server.available"/>
-	    <available file="LobbyClient.jar" property="lobby.client.available"/>
+	    <available file="lib/LobbyServer.jar" property="lobby.server.available"/>
+	    <available file="lib/LobbyClient.jar" property="lobby.client.available"/>
 	  </and>
 	</condition>
 
+	<property name="dir.build.lobby.client.classes" location="${dir.build}/lobby/clientclasses"/>
+	<property name="dir.build.lobby.server.classes" location="${dir.build}/lobby/serverclasses"/>
+
+	<property name="dir.lobby.dist.server" location="../Lobby/dist/server"/>
+	<property name="dir.lobby.dist.client" location="../Lobby/dist/client"/>
 
 	<available file="${dir.lobby.dist.server}" property="dir.lobby.dist.server.available"/>
 	<available file="${dir.lobby.dist.client}" property="dir.lobby.dist.client.available"/>
 
 
+
+
+
+
+	<property file="build.properties" />
 
 
 
@@ -145,6 +146,7 @@
 		<mkdir dir="${dir.build.game}/saves"/>
 
 		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
+                <copy file="lib/TranslationTool.jar" todir="${dir.build.game}"/>
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->

@@ -39,6 +39,7 @@
 		<langpack iso3="por"/>
 		<langpack iso3="swe"/>
 		<langpack iso3="glg"/>
+		<langpack iso3="pol"/>
 	</locale>
 
 	<!--
@@ -46,8 +47,8 @@
 		The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
 	-->
 	<resources>
-		<res id="LicencePanel.licence" src="../../gpl.txt"/>
-		<res id="InfoPanel.info" src="../../ReadMe.txt"/>
+		<res id="LicencePanel.licence" src="../../build/game/gpl.txt"/>
+		<res id="InfoPanel.info" src="../../build/game/ReadMe.txt"/>
 
 		<!-- packs translation files -->
 		<res id="packsLang.xml_deu" src="../../installer/izpack/packsLang.xml_deu"/>
