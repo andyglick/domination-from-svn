@@ -18,7 +18,7 @@ public class RiskFileFilter extends FileFilter {
 	public final static String RISK_SAVE_FILES		="save";
 	public final static String RISK_SCRIPT_FILES		="risk";
 	public final static String RISK_LOG_FILES		="log";
-	public final static String RISK_PROPERTIES_FILES	="properties";
+	//public final static String RISK_PROPERTIES_FILES	="properties";
 
 	private String extension = null;
 
@@ -75,10 +75,6 @@ public class RiskFileFilter extends FileFilter {
 		else if ( extension.equals(RISK_LOG_FILES) ) {
 
 			name = resb.getString("riskfilefilter.log") ;
-		}
-		else if ( extension.equals(RISK_PROPERTIES_FILES) ) {
-
-			name = "Java Properties Files";
 		}
 		else {
 			name = resb.getString("riskfilefilter.files");

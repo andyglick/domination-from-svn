@@ -5,7 +5,6 @@ package net.yura.domination.engine.core;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.Vector;
-import risk.engine.core.Statistic;
 
 /**
  * <p> Risk Player </p>
