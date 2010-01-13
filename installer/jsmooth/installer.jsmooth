@@ -9,7 +9,7 @@
 	<arguments></arguments>
 	<embeddedJar>true</embeddedJar>
 	<executableName>@game.name@_install_@game.version@.exe</executableName>
-	<iconLocation>../resources/icon.png</iconLocation>
+	<iconLocation>../res/icons/icon.png</iconLocation>
 	<initialMemoryHeap>-1</initialMemoryHeap>
 	<jarLocation>../dist/@game.name@_install_@game.version@.jar</jarLocation>
 	<mainClassName>com.izforge.izpack.installer.Installer</mainClassName>

@@ -307,6 +307,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 		// now gui is setup u can listen
 		myrisk.addRiskListener( new SwingRiskAdapter() );
+
+                debugTab.start();
 	}
 
 	public void setupLobbyButton() {
@@ -1548,6 +1550,39 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		debugPanel.add( new JLabel("  Debug Log"), BorderLayout.NORTH );
 		debugPanel.add(debugScroll);
 
+		// ####### err
+
+		errText = new JTextArea();
+		errText.setEditable(false);
+
+
+		JScrollPane errScroll = new JScrollPane( errText );
+		//errScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		//errScroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLoweredBevelBorder() , "Error Log", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP ) );
+
+		JPanel errPanel = new JPanel( new BorderLayout() );
+		errPanel.add( new JLabel("  Error Log"), BorderLayout.NORTH );
+		errPanel.add(errScroll);
+
+		// ######## split
+
+		debugPanel.setOpaque(false);
+		errPanel.setOpaque(false);
+
+		setLeftComponent(debugPanel);
+		setRightComponent(errPanel);
+
+		setContinuousLayout(true); 
+		setOneTouchExpandable(true); 
+		setDividerLocation(400);
+		setBorder( BorderFactory.createEmptyBorder() );
+
+		setOpaque(false);
+
+	}
+
+        public void start() {
+
 		int size = 16;
 		Image img = new BufferedImage(size,size,BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
@@ -1555,11 +1590,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		g.fillOval(0,0,size,size);
 		g.dispose();
 		final Icon icon = new ImageIcon(img);
-
-		// ####### err
-
-		errText = new JTextArea();
-		errText.setEditable(false);
 
 		PrintStream ps = SimplePrintStream.getSimplePrintStream(
 
@@ -1591,30 +1621,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 		}
 
-		JScrollPane errScroll = new JScrollPane( errText );
-		//errScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		//errScroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLoweredBevelBorder() , "Error Log", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP ) );
-
-		JPanel errPanel = new JPanel( new BorderLayout() );
-		errPanel.add( new JLabel("  Error Log"), BorderLayout.NORTH );
-		errPanel.add(errScroll);
-
-		// ######## split
-
-		debugPanel.setOpaque(false);
-		errPanel.setOpaque(false);
-
-		setLeftComponent(debugPanel);
-		setRightComponent(errPanel);
-
-		setContinuousLayout(true); 
-		setOneTouchExpandable(true); 
-		setDividerLocation(400);
-		setBorder( BorderFactory.createEmptyBorder() );
-
-		setOpaque(false);
-
-	}
+        }
 
 	public void actionPerformed(ActionEvent a) {
 
