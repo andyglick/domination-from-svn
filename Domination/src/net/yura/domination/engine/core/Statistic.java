@@ -1,6 +1,6 @@
 // Yura Mamyrin
 
-package risk.engine.core;
+package net.yura.domination.engine.core;
 
 import java.io.Serializable;
 
