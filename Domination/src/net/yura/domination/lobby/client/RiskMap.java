@@ -1,18 +1,15 @@
 package net.yura.domination.lobby.client;
 
 import org.lobby.client.LobbyClientGUI;
-
-import javax.swing.ImageIcon;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
+import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskMap {
 
@@ -112,7 +109,7 @@ public class RiskMap {
 
 								String name = st.nextToken();
 
-								risk.engine.translation.MapTranslator.setCards( name );
+								MapTranslator.setCards( name );
 
 								bufferin2=new BufferedReader(new InputStreamReader(LobbyClientGUI.openStream(f+name)));
 
@@ -140,7 +137,7 @@ public class RiskMap {
 						else if ("missions".equals(mode)) {
 
 
-							String description=risk.engine.translation.MapTranslator.getTranslatedMissionName(st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken());
+							String description=MapTranslator.getTranslatedMissionName(st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken());
 
 							if (description==null) {
 
