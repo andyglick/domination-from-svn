@@ -102,6 +102,8 @@
 		</copy>
 
                 <unzip src="lib/TranslationTool.jar" dest="${dir.build.classes}"/>
+
+                <copy file="res/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
 	</target>
 
 	<target name="distribution.jar"
@@ -137,7 +139,7 @@
 
 		<mkdir dir="${dir.build.game}/maps"/>
 		<copy todir="${dir.build.game}/maps">
-			<fileset dir="game/${game.name}/maps" includes="**/*.*"/><!-- excludes="**/risk2*,**/godstorm*,**/board*,**/aa*,**/risk2210*" -->
+			<fileset dir="game/${game.name}/maps" includes="**/*.*"/>
 		</copy>
 
 		<mkdir dir="${dir.build.game}/resources"/>
@@ -167,7 +169,7 @@
 		description="creates a zip with all the java files">
 
 		<zip destfile="${file.src}">
-			<fileset dir="${basedir}" includes="**/*.java,risk/engine/ChatServerLayout.gif"/>
+			<fileset dir="${basedir}" includes="**/*.java,res/images/ChatServerLayout.gif"/>
 		</zip>
 	</target>
 
@@ -176,7 +178,7 @@
 		depends="game,distribution.source.zip">
 
 		<copy file="${file.src}" todir="${dir.build.game}"/>
-		<mkdir dir="${dir.build.game}/saves"/>
+
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
  			<zipfileset dir="${dir.build.game}" prefix="${game.name}" />
 		</zip>
