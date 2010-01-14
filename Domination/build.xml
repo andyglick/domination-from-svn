@@ -100,6 +100,8 @@
 		<copy todir="${dir.build.classes}">
 			<fileset dir="game/${game.name}/jar" includes="**/*.*"/>
 		</copy>
+
+                <unzip src="lib/TranslationTool.jar" dest="${dir.build.classes}"/>
 	</target>
 
 	<target name="distribution.jar"
@@ -146,7 +148,10 @@
 		<mkdir dir="${dir.build.game}/saves"/>
 
 		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
+
+                <!-- we put this inside the jar file instead
                 <copy file="lib/TranslationTool.jar" todir="${dir.build.game}"/>
+                -->
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
@@ -354,12 +359,12 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.client.classes}" filtering="true">
-			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java"/>
+			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java,**/Increment1GUI/*.*"/>
 		</copy>
 
 		<!-- copy images -->
 		<copy todir="${dir.build.lobby.client.classes}">
-			<fileset dir="game/${game.name}/jar" includes="**/*.*" excludes="**/FlashGUI/joingame.jpg,**/FlashGUI/menu.jpg"/>
+			<fileset dir="game/${game.name}/jar" includes="**/guishared/*.*,**/FlashGUI/*.*" excludes="**/FlashGUI/joingame.jpg,**/FlashGUI/menu.jpg,**/FlashGUI/earth.gif"/>
 		</copy>
 
 	</target>
@@ -375,7 +380,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
-			<fileset dir="${dir.source}" includes="*.properties,*.ini"/>
+			<fileset dir="${dir.source}" includes="**/*.properties,**/*.ini"/>
 		</copy>
 
 	</target>
@@ -384,8 +389,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<!-- MAKE CLIENT -->
 
-		<jar destfile="${dir.dist}/${game.name}Client.jar"
-			basedir="${dir.build.lobby.client.classes}"/>
+		<jar destfile="${dir.dist}/${game.name}Client.jar" basedir="${dir.build.lobby.client.classes}"/>
 
 		<antcall target="lobby.client.dist"/>
 	</target>
@@ -394,8 +398,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<!-- MAKE SERVER -->
 
-		<jar destfile="${dir.dist}/${game.name}Server.jar"
-			basedir="${dir.build.lobby.server.classes}"/>
+		<jar destfile="${dir.dist}/${game.name}Server.jar" basedir="${dir.build.lobby.server.classes}"/>
 
 		<antcall target="lobby.server.dist"/>
 	</target>
