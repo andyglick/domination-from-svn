@@ -1,21 +1,10 @@
 package net.yura.domination.lobby.server;
 
-import risk.engine.Risk;
-import risk.engine.RiskUtil;
-import risk.engine.ai.AIPlayer;
-
-import risk.engine.core.RiskGame;
-import risk.engine.core.Player;
-
-import org.lobby.server.TurnBasedGame;
-
-import java.util.Iterator;
 import java.util.Vector;
-
-import java.util.Map;
-import java.util.HashMap;
-
-import java.io.Serializable;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 public class ServerRisk extends Risk {
 

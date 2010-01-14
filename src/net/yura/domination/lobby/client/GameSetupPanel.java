@@ -1,37 +1,28 @@
 package net.yura.domination.lobby.client;
 
-import risk.engine.*;
-import risk.ui.FlashGUI.*;
-
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import javax.swing.JPanel;
-import javax.swing.JLayeredPane;
-
-import javax.swing.JFileChooser;
-
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ImageIcon;
-import java.awt.event.*;
 import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
-import javax.swing.AbstractButton;
-
 import javax.swing.JOptionPane; // just needed for testing
-import java.awt.*;
 import java.util.ResourceBundle;
-
-import javax.swing.text.PlainDocument;
-import javax.swing.text.Document;
-import javax.swing.text.AttributeSet;
 import javax.swing.JTextArea;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -39,12 +30,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JDialog;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-
 import javax.swing.JSpinner;
 import javax.swing.Box;
 import javax.swing.BorderFactory;
-
 import javax.swing.SpinnerNumberModel;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.ui.FlashGUI.NewGameFrame;
 
 /**
  * <p> New Game Frame for FlashGUI </p>
@@ -245,7 +237,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 // ALL PROBLEMS COME FROM THIS!!!!
 // when this was at the start of the init loads of class problems started
-resb = risk.engine.translation.TranslationBundle.getBundle();
+resb = TranslationBundle.getBundle();
 
 
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
@@ -463,7 +455,7 @@ resb = risk.engine.translation.TranslationBundle.getBundle();
 
 			int sum = a+b+c+d;
 
-			if (sum >=2 && sum <= risk.engine.core.RiskGame.MAX_PLAYERS) {
+			if (sum >=2 && sum <= RiskGame.MAX_PLAYERS) {
 
 				String players = 
 				//a +"\n" +

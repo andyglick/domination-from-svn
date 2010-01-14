@@ -1,40 +1,10 @@
 package net.yura.domination.lobby.client;
 
-
-
-import org.lobby.client.*;
-import risk.ui.FlashGUI.FlashRiskAdapter;
-import risk.ui.FlashGUI.GameFrame;
-
-import risk.engine.*;
-
-import risk.engine.core.*;
-
-import java.awt.Frame;
-import java.awt.Dimension;
-import java.util.Map;
-import java.util.HashMap;
-import javax.swing.JDialog;
-import java.net.URL;
-
 import java.applet.Applet;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.BorderFactory;
-import javax.swing.JProgressBar;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-
 import java.util.Vector;
-
-
-
-
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 public class ClientRisk extends Risk {
 
@@ -79,7 +49,7 @@ public class ClientRisk extends Risk {
 
 		for (int c=0;c<players.size();c++) {
 
-			risk.engine.core.Player player = (risk.engine.core.Player)players.elementAt(c);
+			Player player = (Player)players.elementAt(c);
 
 			if (player.getAddress().equals(myAddress)) {
 

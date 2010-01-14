@@ -1,25 +1,12 @@
 package net.yura.domination.lobby.client;
 
-import org.lobby.client.*;
-import risk.ui.FlashGUI.FlashRiskAdapter;
-import risk.ui.FlashGUI.GameFrame;
-
-import java.io.InputStream;
-import java.io.IOException;
-
-import risk.engine.*;
-
-import risk.engine.core.*;
-
 import java.awt.Frame;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.border.EmptyBorder;
-import java.util.Map;
 import java.util.HashMap;
 import javax.swing.JDialog;
 import java.net.URL;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,11 +15,21 @@ import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.Locale;
 import java.awt.Insets;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ResourceBundle;
+import net.yura.domination.engine.RiskIO;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.ui.FlashGUI.FlashRiskAdapter;
+import net.yura.domination.ui.FlashGUI.GameFrame;
+import org.lobby.client.GameSetup;
+import org.lobby.client.LobbyClientGUI;
+import org.lobby.client.ResBundle;
+import org.lobby.client.TurnBasedAdapter;
 
 public class ClientGameRisk extends TurnBasedAdapter {
 
@@ -242,7 +239,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 	private void makeNewGameFrame() {
 
-		ResourceBundle resb = risk.engine.translation.TranslationBundle.getBundle();
+		ResourceBundle resb = TranslationBundle.getBundle();
 
 		//setReplay(false);
 

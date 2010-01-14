@@ -349,27 +349,17 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.client.classes}"/>
 
-		<javac debug="on" srcdir="${basedir}" destdir="${dir.build.lobby.client.classes}" includes="risk/lobby/client/**" 
-		source="1.4" target="1.4" classpath="LobbyClient.jar:resources/jnlp.jar"/>
+		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.lobby.client.classes}" includes="net/yura/domination/lobby/client/**"
+		source="1.4" target="1.4" classpath="lib/LobbyClient.jar:lib/jnlp.jar"/>
 
-		<copy todir="${dir.build.lobby.client.classes}/risk/engine/translation">
-			<fileset dir="risk/engine/translation" includes="*.properties" />
+                <!-- copy translation files and other shared files -->
+		<copy todir="${dir.build.lobby.client.classes}" filtering="true">
+			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java"/>
 		</copy>
 
-		<copy todir="${dir.build.lobby.client.classes}/risk/ui/FlashGUI">
-			<fileset dir="risk/ui/FlashGUI" includes="*.jpg" excludes="joingame.jpg,menu.jpg"/>
-		</copy>
-
-		<copy todir="${dir.build.lobby.client.classes}/risk/lobby/client">
-			<fileset dir="risk/lobby/client" includes="*.jpg"/>
-		</copy>
-
-		<copy todir="${dir.build.lobby.client.classes}/risk/engine/guishared">
-			<fileset dir="risk/engine/guishared" includes="*.gif,*.png"/>
-		</copy>
-
-		<copy todir="${dir.build.lobby.client.classes}/risk/engine" filtering="true">
-			<fileset dir="risk/engine" includes="*.ini" />
+		<!-- copy images -->
+		<copy todir="${dir.build.lobby.client.classes}">
+			<fileset dir="game/${game.name}/jar" includes="**/*.*" excludes="**/FlashGUI/joingame.jpg,**/FlashGUI/menu.jpg"/>
 		</copy>
 
 	</target>
@@ -380,15 +370,12 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.server.classes}"/>
 
-		<javac debug="on" srcdir="${basedir}" destdir="${dir.build.lobby.server.classes}" includes="risk/lobby/server/**" 
-		source="1.5" target="1.5" classpath="LobbyServer.jar:resources/jnlp.jar"/>
+		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**"
+		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/jnlp.jar"/>
 
-		<copy todir="${dir.build.lobby.server.classes}/risk/engine/translation">
-			<fileset dir="risk/engine/translation" includes="*.properties" />
-		</copy>
-
-		<copy todir="${dir.build.lobby.server.classes}/risk/engine" filtering="true">
-			<fileset dir="risk/engine" includes="*.ini" />
+                <!-- copy translation files and other shared files -->
+		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
+			<fileset dir="${dir.source}" includes="*.properties,*.ini"/>
 		</copy>
 
 	</target>
@@ -419,14 +406,14 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<copy file="${dir.dist}/${game.name}Client.jar" todir="${dir.lobby.dist.client}/${game.name}"/>
 
 		<copy todir="${dir.lobby.dist.client}/${game.name}/maps">
-			<fileset dir="maps" includes="**/*.*"/>
+			<fileset dir="game/${game.name}/maps" includes="**/*.*"/>
 		</copy>
 
 		<copy file="gpl.txt" todir="${dir.lobby.dist.client}/${game.name}"/>
 		<copy file="ChangeLog.txt" todir="${dir.lobby.dist.client}/${game.name}"/>
 
 		<mkdir dir="${dir.lobby.dist.client}/${game.name}/help"/>
-		<copy file="help/game_credits.htm" todir="${dir.lobby.dist.client}/${game.name}/help"/>
+		<copy file="game/${game.name}/help/game_credits.htm" todir="${dir.lobby.dist.client}/${game.name}/help"/>
 
 	</target>
 
@@ -435,7 +422,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<copy file="${dir.dist}/${game.name}Server.jar" todir="${dir.lobby.dist.server}/${game.name}"/>
 
 		<copy todir="${dir.lobby.dist.server}/${game.name}/maps">
-			<fileset dir="maps" includes="*.map,*.cards"/>
+			<fileset dir="game/${game.name}/maps" includes="*.map,*.cards"/>
 		</copy>
 
 	</target>
