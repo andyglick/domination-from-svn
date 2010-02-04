@@ -288,6 +288,10 @@ public class CardsDialog extends JDialog {
 		 return resb.getString("cards.fixed");
 		// return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
 		}
+                else if(myrisk.getGame().getCardMode()==myrisk.getGame().CARD_ITALIANLIKE_SET)
+		{
+		 return resb.getString("cards.italianlike");
+		}
 		else
 		{
 		 return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + myrisk.getNewCardState());

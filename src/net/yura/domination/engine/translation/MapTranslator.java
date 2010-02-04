@@ -40,7 +40,7 @@ public class MapTranslator
 		catch( IOException ioe ) {
 
 			try {
-				MapResb = ResourceBundle.getBundle( "risk.engine.translation.DefaultMaps", TranslationBundle.getBundle().getLocale());
+				MapResb = ResourceBundle.getBundle( "net.yura.domination.engine.translation.DefaultMaps", TranslationBundle.getBundle().getLocale());
 			} catch( MissingResourceException e) {
 				//ok, we don't have one
 				MapResb = null;
@@ -100,7 +100,7 @@ public class MapTranslator
 		    if ( INstrFile.endsWith("/risk.cards") || INstrFile.endsWith("\\risk.cards") ) { // only use this with the default cards file
 			//load default cards translation bundle
 			try {
-				CardsResb = ResourceBundle.getBundle( "risk.engine.translation.DefaultCards", TranslationBundle.getBundle().getLocale());
+				CardsResb = ResourceBundle.getBundle( "net.yura.domination.engine.translation.DefaultCards", TranslationBundle.getBundle().getLocale());
 			} catch( MissingResourceException e) {
 				//ok, we don't have one
 				CardsResb = null;

@@ -89,6 +89,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 	private JRadioButton fixed;
 	private JRadioButton increasing;
+	private JRadioButton italianLike;
 
 	private JCheckBox AutoPlaceAll;
 	private JCheckBox recycle;
@@ -298,6 +299,10 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		sortOutButton( fixed );
 		fixed.setBounds(160,390,90,25);
 
+                italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"),true);
+		sortOutButton( italianLike );
+		italianLike.setBounds(160,410,90,25);
+
 		//AutoEndGo = new JCheckBox("Auto End Go");
 		//sortOutButton( AutoEndGo );
 		//AutoEndGo.setBounds(410, 530, 100 , 25 );
@@ -308,6 +313,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		GameTypeButtonGroup.add ( capital );
 		GameTypeButtonGroup.add ( mission );
 
+		CardTypeButtonGroup.add ( italianLike );
 		CardTypeButtonGroup.add ( fixed );
 		CardTypeButtonGroup.add ( increasing );
 
@@ -401,6 +407,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ngp.add(capital);
 		ngp.add(mission);
 
+		ngp.add(italianLike);
 		ngp.add(fixed);
 		ngp.add(increasing);
 
@@ -900,6 +907,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 				if (increasing.isSelected()) type += " increasing";
 				else if (fixed.isSelected()) type += " fixed";
+				else if (italianLike.isSelected()) type += " italianlike";
 
 				myrisk.parser("startgame " + type + (( AutoPlaceAll.isSelected() )?(" autoplaceall"):("")) + (( recycle.isSelected() )?(" recycle"):("")) );
 

@@ -179,8 +179,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	private JRadioButton mission;
 	private JCheckBox AutoPlaceAll;
 	private JCheckBox recycle;
-	private JRadioButton fixed;
-	private JRadioButton increasing;
 
 	private JButton lobby;
 
@@ -3247,11 +3245,13 @@ public void setNODDefender(int n) {}
 			capital.addActionListener( this );
 			mission.addActionListener( this );
 
-			increasing = new JRadioButton(resbundle.getString("newgame.cardmode.increasing"), true);
-			fixed = new JRadioButton(resbundle.getString("newgame.cardmode.fixed"));
+			final JRadioButton increasing = new JRadioButton(resbundle.getString("newgame.cardmode.increasing"), true);
+			final JRadioButton fixed = new JRadioButton(resbundle.getString("newgame.cardmode.fixed"));
+                        final JRadioButton italian = new JRadioButton(resbundle.getString("newgame.cardmode.italianlike"));
 
 			increasing.setOpaque(false);
 			fixed.setOpaque(false);
+                        italian.setOpaque(false);
 
 			GameTypeButtonGroup.add ( domination );
 			GameTypeButtonGroup.add ( capital );
@@ -3259,6 +3259,7 @@ public void setNODDefender(int n) {}
 
 			CardTypeButtonGroup.add ( increasing );
 			CardTypeButtonGroup.add ( fixed );
+                        CardTypeButtonGroup.add ( italian );
 
 			GameTypeButtons.add( domination );
 			GameTypeButtons.add( capital );
@@ -3266,6 +3267,7 @@ public void setNODDefender(int n) {}
 
 			cardsOptions.add( increasing );
 			cardsOptions.add( fixed );
+                        cardsOptions.add( italian );
 
 			JPanel GameOptionsButtons = new JPanel();
 			GameOptionsButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
@@ -3336,12 +3338,13 @@ public void setNODDefender(int n) {}
 
 								String type="";
 
-								if (domination.isSelected()) type = "domination";
-								else if (capital.isSelected()) type = "capital";
-								else if (mission.isSelected()) type = "mission";
+								if (domination.isSelected()) { type = "domination"; }
+								else if (capital.isSelected()) { type = "capital"; }
+								else if (mission.isSelected()) { type = "mission"; }
 
-								if (increasing.isSelected()) type += " increasing";
-								else if (fixed.isSelected()) type += " fixed";
+								if (increasing.isSelected()) { type += " increasing"; }
+								else if (fixed.isSelected()) { type += " fixed"; }
+                                                                else { type += " italianlike"; }
 
 								go("startgame " + type + (( AutoPlaceAll.isSelected() )?(" autoplaceall"):("")) + (( recycle.isSelected() )?(" recycle"):("")) );
 

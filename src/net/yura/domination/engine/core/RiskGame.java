@@ -23,10 +23,10 @@ import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskGame implements Serializable { // transient
 
-	private static final long serialVersionUID = 6L;
+	private static final long serialVersionUID = 7L;
 
 	public final static String SAVE_VERSION = String.valueOf(serialVersionUID);
-	public final static String NETWORK_VERSION = "7";
+	public final static String NETWORK_VERSION = "8";
 
 	public final static int MAX_PLAYERS = 6;
 	public final static Continent ANY_CONTINENT = new Continent("any","any", 0, null);
@@ -51,6 +51,7 @@ public class RiskGame implements Serializable { // transient
 
 	public final static int CARD_INCREASING_SET = 0;
 	public final static int CARD_FIXED_SET = 1;
+	public final static int CARD_ITALIANLIKE_SET = 2;
 
 /*
 
@@ -173,7 +174,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("New Game created\n"); // testing
 
-		simone=false;
+		simone=true;//false;
 
 		r = new Random();
 
@@ -509,86 +510,131 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param card3 Third card to trade
 	 * @return int Returns the number of armies gained from the trade, returning 0 if the trade is unsuccessful
 	 */
-	public int trade(Card card1, Card card2, Card card3) {
-		if (gameState==STATE_TRADE_CARDS) {
+    public int trade(Card card1, Card card2, Card card3) {
+        if (gameState!=STATE_TRADE_CARDS) return 0;
 
-			// now check if they CAN be traded or not
-			if ( checkTrade(card1, card2, card3) ) {
-				// NOW TRADE THE CARDS
+        if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 )
+            return 0;
 
-				currentPlayer.tradeInCards(card1, card2, card3);
+        int armies = getTradeAbsValue(
+                card1.getName(), card2.getName(), card3.getName());
 
-				if (recycleCards) {
+        if (armies <= 0) return 0;
 
-					Cards.add(card1);
-                                	Cards.add(card2);
-                                	Cards.add(card3);
-                                	//Return the cards to the deck
+        if (cardMode==CARD_INCREASING_SET) {
 
-				}
+            cardState=armies;
 
-				cardState=getNewCardState();
+        }
 
-				int armies = 0;
+        currentPlayer.tradeInCards(card1, card2, card3);
 
-				if (cardMode==CARD_FIXED_SET) {		// bug fix changes in this block by davet <davet AT bytecodes DOT com>
+        if (recycleCards) {
 
-					String n1 = card1.getName();
-					String n2 = card2.getName();
-					String n3 = card3.getName();
-					// easier if we shift all wildcards to the front
-					if (!n1.equals(Card.WILDCARD)) { String n4 = n3; n3 = n1; n1 = n4; }
-					if (!n2.equals(Card.WILDCARD)) { String n4 = n3; n3 = n2; n2 = n4; }
-					if (!n1.equals(Card.WILDCARD)) { String n4 = n2; n2 = n1; n1 = n4; }
+            Cards.add(card1);
+            Cards.add(card2);
+            Cards.add(card3);
+            //Return the cards to the deck
 
-					if( n1.equals(n2) && n1.equals(n3) ) { // Implies n2.equals(n3)
+        }
 
-						if(n1.equals( Card.CAVALRY ))
-							armies = 6;
-						else if(n1.equals( Card.INFANTRY ))
-							armies = 4;
-						else if(n1.equals( Card.CANNON ))
-							armies = 8;
-						else if(n1.equals( Card.WILDCARD ))
-							armies = 12; // Incase someone puts 3 wildcards into his set
-					}
-					// If there is 1 cavalry,1 infantry and one cannon
-					else if( !n1.equals(n2) && !n2.equals(n3) && !n1.equals(n3) && !n1.equals(Card.WILDCARD) ) {
-						armies = 10;
-					}//All the same w/1 wildcard
-					else if( n1.equals(Card.WILDCARD) && n2.equals(n3) ) {
+        currentPlayer.addArmies(armies);
 
-					 	if(n3.equals(Card.CANNON))
-							armies = 8;
-					 	else if (n3.equals(Card.INFANTRY))
-							armies = 4;
-					 	else if (n3.equals(Card.CAVALRY ))
-							armies = 6;
-					}//All different w/1 or 2 wildcards
-					else {
-						armies = 10;
-					}
-				}
-				else {
+        if ( canTrade()==false || (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 ) ) {
+            gameState=STATE_PLACE_ARMIES;
+            tradeCap=false;
+        }
 
-					armies = cardState;
+        return cardState;
+    }
 
-				}
+    /**
+     * Returns the trading value of the given cards, without taking into account
+     * the territories associated to the cards.
+     * @param c1 The name of the type of the first card.
+     * @param c2 The name of the type of the second card.
+     * @param c3 The name of the type of the third card.
+     * @return 0 in case of invalid combination of cards.
+     */
+    private int getTradeAbsValue(String c1, String c2, String c3) {
+        int armies;
 
-				currentPlayer.addArmies(armies);
+        // we shift all wildcards to the front
+        if (!c1.equals(Card.WILDCARD)) { String n4 = c3; c3 = c1; c1 = n4; }
+        if (!c2.equals(Card.WILDCARD)) { String n4 = c3; c3 = c2; c2 = n4; }
+        if (!c1.equals(Card.WILDCARD)) { String n4 = c2; c2 = c1; c1 = n4; }
 
-				if ( canTrade()==false || (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 ) ) {
-					gameState=STATE_PLACE_ARMIES;
-					tradeCap=false;
-				}
+        if (cardMode == CARD_INCREASING_SET) {
 
-				return cardState;
+            if (
+                    c3.equals(Card.WILDCARD) ||
+                    (c1.equals(c2) && c1.equals(c3)) ||
+                    (!c1.equals(c2) && !c1.equals(c3) && !c2.equals(c3))
+                ) {
+                armies = getNewCardState();
+            } else {
+                armies = 0;
+            }
 
-			}
-		}
-		return 0;
+        } else if (cardMode == CARD_FIXED_SET) {
 
-	}
+            if (c1.equals(c2) && c1.equals(c3)) {
+                // Implies c2.equals(c3)
+                if (c1.equals(Card.CAVALRY)) {
+                    armies = 6;
+                } else if (c1.equals(Card.INFANTRY)) {
+                    armies = 4;
+                } else if (c1.equals(Card.CANNON)) {
+                    armies = 8;
+                } else {
+                    // (c1.equals( Card.WILDCARD ))
+                    armies = 12; // Incase someone puts 3 wildcards into his set
+                } // In case someone puts 3 wildcards into his set
+            } else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3)) {
+                armies = 10;
+            } //All the same w/1 wildcard
+            else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
+                if (c3.equals(Card.CANNON)) {
+                    armies = 8;
+                } else if (c3.equals(Card.INFANTRY)) {
+                    armies = 4;
+                } else {
+                    // (c3.equals(Card.CAVALRY ))
+                    armies = 6;
+                }
+            } //2 wildcards
+            else {
+                armies = 10;
+            }
+
+        } else {
+
+            // (cardMode==CARD_ITALIANLIKE_SET)
+            if (c1.equals(c2) && c1.equals(c3)) {
+                // All equal
+                if (c1.equals(Card.CAVALRY)) {
+                    armies = 8;
+                } else if (c1.equals(Card.INFANTRY)) {
+                    armies = 6;
+                } else if (c1.equals(Card.CANNON)) {
+                    armies = 4;
+                } else {
+                    // (c1.equals( Card.WILDCARD ))
+                    armies = 0; // Incase someone puts 3 wildcards into his set
+                } // Incase someone puts 3 wildcards into his set
+            } else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3) && !c1.equals(Card.WILDCARD)) {
+                armies = 10;
+            } //All the same w/1 wildcard
+            else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
+                armies = 12;
+            } //2 wildcards, or a wildcard and two different
+            else {
+                armies = 0;
+            }
+
+        }
+        return armies;
+    }
 
 	public boolean canTrade() {
 
@@ -651,21 +697,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return boolean true if they can be traded false if they can not
 	 */
 	public boolean checkTrade(Card card1, Card card2, Card card3) {
-
-		// at this point we know that the player DOES have all the cards
-		if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 ) {
-			return false;
-		}
-
-		if (
-				( card1.getName().equals(Card.WILDCARD) || card2.getName().equals(Card.WILDCARD) || card3.getName().equals(Card.WILDCARD) ) ||			// if one of the cards IS a wildcard then they CAN be traded
-				( card1.getName().equals(card2.getName()) && card1.getName().equals(card3.getName()) ) || 						// if all the cards have the same name
-				( !card1.getName().equals(card2.getName()) && !card1.getName().equals(card3.getName()) && !card2.getName().equals(card3.getName()) )	// if all the cards have diferent names
-		) { return true; }
-		else { return false; }
+            return getTradeAbsValue(
+                    card1.getName(), card2.getName(), card3.getName()
+                    ) > 0;
 	}
 
-	/**
+        /**
 	 * Ends the trading phase by checking if the player has less than 5 cards
 	 * @return boolean Returns true if the player has ended the trade phase, returns false if the player cannot end the trade phase
 	 */
@@ -906,8 +943,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		if (gameState==STATE_DEFEND_YOURSELF) { // if we were in the defending phase
 
-			if ( defender.getArmies() > 2 ) {
-				if (dice2<=0 || dice2>2) return false;
+                        int generalMaxDefDices = simone ? 3 : 2;
+
+			if ( defender.getArmies() > generalMaxDefDices ) {
+				if (dice2<=0 || dice2>generalMaxDefDices) return false;
 			}
 			else {
 				if (dice2<=0 || dice2> (defender.getArmies()) ) return false;
@@ -1431,7 +1470,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	}
 
 	//private URL getURL(String a) throws Exception {
-	//	return new URL(risk.engine.Risk.mapsdir,a);
+	//	return new URL(net.yura.domination.engine.Risk.mapsdir,a);
 	//}
 
 	/**
@@ -2539,8 +2578,8 @@ System.out.print(str+"]\n");
 		defaultCards=b;
 
 		// not needed as is reset each time a new RiskGame object is created
-		//risk.engine.translation.MapTranslator.setMap( a );
-		//risk.engine.translation.MapTranslator.setCards( b );
+		//net.yura.domination.engine.translation.MapTranslator.setMap( a );
+		//net.yura.domination.engine.translation.MapTranslator.setCards( b );
 
 	}
 
