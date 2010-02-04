@@ -50,7 +50,7 @@ public class TranslationBundle {
 
 		// this will work MOST of the time, but does not in lobby
 		// for some reason it stops the classes from loading, and does not find the files
-		//resBundle = ResourceBundle.getBundle("risk.engine.translation.Risk", loc );
+		//resBundle = ResourceBundle.getBundle("net.yura.domination.engine.translation.Risk", loc );
 
 
 	}

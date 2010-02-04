@@ -1387,6 +1387,11 @@ public class Risk extends Thread {
 								newgame_cardType = RiskGame.CARD_FIXED_SET;
 
 							}
+							else if ( newOption.equals("italianlike") ) {
+
+								newgame_cardType = RiskGame.CARD_ITALIANLIKE_SET;
+
+							}
 							else if ( newOption.equals("autoplaceall") ) {
 
 								newgame_autoplaceall = true;
@@ -1543,7 +1548,7 @@ public class Risk extends Thread {
 
 							//}
 							//else {
-							//	url = new URL( risk.engine.Risk.applet.getCodeBase() , filename );
+							//	url = new URL( net.yura.domination.engine.Risk.applet.getCodeBase() , filename );
 							//}
 
 							BufferedReader bufferin=new BufferedReader(new InputStreamReader(url.openStream()));
@@ -1817,7 +1822,11 @@ public class Risk extends Thread {
 
 						if(game.getCardMode()==RiskGame.CARD_FIXED_SET) {
 							output = output+"\n"+ resb.getString("cards.fixed");
-	
+
+						}
+                                                else if(game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+							output = output+"\n"+ resb.getString("cards.italianlike");
+
 						}
 						else {
 							output = output+"\n"+ resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + getNewCardState());
