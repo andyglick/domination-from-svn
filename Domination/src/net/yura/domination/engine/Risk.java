@@ -1355,6 +1355,7 @@ public class Risk extends Thread {
 						int newgame_cardType = -1;
 						boolean newgame_autoplaceall = false;
 						boolean newgame_recycle = false;
+                                                boolean threeDice = false;
 
 						boolean nocrap = true;
 
@@ -1390,6 +1391,7 @@ public class Risk extends Thread {
 							else if ( newOption.equals("italianlike") ) {
 
 								newgame_cardType = RiskGame.CARD_ITALIANLIKE_SET;
+                                                                threeDice = true;
 
 							}
 							else if ( newOption.equals("autoplaceall") ) {
@@ -1419,7 +1421,7 @@ public class Risk extends Thread {
 
 							try {
 
-								game.startGame(newgame_type,newgame_cardType,newgame_recycle);
+								game.startGame(newgame_type,newgame_cardType,newgame_recycle,threeDice);
 
 							}
 							catch (Exception e) {
