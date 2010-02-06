@@ -18,6 +18,7 @@ Risk 1.1.0.0
 	translation tool split off from main code
 	pl language added
 	italian card rules added
+	3 dice to defend option added
 
 Risk 1.0.9.8
 

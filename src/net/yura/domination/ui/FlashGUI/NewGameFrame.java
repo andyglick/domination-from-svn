@@ -299,7 +299,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		sortOutButton( fixed );
 		fixed.setBounds(160,390,90,25);
 
-                italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"),true);
+                italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		sortOutButton( italianLike );
 		italianLike.setBounds(160,410,90,25);
 

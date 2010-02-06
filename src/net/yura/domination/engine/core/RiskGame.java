@@ -141,7 +141,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String mapName;
 
 	private Vector replayCommands;
-	private int maxDefendDice=2;
+	private int maxDefendDice;
 	private int cardMode;
 
 	private boolean runmaptest=false;
@@ -250,7 +250,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Starts the game Risk
 	 * @param mode This represents the moce of the game: normal, 2 player, capital or mission
 	 */
-	public void startGame(int mode, int card, boolean recycle) throws Exception {
+	public void startGame(int mode, int card, boolean recycle, boolean threeDice) throws Exception {
 
 		if (gameState==STATE_NEW_GAME) { //  && ((mapfile !=null && cardsfile !=null) || () )
 
@@ -258,6 +258,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			cardMode=card;
 
 			recycleCards = recycle;
+                        maxDefendDice = threeDice?3:2;
 
 			// 2 player human crap
 			//if ( gameMode==1 && ( !(((Player)Players.elementAt(0)).getType()==0) || !(((Player)Players.elementAt(1)).getType()==0) ) ) { return; }
