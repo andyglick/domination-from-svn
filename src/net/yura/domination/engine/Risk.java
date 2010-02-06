@@ -2083,14 +2083,9 @@ public class Risk extends Thread {
 
 							int n=((Country)game.getDefender()).getArmies();
 
-							if (game.getSimone()) {
+	
+							if (n > game.getMaxDefendDice() ) { n= game.getMaxDefendDice() ; }
 
-								if (n>3) { n=3; }
-							}
-							else {
-
-								if (n>2) { n=2; }
-							}
 
 							//Rolled attacking dice, {0} defend yourself! (you can use up to {1} dice to defend)
 							output = resb.getString( "core.roll.rolled")

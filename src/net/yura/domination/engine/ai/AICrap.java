@@ -132,24 +132,11 @@ public class AICrap {
 
 	    int n=((Country)game.getDefender()).getArmies();
 
-
-	    if (game.getSimone()) {
-
-		if (n > 3) {
-		    return "roll "+3;
-		}
-
-	    }
-	    else {
-
-		if (n > 2) {
-		    return "roll "+2;
-		}
-
-	    }
+            if (n > game.getMaxDefendDice()) {
+                return "roll "+game.getMaxDefendDice();
+            }
 
 	    return "roll "+n;
-
 	}
 
     /**

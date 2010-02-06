@@ -141,7 +141,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String mapName;
 
 	private Vector replayCommands;
-	private boolean simone;
+	private int maxDefendDice=2;
 	private int cardMode;
 
 	private boolean runmaptest=false;
@@ -174,7 +174,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("New Game created\n"); // testing
 
-		simone=true;//false;
+		//simone=true;//false;
 
 		r = new Random();
 
@@ -192,10 +192,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	}
 
-	public boolean getSimone() {
-
-		return simone;
-
+	public int getMaxDefendDice() {
+		return maxDefendDice;
 	}
 
 	/**
@@ -874,11 +872,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 				if ( t1.getArmies() > 4 ) { result[1]=3; }
 				else { result[1]=t1.getArmies()-1; }
 
-				int a;
-				if (simone) { a=3; }
-				else { a=2; }
-
-				if ( t2.getArmies() > a ) { result[2]=a; }
+				if ( t2.getArmies() > maxDefendDice ) { result[2]=maxDefendDice; }
 				else { result[2]=t2.getArmies(); }
 
 				attacker=t1;
@@ -943,10 +937,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		if (gameState==STATE_DEFEND_YOURSELF) { // if we were in the defending phase
 
-                        int generalMaxDefDices = simone ? 3 : 2;
-
-			if ( defender.getArmies() > generalMaxDefDices ) {
-				if (dice2<=0 || dice2>generalMaxDefDices) return false;
+			if ( defender.getArmies() > maxDefendDice ) {
+				if (dice2<=0 || dice2>maxDefendDice) return false;
 			}
 			else {
 				if (dice2<=0 || dice2> (defender.getArmies()) ) return false;
