@@ -188,8 +188,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	 */
 	public SwingGUIPanel(Risk r) {
 
-		if (RiskUtil.checkForNoSandbox()) { Toolkit.getDefaultToolkit().getSystemEventQueue().push( new TCPopupEventQueue() ); }
-
 		myrisk= r;
 
 		c1Id = -1;

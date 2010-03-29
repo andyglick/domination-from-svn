@@ -170,3 +170,29 @@ Could you create a section in the risk.ini, in wich I can modify my own rulesets
 
 
 text: The globe turns opposite the natural Earth rotation.
+
+
+
+
+
+Hi, your online risk game is the best I've found.
+
+I want to propose you to add 3 (optional) rules I saw in Risk II videogame.
+
+1) Connected Empire Bonus
+Each player receives a extra bonus of armies equal to largest connected empire divided by 3.
+
+2) a limit to reinforcements for each territory
+Max reinforcement armies for each territory, every round, is equal to 2 plus 1 for each friend neighbour state a player has.
+
+Example: if I have South Africa, Madagascar and Congo (isolated by enemy territories) I can put max 4 (2+2) reinforcement armies in South Africa, 3 (2+1) in Congo and 3 (2+1) in Madagascar.
+
+3) In the same round, from every territory I can attack only one single enemy territory. I can't continue to attack from the territory just conquered. I can attack from others territories of mine.
+
+Example: from the Ural I attack and conquer Siberia, but from here I can't continue to attack China or others territories (i.e. Yakutsk). Obviously I can attack China from others territories of mine (i.e. from Mongolia).
+
+I think these are very easy to implement in the game.
+
+What's the fixed value of cards combinations?
+Thank you very much
+John Blisset
