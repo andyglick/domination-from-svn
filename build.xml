@@ -105,7 +105,7 @@
 
                 <unzip src="lib/TranslationTool.jar" dest="${dir.build.classes}"/>
 
-                <copy file="res/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
+                <copy file="res_swing/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
 	</target>
 
 	<target name="distribution.jar"
@@ -128,9 +128,9 @@
 		<copy file="BugTrack.txt" todir="${dir.build.game}"/>
 		<copy file="gpl.txt" todir="${dir.build.game}"/>
 
-		<copy file="res/commands.txt" todir="${dir.build.game}" filtering="true"/>
-		<copy file="res/ReadMe.txt" todir="${dir.build.game}" filtering="true"/>
-		<copy file="res/game.ini" todir="${dir.build.game}" filtering="true"/>
+		<copy file="res_swing/commands.txt" todir="${dir.build.game}" filtering="true"/>
+		<copy file="res_swing/ReadMe.txt" todir="${dir.build.game}" filtering="true"/>
+		<copy file="res_swing/game.ini" todir="${dir.build.game}" filtering="true"/>
 
 <!--		<copy todir="${dir.build.game}/manual">
 			<fileset dir="${dir.build.manual}"/>
@@ -146,7 +146,7 @@
 
 		<mkdir dir="${dir.build.game}/resources"/>
 		<copy todir="${dir.build.game}/resources">
-			<fileset dir="${basedir}/res/icons" includes="**/*.*" />
+			<fileset dir="${basedir}/res_swing/icons" includes="**/*.*" />
 		</copy>
 
 		<mkdir dir="${dir.build.game}/saves"/>
@@ -159,8 +159,8 @@
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/res/scripts"/>
-			<fileset dir="${basedir}/res/html"/>
+			<fileset dir="${basedir}/res_swing/scripts"/>
+			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
 		<chmod file="${dir.build.game}/*.sh" perm="ugo+x" />
@@ -171,7 +171,7 @@
 		description="creates a zip with all the java files">
 
 		<zip destfile="${file.src}">
-			<fileset dir="${basedir}" includes="**/*.java,res/images/ChatServerLayout.gif"/>
+			<fileset dir="${basedir}" includes="**/*.java,res_swing/images/ChatServerLayout.gif"/>
 		</zip>
 	</target>
 
