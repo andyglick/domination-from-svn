@@ -1,3 +1,3 @@
 #!/bin/sh
 cd "`dirname "$0"`"
-java -cp @game.name@.jar risk.ui.SwingGUI.SwingGUIFrame
+java -cp @game.name@.jar risk.ui.swinggui.SwingGUIFrame

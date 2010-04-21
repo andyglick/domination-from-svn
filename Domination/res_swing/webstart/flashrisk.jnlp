@@ -12,7 +12,7 @@
     <j2se version="1.4+"/>
     <jar href="Risk.jar"/>
   </resources>
-  <application-desc main-class="risk.ui.FlashGUI.MainMenu">
+  <application-desc main-class="risk.ui.flashgui.MainMenu">
     <argument>maps=aa.map,board.map,godstorm.map,luca.map,risk.map,risk2.map,risk2210.map,roman_empire.map,sersom.map,teg.map,tube.map,uk.map,world.map</argument>
     <argument>cards=godstorm.cards,risk.cards,risk2210.cards,nomission.cards,roman_empire.cards</argument>
   </application-desc>
