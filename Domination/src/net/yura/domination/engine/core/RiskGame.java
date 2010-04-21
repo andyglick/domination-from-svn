@@ -2,7 +2,7 @@
 
 package net.yura.domination.engine.core;
 
-import java.awt.Color;
+//import java.awt.Color; // not on android
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,7 +29,7 @@ public class RiskGame implements Serializable { // transient
 	public final static String NETWORK_VERSION = "8";
 
 	public final static int MAX_PLAYERS = 6;
-	public final static Continent ANY_CONTINENT = new Continent("any","any", 0, null);
+	public final static Continent ANY_CONTINENT = new Continent("any","any", 0, 0);
 
 	public final static int STATE_NEW_GAME        = 0;
 	public final static int STATE_TRADE_CARDS     = 1;
@@ -203,7 +203,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param color Color of player
 	 * @return boolean Returns true if the player is added, returns false if the player can't be added.
 	 */
-	public boolean addPlayer(int type, String name, Color color, String a) {
+	public boolean addPlayer(int type, String name, int color, String a) {
 		if (gameState==STATE_NEW_GAME ) { // && !name.equals("neutral") && !(color==Color.gray)
 
 			for (int c=0; c< Players.size() ; c++) {
@@ -281,7 +281,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 				try {
 
 					loadCards(cardsfile);
-				
+
 				}
 				catch (Exception e) {
 
@@ -1526,9 +1526,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 					String name = MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
 
 					int noa=Integer.parseInt( st.nextToken() ); //System.out.print(noa+"\n"); // testing
-					Color color=getColor( st.nextToken() ); //System.out.print(color.toString()+"\n"); // testing
+					int color=RiskUtil.getColor( st.nextToken() ); //System.out.print(color.toString()+"\n"); // testing
 
-					if (color==null) {
+					if (color==0) {
 
 						// there was no check for null b4 here, but now we need this for the map editor
 						color = getRandomColor();
@@ -1710,7 +1710,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 						mapName = input.substring(5,input.length());
 
-					}	
+					}
 
 				}
 
@@ -2453,42 +2453,6 @@ System.out.print(str+"]\n");
 	}
 
 	/**
-	 * Gets a color
-	 * @param s The color you want
-	 * @return Color Return the color you are looking for, if it exists. Otherwise returns null
-	 */
-	public static Color getColor(String s) {
-
-		if (s.equals("black"))      { return Color.BLACK; }
-		if (s.equals("blue"))       { return Color.BLUE; }
-		if (s.equals("cyan"))       { return Color.CYAN; }
-		if (s.equals("darkgray"))   { return Color.DARK_GRAY; }
-		if (s.equals("gray"))       { return Color.GRAY; }
-		if (s.equals("green"))      { return Color.GREEN; }
-		if (s.equals("lightgray"))  { return Color.LIGHT_GRAY; }
-		if (s.equals("magenta"))    { return Color.MAGENTA; }
-		if (s.equals("orange"))     { return Color.ORANGE; }
-		if (s.equals("pink"))       { return Color.PINK; }
-		if (s.equals("red"))        { return Color.RED; }
-		if (s.equals("white"))      { return Color.WHITE; }
-		if (s.equals("yellow"))     { return Color.YELLOW; }
-
-		try {
-
-			return Color.decode(s);
-
-		}
-		catch(Exception ex) {
-
-			//System.out.print("Error: unable to find color "+s+".\n"); // testing
-			return null;
-
-		}
-
-
-	}
-
-	/**
 	 * Gets a cards
 	 * @param s The number you want to parse
 	 * @return int The number you wanted
@@ -2592,10 +2556,59 @@ System.out.print(str+"]\n");
 	 return cardMode;
 	}
 
-	public static Color getRandomColor() {
+	public static int getRandomColor() {
 
-		return Color.getHSBColor( (float)Math.random(), 0.5F, 1.0F );
+		return HSBtoRGB( (float)Math.random(), 0.5F, 1.0F );
 
 	}
 
+     /**
+      * copy and paste from
+      * @see java.awt.Color#HSBtoRGB(float, float, float)
+      */
+    public static int HSBtoRGB(float hue, float saturation, float brightness) {
+	int r = 0, g = 0, b = 0;
+    	if (saturation == 0) {
+	    r = g = b = (int) (brightness * 255.0f + 0.5f);
+	} else {
+	    float h = (hue - (float)Math.floor(hue)) * 6.0f;
+	    float f = h - (float)java.lang.Math.floor(h);
+	    float p = brightness * (1.0f - saturation);
+	    float q = brightness * (1.0f - saturation * f);
+	    float t = brightness * (1.0f - (saturation * (1.0f - f)));
+	    switch ((int) h) {
+	    case 0:
+		r = (int) (brightness * 255.0f + 0.5f);
+		g = (int) (t * 255.0f + 0.5f);
+		b = (int) (p * 255.0f + 0.5f);
+		break;
+	    case 1:
+		r = (int) (q * 255.0f + 0.5f);
+		g = (int) (brightness * 255.0f + 0.5f);
+		b = (int) (p * 255.0f + 0.5f);
+		break;
+	    case 2:
+		r = (int) (p * 255.0f + 0.5f);
+		g = (int) (brightness * 255.0f + 0.5f);
+		b = (int) (t * 255.0f + 0.5f);
+		break;
+	    case 3:
+		r = (int) (p * 255.0f + 0.5f);
+		g = (int) (q * 255.0f + 0.5f);
+		b = (int) (brightness * 255.0f + 0.5f);
+		break;
+	    case 4:
+		r = (int) (t * 255.0f + 0.5f);
+		g = (int) (p * 255.0f + 0.5f);
+		b = (int) (brightness * 255.0f + 0.5f);
+		break;
+	    case 5:
+		r = (int) (brightness * 255.0f + 0.5f);
+		g = (int) (p * 255.0f + 0.5f);
+		b = (int) (q * 255.0f + 0.5f);
+		break;
+	    }
+	}
+	return 0xff000000 | (r << 16) | (g << 8) | (b << 0);
+    }
 }

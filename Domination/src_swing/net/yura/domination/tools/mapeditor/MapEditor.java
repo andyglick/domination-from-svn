@@ -1,0 +1,1128 @@
+// Yura Mamyrin
+
+package net.yura.domination.tools.mapeditor;
+
+import java.awt.image.BufferedImage;
+import java.awt.Graphics;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.Frame;
+import java.awt.Color;
+import javax.imageio.ImageIO;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Card;
+import net.yura.domination.engine.core.Continent;
+import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Mission;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.ui.swinggui.SwingGUIPanel;
+import net.yura.domination.ui.swinggui.SwingGUITab;
+
+/**
+ * @author Yura Mamyrin
+ */
+
+public class MapEditor extends JPanel implements ActionListener, ChangeListener, SwingGUITab {
+
+	private final static String IMAGE_MAP_EXTENSION;
+	private final static String IMAGE_PIC_EXTENSION = "png";
+	private final static int ZOOM_MAX = 8;
+	private final static int ZOOM_MIN = 1;
+
+	private Risk myrisk;
+	private RiskGame myMap;
+	private MapEditorPanel editPanel;
+	private JToolBar toolbar;
+
+	private JRadioButton move;
+	private JRadioButton moveall;
+	private JRadioButton join;
+	private JRadioButton join1way;
+	private JRadioButton disjoin;
+	private JRadioButton draw;
+
+	private JSlider fader;
+	private JSlider brush;
+
+	private JButton save;
+	private JButton play;
+	private JButton loadimagepic;
+	private JButton loadimagemap;
+	private JButton fixButton;
+
+	private JButton zoomin;
+	private JButton zoomout;
+	private JTextField zoom;
+	private int zoomint;
+
+	// force cards to be in the same order as countries
+	// right now risk does NOT require this
+	// if ever set to true, there must be a check for this added to the check method
+	private boolean strictcards;
+
+        private SwingGUIPanel panel;
+
+	// i still bother with gif, coz java still is wrong sometimes when reading png color
+	// not from files it saves itself but from files saved from other programs
+	static {
+
+		boolean usegif = false;
+
+		String writerNames[] = ImageIO.getWriterFormatNames();
+
+		for (int c=0;c<writerNames.length;c++) {
+
+			if ("gif".equalsIgnoreCase(writerNames[c])) {
+
+				usegif = true;
+				break;
+			}
+		}
+
+		if (usegif) {
+
+			IMAGE_MAP_EXTENSION = "gif";
+		}
+		else {
+			IMAGE_MAP_EXTENSION = "png";
+		}
+	}
+
+	public MapEditor(Risk r,SwingGUIPanel panel) {
+
+            this.panel = panel;
+
+		setName( "Map Editor" );
+
+		setOpaque(false);
+
+		myrisk = r;
+
+		toolbar = new JToolBar();
+
+		toolbar.setRollover(true);
+		toolbar.setFloatable(false);
+
+		JButton newmap = new JButton("New map");
+		newmap.setActionCommand("newmap");
+		newmap.addActionListener(this);
+		toolbar.add(newmap);
+
+		JButton load = new JButton("Load map");
+		load.setActionCommand("load");
+		load.addActionListener(this);
+		toolbar.add(load);
+
+		save = new JButton("Save map");
+		save.setActionCommand("save");
+		save.addActionListener(this);
+		toolbar.add(save);
+
+		play = new JButton("Play Map");
+		play.setActionCommand("play");
+		play.addActionListener(this);
+		toolbar.add(play);
+
+		toolbar.addSeparator();
+
+		loadimagepic = new JButton("Load Image Pic");
+		loadimagepic.setActionCommand("loadimagepic");
+		loadimagepic.addActionListener(this);
+		toolbar.add(loadimagepic);
+
+		loadimagemap = new JButton("Load Image Map");
+		loadimagemap.setActionCommand("loadimagemap");
+		loadimagemap.addActionListener(this);
+		toolbar.add(loadimagemap);
+
+		toolbar.addSeparator();
+
+		zoomin = new JButton("Zoom in");
+		zoomin.setActionCommand("zoomin");
+		zoomin.addActionListener(this);
+		toolbar.add(zoomin);
+
+		zoomout = new JButton("Zoom out");
+		zoomout.setActionCommand("zoomout");
+		zoomout.addActionListener(this);
+		toolbar.add(zoomout);
+
+		toolbar.add( Box.createHorizontalGlue() );
+
+		zoom = new JTextField(3);
+		zoom.setEditable(false);
+
+		Dimension size = new Dimension(25,25);
+
+		zoom.setMaximumSize(size);
+		zoom.setMinimumSize(size);
+		zoom.setPreferredSize(size);
+
+		toolbar.add(new JLabel("Zoom:"));
+		toolbar.add(zoom);
+
+		save.setEnabled(false);
+		play.setEnabled(false);
+		loadimagepic.setEnabled(false);
+		loadimagemap.setEnabled(false);
+
+		editPanel = new MapEditorPanel(this);
+
+		//editPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0,0,0),1));
+
+		JScrollPane scroll = new JScrollPane(editPanel);
+
+		size = new Dimension(PicturePanel.PP_X , PicturePanel.PP_Y);
+
+		scroll.setPreferredSize(size);
+		scroll.setMinimumSize(size);
+		scroll.setMaximumSize(size);
+
+		scroll.setBorder(null);
+
+		setLayout( new BorderLayout() );
+
+		JPanel tmp = new JPanel( new BorderLayout() );
+		tmp.setBorder(
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(5,10,5,10),
+				BorderFactory.createLineBorder(Color.BLACK,1)
+			)
+		);
+		tmp.setOpaque(false);
+		tmp.add(scroll);
+		add( tmp );
+
+
+		ButtonGroup modes = new ButtonGroup();
+		JPanel modesPanel = new JPanel();
+		modesPanel.setOpaque(false);
+
+		modesPanel.add( new JLabel("Tools: ") );
+
+		move = newJRadioButton("move",true,modes,modesPanel);
+		moveall = newJRadioButton("move all",false,modes,modesPanel);
+		join = newJRadioButton("join",false,modes,modesPanel);
+		join1way = newJRadioButton("join 1 way",false,modes,modesPanel);
+		disjoin = newJRadioButton("disjoin",false,modes,modesPanel);
+		draw = newJRadioButton("draw",false,modes,modesPanel);
+
+		fixButton = new JButton("del bad map colors");
+		fixButton.setActionCommand("fix");
+		fixButton.addActionListener(this);
+		modesPanel.add(fixButton);
+		fixButton.setEnabled(false);
+
+		add(modesPanel, BorderLayout.SOUTH );
+
+		JPanel topPanel = new JPanel();
+		topPanel.setOpaque(false);
+
+		fader = new JSlider(0,100,0);
+		fader.addChangeListener(this);
+		fader.setOpaque(false);
+		fader.setMajorTickSpacing(20);
+		fader.setPaintLabels(true);
+
+		brush = new JSlider(0,100,0);
+		brush.addChangeListener(this);
+		brush.setOpaque(false);
+		brush.setMajorTickSpacing(20);
+		brush.setPaintLabels(true);
+
+		topPanel.add( new JLabel("Image Map Fade:") );
+		topPanel.add(fader);
+		topPanel.add( new JLabel("Draw Brush Size:") );
+		topPanel.add(brush);
+
+
+		add(topPanel, BorderLayout.NORTH );
+
+		setZoom(1);
+	}
+
+	private JRadioButton newJRadioButton(String a,boolean sel, ButtonGroup bg,JPanel jp) {
+
+		JRadioButton b = new JRadioButton(a,sel);
+
+		b.setActionCommand("mode");
+
+		b.addActionListener(this);
+
+		b.setOpaque(false);
+
+		bg.add(b);
+
+		jp.add(b);
+
+		return b;
+
+	}
+
+	public void stateChanged(ChangeEvent e) {
+
+		if (e.getSource() == fader) {
+
+			editPanel.setAlpha(fader.getValue());
+			editPanel.repaint();
+
+		}
+		else if (e.getSource() == brush) {
+
+			editPanel.setBrush(brush.getValue());
+
+		}
+	}
+
+	public JToolBar getToolBar() {
+
+		return toolbar;
+
+	}
+	public JMenu getMenu() {
+
+		return null;
+
+	}
+
+
+	private MapEditorViews views;
+	public void setVisible(boolean v) {
+
+		super.setVisible(v);
+
+		if (v && views == null ) {
+
+			views = new MapEditorViews( RiskUIUtil.findParentFrame(this) , editPanel );
+
+		}
+
+		if (views!= null) {
+
+			if (v) {
+
+				Frame frame = RiskUIUtil.findParentFrame(this);
+
+				Dimension frameSize = frame.getSize();
+				Point frameLocation = frame.getLocation();
+
+				views.setLocation(frameLocation.x+frameSize.width, frameLocation.y);
+				views.setSize(200, frameSize.height);
+
+			}
+
+			views.setVisible(v);
+
+		}
+
+
+	}
+
+	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im) {
+
+		myMap = m;
+
+		editPanel.setMap(myMap);
+		views.setMap(myMap);
+
+		editPanel.setImagePic(ip);
+		editPanel.setImageMap(im);
+
+		save.setEnabled(true);
+		play.setEnabled(true);
+		loadimagepic.setEnabled(true);
+		loadimagemap.setEnabled(true);
+		fixButton.setEnabled(true);
+
+		revalidate();
+		repaint();
+
+	}
+
+	public RiskGame makeNewMap() throws Exception {
+
+		RiskGame rg = new RiskGame();
+
+
+
+		for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
+
+			rg.addPlayer(
+				Player.PLAYER_HUMAN,
+				"PLAYER"+c,
+				RiskUtil.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
+				null
+			);
+
+
+
+		}
+
+		return rg;
+	}
+
+	public void actionPerformed(ActionEvent a) {
+
+		if (a.getActionCommand().equals("newmap")) {
+
+			try {
+
+				RiskGame map = makeNewMap();
+				map.setupNewMap();
+
+				BufferedImage ipic = new BufferedImage(PicturePanel.PP_X , PicturePanel.PP_Y, BufferedImage.TYPE_INT_BGR);
+				BufferedImage imap = new BufferedImage(PicturePanel.PP_X , PicturePanel.PP_Y, BufferedImage.TYPE_INT_BGR); // @YURA:TODO only works with this, but should be something else
+				Graphics g = imap.getGraphics();
+				g.setColor( Color.WHITE );
+				g.fillRect(0,0,PicturePanel.PP_X , PicturePanel.PP_Y);
+				g.dispose();
+
+				setNewMap(map,ipic,imap);
+
+			}
+			catch(Exception ex) {
+
+				showError(ex);
+
+			}
+
+		}
+		else if (a.getActionCommand().equals("load")) {
+
+
+		    try {
+
+			String name = RiskUIUtil.getNewFile( RiskUIUtil.findParentFrame(this), "map" );
+
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+			if (name!=null) {
+
+				RiskGame map = makeNewMap();
+				map.setMapfile(name); // this is here just to update the cards option
+				map.loadMap(name);
+				map.loadCards( map.getCardsFile() );
+
+				BufferedImage ipic = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImagePic()) ) );
+				BufferedImage imap = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImageMap()) ) );
+
+				map.setMemoryLoad();
+
+				setNewMap(map,ipic,imap);
+			}
+
+		    }
+		    catch(Exception ex) {
+
+			showError(ex);
+
+		    }
+
+		    setCursor(null);
+
+		}
+		else if (a.getActionCommand().equals("save")) {
+
+		    checkMap();
+
+		    if (!RiskUIUtil.checkForNoSandbox()) {
+			RiskUIUtil.showAppletWarning(RiskUIUtil.findParentFrame(this));
+			return;
+		    }
+
+		    try {
+
+			JFileChooser fc = new JFileChooser( new File(new URI(RiskUIUtil.mapsdir.toString())) );
+			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_MAP_FILES);
+			fc.setFileFilter(filter);
+
+			int returnVal = fc.showSaveDialog( RiskUIUtil.findParentFrame(this) );
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+				File file = fc.getSelectedFile();
+
+
+				String fileName = file.getName();
+
+				if (!(fileName.endsWith( "." + RiskFileFilter.RISK_MAP_FILES ))) {
+					fileName = fileName + "." + RiskFileFilter.RISK_MAP_FILES;
+				}
+
+
+				saveMap( fileName );
+
+			}
+
+		    }
+		    catch(Throwable ex) {
+
+			showError(ex);
+
+		    }
+
+		}
+		else if (a.getActionCommand().equals("play")) {
+
+			if ( checkMap() ) {
+
+				myrisk.newMemoryGame(myMap );
+
+                                panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
+
+			}
+
+		}
+		else if (a.getActionCommand().equals("loadimagepic")) {
+
+			BufferedImage img = getNewImage();
+
+			if (img!=null) {
+				editPanel.setImagePic(img);
+				revalidate();
+				repaint();
+			}
+
+		}
+		else if (a.getActionCommand().equals("loadimagemap")) {
+
+			BufferedImage img = getNewImage();
+
+			if (img!=null) {
+				editPanel.setImageMap(img);
+				repaint();
+			}
+
+		}
+		else if (a.getActionCommand().equals("mode")) {
+
+			if (move.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_MOVE);
+
+			}
+			else if (moveall.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_MOVEALL);
+
+			}
+			else if (join.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_JOIN);
+
+			}
+			else if (join1way.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_JOIN1WAY);
+
+			}
+			else if (disjoin.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_DISJOIN);
+
+			}
+			else if (draw.isSelected()) {
+
+				editPanel.setMode(MapEditorPanel.MODE_DRAW);
+
+			}
+			else {
+
+				throw new RuntimeException("unknown mode");
+
+			}
+
+		}
+		else if (a.getActionCommand().equals("zoomin")) {
+
+			zoom(true);
+
+
+		}
+		else if (a.getActionCommand().equals("zoomout")) {
+
+			zoom(false);
+
+		}
+		else if (a.getActionCommand().equals("fix")) {
+
+			removeBadMapColors();
+
+		}
+		else {
+
+			throw new RuntimeException("unknown command: "+a.getActionCommand());
+
+		}
+
+
+	}
+
+	private BufferedImage getNewImage() {
+
+		if (!RiskUIUtil.checkForNoSandbox()) {
+			RiskUIUtil.showAppletWarning(RiskUIUtil.findParentFrame(this));
+			return null;
+		}
+
+		try {
+
+			JFileChooser fc = new JFileChooser( new File(new URI(RiskUIUtil.mapsdir.toString())) );
+
+			int returnVal = fc.showOpenDialog( RiskUIUtil.findParentFrame(this) );
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+				return makeRGBImage(ImageIO.read( fc.getSelectedFile() ));
+
+			}
+
+		}
+		catch(Throwable ex) {
+
+			ex.printStackTrace();
+			showError(ex);
+
+		}
+
+		return null;
+
+	}
+
+	private void removeBadMapColors() {
+
+		Map updateMap = new HashMap();
+
+		// go though ALL the colors that can be in the image map
+		for (int c=0;c<256;c++) {
+
+			if (myMap.getCountryInt(c)!=null) {
+
+				updateMap.put(new Integer(c),new Integer(c));
+
+			}
+			else {
+
+				updateMap.put(new Integer(c),new Integer(255));
+
+			}
+		}
+
+		editPanel.update(updateMap);
+
+		editPanel.repaint();
+
+	}
+
+	private BufferedImage makeRGBImage(BufferedImage INipic) {
+
+		BufferedImage ipic = new BufferedImage(INipic.getWidth(), INipic.getHeight(), BufferedImage.TYPE_INT_BGR);
+
+		Graphics g1 = ipic.getGraphics();
+
+		g1.setColor( Color.WHITE );
+
+		g1.fillRect(0,0,INipic.getWidth(), INipic.getHeight());
+
+		g1.drawImage(INipic,0,0,this);
+
+		g1.dispose();
+
+		return ipic;
+
+	}
+
+	public void zoom(boolean in) {
+
+		setZoom( (in)?(zoomint+1):(zoomint-1) );
+
+	}
+
+	private void setZoom(int a) {
+
+		if (a<ZOOM_MIN || a>ZOOM_MAX) { return; }
+
+		zoomint = a;
+
+		zoomout.setEnabled( !(a==ZOOM_MIN) );
+
+		zoomin.setEnabled( !(a==ZOOM_MAX) );
+
+		zoom.setText(zoomint+"x");
+
+		editPanel.zoom(a);
+
+	}
+
+	public void showError(Throwable ex) {
+
+		JOptionPane.showMessageDialog(this, "Error: "+ex.toString(), "ERROR!", JOptionPane.ERROR_MESSAGE);
+		ex.printStackTrace();
+
+	}
+
+	public BufferedImage getImageMap() {
+
+		return editPanel.getImageMap();
+
+	}
+
+
+	public BufferedImage getImagePic() {
+
+		return editPanel.getImagePic();
+
+	}
+
+	public String getStringForContinent(Continent c) {
+
+		if (c == null) {
+
+			return "0";
+
+		}
+		if (c == RiskGame.ANY_CONTINENT) {
+
+			return "*";
+
+		}
+
+		Continent[] continents = myMap.getContinents();
+
+		for (int i = 0; i < continents.length; i++) {
+
+			if (continents[i] == c) {
+
+				return String.valueOf(i+1);
+
+			}
+
+		}
+
+		throw new RuntimeException();
+
+	}
+
+	public boolean checkMap() {
+
+		String errors="";
+
+		if (myMap.getNoCountries() < 6) {
+
+			errors = errors + "\n* Less then 6 countries on this map.";
+
+		}
+		else {
+
+			Vector t = new Vector(Arrays.asList(myMap.getCountries()));
+			Vector a = new Vector();
+
+			Country country = ((Country)t.remove(0));
+			a.add( country );
+
+			myMap.getConnectedEmpire(
+				t,
+				a,
+				country.getNeighbours(),
+				null
+			);
+
+			if (a.size() != myMap.getNoCountries()) {
+
+				errors = errors + "\n* Some countries are isolated from the rest: "+t;
+
+			}
+
+		}
+
+		Continent[] continents = myMap.getContinents();
+
+		for (int c=0;c<continents.length;c++) {
+
+			if (continents[c].getTerritoriesContained().size() == 0) {
+
+				errors = errors + "\n* The continent \""+continents[c]+"\" is empty.";
+
+			}
+
+		}
+
+
+		BufferedImage map = editPanel.getImageMap();
+		//if (map.getWidth()!=PicturePanel.PP_X || map.getHeight()!=PicturePanel.PP_Y) {
+		//	errors = errors + "\n* Image Map is not a standard size of "+PicturePanel.PP_X+"x"+PicturePanel.PP_Y+".";
+		//}
+
+		BufferedImage pic = editPanel.getImagePic();
+		if (pic.getWidth()!=map.getWidth() || pic.getHeight()!=map.getHeight()) {
+
+			errors = errors + "\n* ImagePic and ImageMap are not the same size.";
+
+		}
+
+
+		int[] pixels = map.getRGB(0,0,map.getWidth(),map.getHeight(),null,0,map.getWidth());
+
+		int color,noc = myMap.getNoCountries();
+		HashSet bad = new HashSet();
+		HashSet good = new HashSet( Arrays.asList(myMap.getCountries()) );
+
+		for (int c=0;c<pixels.length;c++) {
+
+			color = pixels[c] & 0xff;
+
+			if (color == 255) {
+
+				// ignore
+
+			}
+			else if (color == 0 || color > noc) {
+
+				bad.add( new Integer(color) );
+
+			}
+			else {
+
+				good.remove( myMap.getCountryInt(color) );
+
+			}
+		}
+
+		if (bad.size() > 0) {
+
+			errors = errors + "\n* Image Map uses colors that do not match any country: "+bad;
+
+		}
+		if (good.size() > 0) {
+
+			errors = errors + "\n* Image Map does not contain areas for some countries: "+good;
+
+		}
+
+		// missions checks:
+
+		Vector missions = myMap.getMissions();
+
+		if (missions.size()>0 && missions.size() <6) {
+
+			errors = errors + "\n* You have chosen to have missions but you have less then is needed for a game with 6 players.";
+
+		}
+
+		for (int i = 0; i < missions.size(); i++) {
+
+			Mission m = (Mission)missions.elementAt(i);
+
+			Player p = m.getPlayer();
+
+			if (p !=null && m.getDiscription().indexOf( p.getName() ) == -1) {
+
+				errors = errors + "\n* You have a mission that is to destroy "+p.getName()+", yet you do NOT have the text \""+p.getName()+"\" in the description.";
+
+			}
+
+		}
+
+		if (errors.length() >0) {
+
+			JOptionPane.showMessageDialog(this,"There are errors in this map that need to be fixed before it can be used:"+errors);
+
+			return false;
+
+		}
+
+		return true;
+
+	}
+
+	public void saveMap(String mapName) throws Exception {
+
+
+	    String name = mapName.substring(0, mapName.lastIndexOf('.') );
+
+	    String cardsName = name + "." + RiskFileFilter.RISK_CARDS_FILES;
+	    String imageMapName = name+"_map."+IMAGE_MAP_EXTENSION;
+	    String imagePicName = name+"_pic."+IMAGE_PIC_EXTENSION;
+
+	    File mapFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+mapName) );
+	    File cardsFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+cardsName) );
+	    File imageMapFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+imageMapName) );
+	    File imagePicFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+imagePicName) );
+
+	    if (mapFile.exists() || cardsFile.exists() || imageMapFile.exists() || imagePicFile.exists()) {
+
+		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to replace:\n"+
+		(mapFile.exists()?mapFile+"\n":"")+
+		(cardsFile.exists()?cardsFile+"\n":"")+
+		(imageMapFile.exists()?imageMapFile+"\n":"")+
+		(imagePicFile.exists()?imagePicFile+"\n":""), "Replace?", JOptionPane.YES_NO_OPTION);
+
+		if (result != JOptionPane.YES_OPTION) {
+
+			return;
+
+		}
+
+	    }
+
+	    String n = System.getProperty("line.separator");
+
+	    // ####################################################### MAKE CARDS FILE
+
+	    StringBuffer cardsBuffer = new StringBuffer();
+
+	    cardsBuffer.append("; cards: ");
+	    cardsBuffer.append(cardsName);
+	    cardsBuffer.append(n);
+	    cardsBuffer.append("; cards made with the map maker");
+	    cardsBuffer.append(n);
+	    cardsBuffer.append("; yura.net Risk ");
+	    cardsBuffer.append( Risk.RISK_VERSION );
+	    cardsBuffer.append(n);
+
+	    cardsBuffer.append(n);
+	    cardsBuffer.append("[cards]");
+	    cardsBuffer.append(n);
+
+	    Vector cards = myMap.getCards();
+
+            for (int i = 0; i < cards.size(); i++) {
+
+                Card c = (Card)cards.elementAt(i);
+
+		cardsBuffer.append(c.getName());
+
+		if (c.getCountry()!=null) {
+
+			int color = c.getCountry().getColor();
+
+			if (strictcards && color != (i+1)) { throw new Exception("cards missmatch with pos/id/color: "+c); }
+
+			cardsBuffer.append(" ");
+			cardsBuffer.append( String.valueOf(color) );
+
+		}
+
+		cardsBuffer.append(n);
+
+	    }
+
+	    Vector missions = myMap.getMissions();
+
+	    if (missions.size()>0) {
+
+	    	cardsBuffer.append(n);
+	    	cardsBuffer.append("; destroy x occupy x x continents x x x");
+	    	cardsBuffer.append(n);
+	    	cardsBuffer.append("; destroy (Player) occupy (int int) continents (Continent Continent Continent)");
+	    	cardsBuffer.append(n);
+	    	cardsBuffer.append("[missions]");
+	    	cardsBuffer.append(n);
+
+		for (int i = 0; i < missions.size(); i++) {
+
+			Mission m = (Mission)missions.elementAt(i);
+
+			if (m.getPlayer()!=null) {
+
+				cardsBuffer.append( m.getPlayer().getName().substring(6,7) ); // PLAYER1
+
+			}
+			else {
+
+				cardsBuffer.append("0");
+
+			}
+
+			cardsBuffer.append("\t");
+			cardsBuffer.append(String.valueOf( m.getNoofcountries() ));
+			cardsBuffer.append(" ");
+			cardsBuffer.append(String.valueOf( m.getNoofarmies() ));
+			cardsBuffer.append("\t");
+			cardsBuffer.append( getStringForContinent(m.getContinent1()) );
+			cardsBuffer.append(" ");
+			cardsBuffer.append( getStringForContinent(m.getContinent2()) );
+			cardsBuffer.append(" ");
+			cardsBuffer.append( getStringForContinent(m.getContinent3()) );
+			cardsBuffer.append("\t");
+			cardsBuffer.append(m.getDiscription());
+			cardsBuffer.append(n);
+		}
+
+	    }
+
+	    // ####################################################### MAKE MAP FILE
+
+	    StringBuffer buffer = new StringBuffer();
+
+	    buffer.append("; map: ");
+	    buffer.append(mapName);
+	    buffer.append(n);
+	    buffer.append("; map made with the map maker");
+	    buffer.append(n);
+	    buffer.append("; yura.net Risk ");
+	    buffer.append( Risk.RISK_VERSION );
+	    buffer.append(n);
+
+	    buffer.append(n);
+	    buffer.append("[files]");
+	    buffer.append(n);
+
+	    buffer.append("pic ");
+	    buffer.append(imagePicName);
+	    buffer.append(n);
+	    buffer.append("map ");
+	    buffer.append(imageMapName);
+	    buffer.append(n);
+	    buffer.append("crd ");
+	    buffer.append(cardsName);
+	    buffer.append(n);
+
+	    buffer.append(n);
+	    buffer.append("[continents]");
+	    buffer.append(n);
+
+	    Continent[] continents = myMap.getContinents();
+
+            for (int i = 0; i < continents.length; i++) {
+
+                Continent c = continents[i];
+
+		buffer.append(c.getIdString());
+		buffer.append(" ");
+		buffer.append(c.getArmyValue());
+		buffer.append(" ");
+		buffer.append( RiskUtil.getStringForColor( c.getColor() ) );
+		buffer.append(n);
+
+	    }
+
+	    buffer.append(n);
+	    buffer.append("[countries]");
+	    buffer.append(n);
+
+	    Country[] countries = myMap.getCountries();
+
+            for (int i = 0; i < countries.length; i++) {
+
+                Country c = countries[i];
+
+		int color = c.getColor();
+
+		if (color != (i+1)) { throw new Exception("country missmatch with pos/id/color: "+c); }
+
+		buffer.append(String.valueOf(color));
+		buffer.append(" ");
+		buffer.append(c.getIdString());
+		buffer.append(" ");
+		buffer.append( getStringForContinent( c.getContinent() ) );
+		buffer.append(" ");
+		buffer.append( c.getX() );
+		buffer.append(" ");
+		buffer.append( c.getY() );
+		buffer.append(n);
+
+	    }
+
+
+	    buffer.append(n);
+	    buffer.append("[borders]");
+	    buffer.append(n);
+
+
+            for (int i = 0; i < countries.length; i++) {
+
+                Country c = countries[i];
+
+		buffer.append(String.valueOf(i+1));
+
+
+                List ney = c.getNeighbours();
+                for (int j = 0; j < ney.size(); j++) {
+
+                    Country n1 = (Country)ney.get(j);
+
+		    buffer.append(" ");
+		    buffer.append(String.valueOf( n1.getColor() ) );
+		}
+
+		buffer.append(n);
+
+	    }
+
+
+	    Writer output = null;
+	    try {
+
+		output = new BufferedWriter( new FileWriter(mapFile) );
+		output.write( buffer.toString() );
+
+	    }
+	    finally {
+
+		if (output != null) output.close();
+	    }
+
+	    try {
+
+		output = new BufferedWriter( new FileWriter(cardsFile) );
+		output.write( cardsBuffer.toString() );
+
+	    }
+	    finally {
+
+		if (output != null) output.close();
+	    }
+
+	    if (
+
+		!ImageIO.write( editPanel.getImageMap() , IMAGE_MAP_EXTENSION , imageMapFile ) |
+
+		!ImageIO.write( editPanel.getImagePic() , IMAGE_PIC_EXTENSION , imagePicFile )
+
+	    ) {
+
+		// this should NEVER happen
+		throw new Exception("unable to save image files!\nPlease email yura@yura.net and tell!");
+
+	    }
+	}
+
+}

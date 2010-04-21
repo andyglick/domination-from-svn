@@ -2,7 +2,6 @@
 
 package net.yura.domination.engine.core;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.Vector;
 
@@ -19,7 +18,7 @@ public class Continent implements Serializable {
 	private String idString; // used by the map editor
 
 	private String name;
-	private Color color;
+	private int color;
 	private int armyValue;
 	private Vector territoriesContained = new Vector();
 
@@ -29,7 +28,7 @@ public class Continent implements Serializable {
 	 * @param c the continent colour
 	 * @param noa the number of armies recieved when the whole continent is owned
 	 */
-	public Continent(String id, String n, int noa, Color c) {
+	public Continent(String id, String n, int noa, int c) {
 
 		idString = id;
 
@@ -78,11 +77,11 @@ public class Continent implements Serializable {
 	 * Returns the colour of the continent
 	 * @return color
 	 */
-	public Color getColor() {
+	public int getColor() {
 		return color;
 	}
 
-	public void setColor(Color a) {
+	public void setColor(int a) {
 		color = a;
 	}
 
@@ -141,7 +140,7 @@ public class Continent implements Serializable {
 		}
 		return owner;
 	}
-	
+
 	/**
 	 * Returns a vector of the territories contained within a continent
 	 * @return territoriesContained

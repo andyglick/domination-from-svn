@@ -2,8 +2,6 @@
 
 package net.yura.domination.engine;
 
-import java.applet.Applet;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,15 +22,12 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import javax.crypto.NullCipher;
-import javax.crypto.SealedObject;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
@@ -68,32 +63,32 @@ public class Risk extends Thread {
 	private boolean battle;
 	private boolean replay;
 
-	protected Vector inbox;
+	protected final Vector inbox;
 
 	protected ResourceBundle resb;
 	protected Properties riskconfig;
 
 
-	public Risk(Applet a, String b,String c) {
-		this(a);
+	public Risk(String b,String c) {
+		this();
 
 		RiskGame.setDefaultMapAndCards(b,c);
 	}
 
-	public Risk(Applet a) {
+	public Risk() {
 		super(RiskUtil.getGameName()+"-GAME-THREAD");
 
 		resb = TranslationBundle.getBundle();
 
-		setupMapsDir(a);
+		String strUsername;
 
-		String strUsername = RiskUtil.getGameName()+"Player";
-
-		if (RiskUtil.checkForNoSandbox()) {
-
-			strUsername = System.getProperty("user.name");
-
+		//if (RiskUtil.checkForNoSandbox()) {
+                try {
+                    strUsername = System.getProperty("user.name");
 		}
+                catch(Throwable th) {
+                    strUsername = RiskUtil.getGameName()+"Player";
+                }
 
 		riskconfig = new Properties();
 
@@ -142,10 +137,12 @@ public class Risk extends Thread {
 		String randomString = "#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) );
 
 		try {
-			if (RiskUtil.checkForNoSandbox()) {
+			//if (RiskUtil.checkForNoSandbox()) {
+                        try {
 				myAddress = InetAddress.getLocalHost().getHostName() + randomString;
 			}
-			else {
+			//else {
+                        catch(Throwable th) {
 				myAddress = "sandbox" + randomString;
 			}
 /*
@@ -161,9 +158,9 @@ public class Risk extends Thread {
 			while (ifaces.hasMoreElements()) {
 				NetworkInterface ni = (NetworkInterface)ifaces.nextElement();
 				//System.out.println(ni.getName() + ":");
-  
+
 				Enumeration addrs = ni.getInetAddresses();
-  
+
 				while (addrs.hasMoreElements()) {
 					InetAddress ia = (InetAddress)addrs.nextElement();
 					//System.out.println(" " + ia.getHostAddress());
@@ -201,13 +198,6 @@ public class Risk extends Thread {
 
 		inbox = new Vector();
 		this.start();
-
-	}
-
-
-	public void setupMapsDir(Applet a) {
-
-		RiskUtil.setupMapsDir(a);
 
 	}
 
@@ -637,7 +627,7 @@ public class Risk extends Thread {
 				try {
 					//Undo = new SealedObject( game, nullCipher );
 
-					
+
 					Undo.reset();
 					ObjectOutputStream out = new ObjectOutputStream(Undo);
 					out.writeObject(game);
@@ -679,7 +669,7 @@ public class Risk extends Thread {
 
 			while ( StringT.hasMoreElements() ) {
 				Pname = Pname +" "+ GetNext();
-			}	
+			}
 
 			showMessageDialog(Pname);
 
@@ -960,142 +950,129 @@ public class Risk extends Thread {
 
 				if (StringT.hasMoreTokens()==false) {
 
-					boolean doclose=false;
+                                    boolean doclose=false;
 
-					if ( chatSocket == null ) { // LOCAL GAME/ OR LOBBY CLIENT
+                                    if ( chatSocket == null ) { // LOCAL GAME/ OR LOBBY CLIENT
 
-						doclose = true;
+                                            doclose = true;
 
-					}
-					else { // NETWORK GAME
+                                    }
+                                    else { // NETWORK GAME
 
-						if ( myAddress.equals(Addr) ) { // only on the pc of who called it
+                                            if ( myAddress.equals(Addr) ) { // only on the pc of who called it
 
-							doclose = true;
+                                                    doclose = true;
 
-							try {
-								outChat.close();
-								inChat.close();
+                                                    try {
+                                                            outChat.close();
+                                                            inChat.close();
 
-								chatSocket.shutdownInput();
-								chatSocket.shutdownOutput();
+                                                            chatSocket.shutdownInput();
+                                                            chatSocket.shutdownOutput();
 
-								chatSocket.close();
-							}
-							catch (IOException except) { }
+                                                            chatSocket.close();
+                                                    }
+                                                    catch (IOException except) { }
 
-							chatSocket = null;
+                                                    chatSocket = null;
 
-						}
-						else {
-
-
-							// @todo, do we set needinput to flase, so that ai wont go twice, if its there go
-							// but then if there needinput was ignored coz this command was in the inbox, no needinput will get called
-
-							// if it is NOT there go the set needinput to false
-							if (game.getCurrentPlayer()!=null && !(game.getCurrentPlayer().getAddress().equals(Addr) && game.getCurrentPlayer().getType() == Player.PLAYER_HUMAN)) {
-
-								needInput = false;
-
-							}
-							// if this command stopped the last needInput from being called, then this will be screwed
-							// at worst AI or human wont get a chance to put any input in, game stalled
-
-							output = "someone has gone: ";
-
-							// get all the players and make all with the ip of the leaver become nutral
-							Vector leavers = game.getPlayers();
-
-							String newPlayerAddress="";
-
-							// find the first player that is NOT playing on this computer
-							// this happens in the same way on each computer
-							for (int c=0; c< leavers.size() ; c++) {
-
-								if ( !((Player)leavers.elementAt(c)).getAddress().equals(Addr) ) {
+                                            }
+                                            else {
 
 
-									newPlayerAddress = ((Player)leavers.elementAt(c)).getAddress();
-									break;
-								}
+                                                    // @todo, do we set needinput to flase, so that ai wont go twice, if its there go
+                                                    // but then if there needinput was ignored coz this command was in the inbox, no needinput will get called
 
-							}
+                                                    // if it is NOT there go the set needinput to false
+                                                    if (game.getCurrentPlayer()!=null && !(game.getCurrentPlayer().getAddress().equals(Addr) && game.getCurrentPlayer().getType() == Player.PLAYER_HUMAN)) {
 
+                                                            needInput = false;
 
-							for (int c=0; c < leavers.size(); c++) {
+                                                    }
+                                                    // if this command stopped the last needInput from being called, then this will be screwed
+                                                    // at worst AI or human wont get a chance to put any input in, game stalled
 
-								Player patc = ((Player)leavers.elementAt(c));
+                                                    output = "someone has gone: ";
 
-								if ( patc.getAddress().equals(Addr) ) {
+                                                    // get all the players and make all with the ip of the leaver become nutral
+                                                    Vector leavers = game.getPlayers();
 
-									if ( patc.getType() == Player.PLAYER_HUMAN ) {
+                                                    String newPlayerAddress="";
 
-										output = output + patc.getName()+" ";
+                                                    // find the first player that is NOT playing on this computer
+                                                    // this happens in the same way on each computer
+                                                    for (int c=0; c< leavers.size() ; c++) {
 
-										if (game.getState() == RiskGame.STATE_NEW_GAME ) {
-
-											// should never return false
-											if ( game.delPlayer( patc.getName() ) ) {
-
-												c--;
-
-												controller.delPlayer( patc.getName() );
-
-												patc = null;
-											}
-
-										}
-										else {
-
-											patc.setType( Player.PLAYER_AI_CRAP );
-
-										}
-									}
-
-									if (patc!=null) {
-
-										if (newPlayerAddress!=null) {
-											patc.setAddress( newPlayerAddress );
-										}
-										else {
-
-											// this means there are only spectators left
-											// so nothing really needs to be done
-											// game will stop, but hay there r no more players
-										}
-									}
-
-								}
-
-							}
-
-						}
+                                                            if ( !((Player)leavers.elementAt(c)).getAddress().equals(Addr) ) {
 
 
-					}
+                                                                    newPlayerAddress = ((Player)leavers.elementAt(c)).getAddress();
+                                                                    break;
+                                                            }
+
+                                                    }
 
 
-					if (doclose) {
+                                                    for (int c=0; c < leavers.size(); c++) {
 
-						// does not work from here
-						closeBattle();
+                                                            Player patc = ((Player)leavers.elementAt(c));
 
-						controller.closeGame();
-						output=resb.getString( "core.close.closed");
+                                                            if ( patc.getAddress().equals(Addr) ) {
 
-						game = null;
-					}
-					//else {
-					//	output=resb.getString( "core.close.error.unable");
-					//}
+                                                                    if ( patc.getType() == Player.PLAYER_HUMAN ) {
+
+                                                                            output = output + patc.getName()+" ";
+
+                                                                            if (game.getState() == RiskGame.STATE_NEW_GAME ) {
+
+                                                                                    // should never return false
+                                                                                    if ( game.delPlayer( patc.getName() ) ) {
+
+                                                                                            c--;
+
+                                                                                            controller.delPlayer( patc.getName() );
+
+                                                                                            patc = null;
+                                                                                    }
+
+                                                                            }
+                                                                            else {
+
+                                                                                    patc.setType( Player.PLAYER_AI_CRAP );
+
+                                                                            }
+                                                                    }
+
+                                                                    if (patc!=null) {
+
+                                                                            if (newPlayerAddress!=null) {
+                                                                                    patc.setAddress( newPlayerAddress );
+                                                                            }
+                                                                            else {
+
+                                                                                    // this means there are only spectators left
+                                                                                    // so nothing really needs to be done
+                                                                                    // game will stop, but hay there r no more players
+                                                                            }
+                                                                    }
+
+                                                            }
+
+                                                    }
+
+                                            }
 
 
+                                    }
 
-
-
+                                    if (doclose) {
+                                        closeGame();
+                                        output=resb.getString( "core.close.closed");
+                                    }
 				}
-				else { output=resb.getString( "core.error.syntax").replaceAll( "\\{0\\}", "closegame"); }
+				else {
+                                    output=resb.getString( "core.error.syntax").replaceAll( "\\{0\\}", "closegame");
+                                }
 
 			}
 
@@ -1196,7 +1173,7 @@ public class Risk extends Thread {
 						catch (Exception e) {
 							output=resb.getString( "core.choosemap.error.unable");
 							//if ( chatSocket != null ) {
-								showMessageDialog("Error loading map: "+filename);
+								showMessageDialog("Error loading map: "+filename+" "+e.getMessage());
 							//}
 						}
 
@@ -1241,7 +1218,7 @@ public class Risk extends Thread {
 						int t=getType(type);
 
 						String c=GetNext();
-						Color color=RiskGame.getColor( c );
+						int color=RiskUtil.getColor( c );
 
 						String name="";
 
@@ -1255,7 +1232,7 @@ public class Risk extends Thread {
 						// ( ( chatSocket != null && game.addPlayer(t, name, color, Addr) ) || ( chatSocket == null && game.addPlayer(t, name, color, "all") ) )
 						// name.replaceAll(" ","")+"#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) )
 
-						if ( color != null && t != -1 && !name.equals("") && (   (  unlimitedLocalMode && game.addPlayer(t, name, color, "LOCALGAME" ) ) || ( !unlimitedLocalMode && game.addPlayer(t, name, color, Addr)    )    ) ) {
+						if ( color != 0 && t != -1 && !name.equals("") && (   (  unlimitedLocalMode && game.addPlayer(t, name, color, "LOCALGAME" ) ) || ( !unlimitedLocalMode && game.addPlayer(t, name, color, Addr)    )    ) ) {
 							//New player created, name: {0} color: {1}
 							output=resb.getString( "core.newplayer.created")
 										.replaceAll( "\\{0\\}", name)
@@ -1597,7 +1574,7 @@ public class Risk extends Thread {
 								getInput();
 							    }
 
-							};
+							}
 
 							Thread replaythread = new Replay(this, bufferin);
 
@@ -1675,7 +1652,7 @@ public class Risk extends Thread {
 						replayCommands.remove( replayCommands.size()-1 );
 
 						saveGameToUndoObject();
- 
+
 						game = new RiskGame();
 
 						replay = true;
@@ -2085,7 +2062,7 @@ public class Risk extends Thread {
 
 							int n=((Country)game.getDefender()).getArmies();
 
-	
+
 							if (n > game.getMaxDefendDice() ) { n= game.getMaxDefendDice() ; }
 
 
@@ -2425,14 +2402,9 @@ public class Risk extends Thread {
 	}
 
 	private void setupPreview() {
-
-		if (controller.countListeners()>0) try {
-
-			controller.showMapPic( PicturePanel.getImage( game ) );
-
-		}
-		catch(Throwable e) { controller.showMapPic(null); }
-
+            if (controller.countListeners()>0) {
+                    controller.showMapPic( game );
+            }
 	}
 
 	public static int getType(String type) {
@@ -2565,7 +2537,7 @@ public class Risk extends Thread {
 
 				// this is here for the lobby
 				//getHumanInput();
-				
+
 			    //}
 
 			}
@@ -2807,11 +2779,11 @@ public class Risk extends Thread {
 	 * Get the colours of the players in the game
 	 * @return Color[] Return the colour of the game players
 	 */
-	public Color[] getPlayerColors() {
+	public int[] getPlayerColors() {
 
 		if ( game.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
 
-			return new Color[] { game.getDefender().getOwner().getColor() };
+			return new int[] { game.getDefender().getOwner().getColor() };
 		}
 
 		Vector Players = game.getPlayers();
@@ -2827,7 +2799,7 @@ public class Risk extends Thread {
 
 		}
 
-		Color playerColors[] = new Color[num];
+		int[] playerColors = new int[num];
 
 		int current=0;
 
@@ -2848,13 +2820,13 @@ public class Risk extends Thread {
 	 * Get the colour of the current player
 	 * @return Color Return the colour of the current player in the game
 	 */
-	public Color getCurrentPlayerColor() {
+	public int getCurrentPlayerColor() {
 
 		if (game != null && game.getState() != RiskGame.STATE_NEW_GAME) {
 			return ((Player)game.getCurrentPlayer()).getColor();
 		}
 		else {
-			return null;
+			return 0;
 		}
 	}
 
@@ -2863,7 +2835,7 @@ public class Risk extends Thread {
 	 * @param n the Country number identifier
 	 * @return Color Return the colour of a player that owns a country
 	 */
-	public Color getColorOfOwner(int n) {
+	public int getColorOfOwner(int n) {
 
 		return ((Player)((Country)game.getCountryInt(n)).getOwner()).getColor();
 
@@ -2975,42 +2947,6 @@ public class Risk extends Thread {
 
 
 
-	public void newMemoryGame(RiskGame g,java.awt.Image p) {
-
-		if (game == null) {
-
-
-			try {
-				// make a copy
-
-				NullCipher nullCipher = new NullCipher();
-
-				// @TODO, this will crash on macs
-				game = (RiskGame) (new SealedObject( g, nullCipher ).getObject( nullCipher ));
-
-				for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
-
-					game.delPlayer("PLAYER"+c);
-
-				}
-			}
-			catch (Exception e) {
-				// should never happen
-				//e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-
-			controller.newGame(true);
-
-			controller.showMapPic( p.getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) );
-
-			controller.showCardsFile( "loaded from memory" , (game.getNoMissions()!=0) );
-
-			unlimitedLocalMode = true;
-
-		}
-
-	}
 
 
 	public void showMessageDialog(String a) {
@@ -3036,5 +2972,51 @@ public class Risk extends Thread {
 
 	}
 
+        private void closeGame() {
 
+            // does not work from here
+            closeBattle();
+
+            controller.closeGame();
+
+            game = null;
+
+        }
+
+
+	public void newMemoryGame(RiskGame g) {
+
+		if (game != null) {
+                    closeGame();
+                }
+
+                try {
+                        // make a copy
+
+                        javax.crypto.NullCipher nullCipher = new javax.crypto.NullCipher();
+
+                        // @TODO, this will crash on macs
+                        game = (RiskGame) (new javax.crypto.SealedObject( g, nullCipher ).getObject( nullCipher ));
+
+                        for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
+
+                                game.delPlayer("PLAYER"+c);
+
+                        }
+                }
+                catch (Exception e) {
+                        // should never happen
+                        //e.printStackTrace();
+                        throw new RuntimeException(e);
+                }
+
+                controller.newGame(true);
+
+                controller.showCardsFile( "loaded from memory" , (game.getNoMissions()!=0) );
+
+                // we dont do this here as it wont work
+                //controller.showMapPic(game);
+
+                unlimitedLocalMode = true;
+	}
 }
