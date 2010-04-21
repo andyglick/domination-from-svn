@@ -3,6 +3,7 @@
 package net.yura.domination.engine;
 
 import java.util.Vector;
+import net.yura.domination.engine.core.RiskGame;
 
 /**
  * <p> Risk Controller </p>
@@ -18,9 +19,9 @@ public class RiskController {
     }
 
     /**
-     * Adds an observer to the set of observers for this object, provided 
-     * that it is not the same as some observer already in the set. 
-     * The order in which notifications will be delivered to multiple 
+     * Adds an observer to the set of observers for this object, provided
+     * that it is not the same as some observer already in the set.
+     * The order in which notifications will be delivered to multiple
      * observers is not specified. See the class comment.
      *
      * @param   o   an observer to be added.
@@ -41,7 +42,7 @@ public class RiskController {
     }
 
     /**
-     * Deletes an observer from the set of observers of this object. 
+     * Deletes an observer from the set of observers of this object.
      * Passing <CODE>null</CODE> to this method will have no effect.
      * @param   o   the observer to be deleted.
      */
@@ -179,7 +180,7 @@ public class RiskController {
 
     }
 
-    public void showMapPic(java.awt.Image p) {
+    public void showMapPic(RiskGame p) {
 
         Object[] arrLocal;
 
@@ -244,7 +245,7 @@ public class RiskController {
 
     }
 
-    public void addPlayer(int type, String name, java.awt.Color color, String ip) {
+    public void addPlayer(int type, String name, int color, String ip) {
 
         Object[] arrLocal;
 

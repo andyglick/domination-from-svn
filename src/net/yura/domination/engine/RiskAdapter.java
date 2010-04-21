@@ -2,6 +2,8 @@
 
 package net.yura.domination.engine;
 
+import net.yura.domination.engine.core.RiskGame;
+
 /**
  * <p> Risk Adapter </p>
  * @author Yura Mamyrin
@@ -19,12 +21,12 @@ public abstract class RiskAdapter implements RiskListener {
     public void setSlider(int min, int c1num, int c2num) {}
     public void armiesLeft(int l, boolean s) {}
     public void showDice(int n, boolean w) {}
-    public void showMapPic(java.awt.Image p) {}
+    public void showMapPic(RiskGame p) {}
     public void showCardsFile(String c, boolean m) {}
     public void serverState(boolean s) {}
     public void openBattle(int c1num, int c2num) {}
     public void closeBattle() {}
-    public void addPlayer(int type, String name, java.awt.Color color, String ip) {}
+    public void addPlayer(int type, String name, int color, String ip) {}
     public void delPlayer(String name) {}
     public void showDiceResults(int[] att, int[] def) {}
     public void setNODAttacker(int n) {}

@@ -2,7 +2,7 @@
 
 package net.yura.domination.engine.core;
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.io.Serializable;
 import java.util.Vector;
 
@@ -22,7 +22,7 @@ public class Player implements Serializable {
 
 
     private String name;
-    private Color color;
+    private int color;
     private int extraArmies;
     private Vector cardsOwned;
     private Vector territoriesOwned;
@@ -46,7 +46,7 @@ public class Player implements Serializable {
      * @param c The color of the player
      * @param a THe address of the player on the current computer
      */
-    public Player(int t, String n, Color c, String a) {
+    public Player(int t, String n, int c, String a) {
 	type = t;
 	name = n;
 	color = c;
@@ -134,7 +134,7 @@ public class Player implements Serializable {
      * Gets the color of the player
      * @return Color Returns the color of the player
      */
-    public Color getColor() {
+    public int getColor() {
 	return color;
     }
 

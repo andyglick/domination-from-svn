@@ -42,7 +42,9 @@
 	<property name="dir.build.game" location="${dir.build}/game"/>
 	<property name="dir.oldmanual" location="${basedir}/game/${game.name}/help"/>
 	<property name="dir.dist" location="dist"/>
-	<property name="dir.source" location="src"/>
+	<property name="dir.sources" location="src:src_swing"/>
+        <property name="dir.properties" location="src"/>
+
 
 	<property name="file.src" location="${dir.dist}/src.zip"/>
 
@@ -88,12 +90,12 @@
                 <mkdir dir="${dir.dist}"/>
 
 		<!-- compile the classes -->
-		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**" 
+		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**"
 		source="1.4" target="1.4" classpath="lib/jnlp.jar;lib/TranslationTool.jar"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.classes}" filtering="true">
-			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java"/>
+			<fileset dir="${dir.properties}" includes="**/*.*" excludes="**/*.java"/>
 		</copy>
 
 		<!-- copy images -->
@@ -112,7 +114,7 @@
 
 		<jar destfile="${dir.dist}/${game.name}.jar"
 			basedir="${dir.build.classes}"
-			manifest="${dir.source}/META-INF/MANIFEST.MF"/>
+			manifest="${dir.properties}/META-INF/MANIFEST.MF"/>
 	</target>
 
 	<target name="game"
@@ -356,12 +358,12 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.client.classes}"/>
 
-		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.lobby.client.classes}" includes="net/yura/domination/lobby/client/**"
+		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.lobby.client.classes}" includes="net/yura/domination/lobby/client/**"
 		source="1.4" target="1.4" classpath="lib/LobbyClient.jar:lib/jnlp.jar"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.client.classes}" filtering="true">
-			<fileset dir="${dir.source}" includes="**/*.*" excludes="**/*.java,**/Increment1GUI/*.*"/>
+			<fileset dir="${dir.properties}" includes="**/*.*" excludes="**/*.java,**/Increment1GUI/*.*"/>
 		</copy>
 
 		<!-- copy images -->
@@ -377,12 +379,12 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.server.classes}"/>
 
-		<javac debug="on" srcdir="${dir.source}" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**"
+		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**"
 		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/jnlp.jar"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
-			<fileset dir="${dir.source}" includes="**/*.properties,**/*.ini"/>
+			<fileset dir="${dir.properties}" includes="**/*.properties,**/*.ini"/>
 		</copy>
 
 	</target>
