@@ -397,6 +397,7 @@ public class RiskUIUtil {
 
 		}
 		else {
+/*                  // MAP SELECT GOES HERE!
 
                     JFrame frame = new JFrame();
 
@@ -414,17 +415,7 @@ public class RiskUIUtil {
                     tabs.addTab("Search", null);
                     tabs.addTab("Updates", null);
 
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 			String names=null;
 
