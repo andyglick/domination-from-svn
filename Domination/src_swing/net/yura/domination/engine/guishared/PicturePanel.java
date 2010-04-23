@@ -11,12 +11,12 @@ import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.color.ColorSpace;
+//import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
+//import java.awt.image.ColorConvertOp;
 import java.awt.image.RescaleOp;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -177,8 +177,8 @@ public class PicturePanel extends JPanel {
 			}
 		}
 
-		ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-		ColorConvertOp Gray = new ColorConvertOp( cs , null);
+		//ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+		//ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
 		// create the bufferd image for each country
 		for (int c=0; c < CountryImages.length ; c++) {
@@ -196,9 +196,10 @@ public class PicturePanel extends JPanel {
 
 			BufferedImage source = original.getSubimage(x1, y1, w, h);
 
-			BufferedImage gray = new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_RGB );
+			BufferedImage gray = new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_BYTE_GRAY );
 
-			Gray.filter(source , gray);
+			//Gray.filter(source , gray);
+                        { Graphics zg = gray.getGraphics(); zg.drawImage(source, 0, 0, this); zg.dispose(); }
 
 			cci.setSourceImage(source);
 			cci.setGrayImage(gray);
