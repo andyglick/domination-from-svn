@@ -37,7 +37,7 @@ public class MapTranslator
 				MapResb = new PropertyResourceBundle( RiskUtil.openMapStream(strFile) );
 
 		}
-		catch( IOException ioe ) {
+		catch( Exception ioe ) {
 
 			try {
 				MapResb = ResourceBundle.getBundle( "net.yura.domination.engine.translation.DefaultMaps", TranslationBundle.getBundle().getLocale());
@@ -95,7 +95,7 @@ public class MapTranslator
 			CardsResb = new PropertyResourceBundle( RiskUtil.openMapStream(strFile) );
 
 
-		} catch( IOException ioe ) {
+		} catch( Exception ioe ) {
 
 		    if ( INstrFile.endsWith("/risk.cards") || INstrFile.endsWith("\\risk.cards") ) { // only use this with the default cards file
 			//load default cards translation bundle

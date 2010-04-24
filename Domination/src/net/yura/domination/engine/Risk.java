@@ -338,7 +338,8 @@ public class Risk extends Thread {
 								output=resb.getString( "core.newgame.created");
 							}
 							catch (Exception e) {
-								output=resb.getString( "core.newgame.error") + " " + e.getMessage();
+e.printStackTrace();
+								output=resb.getString( "core.newgame.error") + " " + e.toString();
 							}
 						//}
 						//else {
@@ -469,7 +470,6 @@ public class Risk extends Thread {
 								output="AccessControlException:\n"+resb.getString( "core.error.applet");
 							}
 							catch (Exception e) { // catch not being able to make a new game, so game is null
-
 								output=resb.getString( "core.join.error.create")+" "+e.toString();
 							}
 
@@ -635,7 +635,7 @@ public class Risk extends Thread {
 					out.close();
 
 				}
-				catch (Exception e) {
+				catch (Throwable e) {
 					System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
 					e.printStackTrace();
 				}
