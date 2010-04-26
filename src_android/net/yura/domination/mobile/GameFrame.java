@@ -97,35 +97,34 @@ public class GameFrame extends Frame {
 
                 public boolean processKeyEvent(KeyEvent key) {
 
+                    if (key.isDownAction(Canvas.UP) || key.isDownAction(Canvas.DOWN) || key.justReleasedAction(Canvas.UP) || key.justReleasedAction(Canvas.DOWN)) {
+                        if (key.justReleasedAction(Canvas.UP)) {
 
-                    if (key.justReleasedAction(Canvas.UP)) {
+                                if (pointer < 0) {
+                                        //Toolkit.getDefaultToolkit().beep();
+                                }
+                                else {
+                                        if (pointer == history.size()-1) { temptext=Command.getText(); }
+                                        Command.setText( (String)history.elementAt(pointer) );
+                                        pointer--;
+                                }
+                        }
+                        else if(key.justReleasedAction(Canvas.DOWN)) {
 
-                            if (pointer < 0) {
-                                    //Toolkit.getDefaultToolkit().beep();
-                            }
-                            else {
-                                    if (pointer == history.size()-1) { temptext=Command.getText(); }
-                                    Command.setText( (String)history.elementAt(pointer) );
-                                    pointer--;
-                            }
-                            return true;
-                    }
-                    else if(key.justReleasedAction(Canvas.DOWN)) {
-
-                            if (pointer > history.size()-2 ) {
-                                    //Toolkit.getDefaultToolkit().beep();
-                            }
-                            else if (pointer == history.size()-2 ) {
-                                    Command.setText(temptext);
-                                    pointer++;
-                            }
-                            else {
-                                    pointer=pointer+2;
-                                    Command.setText( (String)history.elementAt(pointer) );
-                                    pointer--;
-                            }
-                            return true;
-
+                                if (pointer > history.size()-2 ) {
+                                        //Toolkit.getDefaultToolkit().beep();
+                                }
+                                else if (pointer == history.size()-2 ) {
+                                        Command.setText(temptext);
+                                        pointer++;
+                                }
+                                else {
+                                        pointer=pointer+2;
+                                        Command.setText( (String)history.elementAt(pointer) );
+                                        pointer--;
+                                }
+                        }
+                        return true;
                     }
                     else {
                             pointer = history.size()-1;
@@ -329,7 +328,7 @@ public class GameFrame extends Frame {
             };
 
             Submit.addActionListener( readCommand );
-            //Command.addActionListener( readCommand );
+            Command.addActionListener( readCommand );
 
 
             //Command.addKeyListener( new CommandKeyAdapter(this) );
