@@ -212,6 +212,8 @@ public class GameFrame extends Frame {
                             guiMain.remove(Pix);
                             guiMain.add(gp);
 
+                            guiMain.revalidate();
+                            guiMain.repaint();
                     }
 
                     /**
@@ -222,6 +224,8 @@ public class GameFrame extends Frame {
                             guiMain.remove(gp);
                             guiMain.add(Pix);
 
+                            guiMain.revalidate();
+                            guiMain.repaint();
                     }
 
             };
