@@ -201,8 +201,9 @@ public class PicturePanel extends Panel {
                         ColorMatrix cm = new ColorMatrix();
                         cm.setSaturation(0);
 
-                        Image gray = Image.createImage(source,cm);
+                        Image gray = Image.createImage(w, h);
 
+                        Image.filter(source,gray,cm);
                         //Gray.filter(source , gray);
                         //{ Graphics zg = gray.getGraphics(); zg.drawImage(source, 0, 0, 0); }
 
@@ -721,7 +722,7 @@ public class PicturePanel extends Panel {
 
                         }
 
-                        highlightA = Image.createImage(normalA, HighLight);
+                        Image.filter(normalA, highlightA, HighLight);
                         //HighLight.filter( normalA , highlightA );
 
                         if (view != VIEW_CONTINENTS) { Graphics zg = normalB.getGraphics(); zg.drawImage(normalA,0,0,0); }
@@ -1040,11 +1041,11 @@ public class PicturePanel extends Panel {
                 int w=ci.getWidth();
                 int h=ci.getHeight();
 
-                //Image pictureA = Image.createImage(w, h);
+                Image pictureA = Image.createImage(w, h);
 
                 ColorMatrix HighLight = RescaleOp( 0.5f, -1.0f);
                 //HighLight.filter( ci.getGrayImage() , pictureA );
-                Image pictureA = Image.createImage( ci.getGrayImage() , HighLight );
+                Image.filter( ci.getGrayImage() ,pictureA, HighLight );
 
                 Image pictureB = Image.createImage(w, h);
 
