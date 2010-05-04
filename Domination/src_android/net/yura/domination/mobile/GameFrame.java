@@ -12,6 +12,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.border.LineBorder;
@@ -147,17 +148,24 @@ public class GameFrame extends Frame {
                      * @param redrawNeeded If frame needs to be redrawn
                      * @param repaintNeeded If frame needs to be repainted
                      */
-                    public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
+                    public void sendMessage(final String output,final boolean redrawNeeded,final boolean repaintNeeded) {
+                            DesktopPane.invokeLater( new Runnable() {
+                                @Override
+                                public void run() {
+                                    Console.append(output+"\n");
 
-                            Console.append(output+"\n");
+                                    if (Console.getHeight() > 10000) {
+                                        Console.setText("");
+                                    }
 
-                            if (redrawNeeded) {
-                                    pprepaintCountries();
-                            }
-                            if (repaintNeeded) {
-                                    repaint();
-                            }
-
+                                    if (redrawNeeded) {
+                                            pprepaintCountries();
+                                    }
+                                    if (repaintNeeded) {
+                                            repaint();
+                                    }
+                                }
+                            });
                     }
 
                     /**
