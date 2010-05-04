@@ -16,7 +16,7 @@ public class DominationMidlet extends Midlet {
 
         RiskUtil.streamOpener = new RiskMiniIO();
 
-        Risk risk = new Risk("risk.map","risk.cards");
+        Risk risk = new Risk("luca.map","risk.cards");
 
 
 

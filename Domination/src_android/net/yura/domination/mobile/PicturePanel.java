@@ -340,7 +340,7 @@ public class PicturePanel extends Panel {
                         g2.drawImage(CountryImages[b-1].getHighLightImage() ,CountryImages[b-1].getX1() ,CountryImages[b-1].getY1() );
 
                         Color ac = new Color( game.getAttacker().getOwner().getColor() );
-                        g2.setColor( new Color(ac.getRed(),ac.getGreen(), ac.getBlue(), 150).getRGB() );
+                        int argb = new Color(ac.getRed(),ac.getGreen(), ac.getBlue(), 150).getRGB();
                         //g2.setStroke(new BasicStroke(3));
 
                         if ( Math.abs( game.getAttacker().getX() - game.getDefender().getX() ) > (map.length / 2) ) {
@@ -350,8 +350,8 @@ public class PicturePanel extends Panel {
                                     Polygon pol1 = makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()+map.length, ((Country)game.getDefender()).getY(), r );
                                     Polygon pol2 = makeArrow( game.getAttacker().getX()-map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
 
-                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, g2.getColor() );
-                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, g2.getColor());
+                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
+                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
 
                                 }
                                 else { // the attacker is on the left
@@ -359,8 +359,8 @@ public class PicturePanel extends Panel {
                                     Polygon pol1 = makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()-map.length, ((Country)game.getDefender()).getY(), r );
                                     Polygon pol2 = makeArrow( game.getAttacker().getX()+map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
 
-                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, g2.getColor() );
-                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, g2.getColor());
+                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
+                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
                                 }
 
                         }
@@ -368,7 +368,7 @@ public class PicturePanel extends Panel {
 
                             Polygon pol1 = makeArrow( ((Country)game.getAttacker()).getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
 
-                            g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, g2.getColor() );
+                            g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
 
                         }
 
@@ -382,7 +382,7 @@ public class PicturePanel extends Panel {
 
                         if ( ((Player)t.getOwner()) != null ) {
 
-                                g2.setColor( new Color( ((Player)t.getOwner()).getColor() ).getRGB() );
+                                g.setARGBColor( new Color( ((Player)t.getOwner()).getColor() ).getRGB() );
 
                                 Ellipse2D ellipse = new Ellipse2D.Double();
                                 ellipse.setFrame( t.getX()-r , t.getY()-r , (r*2), (r*2) );
@@ -390,7 +390,7 @@ public class PicturePanel extends Panel {
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
 
-                                g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ).getRGB() );
+                                g.setARGBColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ).getRGB() );
 
                                 g2.setFont( font );
                                 int h = t.getY() -(font.getHeight()/2 -1);
@@ -418,13 +418,13 @@ public class PicturePanel extends Panel {
                                 if ( ((Player)players.elementAt(c)).getCapital() !=null ) {
                                         Country capital = ((Country)((Player)players.elementAt(c)).getCapital());
 
-                                        g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) ).getRGB() );
+                                        g.setARGBColor( new Color( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) ).getRGB() );
 
                                         Ellipse2D ellipse = new Ellipse2D.Double();
                                         ellipse.setFrame( capital.getX()-10 , capital.getY()-10 , 19, 19);
                                         g2.drawArc( (int)ellipse.getX(), (int)ellipse.getY(), (int)ellipse.getWidth(), (int)ellipse.getHeight(), 0, 360);
 
-                                        g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ).getRGB() );
+                                        g.setARGBColor( new Color( ((Player)players.elementAt(c)).getColor() ).getRGB() );
 
                                         Ellipse2D ellipse2 = new Ellipse2D.Double();
                                         ellipse2.setFrame( capital.getX()-12 , capital.getY()-12 , 23, 23);
@@ -717,7 +717,7 @@ public class PicturePanel extends Panel {
                         else {
 
                                 tempg.drawImage( ci.getGrayImage(), 0, 0, 0);
-                                tempg.setColor( val.getRGB() );
+                                DirectUtils.getDirectGraphics(tempg).setARGBColor( val.getRGB() );
                                 tempg.fillRect(0,0,w,h);
 
                         }
@@ -1057,7 +1057,7 @@ public class PicturePanel extends Panel {
 
                         Color ownerColor = new Color( ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor() );
 
-                        g.setColor( new Color(ownerColor.getRed(), ownerColor.getGreen(), ownerColor.getBlue(), 100).getRGB() );
+                        DirectUtils.getDirectGraphics(g).setARGBColor( new Color(ownerColor.getRed(), ownerColor.getGreen(), ownerColor.getBlue(), 100).getRGB() );
                         g.fillRect(0,0,w,h);
 
                 }
@@ -1103,9 +1103,9 @@ public class PicturePanel extends Panel {
 
                         if (name!=null) {
 
-                                g.setColor( new Color(255,255,255, 150).getRGB() );
+                                g.setARGBColor( new Color(255,255,255, 150).getRGB() );
                                 g.fillRect(0,0,203,20);
-                                g.setColor( Color.BLACK.getRGB() );
+                                g.setARGBColor( Color.BLACK.getRGB() );
                                 g.drawString(name,5,15,0);
 
                         }
