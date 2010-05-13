@@ -1,4 +1,4 @@
-package net.yura.domination.mobile;
+package net.yura.domination.mobile.simplegui;
 
 import java.util.Vector;
 
@@ -11,6 +11,7 @@ import and.awt.Dimension;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;

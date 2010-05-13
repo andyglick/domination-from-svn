@@ -1,7 +1,8 @@
-package net.yura.domination.mobile;
+package net.yura.domination.mobile.simplegui;
 
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
