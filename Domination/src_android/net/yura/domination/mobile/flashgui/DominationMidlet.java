@@ -19,11 +19,7 @@ public class DominationMidlet extends Midlet {
 
         Risk risk = new Risk("luca.map","risk.cards");
 
-        MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter();
-
-        risk.addRiskListener( adapter );
-
-        MiniFlashGUI gui = new MiniFlashGUI();
+        MiniFlashGUI gui = new MiniFlashGUI(risk);
 
         gui.setMaximum(true);
         gui.setVisible(true);

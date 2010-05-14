@@ -11,6 +11,7 @@ import and.awt.Dimension;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
@@ -613,6 +614,7 @@ public class GameFrame extends Frame {
     public void openAbout() {
 
             //RiskUIUtil.openAbout(RiskGUI.this,product, version);
+        MiniUtil.showAbout();
 
     }
 
