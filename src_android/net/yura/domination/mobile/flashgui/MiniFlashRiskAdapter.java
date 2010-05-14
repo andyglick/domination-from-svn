@@ -2,8 +2,18 @@ package net.yura.domination.mobile.flashgui;
 
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.Panel;
 
 public class MiniFlashRiskAdapter implements RiskListener {
+
+    private Frame mainFrame;
+    private Panel mainMenu;
+
+    public MiniFlashRiskAdapter(Frame mainFrame,Panel mainMenu) {
+        this.mainFrame = mainFrame;
+        this.mainMenu = mainMenu;
+    }
 
     @Override
     public void addPlayer(int type, String name, int color, String ip) {
