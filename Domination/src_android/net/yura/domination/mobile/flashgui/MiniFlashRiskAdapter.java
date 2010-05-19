@@ -9,6 +9,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     private Frame mainFrame;
     private Panel mainMenu;
+    private Panel newGame;
 
     public MiniFlashRiskAdapter(Frame mainFrame,Panel mainMenu) {
         this.mainFrame = mainFrame;
@@ -53,8 +54,11 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void newGame(boolean t) {
-        // TODO Auto-generated method stub
+        if (newGame==null) {
 
+        }
+        mainFrame.setContentPane( newGame );
+        mainFrame.setTitle("TODO");
     }
 
     @Override

@@ -25,6 +25,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.plaf.Style;
 
@@ -182,6 +183,8 @@ public class PicturePanel extends Panel {
                 //ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
                 //ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
+                Icon original1 = new Icon(original);
+
                 // create the bufferd image for each country
                 for (int c=0; c < CountryImages.length ; c++) {
 
@@ -196,18 +199,18 @@ public class PicturePanel extends Panel {
 
                         // System.out.print( "Country: "+ (c+1) +" X1: "+ x1 +" Y1: "+y1 +" Width: "+ w +" Height: "+ h +"\n");
 
-                        Image source = Image.createImage(original,x1, y1, w, h,0);
+                        Icon source = original1.getSubimage(x1, y1, w, h);
 
                         ColorMatrix cm = new ColorMatrix();
                         cm.setSaturation(0);
 
                         Image gray = Image.createImage(w, h);
 
-                        Image.filter(source,gray,cm);
+                        Image.filter(source.getImage(),gray,cm);
                         //Gray.filter(source , gray);
                         //{ Graphics zg = gray.getGraphics(); zg.drawImage(source, 0, 0, 0); }
 
-                        cci.setSourceImage(source);
+                        cci.setSourceImage( source );
                         cci.setGrayImage(gray);
 
                         cci.setNormalImage( Image.createImage(w, h) );
@@ -711,7 +714,8 @@ public class PicturePanel extends Panel {
 
                         if (view == VIEW_CONTINENTS) {
 
-                                tempg.drawImage( ci.getSourceImage() ,0,0,0 );
+                                //tempg.drawImage( ci.getSourceImage() ,0,0,0 );
+                                ci.getSourceImage().paintIcon(this, new Graphics2D(tempg), 0, 0);
 
                         }
                         else {
@@ -825,7 +829,7 @@ public class PicturePanel extends Panel {
                 private int y1;
                 private int x2;
                 private int y2;
-                private Image SourceImage;
+                private Icon SourceImage;
                 private Image GrayImage;
                 private Image normalImage;
                 private Image HighLightImage;
@@ -876,7 +880,7 @@ public class PicturePanel extends Panel {
                  * Sets the source image
                  * @param a Image buffered
                  */
-                public void setSourceImage(Image a) {
+                public void setSourceImage(Icon a) {
                         SourceImage=a;
                 }
 
@@ -936,7 +940,7 @@ public class PicturePanel extends Panel {
                  * Gets the source image
                  * @return BufferedImage Returns the source image
                  */
-                public Image getSourceImage() {
+                public Icon getSourceImage() {
                         return SourceImage;
                 }
 

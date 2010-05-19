@@ -8,12 +8,23 @@ import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.plaf.MetalLookAndFeel;
+import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 
 public class DominationMidlet extends Midlet {
 
     @Override
     public void initialize(DesktopPane rootpane) {
-        rootpane.setLookAndFeel( new MetalLookAndFeel() );
+        //rootpane.setLookAndFeel( new MetalLookAndFeel() );
+
+        SynthLookAndFeel synth = new SynthLookAndFeel();
+        try {
+            synth.load( getClass().getResourceAsStream("/synthSkin.xml") );
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        rootpane.setLookAndFeel( synth );
+
 
         RiskUtil.streamOpener = new RiskMiniIO();
 
