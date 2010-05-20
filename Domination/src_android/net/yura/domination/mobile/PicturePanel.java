@@ -112,6 +112,8 @@ public class PicturePanel extends Panel {
 
                 RiskGame game = myrisk.getGame();
 
+                original = null;
+
                 Image m = Image.createImage(RiskUtil.openMapStream(game.getImageMap()) );
                 Image O = Image.createImage(RiskUtil.openMapStream(game.getImagePic()) );
 
@@ -152,12 +154,11 @@ public class PicturePanel extends Panel {
 
                 countryImage cci;
 
-
+                int[] pixels = new int[m.getWidth()];
 
                 // create a very big 2d array with all the data from the image map
                 for(int y=0; y < m.getHeight(); y++) {
 
-                        int[] pixels = new int[m.getWidth()];
                         m.getRGB(pixels,0,m.getWidth(),0,y,m.getWidth(),1);
 
                         for(int x=0; x < m.getWidth(); x++) {
