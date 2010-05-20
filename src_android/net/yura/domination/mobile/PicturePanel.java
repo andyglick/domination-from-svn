@@ -54,7 +54,7 @@ public class PicturePanel extends Panel {
         private Image original;
         private Image img;
         private Image tempimg;
-        private int[][] map;
+        private byte[][] map;
         private int c1,c2,cc;
 
         private Font font;
@@ -100,7 +100,7 @@ public class PicturePanel extends Panel {
                 img = Image.createImage(x, y);
                 tempimg = Image.createImage(x, y);
 
-                map = new int[x][y];
+                map = new byte[x][y];
             }
 
         }
@@ -152,19 +152,21 @@ public class PicturePanel extends Panel {
 
                 countryImage cci;
 
-                int[] pixels = new int[m.getWidth()*m.getHeight()];
-                m.getRGB(pixels,0,m.getWidth(),0,0,m.getWidth(),m.getHeight());
+
 
                 // create a very big 2d array with all the data from the image map
-                for(int x=0; x < m.getWidth(); x++) {
+                for(int y=0; y < m.getHeight(); y++) {
 
-                        for(int y=0; y < m.getHeight(); y++) {
+                        int[] pixels = new int[m.getWidth()];
+                        m.getRGB(pixels,0,m.getWidth(),0,y,m.getWidth(),1);
 
-                                int num = pixels[ (m.getWidth()*y) + x ] & 0xff; // (m.getRGB(x,y))&0xff;
+                        for(int x=0; x < m.getWidth(); x++) {
+
+                                int num = pixels[ x ] & 0xff; // (m.getRGB(x,y))&0xff;
 
                                 // if ( num > noc && num !=NO_COUNTRY ) System.out.print("map error: "+x+" "+y+"\n"); // testing map
 
-                                map[x][y]=num;
+                                map[x][y]= (byte) (num - 128); // as byte is signed we have to use this
 
                                 if ( num != NO_COUNTRY ) {
 
@@ -735,7 +737,7 @@ public class PicturePanel extends Panel {
 
                         for(int y=y1; y <= y2; y++) {
                                 for(int x=0; x < w; x++) {
-                                        if (map[x+x1][y] != (c+1) ) {
+                                        if (map[x+x1][y] + 128 != (c+1) ) {
                                                 normalB.setRGB( x, (y-y1), 0); // clear the un-needed area!
                                                 highlightB.setRGB( x, (y-y1), 0); // clear the un-needed area!
                                         }
@@ -774,7 +776,7 @@ public class PicturePanel extends Panel {
                         return NO_COUNTRY;
                 }
 
-                return map[x][y];
+                return map[x][y] + 128;
         }
 
         /**
@@ -1068,7 +1070,7 @@ public class PicturePanel extends Panel {
 
                 for(int y=y1; y <= y2; y++) {
                         for(int x=0; x <= w-1; x++) {
-                                if (map[x+x1][y] != (i+1) ) {
+                                if (map[x+x1][y] + 128 != (i+1) ) {
                                         pictureB.setRGB( x, (y-y1), 0); // clear the un-needed area!
                                 }
                         }
