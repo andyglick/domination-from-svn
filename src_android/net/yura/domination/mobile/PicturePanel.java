@@ -91,9 +91,9 @@ public class PicturePanel extends Panel {
 
                 //System.out.println("MAKING NEW SIZE!!!!");
 
-                Dimension size = new Dimension(x,y);
+                //Dimension size = new Dimension(x,y);
 
-                setPreferredSize(size.width,size.height);
+                setPreferredSize(x,y);
                 //setMinimumSize(size);
                 //setMaximumSize(size);
 
@@ -112,7 +112,9 @@ public class PicturePanel extends Panel {
 
                 RiskGame game = myrisk.getGame();
 
+                // clean up before we load new images
                 original = null;
+                CountryImages = null;
 
                 Image m = Image.createImage(RiskUtil.openMapStream(game.getImageMap()) );
                 Image O = Image.createImage(RiskUtil.openMapStream(game.getImagePic()) );
@@ -159,6 +161,7 @@ public class PicturePanel extends Panel {
                 // create a very big 2d array with all the data from the image map
                 for(int y=0; y < m.getHeight(); y++) {
 
+                        // load line by line to not use up too much mem
                         m.getRGB(pixels,0,m.getWidth(),0,y,m.getWidth(),1);
 
                         for(int x=0; x < m.getWidth(); x++) {
