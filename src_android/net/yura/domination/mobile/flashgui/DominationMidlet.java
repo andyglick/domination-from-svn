@@ -18,7 +18,7 @@ public class DominationMidlet extends Midlet {
 
         SynthLookAndFeel synth = new SynthLookAndFeel();
         try {
-            synth.load( getClass().getResourceAsStream("/synthSkin.xml") );
+            synth.load( getClass().getResourceAsStream("/domFlash.xml") );
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
