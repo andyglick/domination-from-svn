@@ -7,15 +7,13 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import and.awt.Color;
-import and.awt.Dimension;
 import and.awt.Polygon;
 import and.awt.geom.Ellipse2D;
-//import and.awt.Polygon;
-//import and.awt.geom.Ellipse2D;
 
 import android.graphics.ColorMatrix;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
@@ -28,7 +26,6 @@ import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.plaf.Style;
-
 
 /**
  * <p> Picture Panel </p>

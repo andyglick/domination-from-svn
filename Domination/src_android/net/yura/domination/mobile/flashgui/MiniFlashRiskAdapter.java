@@ -7,17 +7,68 @@ import net.yura.mobile.gui.components.Panel;
 
 public class MiniFlashRiskAdapter implements RiskListener {
 
-    private Frame mainFrame;
-    private Panel mainMenu;
-    private Panel newGame;
+    private MiniFlashGUI mainFrame;
 
-    public MiniFlashRiskAdapter(Frame mainFrame,Panel mainMenu) {
+    public MiniFlashRiskAdapter(MiniFlashGUI mainFrame) {
         this.mainFrame = mainFrame;
-        this.mainMenu = mainMenu;
     }
 
     @Override
+    public void newGame(boolean t) {
+        mainFrame.openNewGame(t);
+    }
+
+    @Override
+    public void closeGame() {
+        mainFrame.openMainMneu();
+    }
+
+    @Override
+    public void sendMessage(String output, boolean a, boolean b) {
+        // TODO Auto-generated method stub
+
+    }
+
+    // ======================= game setup =============================
+
+    @Override
     public void addPlayer(int type, String name, int color, String ip) {
+        // TODO Auto-generated method stub
+
+    }
+    @Override
+    public void delPlayer(String name) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void showMapPic(RiskGame p) {
+        // TODO Auto-generated method stub
+
+    }
+    @Override
+    public void showCardsFile(String c, boolean m) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void startGame(boolean s) {
+        // TODO Auto-generated method stub
+
+    }
+
+    // ========================= in game ==============================
+
+    @Override
+    public void needInput(int s) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void noInput() {
         // TODO Auto-generated method stub
 
     }
@@ -29,58 +80,18 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void closeBattle() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void closeGame() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void delPlayer(String name) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void needInput(int s) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void newGame(boolean t) {
-        if (newGame==null) {
-
-        }
-        mainFrame.setContentPane( newGame );
-        mainFrame.setTitle("TODO");
-    }
-
-    @Override
-    public void noInput() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void openBattle(int c1num, int c2num) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void sendDebug(String a) {
-        // TODO Auto-generated method stub
+    public void closeBattle() {
 
     }
 
     @Override
-    public void sendMessage(String output, boolean a, boolean b) {
+    public void sendDebug(String a) {
         // TODO Auto-generated method stub
 
     }
@@ -116,12 +127,6 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void showCardsFile(String c, boolean m) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void showDice(int n, boolean w) {
         // TODO Auto-generated method stub
 
@@ -134,19 +139,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void showMapPic(RiskGame p) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void showMessageDialog(String a) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void startGame(boolean s) {
         // TODO Auto-generated method stub
 
     }
