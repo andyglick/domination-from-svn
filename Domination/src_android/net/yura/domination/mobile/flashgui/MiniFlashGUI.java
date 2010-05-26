@@ -8,6 +8,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 
@@ -63,19 +64,26 @@ public class MiniFlashGUI extends Frame {
         openMainMneu();
     }
 
-    public void openMainMneu() {
-
-        setTitle( resBundle.getProperty("mainmenu.title") );
+    private XULLoader getPanel(String xmlfile) {
 
         XULLoader loader;
         try {
-            loader = XULLoader.load( getClass().getResourceAsStream("/mainmenu.xml") , al, resBundle);
+            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , al, resBundle);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);
         }
+        return loader;
 
-        setContentPane( (Panel)loader.getRoot() );
+    }
+
+    public void openMainMneu() {
+
+        setTitle( resBundle.getProperty("mainmenu.title") );
+
+        XULLoader loader = getPanel("/mainmenu.xml");
+
+        setContentPane( new ScrollPane( loader.getRoot() ) );
 
         revalidate();
         repaint();
@@ -92,15 +100,9 @@ public class MiniFlashGUI extends Frame {
             //resetplayers.setVisible(false);
         }
 
-        XULLoader loader;
-        try {
-            loader = XULLoader.load( getClass().getResourceAsStream("/newgame.xml") , al, resBundle);
-        }
-        catch(Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        XULLoader loader = getPanel("/newgame.xml");
 
-        setContentPane( (Panel)loader.getRoot() );
+        setContentPane( new ScrollPane( loader.getRoot() ) );
 
         revalidate();
         repaint();

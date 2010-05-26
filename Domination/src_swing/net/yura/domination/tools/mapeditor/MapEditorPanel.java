@@ -99,7 +99,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	    }
 	}
 
-	public void setImagePic(BufferedImage a) {
+	public void setImagePic(BufferedImage a,boolean checkmap) {
 
 		if (a.getWidth()!=PicturePanel.PP_X || a.getHeight()!=PicturePanel.PP_Y) {
 
@@ -108,6 +108,23 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 		pic = a;
 
+                if (checkmap && (pic.getWidth()!=map.getWidth() || pic.getHeight()!=map.getHeight())) {
+
+                    int result = JOptionPane.showConfirmDialog(this,
+                            "The image size does not match the size of the imgmap, would you like to update the imgmap size?",
+                            "?",JOptionPane.YES_NO_OPTION);
+
+                    if (result==JOptionPane.YES_OPTION) {
+                        BufferedImage newmap = new BufferedImage(pic.getWidth(), pic.getHeight(), map.getType());
+                        Graphics g = newmap.getGraphics();
+                        g.setColor( Color.WHITE );
+                        g.fillRect(0, 0, newmap.getWidth(), newmap.getHeight());
+                        g.drawImage(map, 0, 0, this);
+                        g.dispose();
+                        setImageMap(newmap);
+                    }
+                }
+
 		zoom(zoom);
 
 	}
@@ -115,9 +132,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	public void setImageMap(BufferedImage a) {
 
 		if (a.getWidth() != pic.getWidth() || a.getHeight() != pic.getHeight() ) {
-
 			JOptionPane.showMessageDialog(this,"ImageMap does not match ImagePic size!\nThey should match for the game to work!");
-
 		}
 
 		map = a;
@@ -129,9 +144,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		//g.dispose();
 
 		drawImage = new BufferedImage(a.getWidth(),a.getHeight(),BufferedImage.TYPE_BYTE_BINARY,
-
 			new IndexColorModel(1, 2, new byte[] { 0, (byte)0xff }, new byte[] { 0, 0 }, new byte[] { 0, 0 }, 0)
-
 		);
 
 		box = new Rectangle( new Dimension(a.getWidth(), a.getHeight()) );

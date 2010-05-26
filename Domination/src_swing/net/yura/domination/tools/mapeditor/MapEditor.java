@@ -362,7 +362,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		editPanel.setMap(myMap);
 		views.setMap(myMap);
 
-		editPanel.setImagePic(ip);
+		editPanel.setImagePic(ip,false);
 		editPanel.setImageMap(im);
 
 		save.setEnabled(true);
@@ -515,7 +515,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			BufferedImage img = getNewImage();
 
 			if (img!=null) {
-				editPanel.setImagePic(img);
+				editPanel.setImagePic(img,true);
 				revalidate();
 				repaint();
 			}

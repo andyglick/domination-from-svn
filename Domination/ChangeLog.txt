@@ -20,6 +20,7 @@ Risk 1.1.0.0
 	italian card rules added
 	3 dice to defend option added
 	core Domination engine split from anything UI related in the hope to create a Risk for android
+	in the map editor, if a new image is loaded with a different size to the imgmap, it asks if you want to update the size of the imgmap
 
 Risk 1.0.9.8
 
