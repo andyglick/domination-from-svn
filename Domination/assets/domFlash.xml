@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE synth SYSTEM "SynthME.dtd">
 <synth>
 
     <style id="backingStyle">
-	<state>
-	    <font name="Dialog" size="14"/>
-	    <color value="#D8D987" type="BACKGROUND"/>
-	    <color value="#FF0000" type="FOREGROUND"/>
-	</state>
+	   <state>
+	       <font name="Dialog" size="14"/>
+	       <color value="#D8D987" type="BACKGROUND"/>
+	       <color value="#FF0000" type="FOREGROUND"/>
+	   </state>
     </style>
-    <bind style="backingStyle" key=".*"/>
+    <bind style="backingStyle" type="region" key=".*"/>
+
+
+
+    <style id="contentPane">
+	   <insets top="6" left="6" bottom="6" right="6"/>
+	   <opaque value="false"/>
+	   <state>
+	      <imagePainter path="/patternRed.png" sourceInsets="43 43 43 43" paintCenter="true"/>
+	   </state>
+    </style>
+    <bind style="contentPane" type="region" key="Frame"/>
+
+
+
+    <style id="panel">
+        <opaque value="false"/>
+    </style>
+    <bind style="panel" type="region" key="Panel"/>
+    <bind style="panel" type="region" key="ScrollPane"/>
+    <bind style="panel" type="region" key="Label"/>
+
 
 
     <style id="scrollpane">
@@ -36,7 +56,7 @@
 -->
       </state>
     </style>
-    <bind style="scrollpane" key="ScrollPane"/>
+    <bind style="scrollpane" type="region" key="ScrollPane"/>
 
 
     <style id="textfield">
@@ -48,7 +68,7 @@
 	<imagePainter path="/textfield.png" sourceInsets="4 6 4 6" paintCenter="false"/>
 	</state>
     </style>
-    <bind style="textfield" key="TextField"/>
+    <bind style="textfield" type="region" key="TextField"/>
 
 
     <style id="button">
@@ -71,7 +91,7 @@
 	</state>
         -->
     </style>
-    <bind style="button" key="Button"/>
+    <bind style="button" type="region" key="Button"/>
 
 
     <style id="checkbox">
@@ -84,6 +104,6 @@
 	    <property key="icon" value="check_on"/>
 	</state>
     </style>
-    <bind style="checkbox" key="CheckBox"/>
+    <bind style="checkbox" type="region" key="CheckBox"/>
 
 </synth>
