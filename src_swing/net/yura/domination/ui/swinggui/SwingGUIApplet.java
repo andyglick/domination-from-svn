@@ -34,14 +34,13 @@ public class SwingGUIApplet extends JApplet {
 			e.printStackTrace();
 		}
 */
-		String lang = getParameter("lang");
-		if (lang !=null) {
-
-			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
-
-		}
 
                 RiskUIUtil.setupMapsDir(this);
+
+		String lang = getParameter("lang");
+		if (lang !=null) {
+			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
+		}
 
         	setContentPane( new SwingGUIPanel( new Risk() ) );
 	}

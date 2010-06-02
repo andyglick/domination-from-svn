@@ -36,14 +36,13 @@ public class FlashGUIApplet extends JApplet {
 			e.printStackTrace();
 		}
 */
-		String lang = getParameter("lang");
-		if (lang !=null) {
-
-			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
-
-		}
 
                 RiskUIUtil.setupMapsDir(this);
+
+		String lang = getParameter("lang");
+		if (lang !=null) {
+			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
+		}
 
         	setContentPane( new MainMenu( new Risk(), (Frame)SwingUtilities.getAncestorOfClass(Frame.class, this) ) );
 
