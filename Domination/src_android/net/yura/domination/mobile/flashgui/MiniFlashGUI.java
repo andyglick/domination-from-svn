@@ -5,6 +5,8 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.ButtonGroup;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
@@ -46,6 +48,25 @@ public class MiniFlashGUI extends Frame {
             }
             else if ("start server".equals(actionCommand)) {
                 OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
+            }
+            else if ("closegame".equals(actionCommand)) {
+                myrisk.parser("closegame");
+            }
+            else if ("startgame".equals(actionCommand)) {
+
+                ButtonGroup GameType = (ButtonGroup)newgame.getGroups().get("GameType");
+                ButtonGroup CardType = (ButtonGroup)newgame.getGroups().get("CardType");
+
+                Button autoplaceall = (Button)newgame.find("autoplaceall");
+                Button recycle = (Button)newgame.find("recycle");
+
+                myrisk.parser("startgame "+
+                        GameType.getSelection().getActionCommand()+" "+
+                        CardType.getSelection().getActionCommand()+
+                        ((autoplaceall!=null&&autoplaceall.isSelected()?" "+autoplaceall.getActionCommand():""))+
+                        ((recycle!=null&&recycle.isSelected()?" "+recycle.getActionCommand():""))
+                        );
+
             }
             else {
                 System.out.println("Unknown command: "+actionCommand);
@@ -89,6 +110,8 @@ public class MiniFlashGUI extends Frame {
         repaint();
     }
 
+    XULLoader newgame;
+
     public void openNewGame(boolean localgame) {
 
         if (localgame) {
@@ -100,9 +123,9 @@ public class MiniFlashGUI extends Frame {
             //resetplayers.setVisible(false);
         }
 
-        XULLoader loader = getPanel("/newgame.xml");
+        newgame = getPanel("/newgame.xml");
 
-        setContentPane( new ScrollPane( loader.getRoot() ) );
+        setContentPane( new ScrollPane( newgame.getRoot() ) );
 
         revalidate();
         repaint();
