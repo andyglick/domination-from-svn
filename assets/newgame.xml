@@ -20,8 +20,11 @@
         <checkbox action="italianlike" group="CardType" i18n="true" selected="true" text="newgame.cardmode.italianlike"/>
     </panel>
     <panel columns="1">
-        <checkbox action="autoplaceall" i18n="true" text="newgame.autoplace"/>
-        <checkbox action="recycle" i18n="true" text="newgame.recycle"/>
+        <checkbox action="autoplaceall" i18n="true" name="autoplaceall" text="newgame.autoplace"/>
+        <checkbox action="recycle" i18n="true" name="recycle" text="newgame.recycle"/>
     </panel>
-    <panel/>
+    <panel columns="1">
+        <button action="closegame" i18n="true" text="newgame.cancel" type="cancel"/>
+        <button action="startgame" i18n="true" text="newgame.startgame"/>
+    </panel>
 </panel>
