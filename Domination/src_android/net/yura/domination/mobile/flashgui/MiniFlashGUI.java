@@ -63,8 +63,8 @@ public class MiniFlashGUI extends Frame {
                 myrisk.parser("startgame "+
                         GameType.getSelection().getActionCommand()+" "+
                         CardType.getSelection().getActionCommand()+
-                        ((autoplaceall!=null&&autoplaceall.isSelected()?" "+autoplaceall.getActionCommand():""))+
-                        ((recycle!=null&&recycle.isSelected()?" "+recycle.getActionCommand():""))
+                        ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
+                        ((recycle!=null&&recycle.isSelected()?" recycle":""))
                         );
 
             }
