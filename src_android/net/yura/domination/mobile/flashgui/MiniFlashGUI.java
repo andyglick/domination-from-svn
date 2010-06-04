@@ -4,12 +4,12 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
+import net.yura.domination.mobile.mapchooser.MapChooser;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
-import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
@@ -67,6 +67,10 @@ public class MiniFlashGUI extends Frame {
                         ((recycle!=null&&recycle.isSelected()?" recycle":""))
                         );
 
+            }
+            else if ("choosemap".equals(actionCommand)) {
+
+                new MapChooser();
             }
             else {
                 System.out.println("Unknown command: "+actionCommand);
