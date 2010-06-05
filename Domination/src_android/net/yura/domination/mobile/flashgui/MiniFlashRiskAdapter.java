@@ -31,12 +31,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void addPlayer(int type, String name, int color, String ip) {
-        // TODO Auto-generated method stub
+        mainFrame.updatePlayers();
     }
 
     @Override
     public void delPlayer(String name) {
-        // TODO Auto-generated method stub
+        mainFrame.updatePlayers();
     }
 
     @Override
