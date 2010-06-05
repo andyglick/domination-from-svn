@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Vector;
+import java.util.prefs.Preferences;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 
 public class RiskUtil {
@@ -236,4 +239,68 @@ return Color.white;
 		openURL(new URL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yura%40yura%2enet&item_name="+GAME_NAME+"%20Donation&no_shipping=0&no_note=1&tax=0&currency_code=GBP&lc=GB&bn=PP%2dDonationsBF&charset=UTF%2d8"));
 	}
 
+        public static void loadPlayers(Risk risk) {
+
+            Preferences prefs=null;
+            try {
+                 prefs = Preferences.userNodeForPackage( RiskUtil.class );
+            }
+            catch(Throwable th) { } // security
+
+            for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
+                String nameKey = "default.player"+cc+".name";
+                String colorKey = "default.player"+cc+".color";
+                String typeKey = "default.player"+cc+".type";
+
+                String name = risk.getRiskConfig(nameKey);
+                String color = risk.getRiskConfig(colorKey);
+                String type = risk.getRiskConfig(typeKey);
+
+                if (prefs!=null) {
+                    name = prefs.get(nameKey, name);
+                    color = prefs.get(colorKey, color);
+                    type = prefs.get(typeKey, type);
+                }
+
+                if (!"".equals(name)&&!"".equals(color)&&!"".equals(type)) {
+                    risk.parser("newplayer " + type+" "+ color+" "+ name );
+                }
+            }
+
+        }
+
+        public static void savePlayers(Risk risk) {
+
+            Preferences prefs=null;
+            try {
+                 prefs = Preferences.userNodeForPackage( RiskUtil.class );
+            }
+            catch(Throwable th) { } // security
+
+            if (prefs!=null) {
+
+                Vector players = risk.getGame().getPlayers();
+
+                for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
+                    String nameKey = "default.player"+cc+".name";
+                    String colorKey = "default.player"+cc+".color";
+                    String typeKey = "default.player"+cc+".type";
+
+                    Player player = (cc<=players.size())?(Player)players.elementAt(cc-1):null;
+
+                    String name = "";
+                    String color = "";
+                    String type = "";
+
+                    if (player!=null) {
+                        name = player.getName();
+                        color = getStringForColor( player.getColor() );
+                        type = Risk.getType( player.getType() );
+                    }
+                    prefs.put(nameKey, name);
+                    prefs.put(colorKey, color);
+                    prefs.put(typeKey, type);
+                }
+            }
+        }
 }

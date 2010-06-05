@@ -12,6 +12,10 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
+Risk 1.1.0.1
+
+	in FlashGUI when u make a new game, it remembers your old player state
+
 Risk 1.1.0.0
 
 	new build system to allow for building both Risk and Domination
