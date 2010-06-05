@@ -60,6 +60,8 @@ public class PicturePanel extends Panel {
         // TODO: do not have this class, need to think of something else
         private ColorMatrix HighLight;
 
+        private double scale=1;
+
         /**
          * Creates an Picture Panel
          */
@@ -80,6 +82,24 @@ public class PicturePanel extends Panel {
 
                 setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
+        }
+
+        int[] oldintx,oldinty;
+
+        public void pointerEvent(int[] type, int[] x, int[] y) {
+            if (type.length == 2) { // always true. but just in case
+
+
+                double point1touchx = scale * x[0];
+                double point1touchy = scale * y[0];
+
+                //int xd = x[1]-x[0];
+                //int yd = y[1]-y[0];
+                //double distance = Math.sqrt(xd*xd + yd*yd);
+
+
+
+            }
         }
 
         private void setupSize(int x,int y) {
@@ -318,8 +338,8 @@ public class PicturePanel extends Panel {
 
         private double getScale() {
 
-                return Math.min(getHeight()/(double)map[0].length,getWidth()/(double)map.length);
-
+                //return Math.min(getHeight()/(double)map[0].length,getWidth()/(double)map.length);
+                return scale;
         }
 
         /**

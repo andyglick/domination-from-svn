@@ -1209,19 +1209,13 @@ e.printStackTrace();
 					if (StringT.countTokens()>=3) {
 
 						String type=GetNext();
-
 						if (type.equals("ai")) {
-
 							type = type+" "+GetNext();
 						}
 
-						int t=getType(type);
-
 						String c=GetNext();
-						int color=RiskUtil.getColor( c );
 
 						String name="";
-
 						while ( StringT.hasMoreElements() ) {
 							name = name + GetNext();
 							if ( StringT.hasMoreElements() ) { name = name + " "; }
@@ -1231,6 +1225,9 @@ e.printStackTrace();
 						// YURA:LOBBY CHANGE
 						// ( ( chatSocket != null && game.addPlayer(t, name, color, Addr) ) || ( chatSocket == null && game.addPlayer(t, name, color, "all") ) )
 						// name.replaceAll(" ","")+"#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) )
+
+						int t=getType(type);
+						int color=RiskUtil.getColor( c );
 
 						if ( color != 0 && t != -1 && !name.equals("") && (   (  unlimitedLocalMode && game.addPlayer(t, name, color, "LOCALGAME" ) ) || ( !unlimitedLocalMode && game.addPlayer(t, name, color, Addr)    )    ) ) {
 							//New player created, name: {0} color: {1}
@@ -1414,6 +1411,7 @@ e.printStackTrace();
 
 						if (game.getState() != RiskGame.STATE_NEW_GAME ) {
 
+                                                    RiskUtil.savePlayers(this);
 
 						    controller.noInput();
 
@@ -2408,29 +2406,28 @@ e.printStackTrace();
 	}
 
 	public static int getType(String type) {
-
-
 		if (type.equals("human")) {
-
 			return Player.PLAYER_HUMAN;
 		}
-
 		if (type.equals("ai easy")) {
-
 			return Player.PLAYER_AI_EASY;
 		}
-
 		if (type.equals("ai hard")) {
-
 			return Player.PLAYER_AI_HARD;
 		}
-
 		if (type.equals("ai crap")) {
-
 			return Player.PLAYER_AI_CRAP;
 		}
-
 		return -1;
+	}
+        public static String getType(int type) {
+            switch (type) {
+                case Player.PLAYER_HUMAN: return "human";
+                case Player.PLAYER_AI_EASY: return "ai easy";
+                case Player.PLAYER_AI_HARD: return "ai hard";
+                case Player.PLAYER_AI_CRAP: return "ai crap";
+                default: throw new IllegalArgumentException();
+            }
 	}
 
 	/**

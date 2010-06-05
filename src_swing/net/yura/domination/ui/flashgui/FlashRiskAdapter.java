@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
@@ -392,13 +393,13 @@ public class FlashRiskAdapter implements RiskListener {
 
 	/**
 	 * Starts the game
-	 * @param t If the game is a local game
+	 * @param localGame If the game is a local game
 	 */
-	public void newGame(boolean t) {
+	public void newGame(boolean localGame) {
 
-		menu.hideJoinDialog(t);
+		menu.hideJoinDialog(localGame);
 
-		newgameframe.setup(t);
+		newgameframe.setup(localGame);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frameSize = newgameframe.getSize();
@@ -411,7 +412,12 @@ public class FlashRiskAdapter implements RiskListener {
 		newgameframe.setVisible(true);
 		newgameframe.requestFocus();
 
-		if (t) { newgameframe.resetPlayers(); }
+		if (localGame) {
+
+                    RiskUtil.loadPlayers(myrisk);
+
+                    //newgameframe.resetPlayers();
+                }
 
 	}
 

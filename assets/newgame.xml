@@ -17,17 +17,17 @@
     <checkbox i18n="true" name="recycle" text="newgame.recycle" weightx="1"/>
     <panel>
         <label i18n="true" text="newgame.player.type.easyai" weightx="1"/>
-        <spinbox end="1" maximum="5" minimum="0" start="1" text="2"/>
+        <spinbox end="1" maximum="5" minimum="0" name="easyAI" start="1" text="2"/>
     </panel>
     <panel>
         <label i18n="true" text="newgame.player.type.hardai" weightx="1"/>
-        <spinbox end="1" maximum="5" minimum="0" start="1" text="2"/>
+        <spinbox end="1" maximum="5" minimum="0" name="hardAI" start="1" text="2"/>
     </panel>
     <panel gap="5">
         <label i18n="true" text="newgame.player.type.crapai"/>
-        <label text="0"/>
+        <label name="crapAI" text="0"/>
         <label i18n="true" text="newgame.player.type.human"/>
-        <label text="1"/>
+        <label name="human" text="1"/>
     </panel>
     <button text="Custom Players"/>
     <button action="closegame" i18n="true" text="newgame.cancel" type="cancel" weightx="1"/>

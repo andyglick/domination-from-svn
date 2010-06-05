@@ -9,8 +9,10 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.ScrollPane;
+import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 
@@ -59,6 +61,14 @@ public class MiniFlashGUI extends Frame {
 
                 Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
+
+                Label easyAI = (Label)newgame.find("easyAI");
+                Label hardAI = (Label)newgame.find("hardAI");
+                Label carpAI = (Label)newgame.find("carpAI");
+                Label human = (Label)newgame.find("human");
+
+
+                myrisk.getGame().getPlayers(); fgf
 
                 myrisk.parser("startgame "+
                         GameType.getSelection().getActionCommand()+" "+
