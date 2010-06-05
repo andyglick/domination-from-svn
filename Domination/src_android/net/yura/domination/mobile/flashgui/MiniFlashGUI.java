@@ -5,6 +5,7 @@ import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.mapchooser.MapChooser;
@@ -159,39 +160,44 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             ((Spinner)comp).addChangeListener(this);
         }
     }
+    private void removeChangeListener(String name) {
+        Component comp = newgame.find(name);
+        if (comp!=null && comp instanceof Spinner) {
+            ((Spinner)comp).removeChangeListener(this);
+        }
+    }
 
     public void updatePlayers() {
 
         Vector players = myrisk.getGame().getPlayers();
 
-        int easyAIcount=0;
-        int hardAIcount=0;
-        int crapAIcount=0;
-        int humancount=0;
+        String[] comps = new String[]{"crapAI","easyAI","hardAI","human"};
+        int[] count = new int[comps.length];
 
         for (int c=0;c<players.size();c++) {
             int type = ((Player)players.elementAt(c)).getType();
             switch(type) {
-                case Player.PLAYER_AI_CRAP: crapAIcount++; break;
-                case Player.PLAYER_AI_HARD: hardAIcount++; break;
-                case Player.PLAYER_AI_EASY: easyAIcount++; break;
-                case Player.PLAYER_HUMAN: humancount++; break;
+                case Player.PLAYER_AI_CRAP: count[0]++; break;
+                case Player.PLAYER_AI_EASY: count[1]++; break;
+                case Player.PLAYER_AI_HARD: count[2]++; break;
+                case Player.PLAYER_HUMAN: count[3]++; break;
             }
         }
 
-        Component easyAI = newgame.find("easyAI");
-        Component hardAI = newgame.find("hardAI");
-        Component crapAI = newgame.find("crapAI");
-        Component human = newgame.find("human");
+        for (int c=0;c<count.length;c++) {
+            Component comp = newgame.find(comps[c]);
+            if (comp!=null) {
+                // we want to remove the listener first as this update is not user generated
+                removeChangeListener(comps[c]);
+                comp.setValue( new Integer(count[c]) );
+                addChangeListener(comps[c]);
+            }
+        }
 
-        easyAI.setValue( new Integer(easyAIcount) );
-        hardAI.setValue( new Integer(hardAIcount) );
-        crapAI.setValue( new Integer(crapAIcount) );
-        human.setValue( new Integer(humancount) );
     }
 
     public void changeEvent(Component source, int num) {
-
+        System.out.println("changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent");
         Component easyAI = newgame.find("easyAI");
         Component hardAI = newgame.find("hardAI");
         Component crapAI = newgame.find("crapAI");
@@ -232,10 +238,40 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                 }
             }
             else if (newval>count) {
+                if (players.size() == RiskGame.MAX_PLAYERS) {
+                    // TODO del some players
+                }
 
+                String newname=null;
+                String newcolor=null;
+                for (int c=0;c<Risk.names.length;c++) {
+                    boolean badname=false;
+                    boolean badcolor=false;
+                    for (int a=0;a<players.size();a++) {
+                        if (Risk.names[c].equals(((Player)players.elementAt(a)).getName())) {
+                            badname = true;
+                        }
+                        if (RiskUtil.getColor(Risk.colors[c])==((Player)players.elementAt(a)).getColor()) {
+                            badcolor = true;
+                        }
+                    }
+                    if (newname==null && !badname) {
+                        newname = Risk.names[c];
+                    }
+                    if (newcolor==null && !badcolor) {
+                        newcolor = Risk.colors[c];
+                    }
+                    if (newname!=null && newcolor!=null) {
+                        break;
+                    }
+                }
 
-
-
+                if (newname!=null&&newcolor!=null) {
+                    myrisk.parser("newplayer " + Risk.getType(type)+" "+ newcolor+" "+ newname );
+                }
+                else {
+                    System.out.println("AAAAAAAAAAAAAAAAAAAAAAA can not add anyone, cant find anyone to add???!!!??!");
+                }
             }
 
         }

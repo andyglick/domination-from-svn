@@ -75,20 +75,19 @@ public class Risk extends Thread {
 		RiskGame.setDefaultMapAndCards(b,c);
 	}
 
+        public static final String[] types = new String[] { "human","ai easy","ai easy","ai easy","ai hard","ai hard" };
+        public static final String[] names = new String[] { RiskUtil.getGameName()+"Player","bob","fred","ted","yura","lala"};
+        public static final String[] colors = new String[] { "green","blue","red","cyan","magenta","yellow"};
+
 	public Risk() {
 		super(RiskUtil.getGameName()+"-GAME-THREAD");
 
 		resb = TranslationBundle.getBundle();
 
-		String strUsername;
-
-		//if (RiskUtil.checkForNoSandbox()) {
                 try {
-                    strUsername = System.getProperty("user.name");
+                    names[0] = System.getProperty("user.name");
 		}
-                catch(Throwable th) {
-                    strUsername = RiskUtil.getGameName()+"Player";
-                }
+                catch(Throwable th) { }
 
 		riskconfig = new Properties();
 
@@ -97,42 +96,18 @@ public class Risk extends Thread {
 		riskconfig.setProperty("default.map", RiskGame.getDefaultMap() );
 		riskconfig.setProperty("default.cards", RiskGame.getDefaultCards() );
 
-		riskconfig.setProperty("default.player1.type","human");
-		riskconfig.setProperty("default.player1.color","green");
-		riskconfig.setProperty("default.player1.name", strUsername );
-
-		riskconfig.setProperty("default.player2.type","ai easy");
-		riskconfig.setProperty("default.player2.color","blue");
-		riskconfig.setProperty("default.player2.name","bob");
-
-		riskconfig.setProperty("default.player3.type","ai easy");
-		riskconfig.setProperty("default.player3.color","red");
-		riskconfig.setProperty("default.player3.name","fred");
-
-		riskconfig.setProperty("default.player4.type","ai easy");
-		riskconfig.setProperty("default.player4.color","cyan");
-		riskconfig.setProperty("default.player4.name","ted");
-
-		riskconfig.setProperty("default.player5.type","ai hard");
-		riskconfig.setProperty("default.player5.color","magenta");
-		riskconfig.setProperty("default.player5.name","yura");
-
-		riskconfig.setProperty("default.player6.type","ai hard");
-		riskconfig.setProperty("default.player6.color","yellow");
-		riskconfig.setProperty("default.player6.name","lala");
-
+                for (int c=0;c<names.length;c++) {
+                    riskconfig.setProperty("default.player"+(c+1)+".type",types[c]);
+                    riskconfig.setProperty("default.player"+(c+1)+".color",colors[c]);
+                    riskconfig.setProperty("default.player"+(c+1)+".name", names[c] );
+                }
 
 		try {
-
-			riskconfig.load( RiskUtil.openStream("game.ini") );
-
+                    riskconfig.load( RiskUtil.openStream("game.ini") );
 		}
 		catch (Exception ex) {
-
-			// can not find file, no problem
-
+                    // can not find file, no problem
 		}
-
 
 		String randomString = "#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) );
 
