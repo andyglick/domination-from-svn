@@ -239,38 +239,49 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
             else if (newval>count) {
                 if (players.size() == RiskGame.MAX_PLAYERS) {
-                    // TODO del some players
-                }
-
-                String newname=null;
-                String newcolor=null;
-                for (int c=0;c<Risk.names.length;c++) {
-                    boolean badname=false;
-                    boolean badcolor=false;
-                    for (int a=0;a<players.size();a++) {
-                        if (Risk.names[c].equals(((Player)players.elementAt(a)).getName())) {
-                            badname = true;
-                        }
-                        if (RiskUtil.getColor(Risk.colors[c])==((Player)players.elementAt(a)).getColor()) {
-                            badcolor = true;
+                    for (int c=players.size()-1;c>=0;c--) {
+                        Player p = (Player)players.elementAt(c);
+                        if (p.getType()!=type) {
+                            p.setType( type );
+                            updatePlayers();
+                            return;
                         }
                     }
-                    if (newname==null && !badname) {
-                        newname = Risk.names[c];
-                    }
-                    if (newcolor==null && !badcolor) {
-                        newcolor = Risk.colors[c];
-                    }
-                    if (newname!=null && newcolor!=null) {
-                        break;
-                    }
-                }
-
-                if (newname!=null&&newcolor!=null) {
-                    myrisk.parser("newplayer " + Risk.getType(type)+" "+ newcolor+" "+ newname );
                 }
                 else {
-                    System.out.println("AAAAAAAAAAAAAAAAAAAAAAA can not add anyone, cant find anyone to add???!!!??!");
+                    String newname=null;
+                    String newcolor=null;
+                    for (int c=0;c<Risk.names.length;c++) {
+                        boolean badname=false;
+                        boolean badcolor=false;
+                        for (int a=0;a<players.size();a++) {
+                            if (Risk.names[c].equals(((Player)players.elementAt(a)).getName())) {
+                                badname = true;
+                            }
+                            if (RiskUtil.getColor(Risk.colors[c])==((Player)players.elementAt(a)).getColor()) {
+                                badcolor = true;
+                            }
+                            if (badname&&badcolor) {
+                                break;
+                            }
+                        }
+                        if (newname==null && !badname) {
+                            newname = Risk.names[c];
+                        }
+                        if (newcolor==null && !badcolor) {
+                            newcolor = Risk.colors[c];
+                        }
+                        if (newname!=null && newcolor!=null) {
+                            break;
+                        }
+                    }
+
+                    if (newname!=null&&newcolor!=null) {
+                        myrisk.parser("newplayer " + Risk.getType(type)+" "+ newcolor+" "+ newname );
+                    }
+                    else {
+                        throw new RuntimeException(); // this should never happen
+                    }
                 }
             }
 
