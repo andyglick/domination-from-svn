@@ -85,7 +85,19 @@ public class Risk extends Thread {
 		resb = TranslationBundle.getBundle();
 
                 try {
-                    names[0] = System.getProperty("user.name");
+                    String newName = System.getProperty("user.name");
+
+                    if (newName==null || "".equals(newName.trim())) {
+                        throw new Exception("bad user name");
+                    }
+                    else {
+                        for (int c=0;c<names.length;c++) {
+                            if (names[c].equals(newName)) {
+                                throw new Exception("name already in use");
+                            }
+                        }
+                    }
+                    names[0] = newName;
 		}
                 catch(Throwable th) { }
 
