@@ -300,7 +300,19 @@ return Color.white;
                     prefs.put(nameKey, name);
                     prefs.put(colorKey, color);
                     prefs.put(typeKey, type);
+
                 }
+
+                // on android this does not work, god knows why
+                // whats the point of including a class if its
+                // most simple and basic operation does not work?
+                try {
+                    prefs.flush();
+                }
+                catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+
             }
         }
 }

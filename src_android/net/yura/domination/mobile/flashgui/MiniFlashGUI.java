@@ -23,6 +23,7 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.BorderLayout;
+import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 
@@ -161,6 +162,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         }
 
         newgame = getPanel("/newgame.xml");
+
+        // kind of a hack
+        Component startButton = newgame.find("startButton");
+        Component cancelButton = newgame.find("cancelButton");
+        if (startButton!=null && cancelButton!=null && !cancelButton.isVisible()) {
+            ((GridBagConstraints)((Panel)startButton.getParent()).getConstraints().get(startButton)).colSpan = 2;
+        }
 
         for (int c=0;c<compsNames.length;c++) {
             addChangeListener(compsNames[c]);
