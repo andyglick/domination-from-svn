@@ -125,6 +125,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     }
 
     XULLoader newgame;
+    private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
+    private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
 
     public void openNewGame(boolean localgame) {
 
@@ -139,10 +141,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
         newgame = getPanel("/newgame.xml");
 
-        addChangeListener("easyAI");
-        addChangeListener("hardAI");
-        addChangeListener("crapAI");
-        addChangeListener("human");
+        for (int c=0;c<compsNames.length;c++) {
+            addChangeListener(compsNames[c]);
+        }
 
         setContentPane( new ScrollPane( newgame.getRoot() ) );
 
@@ -167,30 +168,30 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         }
     }
 
+
     public void updatePlayers() {
 
         Vector players = myrisk.getGame().getPlayers();
 
-        String[] comps = new String[]{"crapAI","easyAI","hardAI","human"};
-        int[] count = new int[comps.length];
+        int[] count = new int[compTypes.length];
 
         for (int c=0;c<players.size();c++) {
             int type = ((Player)players.elementAt(c)).getType();
-            switch(type) {
-                case Player.PLAYER_AI_CRAP: count[0]++; break;
-                case Player.PLAYER_AI_EASY: count[1]++; break;
-                case Player.PLAYER_AI_HARD: count[2]++; break;
-                case Player.PLAYER_HUMAN: count[3]++; break;
+            for (int a=0;a<compTypes.length;a++) {
+                if (type == compTypes[a]) {
+                    count[a]++;
+                    break;
+                }
             }
         }
 
-        for (int c=0;c<count.length;c++) {
-            Component comp = newgame.find(comps[c]);
+        for (int c=0;c<compsNames.length;c++) {
+            Component comp = newgame.find(compsNames[c]);
             if (comp!=null) {
                 // we want to remove the listener first as this update is not user generated
-                removeChangeListener(comps[c]);
+                removeChangeListener(compsNames[c]);
                 comp.setValue( new Integer(count[c]) );
-                addChangeListener(comps[c]);
+                addChangeListener(compsNames[c]);
             }
         }
 
@@ -198,23 +199,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     public void changeEvent(Component source, int num) {
         System.out.println("changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent");
-        Component easyAI = newgame.find("easyAI");
-        Component hardAI = newgame.find("hardAI");
-        Component crapAI = newgame.find("crapAI");
-        Component human = newgame.find("human");
 
         int type = -1;
-        if (source == easyAI) {
-            type = Player.PLAYER_AI_EASY;
-        }
-        else if (source == hardAI) {
-            type = Player.PLAYER_AI_HARD;
-        }
-        else if (source == crapAI) {
-            type = Player.PLAYER_AI_CRAP;
-        }
-        else if (source == human) {
-            type = Player.PLAYER_HUMAN;
+        for (int c=0;c<compsNames.length;c++) {
+            Component comp = newgame.find(compsNames[c]);
+            if (source == comp) {
+                type = compTypes[c];
+                break;
+            }
         }
 
         if (type!=-1) {
@@ -280,11 +272,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                         myrisk.parser("newplayer " + Risk.getType(type)+" "+ newcolor+" "+ newname );
                     }
                     else {
-                        throw new RuntimeException(); // this should never happen
+                        throw new RuntimeException("new name and color can not be found"); // this should never happen
                     }
                 }
             }
-
+        }
+        else {
+            throw new RuntimeException("type for this Component can not be found "+source); // should also never happen
         }
 
     }
