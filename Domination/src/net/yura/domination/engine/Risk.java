@@ -1398,14 +1398,9 @@ e.printStackTrace();
 
 						if (game.getState() != RiskGame.STATE_NEW_GAME ) {
 
-                                                    RiskUtil.savePlayers(this);
-
 						    controller.noInput();
 
-
-							controller.startGame( unlimitedLocalMode );
-
-
+                                                    controller.startGame( unlimitedLocalMode );
 
 						    if (!replay) {
 

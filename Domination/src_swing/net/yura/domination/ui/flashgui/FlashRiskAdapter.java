@@ -414,7 +414,7 @@ public class FlashRiskAdapter implements RiskListener {
 
 		if (localGame) {
 
-                    RiskUtil.loadPlayers(myrisk);
+                    RiskUtil.loadPlayers(myrisk,getClass());
 
                     //newgameframe.resetPlayers();
                 }
@@ -440,6 +440,10 @@ public class FlashRiskAdapter implements RiskListener {
 	 */
 	public void startGame(boolean s) {
 
+                if (s) {
+                    RiskUtil.savePlayers(myrisk,getClass());
+                }
+
 		if ( newgameframe.isVisible() ) {
 			newgameframe.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		}
@@ -451,7 +455,7 @@ public class FlashRiskAdapter implements RiskListener {
 			pp.load();
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		gameFrame.setup(s);
