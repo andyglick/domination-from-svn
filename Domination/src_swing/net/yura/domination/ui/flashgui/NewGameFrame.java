@@ -168,6 +168,10 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		nothing.setVisible(false);
 
+		if (t) {
+                    RiskUtil.loadPlayers(myrisk,getClass());
+                }
+
 	}
 
 	static class LimitedDocument extends PlainDocument {
@@ -900,6 +904,10 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 					(players.length >= 2 && players.length <= RiskGame.MAX_PLAYERS )
 					// || (players.length == 2 && domination.isSelected() && ((playerPanel)players[0]).getType() == 0 && ((playerPanel)players[1]).getType() == 0 )
 			) {
+
+                                if (localgame) {
+                                    RiskUtil.savePlayers(myrisk,getClass());
+                                }
 
 				String type="";
 				if (domination.isSelected()) type = "domination";

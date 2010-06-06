@@ -72,14 +72,26 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                 Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
 
-                //myrisk.getGame().getPlayers();
+                Vector players = myrisk.getGame().getPlayers();
 
-                myrisk.parser("startgame "+
-                        GameType.getSelection().getActionCommand()+" "+
-                        CardType.getSelection().getActionCommand()+
-                        ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
-                        ((recycle!=null&&recycle.isSelected()?" recycle":""))
-                        );
+                if (players.size() >= 2 && players.size() <= RiskGame.MAX_PLAYERS ) {
+
+                    if (localgame) {
+                        RiskUtil.savePlayers(myrisk, getClass());
+                    }
+
+                    myrisk.parser("startgame "+
+                            GameType.getSelection().getActionCommand()+" "+
+                            CardType.getSelection().getActionCommand()+
+                            ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
+                            ((recycle!=null&&recycle.isSelected()?" recycle":""))
+                            );
+                }
+                else {
+
+                        OptionPane.showMessageDialog(null, resBundle.getProperty("newgame.error.numberofplayers") , resBundle.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
+
+                }
 
             }
             else if ("choosemap".equals(actionCommand)) {
@@ -131,10 +143,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     // ================================================ GAME SETUP
 
     XULLoader newgame;
+    private boolean localgame;
     private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
     private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
 
     public void openNewGame(boolean localgame) {
+
+        this.localgame = localgame;
 
         if (localgame) {
             setTitle(resBundle.getProperty("newgame.title.local"));
@@ -296,10 +311,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
 
     public void startGame(boolean s) {
-
-        if (s) {
-            RiskUtil.savePlayers(myrisk, getClass());
-        }
 
         // ============================================ create UI
 
