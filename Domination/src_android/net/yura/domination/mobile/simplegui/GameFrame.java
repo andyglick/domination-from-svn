@@ -15,11 +15,9 @@ import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
-import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.border.LineBorder;
 import net.yura.mobile.gui.components.Button;
-import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.Menu;
@@ -30,7 +28,6 @@ import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.TextArea;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.layout.BorderLayout;
-import net.yura.mobile.gui.layout.FlowLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.GridBagLayout;
 
@@ -57,10 +54,7 @@ public class GameFrame extends Frame {
     private Panel guiMain;
     private Panel gp;
     private Label Pix;
-
-    private ComboBox mapViewComboBox;
-
-    /** Creates new form JFrame */
+    private GamePanel gamecontrol;
 
     /**
      * Creates a new RiskGUI
@@ -84,7 +78,12 @@ public class GameFrame extends Frame {
 
 
             pp = new PicturePanel(risk);
-            gp = new GamePanel();
+            gp = new Panel(new BorderLayout());
+
+            gamecontrol = new GamePanel(risk,pp);
+
+            gp.add(gamecontrol, Graphics.TOP );
+            gp.add(pp);
 
             statusBar = new Label("Loading...");
 
@@ -161,7 +160,7 @@ public class GameFrame extends Frame {
                                     }
 
                                     if (redrawNeeded) {
-                                            pprepaintCountries();
+                                            pp.repaintCountries( gamecontrol.getMapView() );
                                     }
                                     if (repaintNeeded) {
                                             repaint();
@@ -214,10 +213,9 @@ public class GameFrame extends Frame {
                                     pp.load();
                             }
                             catch (Exception e) {
-
+                                throw new RuntimeException(e);
                             }
-
-                            mapViewComboBox.setSelectedIndex(0);
+                            gamecontrol.resetMapView();
 
                             guiMain.remove(Pix);
                             guiMain.add(gp);
@@ -618,137 +616,6 @@ public class GameFrame extends Frame {
 
     }
 
-    class playersPanel extends Panel {
-
-            public void paintComponent(Graphics2D g) {
-
-                    int[] colors = risk.getPlayerColors();
-
-                    for (int c=0; c < colors.length ; c++) {
-                            g.setColor( new Color( colors[c] ).getRGB() );
-                            g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
-                    }
-
-                    g.setColor( new Color( RiskUtil.getTextColorFor( colors[0] ) ).getRGB() );
-
-                    g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
-
-                    g.setColor( Color.black.getRGB() );
-                    g.drawLine( (120/colors.length)-1 , 0, (120/colors.length)-1, 19);
-
-            }
-
-    }
-
-    class GamePanel extends Panel {
-
-            public GamePanel() {
-
-                    Panel OptionsPanel = new Panel();
-
-                    OptionsPanel.setLayout(new FlowLayout());
-
-                    Label mapLookLabel = new Label("Map Look:");
-
-                    mapViewComboBox = new ComboBox();
-                    Button closegame = new Button("closegame");
-                    Button about = new Button("About");
-
-                    //JButton leave = new JButton("leave");
-
-                    Dimension mapViewSize = new Dimension(150 , 20);
-
-                    mapViewComboBox.setPreferredSize(mapViewSize.width,mapViewSize.height);
-
-                    mapViewComboBox.addItem("Continents");
-                    mapViewComboBox.addItem("Ownership");
-                    mapViewComboBox.addItem("Border Threat");
-                    mapViewComboBox.addItem("Risk Card Ownership");
-                    mapViewComboBox.addItem("Troop Strength");
-                    mapViewComboBox.addItem("Connected Empire");
-
-                    mapViewComboBox.addActionListener(
-                                    new ActionListener() {
-                                            public void actionPerformed(String a) {
-
-                                                    pprepaintCountries();
-                                                    pp.repaint();
-
-                                            }
-                                    }
-                    );
-
-                    Label playersLabel = new Label("Players:");
-
-                    Dimension playerPanelSize = new Dimension(120 , 20);
-
-                    Panel players = new playersPanel();
-
-                    players.setBorder(new LineBorder(new Color(0,0,0).getRGB(),1));
-
-                    players.setPreferredSize(playerPanelSize.width,playerPanelSize.height);
-
-                    closegame.addActionListener(
-                                    new ActionListener() {
-                                            public void actionPerformed(String a) {
-                                                    go("closegame");
-                                            }
-                                    }
-                    );
-
-                    //leave.addActionListener(
-                    //              new ActionListener() {
-                    //                      public void actionPerformed(ActionEvent a) {
-                    //                              go("leave");
-                    //                      }
-                    //              }
-                    //);
-
-                    about.addActionListener(
-                                    new ActionListener() {
-                                            public void actionPerformed(String a) {
-                                                    openAbout();
-                                            }
-                                    }
-                    );
-
-                    Dimension size = new Dimension(PicturePanel.PP_X , 30);
-
-                    OptionsPanel.setPreferredSize(size.width,size.height);
-
-                    OptionsPanel.add(mapLookLabel);
-                    OptionsPanel.add(mapViewComboBox);
-                    OptionsPanel.add(playersLabel);
-                    OptionsPanel.add(players);
-                    OptionsPanel.add(closegame);
-                    OptionsPanel.add(about);
-                    //OptionsPanel.add(leave);
-
-                    this.setLayout(new BorderLayout());
-
-                    this.add(OptionsPanel, Graphics.TOP );
-                    this.add(pp);
-
-            }
-    }
-
-    public void pprepaintCountries() {
-
-            int tmp = mapViewComboBox.getSelectedIndex();
-            int newview = -1;
-
-            switch (tmp) {
-                case 0: newview=PicturePanel.VIEW_CONTINENTS; break;
-                case 1: newview=PicturePanel.VIEW_OWNERSHIP; break;
-                case 2: newview=PicturePanel.VIEW_BORDER_THREAT; break;
-                case 3: newview=PicturePanel.VIEW_CARD_OWNERSHIP; break;
-                case 4: newview=PicturePanel.VIEW_TROOP_STRENGTH; break;
-                case 5: newview=PicturePanel.VIEW_CONNECTED_EMPIRE; break;
-            }
-
-            pp.repaintCountries( newview );
-
-    }
 
     //**********************************************************************
     //                     MouseListener Interface
