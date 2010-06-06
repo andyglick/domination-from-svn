@@ -154,7 +154,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         setContentPane( new ScrollPane( newgame.getRoot() ) );
 
         if (localgame) {
-            RiskUtil.loadPlayers( myrisk );
+            RiskUtil.loadPlayers( myrisk ,getClass());
         }
 
         revalidate();
@@ -296,6 +296,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
 
     public void startGame(boolean s) {
+
+        if (s) {
+            RiskUtil.savePlayers(myrisk, getClass());
+        }
 
         // ============================================ create UI
 

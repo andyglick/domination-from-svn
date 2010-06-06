@@ -239,11 +239,11 @@ return Color.white;
 		openURL(new URL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yura%40yura%2enet&item_name="+GAME_NAME+"%20Donation&no_shipping=0&no_note=1&tax=0&currency_code=GBP&lc=GB&bn=PP%2dDonationsBF&charset=UTF%2d8"));
 	}
 
-        public static void loadPlayers(Risk risk) {
+        public static void loadPlayers(Risk risk,Class uiclass) {
 
             Preferences prefs=null;
             try {
-                 prefs = Preferences.userNodeForPackage( RiskUtil.class );
+                 prefs = Preferences.userNodeForPackage( uiclass );
             }
             catch(Throwable th) { } // security
 
@@ -269,11 +269,11 @@ return Color.white;
 
         }
 
-        public static void savePlayers(Risk risk) {
+        public static void savePlayers(Risk risk,Class uiclass) {
 
             Preferences prefs=null;
             try {
-                 prefs = Preferences.userNodeForPackage( RiskUtil.class );
+                 prefs = Preferences.userNodeForPackage( uiclass );
             }
             catch(Throwable th) { } // security
 
