@@ -30,6 +30,6 @@
         <label name="human" text="1"/>
     </panel>
     <button text="Custom Players"/>
-    <button action="closegame" i18n="true" text="newgame.cancel" type="cancel" weightx="1"/>
-    <button action="startgame" i18n="true" text="newgame.startgame" weightx="1"/>
+    <button action="closegame" i18n="true" name="cancelButton" text="newgame.cancel" type="cancel" weightx="1"/>
+    <button action="startgame" i18n="true" name="startButton" text="newgame.startgame" weightx="1"/>
 </panel>
