@@ -51,7 +51,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void startGame(boolean s) {
-        // TODO Auto-generated method stub
+        mainFrame.startGame(s);
     }
 
     // ========================= in game ==============================

@@ -2,23 +2,27 @@ package net.yura.domination.mobile.flashgui;
 
 import java.util.Vector;
 
+import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
+import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mobile.mapchooser.MapChooser;
+import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
-import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
+import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Spinner;
+import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 
@@ -123,6 +127,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         revalidate();
         repaint();
     }
+
+    // ================================================ GAME SETUP
 
     XULLoader newgame;
     private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
@@ -282,5 +288,41 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         }
 
     }
+
+
+
+
+    // ================================================ IN GAME
+
+
+    public void startGame(boolean s) {
+
+        // ============================================ create UI
+
+        final PicturePanel pp = new PicturePanel(myrisk);
+        GamePanel gamecontrol = new GamePanel(myrisk,pp);
+
+        // ============================================ setup UI
+
+        try {
+            pp.load();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        gamecontrol.resetMapView();
+
+        // ============================================ add to window
+
+        Panel mainWindow = new Panel( new BorderLayout() );
+        mainWindow.add(pp);
+        mainWindow.add(gamecontrol,Graphics.TOP);
+
+        setContentPane( mainWindow );
+
+        revalidate();
+        repaint();
+    }
+
 
 }
