@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -70,6 +71,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.SimplePrintStream;
@@ -2015,14 +2017,6 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 	}
 
-	private void clearAttackPanel() {
-
-		pp.setC1(PicturePanel.NO_COUNTRY);
-		pp.setC2(PicturePanel.NO_COUNTRY);
-		attacker.setText(resbundle.getString("game.note.selectattacker"));
-		c1Id = -1;
-	}
-
 	//############################################################################################################
 
 // this get all the commands from the game and does what needs to be done
@@ -2099,7 +2093,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			}
 			else if (gameState == RiskGame.STATE_ATTACKING) {
 
-				clearAttackPanel();
+                                attacker.setText(resbundle.getString("game.note.selectattacker"));
 
 				inGameCards.show(inGameInput, "attack");
 			}
@@ -2437,7 +2431,7 @@ public void setNODDefender(int n) {}
 	}
 
 
-	class GamePanel extends JPanel implements MouseInputListener {
+	class GamePanel extends JPanel {
 
 		public GamePanel() {
 
@@ -2448,8 +2442,24 @@ public void setNODDefender(int n) {}
 			pp.setPreferredSize(mapSize);
 			pp.setMinimumSize(mapSize);
 			pp.setMaximumSize(mapSize);
-			pp.addMouseListener(this);
-			pp.addMouseMotionListener(this);
+
+                        final MapMouseListener mml = new MapMouseListener(myrisk,pp);
+                        MouseAdapter mapListener = new MouseAdapter() {
+                            public void mouseExited(MouseEvent e) {
+                                mml.mouseExited();
+                            }
+                            public void mouseReleased(MouseEvent e) {
+                                int [] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
+                                mapClick(click,e);
+                            }
+                            public void mouseMoved(MouseEvent e) {
+                                mml.mouseMoved(e.getX(),e.getY(),gameState);
+                            }
+                        };
+
+
+			pp.addMouseListener(mapListener);
+			pp.addMouseMotionListener(mapListener);
 
 			Dimension d = new Dimension(PicturePanel.PP_X , 50);
 
@@ -2602,193 +2612,47 @@ public void setNODDefender(int n) {}
 		//                     MouseListener Interface
 		//**********************************************************************
 
-		public void mouseClicked(MouseEvent e) {
-		}
+		public void mapClick(int[] countries,MouseEvent e) {
 
-		public void mouseEntered(MouseEvent e) {
-		}
+                    if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+                        if (countries.length==1) {
+                            if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
+                                go( "placearmies " + countries[0] + " 1" );
+                            }
+                            else {
+                                go( "placearmies " + countries[0] + " 10" );
+                            }
+                        }
+                    }
+                    else if (gameState == RiskGame.STATE_ATTACKING) {
+                            if (countries.length==0) {
+                                attacker.setText(resbundle.getString("game.note.selectattacker"));
+                            }
+                            else if (countries.length == 1) {
+                                attacker.setText(resbundle.getString("game.note.attackerisseldefender").replaceAll( "\\{0\\}", myrisk.getCountryName( countries[0])));
+                            }
+                            else {
+                                go("attack " + countries[0] + " " + countries[1]);
+                            }
 
-		public void mouseExited(MouseEvent e) {
+                    }
+                    else if (gameState == RiskGame.STATE_FORTIFYING) {
 
-			if (pp.getHighLight() != PicturePanel.NO_COUNTRY) {
-				pp.setHighLight(PicturePanel.NO_COUNTRY);
-				pp.repaint();
-			}
+                            if (countries.length==0) {
+                                    country1.setText("");
+                            }
+                            else if (countries.length == 1) {
+                                    country1.setText( myrisk.getCountryName( countries[0]) );
+                                    country2.setText("");
+                            }
+                            else if (countries.length == 2) {
+                                    country2.setText( myrisk.getCountryName( countries[1]) );
 
-			e.consume();
+                            }
 
-		}
-
-		public void mousePressed(MouseEvent e) {
-		}
-
-		public void mouseReleased(MouseEvent e) {
-
-			//if ((e.getX() < PicturePanel.PP_X) && (e.getY() < PicturePanel.PP_Y) && (e.getX() >= 0) && (e.getY() >= 0) ) {
-
-				int pixColor = pp.getCountryNumber(e.getX(),e.getY());
-				String name = myrisk.getCountryName( pixColor );
-
-				if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
-
-					// System.out.print(e.getX()+" "+e.getY()+" "+PicturePanel.PP_X+" "+PicturePanel.PP_Y+"\n"); // testing
-					// Testing.append("Click (color: " + pixColor + ")\n");
-
-					if (pixColor == PicturePanel.NO_COUNTRY ) {
-
-					}
-					else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
-						if (myrisk.isOwnedCurrentPlayerInt(pixColor) && (autoplace.isVisible()==false || myrisk.hasArmiesInt(pixColor) == 0)) {
-							go( "placearmies " + pixColor + " 1" );
-						}
-					}
-					else if (gameState == RiskGame.STATE_ATTACKING) {
-						if ( pixColor == c1Id ) {
-
-							clearAttackPanel();
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && ( myrisk.hasArmiesInt(pixColor) > 1) ) {
-							attacker.setText(resbundle.getString("game.note.attackerisseldefender").replaceAll( "\\{0\\}", myrisk.getCountryName( pixColor)));
-							c1Id = pixColor;
-
-							pp.setC1(pixColor);
-							pp.setC2(PicturePanel.NO_COUNTRY);
-
-							pp.repaint();
-						}
-						else if ( !(myrisk.isOwnedCurrentPlayerInt(pixColor)) && c1Id != -1 && myrisk.canAttack( c1Id , pixColor) ) {
-							pp.setC2(pixColor);
-
-							go("attack " + c1Id + " " + pixColor);
-
-
-							pp.repaint();
-						}
-					}
-					else if (gameState == RiskGame.STATE_FORTIFYING) {
-
-						if ( !(country1.getText().equals("")) && (country2.getText().equals("")) && country1.getText().equals( name ) ) {
-							country1.setText("");
-							pp.setC1(PicturePanel.NO_COUNTRY);
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) && (country1.getText().equals("")) ) {
-							country1.setText(name);
-							pp.setC1( pixColor );
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && !(country1.getText().equals("")) && (country2.getText().equals("")) && myrisk.canAttack( pp.getC1() , pixColor) ) { // country1.getText(),name
-							country2.setText(name);
-							pp.setC2( pixColor );
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && !(country1.getText().equals("")) && !(country2.getText().equals(""))  && ( myrisk.hasArmiesInt(pixColor) > 1) ) {
-							country1.setText(name);
-							country2.setText("");
-							pp.setC1( pixColor );
-							pp.setC2(PicturePanel.NO_COUNTRY);
-						}
-
-						pp.repaint();
-
-					}
-					else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
-						//go( "capital " + pixColor );
-
-						if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
-
-							c1Id = pixColor;
-							pp.setC1(pixColor);
-
-							pp.repaint();
-						}
-					}
-				}
-				else if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON3_MASK ) {
-
-					if (pixColor == PicturePanel.NO_COUNTRY ) {
-
-					}
-					else if (gameState == 2) {
-						if (myrisk.isOwnedCurrentPlayerInt(pixColor) && (autoplace.isVisible()==false || myrisk.hasArmiesInt(pixColor) == 0)) {
-							go( "placearmies " + pixColor + " 10" );
-						}
-					}
-
-				}
-
-			//}
-			e.consume();
-		}
-
-		public void mouseDragged(MouseEvent e) {
-		}
-		public void mouseMoved(MouseEvent e) {
-
-			int pixColor = pp.getCountryNumber(e.getX(),e.getY());
-			String name="";
-			int cc;
-
-			if (pixColor != PicturePanel.NO_COUNTRY) {
-				name = myrisk.getCountryName( pixColor );
-			}
-
-			if (pixColor == PicturePanel.NO_COUNTRY ) {
-				cc = PicturePanel.NO_COUNTRY;
-			}
-			else if (gameState == 2) {
-				if (myrisk.isOwnedCurrentPlayerInt(pixColor) && (autoplace.isVisible()==false || myrisk.hasArmiesInt(pixColor) == 0)) {
-					cc = pixColor;
-				}
-				else {
-					cc = PicturePanel.NO_COUNTRY;
-				}
-			}
-			else if ( gameState == 3) {
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) ) {
-					cc = pixColor;
-				}
-				else if ( !(myrisk.isOwnedCurrentPlayerInt(pixColor)) && c1Id != -1 && myrisk.canAttack( c1Id , pixColor) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = PicturePanel.NO_COUNTRY;
-				}
-
-			}
-			else if ( gameState == 6) {
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) ) {
-					cc = pixColor;
-				}
-				else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && !(country1.getText().equals("")) && (country2.getText().equals("")) && myrisk.canAttack( pp.getC1(), pixColor) ) { // country1.getText(),name
-					cc = pixColor;
-				}
-				else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && !(country1.getText().equals(""))&& !(country2.getText().equals(""))  && (myrisk.hasArmiesInt(pixColor) > 1) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = PicturePanel.NO_COUNTRY;
-				}
-			}
-			else if (gameState == 9) {
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = PicturePanel.NO_COUNTRY;
-				}
-			}
-			else {
-				cc = PicturePanel.NO_COUNTRY;
-
-			}
-
-			if (pp.getHighLight() != cc) {
-				pp.setHighLight(cc);
-				pp.repaint();
-			}
-
-			e.consume();
-		}
-
-	}
+                    }
+                }
+        }
 
 	class SetupPanel extends JPanel implements ActionListener {
 
