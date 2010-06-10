@@ -97,34 +97,25 @@ public class MapMouseListener {
     public void mouseMoved(int x,int y,int gameState) {
 
         int pixColor = pp.getCountryNumber(x,y);
-        int cc;
+        int cc = NO_COUNTRY;
 
         if (pixColor == NO_COUNTRY ) {
-                cc = NO_COUNTRY;
+
         }
         else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.getGame().NoEmptyCountries() || myrisk.hasArmiesInt(pixColor) == 0) ) {
                         cc = pixColor;
                 }
-                else {
-                        cc = NO_COUNTRY;
-                }
         }
         else if ( gameState == RiskGame.STATE_ATTACKING) {
-
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) ) {
                         cc = pixColor;
                 }
                 else if ( !(myrisk.isOwnedCurrentPlayerInt(pixColor)) && pp.getC1() != NO_COUNTRY && myrisk.canAttack( pp.getC1() , pixColor) ) {
                         cc = pixColor;
                 }
-                else {
-                        cc = NO_COUNTRY;
-                }
-
         }
         else if ( gameState == RiskGame.STATE_FORTIFYING) {
-
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1 && pp.getC1() == NO_COUNTRY ) ) {
                         cc = pixColor;
                 }
@@ -134,21 +125,11 @@ public class MapMouseListener {
                 else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && pp.getC1() != NO_COUNTRY && pp.getC2() != NO_COUNTRY && (myrisk.hasArmiesInt(pixColor) > 1) ) {
 			cc = pixColor;
 		}
-                else {
-                        cc = NO_COUNTRY;
-                }
-
         }
         else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
                         cc = pixColor;
                 }
-                else {
-                        cc = NO_COUNTRY;
-                }
-        }
-        else {
-                cc = NO_COUNTRY;
         }
 
         if (pp.getHighLight() != cc) {
