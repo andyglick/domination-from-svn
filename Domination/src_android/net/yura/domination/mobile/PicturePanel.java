@@ -20,6 +20,7 @@ import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.MapPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -32,7 +33,7 @@ import net.yura.mobile.gui.plaf.Style;
  * @author Yura Mamyrin
  */
 
-public class PicturePanel extends Panel {
+public class PicturePanel extends Panel implements MapPanel {
 
         public final static int NO_COUNTRY = 255;
 

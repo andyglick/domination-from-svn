@@ -38,7 +38,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * @author Yura Mamyrin
  */
 
-public class PicturePanel extends JPanel {
+public class PicturePanel extends JPanel implements MapPanel {
 
 	public final static int NO_COUNTRY = 255;
 

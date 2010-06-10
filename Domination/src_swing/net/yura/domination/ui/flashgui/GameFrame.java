@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import javax.swing.JLayeredPane;
-import javax.swing.event.MouseInputListener;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Insets;
@@ -26,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -35,6 +35,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -43,7 +44,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * Game Frame for FlashGUI
  * @author Yura Mamyrin
  */
-public class GameFrame extends JFrame implements MouseInputListener,KeyListener {
+public class GameFrame extends JFrame implements KeyListener {
 
 	private BufferedImage game;
 	private Risk myrisk;
@@ -72,7 +73,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 	private int[] colors;
 	private CardsDialog cardsDialog;
 
-	private int c1Id;
+	//private int c1Id;
 	private MoveDialog movedialog;
 
 
@@ -85,6 +86,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 	private JButton helpbutton;
 	private JButton closebutton;
 
+        private MouseAdapter mapListener;
 
 	public GameFrame(Risk r, PicturePanel p) {
 
@@ -94,6 +96,20 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 
 		myrisk=r;
 		pp=p;
+
+                final MapMouseListener mml = new MapMouseListener(myrisk,pp);
+                mapListener = new MouseAdapter() {
+                    public void mouseExited(MouseEvent e) {
+                        mml.mouseExited();
+                    }
+                    public void mouseReleased(MouseEvent e) {
+                        int [] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
+                        mapClick(click,e);
+                    }
+                    public void mouseMoved(MouseEvent e) {
+                        mml.mouseMoved(e.getX(),e.getY(),gameState);
+                    }
+                };
 
 		menuOn=false;
 		graphOn=false;
@@ -132,7 +148,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 
 		note="";
 		setupDone=true;
-		c1Id = -1;
+		//c1Id = -1;
 
 		localGame = s;
 
@@ -231,7 +247,16 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 		    }
 		};
 		//fp.setBounds(0,0, (int)d.getWidth() , (int)d.getHeight() );
-		fp.addMouseListener(this);
+		fp.addMouseListener( new MouseAdapter() {
+                    public void mouseReleased(MouseEvent e) {
+                	int click=insideButton(e.getX(),e.getY());
+			if (click != -1) { // this means it was one of the view buttons
+				if (mapView !=click) {
+					setMapView(click);
+				}
+			}
+                    }
+                } );
 		//fp.addMouseMotionListener(this);
 
 
@@ -385,8 +410,8 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 
 		//pp.setBounds(31, 54, PicturePanel.PP_X , PicturePanel.PP_Y);
 		//pp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0,0,0),1));
-		pp.addMouseListener(this);
-		pp.addMouseMotionListener(this);
+		pp.addMouseListener(mapListener);
+		pp.addMouseMotionListener(mapListener);
 		pp.setBackground(Color.BLACK);
 
 		gm = new GameMenuPanel();
@@ -816,7 +841,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 
 		pp.setHighLight(255);
 
-		c1Id = -1;
+		//c1Id = -1;
 
 		if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
 
@@ -882,258 +907,58 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 
 	}
 
-	//**********************************************************************
-	//                     MouseListener Interface
-	//**********************************************************************
-
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	public void mouseExited(MouseEvent e) {
-
-		if (e.getComponent() == gm) {
-		}
-		else if (e.getComponent() == pp) {
-
-			if (pp.getHighLight() != 255) {
-				pp.setHighLight(255);
-				pp.repaint();
-			}
-
-			e.consume();
-
-		}
-		else {
-
-		}
-
-	}
-
-	public void mousePressed(MouseEvent e) {
-	}
-
-	/**
-	 * Used in the playing of the game
-	 * @param e The MouseEvent object
-	 */
-	public void mouseReleased(MouseEvent e) {
-
-		if (e.getComponent() == gm) { // click on the menu
-
-
-		}
-		else if (e.getComponent() == pp) { // click on the picture panel
-
-			//System.out.print("Map Click\n");
-
-			//if ((e.getX() < PicturePanel.PP_X) && (e.getY() < PicturePanel.PP_Y) && (e.getX() >= 0) && (e.getY() >= 0) ) {
-
-				int pixColor = pp.getCountryNumber(e.getX(),e.getY());
-
-				if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
-
-					if (pixColor == 255 ) {
-
-					}
-					else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
-						if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (setupDone || myrisk.hasArmiesInt(pixColor) == 0) ) {
-							go( "placearmies " + pixColor + " 1" );
-						}
-					}
-					else if (gameState == RiskGame.STATE_ATTACKING) {
-
-						if ( pixColor == c1Id ) {
-							c1Id = -1;
-							note=resb.getString("game.note.selectattacker");
-							pp.setC1(255);
-							pp.setC2(255);
-							repaint();
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && ( myrisk.hasArmiesInt(pixColor) > 1) ) {
-							note=resb.getString("game.note.selectdefender");
-
-							c1Id = pixColor;
-							pp.setC1(pixColor);
-							pp.setC2(255);
-							repaint();
-						}
-						else if ( c1Id != -1 && !(myrisk.isOwnedCurrentPlayerInt(pixColor)) && myrisk.canAttack( c1Id , pixColor) ) {
-							pp.setC2(pixColor);
-							go("attack " + c1Id + " " + pixColor);
-							note=resb.getString("game.note.selectattacker");
-							repaint();
-						}
-
-					}
-					else if (gameState == RiskGame.STATE_FORTIFYING) {
-
-						if ( pixColor == c1Id ) {
-
-							c1Id = -1;
-							note=resb.getString("game.note.selectsource");
-							pp.setC1(255);
-							pp.setC2(255);
-							repaint();
-						}
-						else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && ( myrisk.hasArmiesInt(pixColor) > 1) && c1Id == -1) {
-
-							note=resb.getString("game.note.selectdestination");
-
-							c1Id = pixColor;
-							pp.setC1(pixColor);
-							pp.setC2(255);
-							repaint();
-						}
-						else if ( c1Id != -1 && (myrisk.isOwnedCurrentPlayerInt(pixColor)) && myrisk.canAttack( c1Id , pixColor) ) {
-
-							pp.setC2(pixColor);
-							note="";
-							repaint();
-
-							openMove(1, pp.getC1() , pixColor, true);
-
-							movedialog.setVisible(true);
-
-							pp.setC1(255);
-							pp.setC2(255);
-
-							c1Id = -1;
-							note=resb.getString("game.note.selectsource");
-							repaint();
-						}
-
-					}
-					else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
-
-						if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
-
-							c1Id = pixColor;
-							pp.setC1(pixColor);
-							pp.repaint();
-						}
-					}
-
-				}
-				else if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON3_MASK ) {
-
-					if (pixColor == 255 ) {
-
-					}
-					else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
-						if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (setupDone || myrisk.hasArmiesInt(pixColor) == 0) ) {
-							go( "placearmies " + pixColor + " 10" );
-						}
-					}
-				}
-			//}
-		}
-		else { // click in the window
-
-			int click=insideButton(e.getX(),e.getY());
-
-			if (click != -1) { // this means it was one of the view buttons
-
-				if (mapView !=click) {
-
-					setMapView(click);
-
-				}
-
-			}
-
-		}
-
-	}//public void mouseReleased()
-
-	public void mouseDragged(MouseEvent e) {
-	}
-
-	/**
-	 * This method is used in the general playing of the game
-	 * It highlights the country the mouse is over
-	 * @param e The Mousevent object
-	 */
-	public void mouseMoved(MouseEvent e) {
-
-		if (e.getComponent() == gm) { // move on the menu
-
-		}
-		else if (e.getComponent() == pp) { // move on the picture panel
-
-			//System.out.print("Map Move\n");
-
-			int pixColor = pp.getCountryNumber(e.getX(),e.getY());
-			int cc;
-
-			if (pixColor == 255 ) {
-				cc = 255;
-			}
-			else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (setupDone || myrisk.hasArmiesInt(pixColor) == 0) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = 255;
-				}
-			}
-			else if ( gameState == RiskGame.STATE_ATTACKING) {
-
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) ) {
-					cc = pixColor;
-				}
-				else if ( !(myrisk.isOwnedCurrentPlayerInt(pixColor)) && c1Id != -1 && myrisk.canAttack( c1Id , pixColor) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = 255;
-				}
-
-			}
-			else if ( gameState == RiskGame.STATE_FORTIFYING) {
-
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1 && c1Id == -1 ) ) {
-					cc = pixColor;
-				}
-				else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && c1Id != -1 && myrisk.canAttack( c1Id , pixColor) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = 255;
-				}
-
-			}
-			else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
-				if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
-					cc = pixColor;
-				}
-				else {
-					cc = 255;
-				}
-			}
-			else {
-				cc = 255;
-
-			}
-
-			if (pp.getHighLight() != cc) {
-				pp.setHighLight(cc);
-				pp.repaint();
-			}
-
-			e.consume();
-
-
-		}
-		else { // move on the window
-
-		}
-
-
-	}//public void mouseMoved(...)
-
+        public void mapClick(int[] countries,MouseEvent e) {
+
+
+            if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+                if (countries.length==1) {
+                    if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
+                        go( "placearmies " + countries[0] + " 1" );
+                    }
+                    else {
+                        go( "placearmies " + countries[0] + " 10" );
+                    }
+                }
+            }
+            else if (gameState == RiskGame.STATE_ATTACKING) {
+
+                if (countries.length==0) {
+                    note=resb.getString("game.note.selectattacker");
+                }
+                else if (countries.length == 1) {
+                    note=resb.getString("game.note.selectdefender");
+                }
+                else {
+                    go("attack " + countries[0] + " " + countries[1]);
+                    note=resb.getString("game.note.selectattacker");
+                }
+
+            }
+            else if (gameState == RiskGame.STATE_FORTIFYING) {
+                if (countries.length==0) {
+                    note=resb.getString("game.note.selectsource");
+                }
+                else if (countries.length==1) {
+                    note=resb.getString("game.note.selectdestination");
+                }
+                else {
+                    note="";
+
+                    openMove(1,countries[0] , countries[1], true);
+                    movedialog.setVisible(true);
+
+                    // clean up
+                    pp.setC1(255);
+                    pp.setC2(255);
+                    note=resb.getString("game.note.selectsource");
+                }
+            }
+            else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+                // do nothing ??
+            }
+
+
+        }
 
 
 	/**
@@ -1147,7 +972,6 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 		repaintCountries();
 		repaint();
 	}//private void setMapView(int click)
-
 
 
 	/**
@@ -1201,16 +1025,16 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 	    if(menuOn) {
 
 		gm.setVisible(false);
-		pp.addMouseListener(GameFrame.this);
-		pp.addMouseMotionListener(GameFrame.this);
+		pp.addMouseListener(mapListener);
+		pp.addMouseMotionListener(mapListener);
 
 		menuOn=false;
 
 	    }
 	    else {
 
-		pp.removeMouseListener(GameFrame.this);
-		pp.removeMouseMotionListener(GameFrame.this);
+		pp.removeMouseListener(mapListener);
+		pp.removeMouseMotionListener(mapListener);
 
 		if (myrisk.getGame().getCurrentPlayer()!=null) {
 
@@ -1279,6 +1103,7 @@ public class GameFrame extends JFrame implements MouseInputListener,KeyListener 
 			closeleave();
 		}
 		else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+                        int c1Id = pp.getC1();
 			pp.setC1(255);
 			go("capital " + c1Id);
 		}
