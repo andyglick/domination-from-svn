@@ -333,7 +333,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             new MouseListener() {
                 public void click(int x,int y) {
                     int[] countries = mml.mouseReleased(x, y, gameState);
-                    mapClick(countries);
+                    if (countries!=null) {
+                        mapClick(countries);
+                    }
                 }
             }
         );

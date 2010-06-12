@@ -126,12 +126,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	//private int c1Id;
 
 
-
-
-	private JLabel mapPic;
-	private JTextField cardsFile;
-
-
 	private JLabel attacker;
 
 	private JTextField country1;
@@ -171,16 +165,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	private JButton showMission;
 	private JButton showCards;
 	private JButton Undo;
-
-
-
-
-
-	private JRadioButton domination;
-	private JRadioButton capital;
-	private JRadioButton mission;
-	private JCheckBox AutoPlaceAll;
-	private JCheckBox recycle;
 
 	private JButton lobby;
 
@@ -371,12 +355,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 
 	}
-
-        public void showMapImage(ImageIcon p) {
-            mapPic.setIcon( p ); // SCALE_DEFAULT
-            SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-        }
-
 
 class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
@@ -844,20 +822,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 		add(gameStatus, java.awt.BorderLayout.SOUTH);
 
-
-
-		javax.swing.border.Border goodBorder = BorderFactory.createLoweredBevelBorder(); // Con.getBorder();
-		gameStatus.setBorder( goodBorder );
-
-		mapPic = new JLabel();
-		mapPic.setBorder( goodBorder );
-
-
-		Dimension size = new Dimension(203,127);
-
-		mapPic.setPreferredSize(size);
-		mapPic.setMinimumSize(size);
-		mapPic.setMaximumSize(size);
+		gameStatus.setBorder( BorderFactory.createLoweredBevelBorder() );
 
 		Insets margin = new Insets(2,2,2,2);
 
@@ -2141,17 +2106,11 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
                         i = new ImageIcon( PicturePanel.getImage(p) );
                     }
                     catch(Throwable e) { }
-                    showMapImage( i );
+                    guiSetup.showMapImage( i );
 		}
 
 		public void showCardsFile(String c, boolean m) {
-
-			cardsFile.setText(c);
-
-			if ( m==false && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
-
-			mission.setEnabled(m);
-
+                    guiSetup.showCardsFile(c,m);
 		}
 
 		public void newGame(boolean t) { // t==true: this is a local game
@@ -2450,8 +2409,10 @@ public void setNODDefender(int n) {}
                                 mml.mouseExited();
                             }
                             public void mouseReleased(MouseEvent e) {
-                                int [] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
-                                mapClick(click,e);
+                                int[] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
+                                if (click!=null) {
+                                    mapClick(click,e);
+                                }
                             }
                             public void mouseMoved(MouseEvent e) {
                                 mml.mouseMoved(e.getX(),e.getY(),gameState);
@@ -2638,7 +2599,6 @@ public void setNODDefender(int n) {}
 
                     }
                     else if (gameState == RiskGame.STATE_FORTIFYING) {
-
                             if (countries.length==0) {
                                     country1.setText("");
                             }
@@ -2648,14 +2608,41 @@ public void setNODDefender(int n) {}
                             }
                             else if (countries.length == 2) {
                                     country2.setText( myrisk.getCountryName( countries[1]) );
-
                             }
-
+                    }
+                    else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+                            if (countries.length==0) {
+                                capitalLabel.setText( resbundle.getString("core.help.selectcapital") );
+                            }
+                            else if (countries.length == 1) {
+                                capitalLabel.setText( resbundle.getString("core.help.selectcapital")+": "+myrisk.getCountryName( countries[0]) );
+                            }
                     }
                 }
         }
 
 	class SetupPanel extends JPanel implements ActionListener {
+
+            private JRadioButton domination;
+            private JRadioButton capital;
+            private JRadioButton mission;
+            private JCheckBox AutoPlaceAll;
+            private JCheckBox recycle;
+
+            private JLabel mapPic;
+            private JTextField cardsFile;
+
+            private void showCardsFile(String c, boolean m) {
+                cardsFile.setText(c);
+
+                if ( m==false && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
+
+                mission.setEnabled(m);
+            }
+            public void showMapImage(Icon p) {
+                mapPic.setIcon( p ); // SCALE_DEFAULT
+                SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+            }
 
 			class NamedColor extends Color {
 
@@ -2998,6 +2985,15 @@ public void setNODDefender(int n) {}
 					}
 			);
 
+
+
+		mapPic = new JLabel();
+		mapPic.setBorder( BorderFactory.createLoweredBevelBorder() );
+		Dimension size = new Dimension(203,127);
+		mapPic.setPreferredSize(size);
+		mapPic.setMinimumSize(size);
+		mapPic.setMaximumSize(size);
+
 			c.gridx = 0; // col
 			c.gridy = 0; // row
 			c.gridwidth = 2; // width
@@ -3027,7 +3023,7 @@ public void setNODDefender(int n) {}
 			cardsFile.setEditable(false);
 			cardsFile.setBackground( mapOptions.getBackground() ); // SystemColor.control
 
-			Dimension size = new Dimension(200,20);
+			size = new Dimension(200,20);
 
 			cardsFile.setPreferredSize(size);
 			cardsFile.setMinimumSize(size);
@@ -3368,6 +3364,7 @@ public void setNODDefender(int n) {}
 
 	}
 
+        private JLabel capitalLabel;
 	class capitalPanel extends JPanel {
 
 		public capitalPanel() {
@@ -3390,13 +3387,13 @@ public void setNODDefender(int n) {}
 					}
 			);
 
-			JLabel label = new JLabel(resbundle.getString("core.help.selectcapital"));
+			capitalLabel = new JLabel(resbundle.getString("core.help.selectcapital"));
 
 			c.gridx = 0; // col
 			c.gridy = 0; // row
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
-			this.add(label, c);
+			this.add(capitalLabel, c);
 
 			c.gridx = 1; // col
 			c.gridy = 0; // row
@@ -3630,7 +3627,7 @@ public void setNODDefender(int n) {}
 								country2.setText("");
 								pp.setC1(PicturePanel.NO_COUNTRY);
 								pp.setC2(PicturePanel.NO_COUNTRY);
-
+                                                                pp.repaint();
 							}
 						}
 					}

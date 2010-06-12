@@ -103,8 +103,10 @@ public class GameFrame extends JFrame implements KeyListener {
                         mml.mouseExited();
                     }
                     public void mouseReleased(MouseEvent e) {
-                        int [] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
-                        mapClick(click,e);
+                        int[] click = mml.mouseReleased(e.getX(),e.getY(),gameState);
+                        if (click!=null) {
+                            mapClick(click,e);
+                        }
                     }
                     public void mouseMoved(MouseEvent e) {
                         mml.mouseMoved(e.getX(),e.getY(),gameState);
