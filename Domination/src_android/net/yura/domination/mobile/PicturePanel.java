@@ -22,9 +22,11 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.plaf.Style;
 
@@ -86,6 +88,30 @@ public class PicturePanel extends Panel implements MapPanel {
         }
 
         int[] oldintx,oldinty;
+
+        MouseListener ml;
+        int x=-1000,y=-1000;
+        public void processMouseEvent(int type, int x, int y, KeyEvent keys) {
+            if (type == DesktopPane.PRESSED) {
+                this.x=x;
+                this.y=y;
+            }
+            else {
+                if (getDesktopPane().isAccurate(this.x, this.y, x, y)) {
+                    if (type == DesktopPane.RELEASED && ml!=null) {
+                        ml.click(x,y);
+                    }
+                }
+                else {
+                    x=-1000;
+                    y=-1000;
+                }
+            }
+        }
+
+        public void addMouseListener(MouseListener ml) {
+            this.ml = ml;
+        }
 
         public void pointerEvent(int[] type, int[] x, int[] y) {
             if (type.length == 2) { // always true. but just in case

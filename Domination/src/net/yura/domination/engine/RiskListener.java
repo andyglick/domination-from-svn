@@ -11,7 +11,7 @@ import net.yura.domination.engine.core.RiskGame;
 
 public interface RiskListener {
 
-    public void sendMessage(String output, boolean a, boolean b);
+    public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded);
     public void needInput(int s);
     public void noInput();
     public void setGameStatus(String state);

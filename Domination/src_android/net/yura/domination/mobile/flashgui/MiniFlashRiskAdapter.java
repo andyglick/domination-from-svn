@@ -23,8 +23,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void sendMessage(String output, boolean a, boolean b) {
+    public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
         Logger.debug("Game: "+output);
+        mainFrame.mapRedrawRepaint(redrawNeeded,repaintNeeded);
     }
 
     // ======================= game setup =============================
@@ -58,7 +59,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void needInput(int s) {
-        // TODO Auto-generated method stub
+        mainFrame.needInput(s);
     }
 
     @Override

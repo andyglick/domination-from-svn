@@ -7,8 +7,10 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
+import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mobile.mapchooser.MapChooser;
 import net.yura.domination.mobile.simplegui.GamePanel;
@@ -317,13 +319,26 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     // ================================================ IN GAME
 
-
+    PicturePanel pp;
+    GamePanel gamecontrol;
     public void startGame(boolean s) {
 
         // ============================================ create UI
 
-        final PicturePanel pp = new PicturePanel(myrisk);
-        GamePanel gamecontrol = new GamePanel(myrisk,pp);
+        pp = new PicturePanel(myrisk);
+        gamecontrol = new GamePanel(myrisk,pp);
+
+        final MapMouseListener mml = new MapMouseListener(myrisk, pp);
+        pp.addMouseListener(
+            new MouseListener() {
+                public void click(int x,int y) {
+                    int[] countries = mml.mouseReleased(x, y, gameState);
+                    mapClick(countries);
+                }
+            }
+        );
+
+
 
         // ============================================ setup UI
 
@@ -347,5 +362,82 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         repaint();
     }
 
+    int gameState;
+    public void needInput(int s) {
+        gameState = s;
+    }
+    public void go(String input) {
+
+        //pp.setHighLight(PicturePanel.NO_COUNTRY);
+        // Testing.append("Submitted: \""+input+"\"\n");
+
+        //if (gameState!=2 || !myrisk.getGame().getSetup() ) { blockInput(); }
+
+        myrisk.parser(input);
+
+        // Console.setCaretPosition(Console.getDocument().getLength());
+
+    }
+
+    String note;
+    public void mapClick(int[] countries) {
+System.out.println("yay "+gameState+" "+countries.length);
+        if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+            if (countries.length==1) {
+                //if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
+                    go( "placearmies " + countries[0] + " 1" );
+                //}
+                //else {
+                //    go( "placearmies " + countries[0] + " 10" );
+                //}
+            }
+        }
+        else if (gameState == RiskGame.STATE_ATTACKING) {
+
+            if (countries.length==0) {
+                note=resBundle.getProperty("game.note.selectattacker");
+            }
+            else if (countries.length == 1) {
+                note=resBundle.getProperty("game.note.selectdefender");
+            }
+            else {
+                go("attack " + countries[0] + " " + countries[1]);
+                note=resBundle.getProperty("game.note.selectattacker");
+            }
+
+        }
+        else if (gameState == RiskGame.STATE_FORTIFYING) {
+            if (countries.length==0) {
+                note=resBundle.getProperty("game.note.selectsource");
+            }
+            else if (countries.length==1) {
+                note=resBundle.getProperty("game.note.selectdestination");
+            }
+            else {
+                note="";
+
+                //openMove(1,countries[0] , countries[1], true);
+                //movedialog.setVisible(true);
+
+                // clean up
+                //pp.setC1(255);
+                //pp.setC2(255);
+                //note=resb.getString("game.note.selectsource");
+            }
+        }
+        else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+            // do nothing ??
+        }
+
+    }
+
+    public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
+        if(redrawNeeded) {
+            pp.repaintCountries( gamecontrol.getMapView() );
+        }
+        if (repaintNeeded) {
+            pp.repaint();
+        }
+    }
 
 }
