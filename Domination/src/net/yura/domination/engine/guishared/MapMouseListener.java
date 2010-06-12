@@ -36,6 +36,7 @@ public class MapMouseListener {
                         pp.setC1(NO_COUNTRY);
                         pp.setC2(NO_COUNTRY);
                         pp.repaint();
+                        return new int[0];
                 }
                 else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && ( myrisk.hasArmiesInt(pixColor) > 1) ) {
                         pp.setC1(pixColor);
@@ -56,6 +57,7 @@ public class MapMouseListener {
                         pp.setC1(NO_COUNTRY);
                         pp.setC2(NO_COUNTRY);
                         pp.repaint();
+                        return new int[0];
                 }
                 else if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && ( myrisk.hasArmiesInt(pixColor) > 1) && pp.getC1() == NO_COUNTRY) {
                         pp.setC1(pixColor);
@@ -84,7 +86,7 @@ public class MapMouseListener {
                         return new int[] { pixColor };
                 }
         }
-        return new int[0];
+        return null;
     }
 
     public void mouseExited() {
