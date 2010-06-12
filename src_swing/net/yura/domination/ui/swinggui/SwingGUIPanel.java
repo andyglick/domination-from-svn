@@ -59,7 +59,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -124,7 +123,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 
 	private PicturePanel pp;
-	private int c1Id;
+	//private int c1Id;
 
 
 
@@ -193,7 +192,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 		myrisk= r;
 
-		c1Id = -1;
+		//c1Id = -1;
 		gameState=-1; // (-1 means no game)
 
 
@@ -2093,6 +2092,8 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			}
 			else if (gameState == RiskGame.STATE_ATTACKING) {
 
+                                pp.setC1(PicturePanel.NO_COUNTRY);
+                                pp.setC2(PicturePanel.NO_COUNTRY);
                                 attacker.setText(resbundle.getString("game.note.selectattacker"));
 
 				inGameCards.show(inGameInput, "attack");
@@ -2761,7 +2762,7 @@ public void setNODDefender(int n) {}
 
 				data[cc-1][0] = myrisk.getRiskConfig("default.player"+cc+".name");
 				data[cc-1][1] = findColor( RiskUtil.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
-				data[cc-1][2] = findType( myrisk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
+				data[cc-1][2] = findType( Risk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
 
 			}
 
@@ -3382,10 +3383,9 @@ public void setNODDefender(int n) {}
 			endtrade.addActionListener(
 					new ActionListener() {
 						public void actionPerformed(ActionEvent a) {
-
+                                                        int c1Id = pp.getC1();
 							pp.setC1(PicturePanel.NO_COUNTRY);
 							go("capital "+c1Id );
-							c1Id = -1;
 						}
 					}
 			);
@@ -3533,7 +3533,6 @@ public void setNODDefender(int n) {}
 							go("endattack");
 							attacker.setText(resbundle.getString("game.note.selectattacker"));
 
-							c1Id = -1;
 							pp.setC1(PicturePanel.NO_COUNTRY);
 							pp.setC2(PicturePanel.NO_COUNTRY);
 							pp.repaint();
@@ -3691,11 +3690,11 @@ public void setNODDefender(int n) {}
 			JButton retreat = new JButton(resbundle.getString("battle.retreat"));
 
 			retreat.addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent a) {
-							go("retreat");
-						}
-					}
+                            new ActionListener() {
+                                public void actionPerformed(ActionEvent a) {
+                                    go("retreat");
+                                }
+                            }
 			);
 
 			c.gridx = 3; // col
