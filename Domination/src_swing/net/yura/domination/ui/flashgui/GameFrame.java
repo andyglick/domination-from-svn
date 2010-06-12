@@ -909,6 +909,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
         public void mapClick(int[] countries,MouseEvent e) {
 
+            Object oldnote = note;
 
             if (gameState == RiskGame.STATE_PLACE_ARMIES) {
                 if (countries.length==1) {
@@ -957,6 +958,9 @@ public class GameFrame extends JFrame implements KeyListener {
                 // do nothing ??
             }
 
+            if (oldnote!=note) {
+                repaint();
+            }
 
         }
 
