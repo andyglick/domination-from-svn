@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -909,7 +910,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	}
 
-        public void mapClick(int[] countries,MouseEvent e) {
+        public void mapClick(final int[] countries,MouseEvent e) {
 
             Object oldnote = note;
 
@@ -946,14 +947,24 @@ public class GameFrame extends JFrame implements KeyListener {
                 }
                 else {
                     note="";
+                    repaint();
 
                     openMove(1,countries[0] , countries[1], true);
+
+                    // this comes in on the mouse event thread
+                    // we need to make this dialog blocking so the user
+                    // can not click on the map while this dialog is up
+                    movedialog.setModal(true);
                     movedialog.setVisible(true);
+                    movedialog.setModal(false);
+                    // now we set it back to a none-blocking dialog
+                    // for use with the move of armies after a attack
 
                     // clean up
                     pp.setC1(255);
                     pp.setC2(255);
                     note=resb.getString("game.note.selectsource");
+
                 }
             }
             else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
@@ -1117,20 +1128,22 @@ public class GameFrame extends JFrame implements KeyListener {
 
 
 
+        /**
+         * try not to use this method, the last boolean represents state and so should not be part of button creation
+         * @deprecated 
+         */
 	public static JButton makeRiskButton(Image gobutton1, Image gobutton2, Image gobutton3, Image gobutton4, boolean startstate) {
-
-		JButton button = new JButton();
-
-		NewGameFrame.sortOutButton( button, gobutton1, gobutton3, gobutton2 );
-
-		button.setDisabledIcon( new ImageIcon( gobutton4 ) );
+		JButton button = makeRiskButton(gobutton1, gobutton2, gobutton3, gobutton4);
 		button.setEnabled(startstate);
-
 		return button;
-
 	}
 
-
+	public static JButton makeRiskButton(Image gobutton1, Image gobutton2, Image gobutton3, Image gobutton4) {
+		JButton button = new JButton();
+		NewGameFrame.sortOutButton( button, gobutton1, gobutton3, gobutton2 );
+		button.setDisabledIcon( new ImageIcon( gobutton4 ) );
+		return button;
+	}
 
 	/**
 	 * The user has released a key

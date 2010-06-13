@@ -45,54 +45,32 @@ public class ClientGameRisk extends TurnBasedAdapter {
 		product = RiskUtil.getGameName() + " Lobby Client";
 		RISK_PATH = RiskUtil.getGameName() + "/";
 
+                RiskUtil.streamOpener = new RiskIO() {
+                    public InputStream openStream(String name) throws IOException {
+                            return LobbyClientGUI.openStream(RISK_PATH+name);
+                    }
+                    public InputStream openMapStream(String name) throws IOException {
+                            return openStream(MAP_PATH+name);
+                    }
+                    public ResourceBundle getResourceBundle(Class a,String n,Locale l) {
+                            return ResBundle.getBundle(a,n,l);
+                    }
+                    public void openURL(URL url) throws Exception {
+                            LobbyClientGUI.openURL(url);
+                    }
+                    public void openDocs(String doc) throws Exception {
+                            openURL( new URL( LobbyClientGUI.getCodeBase(), RISK_PATH+doc) );
+                    }
+                    public void saveGameFile(String name, Object obj) throws Exception {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                    public InputStream loadGameFile(String file) throws Exception {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+            };
 	}
 
 	public ClientGameRisk() {
-
-		if (RiskUtil.streamOpener==null) {
-
-			RiskUtil.streamOpener = new RiskIO() {
-
-				public InputStream openStream(String name) throws IOException {
-
-					return LobbyClientGUI.openStream(RISK_PATH+name);
-
-				}
-
-				public InputStream openMapStream(String name) throws IOException {
-
-					return openStream(MAP_PATH+name);
-				}
-
-				public ResourceBundle getResourceBundle(Class a,String n,Locale l) {
-
-					return ResBundle.getBundle(a,n,l);
-
-				}
-
-				public void openURL(URL url) throws Exception {
-
-					LobbyClientGUI.openURL(url);
-
-				}
-
-				public void openDocs(String doc) throws Exception {
-
-					openURL( new URL( LobbyClientGUI.getCodeBase(), RISK_PATH+doc) );
-
-				}
-
-                                public void saveGameFile(String name, Object obj) throws Exception {
-                                    throw new UnsupportedOperationException("Not supported yet.");
-                                }
-
-                                public InputStream loadGameFile(String file) throws Exception {
-                                    throw new UnsupportedOperationException("Not supported yet.");
-                                }
-
-			};
-
-		}
 
 	}
 

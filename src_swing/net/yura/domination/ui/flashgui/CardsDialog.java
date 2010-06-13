@@ -122,6 +122,8 @@ public class CardsDialog extends JDialog {
 
 		}
 
+                tradeButton.setEnabled(false);
+
 	}
 
 	/** This method is called from within the constructor to initialize the dialog. */
@@ -153,7 +155,7 @@ public class CardsDialog extends JDialog {
 		TradePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 		TradePanel.setOpaque(false);
 
-		tradeButton = GameFrame.makeRiskButton(Cards.getSubimage(396, 420, 88, 31), Cards.getSubimage(630, 335, 88, 31), Cards.getSubimage(630, 366, 88, 31), Cards.getSubimage(630, 397, 88, 31), false);
+		tradeButton = GameFrame.makeRiskButton(Cards.getSubimage(396, 420, 88, 31), Cards.getSubimage(630, 335, 88, 31), Cards.getSubimage(630, 366, 88, 31), Cards.getSubimage(630, 397, 88, 31));
 		tradeButton.setText(resb.getString("cards.trade"));
 		tradeButton.setBounds(396, 420, 88, 31);
 

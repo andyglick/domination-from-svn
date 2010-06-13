@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -19,6 +20,12 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	private Map<String,String> playersMap;
 	private Map<String,String> inverseMap;
+
+        static {
+            // we need RiskUIUtil static block to run
+            // TODO: this can be done much better
+            RiskUIUtil.setupMapsDir(null);
+        }
 
 	public ServerGameRisk() {
 
