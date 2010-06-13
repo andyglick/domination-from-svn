@@ -25,7 +25,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;

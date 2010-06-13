@@ -83,7 +83,6 @@ public class RiskUIUtil {
                 return getLoadFileInputStream(file);
             }
         };
-
     }
 
     public static URL mapsdir;

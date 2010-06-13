@@ -65,7 +65,7 @@ public class MapMouseListener {
                         pp.repaint();
                         return new int[] { pixColor };
                 }
-                else if ( pp.getC1() != NO_COUNTRY && (myrisk.isOwnedCurrentPlayerInt(pixColor)) && myrisk.canAttack( pp.getC1() , pixColor) ) {
+                else if ( pp.getC1() != NO_COUNTRY && myrisk.isOwnedCurrentPlayerInt(pixColor) && pp.getC2() != pixColor && myrisk.canAttack( pp.getC1() , pixColor) ) {
                         pp.setC2(pixColor);
                         pp.repaint();
                         return new int[] { pp.getC1(),pixColor };

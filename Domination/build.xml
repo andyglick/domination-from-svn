@@ -368,7 +368,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<!-- copy images -->
 		<copy todir="${dir.build.lobby.client.classes}">
-			<fileset dir="game/${game.name}/jar" includes="**/guishared/*.*,**/FlashGUI/*.*" excludes="**/FlashGUI/joingame.jpg,**/FlashGUI/menu.jpg,**/FlashGUI/earth.gif"/>
+			<fileset dir="game/${game.name}/jar" includes="**/lobby/client/*.*,**/guishared/*.*,**/FlashGUI/*.*" excludes="**/FlashGUI/joingame.jpg,**/FlashGUI/menu.jpg,**/FlashGUI/earth.gif"/>
 		</copy>
 
 	</target>
