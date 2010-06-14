@@ -58,6 +58,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -70,7 +71,6 @@ import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
-import net.yura.domination.engine.guishared.MouseAdapter;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.SimplePrintStream;
@@ -2404,7 +2404,7 @@ public void setNODDefender(int n) {}
 			pp.setMaximumSize(mapSize);
 
                         final MapMouseListener mml = new MapMouseListener(myrisk,pp);
-                        MouseAdapter mapListener = new MouseAdapter() {
+                        MouseInputAdapter mapListener = new MouseInputAdapter() {
                             public void mouseExited(MouseEvent e) {
                                 mml.mouseExited();
                             }

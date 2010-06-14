@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.event.MouseInputAdapter;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -35,7 +36,6 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.MapMouseListener;
-import net.yura.domination.engine.guishared.MouseAdapter;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -86,7 +86,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	private JButton helpbutton;
 	private JButton closebutton;
 
-        private MouseAdapter mapListener;
+        private MouseInputAdapter mapListener;
 
 	public GameFrame(Risk r, PicturePanel p) {
 
@@ -98,7 +98,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		pp=p;
 
                 final MapMouseListener mml = new MapMouseListener(myrisk,pp);
-                mapListener = new MouseAdapter() {
+                mapListener = new MouseInputAdapter() {
                     public void mouseExited(MouseEvent e) {
                         mml.mouseExited();
                     }
@@ -249,7 +249,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		    }
 		};
 		//fp.setBounds(0,0, (int)d.getWidth() , (int)d.getHeight() );
-		fp.addMouseListener( new MouseAdapter() {
+		fp.addMouseListener( new MouseInputAdapter() {
                     public void mouseReleased(MouseEvent e) {
                 	int click=insideButton(e.getX(),e.getY());
 			if (click != -1) { // this means it was one of the view buttons
