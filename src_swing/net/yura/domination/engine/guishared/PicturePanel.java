@@ -1000,9 +1000,10 @@ public class PicturePanel extends JPanel implements MapPanel {
 		int w=ci.getWidth();
 		int h=ci.getHeight();
 
-		BufferedImage pictureA = new BufferedImage( w ,h, java.awt.image.BufferedImage.TYPE_INT_RGB );
+		BufferedImage pictureA = new BufferedImage( w ,h, ci.getGrayImage().getType() );
 
 		RescaleOp HighLight = new RescaleOp( 0.5f, -1.0f, null);
+                // we have to filter to the same type of image as the source image
 		HighLight.filter( ci.getGrayImage() , pictureA );
 
 
