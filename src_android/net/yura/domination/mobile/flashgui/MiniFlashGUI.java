@@ -355,7 +355,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         // ============================================ add to window
 
         Panel mainWindow = new Panel( new BorderLayout() );
-        mainWindow.add(pp);
+        ScrollPane sp = new ScrollPane(pp);
+        sp.setBackground(0xFF000000);
+        mainWindow.add( sp );
         mainWindow.add(gamecontrol,Graphics.TOP);
 
         setContentPane( mainWindow );
