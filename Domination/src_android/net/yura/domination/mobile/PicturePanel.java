@@ -27,7 +27,7 @@ import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
-import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.components.ImageView;
 import net.yura.mobile.gui.plaf.Style;
 
 /**
@@ -35,7 +35,7 @@ import net.yura.mobile.gui.plaf.Style;
  * @author Yura Mamyrin
  */
 
-public class PicturePanel extends Panel implements MapPanel {
+public class PicturePanel extends ImageView implements MapPanel {
 
         public final static int NO_COUNTRY = 255;
 
@@ -63,12 +63,13 @@ public class PicturePanel extends Panel implements MapPanel {
         // TODO: do not have this class, need to think of something else
         private ColorMatrix HighLight;
 
-        private double scale=1;
 
         /**
          * Creates an Picture Panel
          */
         public PicturePanel(Risk r) {
+
+                getDesktopPane().IPHONE_SCROLL = true;
 
                 myrisk=r;
 
@@ -113,22 +114,6 @@ public class PicturePanel extends Panel implements MapPanel {
             this.ml = ml;
         }
 
-        public void pointerEvent(int[] type, int[] x, int[] y) {
-            if (type.length == 2) { // always true. but just in case
-
-
-                double point1touchx = scale * x[0];
-                double point1touchy = scale * y[0];
-
-                //int xd = x[1]-x[0];
-                //int yd = y[1]-y[0];
-                //double distance = Math.sqrt(xd*xd + yd*yd);
-
-
-
-            }
-        }
-
         private void setupSize(int x,int y) {
 
             if (map==null || map.length!=x || map[0].length!=y) {
@@ -168,6 +153,10 @@ public class PicturePanel extends Panel implements MapPanel {
         }
 
         public void memoryLoad(Image m, Image O) {
+
+                imgW = O.getWidth();
+                imgH = O.getHeight();
+
 
                 RiskGame game = myrisk.getGame();
 
@@ -293,8 +282,8 @@ public class PicturePanel extends Panel implements MapPanel {
                         Graphics g2 = g.getGraphics();
 
                         double s = getScale();
-                        int x = getDrawImageX(s);
-                        int y = getDrawImageY(s);
+                        int x = getImgX(s);
+                        int y = getImgY(s);
 
                         //System.out.println("scale: "+s);
 
@@ -350,24 +339,6 @@ public class PicturePanel extends Panel implements MapPanel {
             font = theme.getFont(Style.ALL);
         }
 
-        private int getDrawImageX(double ratio) {
-
-                return (int) (getWidth()-(map.length*ratio) )/2;
-
-        }
-
-        private int getDrawImageY(double ratio) {
-
-
-                return (int) (getHeight()-(map[0].length*ratio) )/2;
-
-        }
-
-        private double getScale() {
-
-                //return Math.min(getHeight()/(double)map[0].length,getWidth()/(double)map.length);
-                return scale;
-        }
 
         /**
          * Paints the army components
@@ -814,8 +785,8 @@ public class PicturePanel extends Panel implements MapPanel {
 
                 double s = getScale();
 
-                x = x - getDrawImageX(s);
-                y = y - getDrawImageY(s);
+                x = x - getImgX(s);
+                y = y - getImgY(s);
 
                 x = (int)(x / s);
                 y = (int)(y / s);

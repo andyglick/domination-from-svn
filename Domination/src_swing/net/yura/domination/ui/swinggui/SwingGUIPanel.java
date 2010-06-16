@@ -1981,6 +1981,10 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 	}
 
+        public void showMapImage(Icon p) {
+            guiSetup.showMapImage( p );
+        }
+
 	//############################################################################################################
 
 // this get all the commands from the game and does what needs to be done
