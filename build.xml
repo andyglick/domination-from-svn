@@ -11,6 +11,7 @@
 		to compile the Game classes, manual files and to generate
 		distribution files
 	</description>
+	    <!-- this is needed for running the junit test in netbeans -->
         <import file="nbproject/build-impl.xml"/>
 
 	<property name="game.version" value="1.1.0.1"/>
@@ -380,7 +381,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.server.classes}"/>
 
-		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**"
+		<javac debug="on" srcdir="${dir.sources}:src_lobbyserver" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**"
 		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/jnlp.jar"/>
 
                 <!-- copy translation files and other shared files -->

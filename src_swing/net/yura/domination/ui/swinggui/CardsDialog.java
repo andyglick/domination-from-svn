@@ -73,8 +73,6 @@ public class CardsDialog extends JDialog {
 	resb = TranslationBundle.getBundle();
 
 	tradeButton = new JButton(resb.getString("cards.trade"));
-	tradeButton.setEnabled(false);
-
 
 	// Toolkit.getDefaultToolkit().getImage( "" );
 
@@ -100,11 +98,11 @@ public class CardsDialog extends JDialog {
 
     public void populate(Vector cards) {
 
-	for (int c=0; c < cards.size(); c++) {
+        tradeButton.setEnabled(false);
 
+	for (int c=0; c < cards.size(); c++) {
 	    JPanel cp = new CardPanel( (Card)cards.elementAt(c) );
 	    CardsPanel.add(cp);
-
 	}
 
     }

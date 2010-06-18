@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.0
+	Risk Game:	1.1.0.1
 	 * Save:	7
 	 * Network:	8
 
@@ -17,7 +17,7 @@ Risk 1.1.0.1
 	in FlashGUI when u make a new game, it remembers your old player state
 	bug with trading cards in CARD_INCREASING_SET fixed
 
-Risk 1.1.0.0
+Risk 1.1.0.0 (02.06.2010)
 
 	new build system to allow for building both Risk and Domination
 	translation tool split off from main code
@@ -27,7 +27,7 @@ Risk 1.1.0.0
 	core Domination engine split from anything UI related in the hope to create a Risk for android
 	in the map editor, if a new image is loaded with a different size to the imgmap, it asks if you want to update the size of the imgmap
 
-Risk 1.0.9.8
+Risk 1.0.9.8 (07.10.2008)
 
 	no more licence in installer, as does not work in java 1.4
 	In FixedCards gameMode some card trades were returning zero armies, for example {WILDCARD,WILDCARD,*}. - davet
