@@ -270,7 +270,7 @@ public class RiskUIUtil {
 
 					JOptionPane.showMessageDialog(null,"Can not find map: "+dmname );
 
-					JFileChooser fc = new JFileChooser();
+					JFileChooser fc = new JFileChooser( new File(".") );
 
 					//RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_SAVE_FILES);
 					//fc.setFileFilter(filter);
