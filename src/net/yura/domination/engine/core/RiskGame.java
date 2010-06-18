@@ -555,7 +555,7 @@ transient - A keyword in the Java programming language that indicates that a fie
      * @return 0 in case of invalid combination of cards.
      */
     public int getTradeAbsValue(String c1, String c2, String c3,int cardMode) {
-        int armies;
+        int armies=0;
 
         // we shift all wildcards to the front
         if (!c1.equals(Card.WILDCARD)) { String n4 = c3; c3 = c1; c1 = n4; }
@@ -563,7 +563,6 @@ transient - A keyword in the Java programming language that indicates that a fie
         if (!c1.equals(Card.WILDCARD)) { String n4 = c2; c2 = c1; c1 = n4; }
 
         if (cardMode == CARD_INCREASING_SET) {
-
             if (
                     c1.equals(Card.WILDCARD) ||
                     (c1.equals(c2) && c1.equals(c3)) ||
@@ -571,50 +570,32 @@ transient - A keyword in the Java programming language that indicates that a fie
                 ) {
                 armies = getNewCardState();
             }
-            else {
-                armies = 0;
-            }
-
         }
         else if (cardMode == CARD_FIXED_SET) {
-
-            if (c1.equals(c2) && c1.equals(c3)) {
-                // Implies c2.equals(c3)
-                if (c1.equals(Card.CAVALRY)) {
-                    armies = 6;
-                }
-                else if (c1.equals(Card.INFANTRY)) {
+            // ALL THE SAME or 'have 1 wildcard and 2 the same'
+            if ((c1.equals(c2) || c1.equals(Card.WILDCARD)) && c2.equals(c3)) {
+                if (c3.equals(Card.INFANTRY)) {
                     armies = 4;
                 }
-                else if (c1.equals(Card.CANNON)) {
+                else if (c3.equals(Card.CAVALRY)) {
+                    armies = 6;
+                }
+                else if (c3.equals(Card.CANNON)) {
                     armies = 8;
                 }
-                else {
-                    // (c1.equals( Card.WILDCARD ))
+                else { // (c1.equals( Card.WILDCARD ))
                     armies = 12; // Incase someone puts 3 wildcards into his set
-                } // In case someone puts 3 wildcards into his set
-            }
-            else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3)) {
-                armies = 10;
-            } //All the same w/1 wildcard
-            else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
-                if (c3.equals(Card.CANNON)) {
-                    armies = 8;
-                }
-                else if (c3.equals(Card.INFANTRY)) {
-                    armies = 4;
-                }
-                else { // (c3.equals(Card.CAVALRY ))
-                    armies = 6;
                 }
             }
-            else { //2 wildcards
+            // ALL CARDS ARE DIFFERENT (can have 1 wildcard) or 2 wildcards and a 3rd card
+            else if (
+                    (c1.equals(Card.WILDCARD) && c2.equals(Card.WILDCARD)) ||
+                    (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3))
+                    ) {
                 armies = 10;
             }
-
         }
         else { // (cardMode==CARD_ITALIANLIKE_SET)
-
             if (c1.equals(c2) && c1.equals(c3)) {
                 // All equal
                 if (c1.equals(Card.CAVALRY)) {
@@ -628,18 +609,19 @@ transient - A keyword in the Java programming language that indicates that a fie
                 }
                 else { // (c1.equals( Card.WILDCARD ))
                     armies = 0; // Incase someone puts 3 wildcards into his set
-                } // Incase someone puts 3 wildcards into his set
+                }
             }
             else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3) && !c1.equals(Card.WILDCARD)) {
                 armies = 10;
-            } //All the same w/1 wildcard
+            }
+            //All the same w/1 wildcard
             else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
                 armies = 12;
-            } //2 wildcards, or a wildcard and two different
+            }
+            //2 wildcards, or a wildcard and two different
             else {
                 armies = 0;
             }
-
         }
         return armies;
     }
