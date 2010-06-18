@@ -15,6 +15,7 @@ CURRENT VERSION:
 Risk 1.1.0.1
 
 	in FlashGUI when u make a new game, it remembers your old player state
+	bug with trading cards in CARD_INCREASING_SET fixed
 
 Risk 1.1.0.0
 

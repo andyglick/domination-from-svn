@@ -515,8 +515,7 @@ transient - A keyword in the Java programming language that indicates that a fie
         if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 )
             return 0;
 
-        int armies = getTradeAbsValue(
-                card1.getName(), card2.getName(), card3.getName());
+        int armies = getTradeAbsValue( card1.getName(), card2.getName(), card3.getName(), cardMode);
 
         if (armies <= 0) return 0;
 
@@ -555,7 +554,7 @@ transient - A keyword in the Java programming language that indicates that a fie
      * @param c3 The name of the type of the third card.
      * @return 0 in case of invalid combination of cards.
      */
-    private int getTradeAbsValue(String c1, String c2, String c3) {
+    public int getTradeAbsValue(String c1, String c2, String c3,int cardMode) {
         int armies;
 
         // we shift all wildcards to the front
@@ -566,62 +565,72 @@ transient - A keyword in the Java programming language that indicates that a fie
         if (cardMode == CARD_INCREASING_SET) {
 
             if (
-                    c3.equals(Card.WILDCARD) ||
+                    c1.equals(Card.WILDCARD) ||
                     (c1.equals(c2) && c1.equals(c3)) ||
                     (!c1.equals(c2) && !c1.equals(c3) && !c2.equals(c3))
                 ) {
                 armies = getNewCardState();
-            } else {
+            }
+            else {
                 armies = 0;
             }
 
-        } else if (cardMode == CARD_FIXED_SET) {
+        }
+        else if (cardMode == CARD_FIXED_SET) {
 
             if (c1.equals(c2) && c1.equals(c3)) {
                 // Implies c2.equals(c3)
                 if (c1.equals(Card.CAVALRY)) {
                     armies = 6;
-                } else if (c1.equals(Card.INFANTRY)) {
+                }
+                else if (c1.equals(Card.INFANTRY)) {
                     armies = 4;
-                } else if (c1.equals(Card.CANNON)) {
+                }
+                else if (c1.equals(Card.CANNON)) {
                     armies = 8;
-                } else {
+                }
+                else {
                     // (c1.equals( Card.WILDCARD ))
                     armies = 12; // Incase someone puts 3 wildcards into his set
                 } // In case someone puts 3 wildcards into his set
-            } else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3)) {
+            }
+            else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3)) {
                 armies = 10;
             } //All the same w/1 wildcard
             else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
                 if (c3.equals(Card.CANNON)) {
                     armies = 8;
-                } else if (c3.equals(Card.INFANTRY)) {
+                }
+                else if (c3.equals(Card.INFANTRY)) {
                     armies = 4;
-                } else {
-                    // (c3.equals(Card.CAVALRY ))
+                }
+                else { // (c3.equals(Card.CAVALRY ))
                     armies = 6;
                 }
-            } //2 wildcards
-            else {
+            }
+            else { //2 wildcards
                 armies = 10;
             }
 
-        } else {
+        }
+        else { // (cardMode==CARD_ITALIANLIKE_SET)
 
-            // (cardMode==CARD_ITALIANLIKE_SET)
             if (c1.equals(c2) && c1.equals(c3)) {
                 // All equal
                 if (c1.equals(Card.CAVALRY)) {
                     armies = 8;
-                } else if (c1.equals(Card.INFANTRY)) {
+                }
+                else if (c1.equals(Card.INFANTRY)) {
                     armies = 6;
-                } else if (c1.equals(Card.CANNON)) {
+                }
+                else if (c1.equals(Card.CANNON)) {
                     armies = 4;
-                } else {
-                    // (c1.equals( Card.WILDCARD ))
+                }
+                else { // (c1.equals( Card.WILDCARD ))
                     armies = 0; // Incase someone puts 3 wildcards into his set
                 } // Incase someone puts 3 wildcards into his set
-            } else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3) && !c1.equals(Card.WILDCARD)) {
+            }
+            else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3) && !c1.equals(Card.WILDCARD)) {
                 armies = 10;
             } //All the same w/1 wildcard
             else if (c1.equals(Card.WILDCARD) && c2.equals(c3)) {
@@ -696,9 +705,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return boolean true if they can be traded false if they can not
 	 */
 	public boolean checkTrade(Card card1, Card card2, Card card3) {
-            return getTradeAbsValue(
-                    card1.getName(), card2.getName(), card3.getName()
-                    ) > 0;
+            return getTradeAbsValue( card1.getName(), card2.getName(), card3.getName(), cardMode) > 0;
 	}
 
         /**
@@ -2080,11 +2087,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	/**
 	 * Closes the current game
 	 * @return Riskgame Returns the game, which is already set to null
-	 */
+	 * /
 	public static RiskGame closeGame() {
 		RiskGame game = null;
 		return game;
 	}
+         */
 
 	/**
 	 * Saves the current game to a file
