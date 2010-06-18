@@ -74,8 +74,7 @@ public class CardsDialog extends JDialog {
 	 * @param r the risk main program
 	 */
 
-	public CardsDialog(Frame parent, boolean modal, Risk r, PicturePanel p)
-	{
+	public CardsDialog(Frame parent, boolean modal, Risk r, PicturePanel p) {
 		super(parent, modal);
 		myrisk = r;
 		pp=p;
@@ -99,7 +98,6 @@ public class CardsDialog extends JDialog {
 
 		canTrade=ct;
 
-
 		Component[] oldcards = myCardsPanel.getComponents();
 		for (int c=0; c< oldcards.length ; c++) {
 			myCardsPanel.remove(oldcards[c]);
@@ -112,14 +110,10 @@ public class CardsDialog extends JDialog {
 		}
 
 
-
 		cards = myrisk.getCurrentCards();
-
 		for (int c=0; c < cards.size(); c++) {
-
 			JPanel cp = new CardPanel( (Card)cards.elementAt(c) );
 			myCardsPanel.add(cp);
-
 		}
 
                 tradeButton.setEnabled(false);
@@ -127,8 +121,7 @@ public class CardsDialog extends JDialog {
 	}
 
 	/** This method is called from within the constructor to initialize the dialog. */
-	private void initGUI()
-	{
+	private void initGUI() {
 		resb = TranslationBundle.getBundle();
 
 		setTitle(resb.getString("cards.title"));
@@ -282,29 +275,20 @@ public class CardsDialog extends JDialog {
 
 	}
 
-
-
-	public String getNumArmies()
-	{
-		if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET)
-		{
+	public String getNumArmies() {
+            // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
+            if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
 		 return resb.getString("cards.fixed");
-		// return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
-		}
-                else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET)
-		{
+            }
+            else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
 		 return resb.getString("cards.italianlike");
-		}
-		else
-		{
+            }
+            else {
 		 return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + myrisk.getNewCardState());
-		}
+            }
 	}
 
-
-
-	class CardsPanel extends JPanel
-	{
+	class CardsPanel extends JPanel {
 
 		/**
 		 * Paints the panel
@@ -327,10 +311,7 @@ public class CardsDialog extends JDialog {
 
 	}
 
-
-
-	class CardPanel extends JPanel implements MouseListener
-	{
+	class CardPanel extends JPanel implements MouseListener {
 
 		private Card card;
 		private BufferedImage grayImage;
@@ -530,8 +511,6 @@ public class CardsDialog extends JDialog {
 
 	/** Closes the dialog */
 	private void closeDialog() {
-
 		setVisible(false);
-
 	}
 }
