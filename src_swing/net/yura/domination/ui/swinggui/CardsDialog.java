@@ -29,8 +29,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -42,7 +44,6 @@ import net.yura.domination.engine.translation.TranslationBundle;
 public class CardsDialog extends JDialog {
 
     private Risk myrisk;
-    private Vector cards;
     private JPanel CardsPanel;
     private JPanel TradePanel;
     private JScrollPane CardsPlane;
@@ -76,14 +77,10 @@ public class CardsDialog extends JDialog {
 
 	// Toolkit.getDefaultToolkit().getImage( "" );
 
-	try {
-	    Infantry = ImageIO.read( this.getClass().getResource("infantry.gif") );
-	    Cavalry = ImageIO.read( this.getClass().getResource("cavalry.gif") );
-	    Artillery = ImageIO.read( this.getClass().getResource("artillery.gif") );
-	    Wildcard = ImageIO.read( this.getClass().getResource("wildcard.gif") );
-	}
-	catch (Exception e) {
-	}
+        Infantry = RiskUIUtil.getUIImage( this.getClass(),"infantry.gif" );
+        Cavalry = RiskUIUtil.getUIImage( this.getClass(),"cavalry.gif" );
+        Artillery = RiskUIUtil.getUIImage( this.getClass(),"artillery.gif" );
+        Wildcard = RiskUIUtil.getUIImage( this.getClass(),"wildcard.gif" );
 
 	CardsPanel = new JPanel();
 	CardsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
@@ -233,19 +230,15 @@ public class CardsDialog extends JDialog {
     }
 
     public String getNumArmies() {
-
 	// return " Next trade recieve " + myrisk.getNewCardState() + " troops";
-	if (myrisk.getGame().getCardMode()==myrisk.getGame().CARD_FIXED_SET)
-	{
-	 return resb.getString("cards.fixed");
+	if (myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
+            return resb.getString("cards.fixed");
 	}
-        else if (myrisk.getGame().getCardMode()==myrisk.getGame().CARD_ITALIANLIKE_SET)
-	{
-	 return resb.getString("cards.italianlike");
+        else if (myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+            return resb.getString("cards.italianlike");
 	}
-	else
-	{
-	return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + myrisk.getNewCardState());
+	else {
+            return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + myrisk.getNewCardState());
 	}
     }
 
