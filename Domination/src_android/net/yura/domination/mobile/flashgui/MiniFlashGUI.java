@@ -20,6 +20,7 @@ import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.FrameTitlePane;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
@@ -356,11 +357,17 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
         Panel mainWindow = new Panel( new BorderLayout() );
         ScrollPane sp = new ScrollPane(pp);
-        sp.setBackground(0xFF000000);
+
+
+        sp.setMode( ScrollPane.MODE_FLOATING_SCROLLBARS );
+        sp.setClip(false);
         mainWindow.add( sp );
         mainWindow.add(gamecontrol,Graphics.TOP);
 
         setContentPane( mainWindow );
+
+        setName("GameFrame");
+        setBackground(0xFF666666);
 
         revalidate();
         repaint();

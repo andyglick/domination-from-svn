@@ -86,6 +86,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
+                setName("PicturePanel");
         }
 
         int[] oldintx,oldinty;
