@@ -1,7 +1,12 @@
 package net.yura.domination.mobile.flashgui;
 
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.ProgressBar;
+import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.logging.Logger;
 
 public class MiniFlashRiskAdapter implements RiskListener {
@@ -72,9 +77,31 @@ public class MiniFlashRiskAdapter implements RiskListener {
         // TODO Auto-generated method stub
     }
 
+    Window battle;
     @Override
     public void openBattle(int c1num, int c2num) {
-        // TODO Auto-generated method stub
+
+        if (battle == null) {
+            battle = new Frame( mainFrame.resBundle.getProperty("battle.title") );
+        }
+        try {
+            Image red_img = Image.createImage("/red_dice.png");
+            Sprite red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
+
+            Image blue_img = Image.createImage("/blue_dice.png");
+            Sprite blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
+
+            ProgressBar redbar = new ProgressBar(red_dice);
+            ProgressBar bluebar = new ProgressBar(blue_dice);
+
+
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        
+
     }
 
     @Override
