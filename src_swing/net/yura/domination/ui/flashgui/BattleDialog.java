@@ -26,7 +26,6 @@ import javax.swing.JPanel;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
@@ -75,8 +74,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 	private java.util.ResourceBundle resb;
 	private Polygon arrow;
 	private JPanel battle;
-
-	private RiskGame game;
 
 	/**
 	 * Creates a new BattleDialog
@@ -153,19 +150,23 @@ public class BattleDialog extends JDialog implements MouseListener {
 		noda=0;
 		nodd=0;
 
+                reset();
+        }
 
-		// this should NOT be here, but as its only used for simone and thats not used yet, its ok
-		// breaks undo
-		game = myrisk.getGame();
+        public void reset() {
+
+                button.setEnabled(false);
+                retreat.setVisible(false);
+		canRetreat=false;
+		max=0;
+		setTitle(resb.getString("battle.title"));
 
 	}
 
 	/** This method is called from within the constructor to initialize the dialog. */
-	private void initGUI()
-	{
+	private void initGUI() {
 		resb = TranslationBundle.getBundle();
 
-		setTitle(resb.getString("battle.title"));
 		setResizable(false);
 
 		battle = new BattlePanel();
@@ -181,14 +182,13 @@ public class BattleDialog extends JDialog implements MouseListener {
 		int w=88;
 		int h=31;
 
-		button = GameFrame.makeRiskButton( Battle.getSubimage(196, 270, w, h), Battle.getSubimage(481, 270, w, h), Battle.getSubimage(481, 238, w, h), Battle.getSubimage(481, 302, w, h), false );
+		button = GameFrame.makeRiskButton( Battle.getSubimage(196, 270, w, h), Battle.getSubimage(481, 270, w, h), Battle.getSubimage(481, 238, w, h), Battle.getSubimage(481, 302, w, h) );
 		button.setText(resb.getString("battle.roll"));
 		button.setBounds(196, 270, 88, 31);
 
-		retreat = GameFrame.makeRiskButton( Battle.getSubimage(487, 138, w, h), Battle.getSubimage(481, 206, w, h), Battle.getSubimage(481, 174, w, h), Battle.getSubimage(487, 138, w, h), true );
+		retreat = GameFrame.makeRiskButton( Battle.getSubimage(487, 138, w, h), Battle.getSubimage(481, 206, w, h), Battle.getSubimage(481, 174, w, h), Battle.getSubimage(487, 138, w, h) );
 		retreat.setText(resb.getString("battle.retreat"));
 		retreat.setBounds(342, 270, 88, 31);
-		retreat.setVisible(false);
 
 		button.addActionListener(
 				new ActionListener() {
@@ -236,18 +236,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		int xaCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
 		int yaCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
 		arrow = new Polygon(xaCoords, yaCoords, xaCoords.length);
-
-	}
-
-	public void exitForm() {
-
-		//System.out.println("BattleDialog.exitForm");
-
-		button.setEnabled(false);
-		retreat.setVisible(false);
-		canRetreat=false;
-		max=0;
-		(BattleDialog.this).setTitle(resb.getString("battle.title"));
 
 	}
 

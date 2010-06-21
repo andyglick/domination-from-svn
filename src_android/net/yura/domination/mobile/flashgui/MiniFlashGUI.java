@@ -20,7 +20,6 @@ import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
-import net.yura.mobile.gui.components.FrameTitlePane;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
@@ -32,7 +31,7 @@ import net.yura.mobile.util.Properties;
 
 public class MiniFlashGUI extends Frame implements ChangeListener {
 
-    private Properties resBundle = MiniUtil.wrap(TranslationBundle.getBundle());
+    public Properties resBundle = MiniUtil.wrap(TranslationBundle.getBundle());
     private Risk myrisk;
 
     ActionListener al = new ActionListener() {
@@ -315,7 +314,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     }
 
+    public void openDialog() {
 
+        // going to create transparent dialog for battles and moving armies
+
+        // we have to open on top as there is not enough space under the map
+
+
+    }
 
 
     // ================================================ IN GAME
@@ -341,7 +347,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
         );
 
-
+        Panel gamepanel2 = new Panel();
+        gamepanel2.add( new Button("Stats") );
+        gamepanel2.add( new Button("Cards") );
 
         // ============================================ setup UI
 
@@ -363,6 +371,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         sp.setClip(false);
         mainWindow.add( sp );
         mainWindow.add(gamecontrol,Graphics.TOP);
+        mainWindow.add(gamepanel2,Graphics.BOTTOM);
 
         setContentPane( mainWindow );
 
@@ -392,13 +401,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     String note;
     public void mapClick(int[] countries) {
-System.out.println("yay "+gameState+" "+countries.length);
+
         if (gameState == RiskGame.STATE_PLACE_ARMIES) {
             if (countries.length==1) {
                 //if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
                     go( "placearmies " + countries[0] + " 1" );
                 //}
                 //else {
+                // TODO: make a method for adding 10 armies at a time
                 //    go( "placearmies " + countries[0] + " 10" );
                 //}
             }
