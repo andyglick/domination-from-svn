@@ -328,6 +328,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     PicturePanel pp;
     GamePanel gamecontrol;
+    Button gobutton;
     public void startGame(boolean s) {
 
         // ============================================ create UI
@@ -347,9 +348,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
         );
 
+        gobutton = new Button();
+
         Panel gamepanel2 = new Panel();
         gamepanel2.add( new Button("Stats") );
         gamepanel2.add( new Button("Cards") );
+        gamepanel2.add( gobutton );
 
         // ============================================ setup UI
 
@@ -383,9 +387,123 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     }
 
     int gameState;
+
     public void needInput(int s) {
-        gameState = s;
+            gameState=s;
+            String goButtonText=null;
+            switch (gameState) {
+                    case RiskGame.STATE_TRADE_CARDS: {
+                            // after wiping out someone if you go into trade mode
+                            pp.setC1(255);
+                            pp.setC2(255);
+                            goButtonText = resBundle.getProperty("game.button.go.endtrade");
+                            break;
+                    }
+                    case RiskGame.STATE_PLACE_ARMIES: {
+//                            if (setupDone==false) {
+                                    goButtonText = resBundle.getProperty("game.button.go.autoplace");
+//                            }
+                            break;
+                    }
+                    case RiskGame.STATE_ATTACKING: {
+                            pp.setC1(255);
+                            pp.setC2(255);
+                            note = resBundle.getProperty("game.note.selectattacker");
+                            goButtonText = resBundle.getProperty("game.button.go.endattack");
+                            break;
+                    }
+                    case RiskGame.STATE_FORTIFYING: {
+                            note = resBundle.getProperty("game.note.selectsource");
+                            goButtonText = resBundle.getProperty("game.button.go.nomove");
+                            break;
+                    }
+                    case RiskGame.STATE_END_TURN: {
+                            goButtonText = resBundle.getProperty("game.button.go.endgo");
+                            break;
+                    }
+                    case RiskGame.STATE_GAME_OVER: {
+//                            if (localGame) {
+                                    goButtonText = resBundle.getProperty("game.button.go.closegame");
+//                            }
+//                            else {
+//                                    goButtonText = resBundle.getProperty("game.button.go.leavegame");
+//                            }
+                            break;
+
+                    }
+                    case RiskGame.STATE_SELECT_CAPITAL: {
+                            note = resBundle.getProperty("game.note.happyok");
+                            goButtonText = resBundle.getProperty("game.button.go.ok");
+                            break;
+                    }
+                    case RiskGame.STATE_BATTLE_WON: {
+//                            movedialog.setVisible(true);
+                            break;
+                    }
+                    // for gameState 4 look in FlashRiskAdapter.java
+                    // for gameState 10 look in FlashRiskAdapter.java
+                    default: break;
+            }
+
+            if (goButtonText!=null) {
+                    gobutton.setFocusable(true);
+                    gobutton.setText(goButtonText);
+            }
+            else {
+                    gobutton.setFocusable(false);
+                    gobutton.setText("");
+            }
+//
+//            if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+//                    cardsbutton.setEnabled(true);
+//                    missionbutton.setEnabled(true);
+//
+//                    if (localGame) {
+//                        undobutton.setEnabled(true);
+//                        savebutton.setEnabled(true);
+//                    }
+//
+//                    AutoEndGo.setEnabled(true);
+//                    AutoEndGo.setBackground( Color.white );
+//                    AutoEndGo.setSelected( myrisk.getAutoEndGo() );
+//
+//                    AutoDefend.setEnabled(true);
+//                    AutoDefend.setBackground( Color.white );
+//                    AutoDefend.setSelected( myrisk.getAutoDefend() );
+//            }
+
+            repaint(); // SwingGUI has this here, if here then not needed in set status
     }
+
+    private void goOn() {
+            if (gameState==RiskGame.STATE_TRADE_CARDS) {
+                    go("endtrade");
+            }
+            else if (gameState==RiskGame.STATE_PLACE_ARMIES) {
+                    go("autoplace");
+            }
+            else if (gameState==RiskGame.STATE_ATTACKING) {
+                    pp.setC1(255);
+                    go("endattack");
+            }
+            else if (gameState==RiskGame.STATE_FORTIFYING) {
+                    pp.setC1(255);
+                    go("nomove");
+            }
+            else if (gameState==RiskGame.STATE_END_TURN) {
+                    go("endgo");
+            }
+            else if (gameState==RiskGame.STATE_GAME_OVER) {
+                    go("continue"); // TODO check if we can first
+                    //closeleave();
+            }
+            else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+                    int c1Id = pp.getC1();
+                    pp.setC1(255);
+                    go("capital " + c1Id);
+            }
+    }//private void goOn()
+
     public void go(String input) {
 
         //pp.setHighLight(PicturePanel.NO_COUNTRY);
