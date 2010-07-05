@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.RiskIO;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.io.NativeUtil;
 
 /**
  * @author Administrator
@@ -43,7 +44,7 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public InputStream loadGameFile(String file) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NativeUtil.getInputStreamFromFileConnector(file);
     }
 
 }

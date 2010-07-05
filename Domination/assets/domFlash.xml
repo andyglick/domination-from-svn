@@ -39,6 +39,7 @@
     <bind style="panel" type="region" key="ScrollPane"/>
     <bind style="panel" type="region" key="Label"/>
     <bind style="panel" type="region" key="PicturePanel"/>
+    <bind style="panel" type="region" key="TransparentDialog"/>
 
 
 

@@ -1,7 +1,12 @@
 package net.yura.domination.mobile.flashgui;
 
+import and.awt.Color;
+import com.nokia.mid.ui.DirectGraphics;
+import com.nokia.mid.ui.DirectUtils;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.Frame;
 
@@ -12,7 +17,9 @@ public class BattleDialog extends Frame {
 
     MiniFlashGUI mainFrame;
 
-    public BattleDialog() {
+    public BattleDialog(MiniFlashGUI a) {
+        mainFrame = a;
+
         setTitle( mainFrame.resBundle.getProperty("battle.title") );
 
         try {
@@ -31,13 +38,25 @@ public class BattleDialog extends Frame {
             throw new RuntimeException(ex);
         }
 
+        setName("TransparentDialog");
     }
-/*
+
+    int[] att,def; // these are the dice results
+    int noda,nodd; // these are the number of spinning dice
+    boolean ani;
+    //@Override
+    public void animate() throws InterruptedException {
+
+        while(ani) {
+            repaint();
+            wait(200);
+        }
+
+    }
+
     public void showDiceResults(int[] atti, int[] defi) {
 
-            if( timer.isRunning() ) {
-                    timer.stop();
-            }
+            ani = false;
 
             noda=0;
             nodd=0;
@@ -45,7 +64,7 @@ public class BattleDialog extends Frame {
             att=atti;
             def=defi;
 
-            battle.repaint();
+            repaint();
 
     }
 
@@ -55,87 +74,77 @@ public class BattleDialog extends Frame {
         int[] atti=att;
         int[] defi=def;
 
-        //super.paintComponent(g);
 
-        g.drawImage( Back ,0 ,0 ,this );
+        // we are not drawing the countires, we will use the ones already on the map behind thid dialog
+        //g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
+        //g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
 
-        if (canRetreat) {
+        // not supported
+        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                g.drawImage( Battle.getSubimage(481, 133, 98, 40) ,336 ,265 ,this );
+        Font font = g.getFont();
+        g.setColor( getCurrentForeground() );
 
-        }
+        //tl = new TextLayout( country1.getName(), font, frc); // Display
+        //tl.draw( g, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
 
-        g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
+        //tl = new TextLayout( country2.getName(), font, frc); // Display
+        //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
 
-        g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
+        g.drawString("TODO", 5, 5);
 
-        Graphics2D g2 = (Graphics2D)g;
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        FontRenderContext frc = g2.getFontRenderContext();
-        Font font = g2.getFont();
-        g2.setColor( Color.black );
-        TextLayout tl;
-
-        tl = new TextLayout( country1.getName(), font, frc); // Display
-        tl.draw( g2, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
-
-        tl = new TextLayout( country2.getName(), font, frc); // Display
-        tl.draw( g2, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
-
-        tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
-        tl.draw( g2, (float) (240-(tl.getBounds().getWidth()/2)), 320f );
-
+        //tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
+        //tl.draw( g, (float) (240-(tl.getBounds().getWidth()/2)), 320f );
+/*
         Ellipse2D ellipse;
 
 
-        g2.setColor( color1 );
+        g.setColor( color1 );
 
         ellipse = new Ellipse2D.Double();
         ellipse.setFrame( 120 , 90 , 20, 20);
-        g2.fill(ellipse);
+        g.fill(ellipse);
 
-        g2.setColor( color2 );
+        g.setColor( color2 );
 
         ellipse = new Ellipse2D.Double();
         ellipse.setFrame( 340 , 90 , 20, 20);
-        g2.fill(ellipse);
+        g.fill(ellipse);
 
 
-        g2.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
+        g.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
 
 
-        g2.fillPolygon( arrow );
+        g.fillPolygon( arrow );
 
         int noa;
 
-        g2.setColor( RiskUIUtil.getTextColorFor(color1) );
+        g.setColor( RiskUIUtil.getTextColorFor(color1) );
 
         noa = myrisk.hasArmiesInt(c1num);
 
         if (noa < 10) {
-                g2.drawString( String.valueOf( noa ) , 126, 105 );
+                g.drawString( String.valueOf( noa ) , 126, 105 );
         }
         else if (noa < 100) {
-                g2.drawString( String.valueOf( noa ) , 123, 105 );
+                g.drawString( String.valueOf( noa ) , 123, 105 );
         }
         else {
-                g2.drawString( String.valueOf( noa ) , 120, 105 );
+                g.drawString( String.valueOf( noa ) , 120, 105 );
         }
 
-        g2.setColor( RiskUIUtil.getTextColorFor(color2) );
+        g.setColor( RiskUIUtil.getTextColorFor(color2) );
 
         noa = myrisk.hasArmiesInt(c2num);
 
         if (noa < 10) {
-                g2.drawString( String.valueOf( noa ) , 346, 105 );
+                g.drawString( String.valueOf( noa ) , 346, 105 );
         }
         else if (noa < 100) {
-                g2.drawString( String.valueOf( noa ) , 343, 105 );
+                g.drawString( String.valueOf( noa ) , 343, 105 );
         }
         else {
-                g2.drawString( String.valueOf( noa ) , 340, 105 );
+                g.drawString( String.valueOf( noa ) , 340, 105 );
         }
 
         // #####################################################
@@ -243,22 +252,22 @@ public class BattleDialog extends Frame {
 
                 if (defi[0] >= atti[0]) {
 
-                        g2.setColor( Color.blue );
+                        g.setColor( Color.blue );
 
                         int xCoords[] = {339, 339, 140};
                         int yCoords[] = {180, 200, 190};
 
-                        g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                        g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                 }
                 else {
 
-                        g2.setColor( Color.red );
+                        g.setColor( Color.red );
 
                         int xCoords[] = {140, 140, 339};
                         int yCoords[] = {180, 200, 190};
 
-                        g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                        g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                 }
 
@@ -266,22 +275,22 @@ public class BattleDialog extends Frame {
 
                         if (defi[1] >= atti[1]) {
 
-                                g2.setColor( Color.blue );
+                                g.setColor( Color.blue );
 
                                 int xCoords[] = {339, 339, 140};
                                 int yCoords[] = {211, 231, 221};
 
-                                g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                                g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                         }
                         else {
 
-                                g2.setColor( Color.red );
+                                g.setColor( Color.red );
 
                                 int xCoords[] = {140, 140, 339};
                                 int yCoords[] = {211, 231, 221};
 
-                                g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                                g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                         }
                 }
@@ -290,22 +299,22 @@ public class BattleDialog extends Frame {
 
                     if (defi[2] >= atti[2]) {
 
-                            g2.setColor( Color.blue );
+                            g.setColor( Color.blue );
 
                             int xCoords[] = {339, 339, 140};
                             int yCoords[] = {242, 262, 252};
 
-                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                            g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                     }
                     else {
 
-                            g2.setColor( Color.red );
+                            g.setColor( Color.red );
 
                             int xCoords[] = {140, 140, 339};
                             int yCoords[] = {242, 262, 252};
 
-                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                            g.fillPolygon(xCoords, yCoords, xCoords.length);
 
                     }
                 }
@@ -333,7 +342,8 @@ public class BattleDialog extends Frame {
                 }
 
         }
-
-    }
 */
+    }
+
 }
+

@@ -19,6 +19,7 @@ import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
@@ -36,13 +37,25 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     ActionListener al = new ActionListener() {
 
+        FileChooser chooser;
+
         @Override
         public void actionPerformed(String actionCommand) {
             if ("new game".equals(actionCommand)) {
                 myrisk.parser("newgame");
             }
             else if ("load game".equals(actionCommand)) {
-                System.out.println("ac "+actionCommand);
+
+                chooser = new FileChooser();
+                chooser.showDialog(this, "doLoad", resBundle.getProperty("mainmenu.loadgame.loadbutton") , resBundle.getProperty("mainmenu.loadgame.loadbutton") );
+
+            }
+            else if ("doLoad".equals(actionCommand)) {
+
+                String file = chooser.getSelectedFile();
+                chooser = null;
+                myrisk.parser("loadgame " + file );
+
             }
             else if ("manual".equals(actionCommand)) {
                 try {

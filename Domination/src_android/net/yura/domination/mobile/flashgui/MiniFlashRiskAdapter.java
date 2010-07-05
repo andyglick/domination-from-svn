@@ -1,12 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.mobile.gui.components.Frame;
-import net.yura.mobile.gui.components.ProgressBar;
-import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.logging.Logger;
 
 public class MiniFlashRiskAdapter implements RiskListener {
@@ -77,17 +72,18 @@ public class MiniFlashRiskAdapter implements RiskListener {
         // TODO Auto-generated method stub
     }
 
-    Window battle;
+    BattleDialog battle;
     @Override
     public void openBattle(int c1num, int c2num) {
 
         if (battle == null) {
-            battle = new BattleDialog();
+            battle = new BattleDialog(mainFrame);
+            battle.setMaximum(true);
         }
 
 
 
-        // move main map to centre on where battle is happening
+        // TODO: move main map to centre on where battle is happening
 
         battle.setVisible(true);
 
@@ -95,7 +91,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void closeBattle() {
-        // TODO Auto-generated method stub
+        battle.setVisible(false);
     }
 
     @Override
