@@ -114,6 +114,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
                 new MapChooser();
             }
+            else if ("go".equals(actionCommand)) {
+                goOn();
+            }
             else {
                 System.out.println("Unknown command: "+actionCommand);
             }
@@ -362,6 +365,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         );
 
         gobutton = new Button();
+        gobutton.addActionListener(al);
+        gobutton.setActionCommand("go");
 
         Panel gamepanel2 = new Panel();
         gamepanel2.add( new Button("Stats") );
