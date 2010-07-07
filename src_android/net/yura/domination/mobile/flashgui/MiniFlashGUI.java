@@ -33,7 +33,7 @@ import net.yura.mobile.util.Properties;
 public class MiniFlashGUI extends Frame implements ChangeListener {
 
     public Properties resBundle = MiniUtil.wrap(TranslationBundle.getBundle());
-    private Risk myrisk;
+    public Risk myrisk;
 
     ActionListener al = new ActionListener() {
 

@@ -57,9 +57,26 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     // ========================= in game ==============================
 
+    int nod;
     @Override
     public void needInput(int s) {
-        mainFrame.needInput(s);
+
+        if (s == RiskGame.STATE_ROLLING) {
+
+                battle.needInput(nod, true);
+
+        }
+        else if (s == RiskGame.STATE_DEFEND_YOURSELF) {
+
+                battle.needInput(nod, false);
+
+        }
+        //else { // this will update the state in the gameframe
+
+                mainFrame.needInput(s);
+
+        //}
+
     }
 
     @Override
@@ -81,7 +98,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
             battle.setMaximum(true);
         }
 
-
+        battle.setup(c1num, c2num);
 
         // TODO: move main map to centre on where battle is happening
 
@@ -126,7 +143,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showDice(int n, boolean w) {
-        // TODO Auto-generated method stub
+        nod=n;
     }
 
     @Override
