@@ -5,6 +5,7 @@ import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -16,6 +17,7 @@ import net.yura.mobile.gui.components.Frame;
 public class BattleDialog extends Frame {
 
     MiniFlashGUI mainFrame;
+    Sprite red_dice,blue_dice;
 
     public BattleDialog(MiniFlashGUI a) {
         mainFrame = a;
@@ -24,14 +26,13 @@ public class BattleDialog extends Frame {
 
         try {
             Image red_img = Image.createImage("/red_dice.png");
-            Sprite red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
+            red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
 
             Image blue_img = Image.createImage("/blue_dice.png");
-            Sprite blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
+            blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
 
             //ProgressBar redbar = new ProgressBar(red_dice);
             //ProgressBar bluebar = new ProgressBar(blue_dice);
-
 
         }
         catch (Exception ex) {
@@ -43,7 +44,9 @@ public class BattleDialog extends Frame {
 
     int[] att,def; // these are the dice results
     int noda,nodd; // these are the number of spinning dice
-    boolean ani;
+    int c1num,c2num;
+    boolean ani,canRetreat;
+    int nod,max;
     //@Override
     public void animate() throws InterruptedException {
 
@@ -68,6 +71,36 @@ public class BattleDialog extends Frame {
 
     }
 
+    void needInput(int n, boolean c) {
+
+//        button.setEnabled(true);
+        max=n;
+        nod=max;
+        canRetreat=c;
+
+        att=null;
+        def=null;
+
+        if (canRetreat) {
+//                retreat.setVisible(true);
+//                setTitle(resb.getString("battle.select.attack"));
+        }
+        else {
+//                setTitle(resb.getString("battle.select.defend"));
+        }
+
+        repaint();
+
+    }
+
+    void setup(int c1num, int c2num) {
+        this.c1num = c1num;
+        this.c2num = c2num;
+    }
+
+    private static final int DICE_NORMAL = 0;
+    private static final int DICE_DARK = 1;
+
     public void paintComponent(Graphics2D g) {
 
         // just in case in the middle of the draw the att and def get set to null
@@ -76,8 +109,8 @@ public class BattleDialog extends Frame {
 
 
         // we are not drawing the countires, we will use the ones already on the map behind thid dialog
-        //g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
-        //g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
+        //g.drawSprite(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
+        //g.drawSprite(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
 
         // not supported
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -91,7 +124,7 @@ public class BattleDialog extends Frame {
         //tl = new TextLayout( country2.getName(), font, frc); // Display
         //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
 
-        g.drawString("TODO", 5, 5);
+        g.drawString("TODO", 50, 50);
 
         //tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
         //tl.draw( g, (float) (240-(tl.getBounds().getWidth()/2)), 320f );
@@ -146,9 +179,11 @@ public class BattleDialog extends Frame {
         else {
                 g.drawString( String.valueOf( noa ) , 340, 105 );
         }
-
+*/
         // #####################################################
         // ################## drawing DICE!!!!! ################
+
+        Risk myrisk = mainFrame.myrisk;
 
         // this is the max defend dice allowed for this battle
         int deadDice = myrisk.hasArmiesInt(c2num);
@@ -159,53 +194,53 @@ public class BattleDialog extends Frame {
         // selecting the number of attacking dice
         if (max != 0 && canRetreat) {
 
-                g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 180, this );
+                g.drawSprite(red_dice, DICE_NORMAL, 120, 180);
 
                 if (nod > 1) {
-                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 211, this );
+                    g.drawSprite( red_dice , DICE_NORMAL , 120, 211);
                 }
                 else if (max > 1) {
-                    g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
+                    g.drawSprite( red_dice , DICE_DARK , 120, 211 );
                 }
 
                 if (nod > 2) {
-                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 242, this );
+                    g.drawSprite( red_dice, DICE_NORMAL , 120, 242 );
                 }
                 else if (max > 2) {
-                    g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
+                    g.drawSprite( red_dice , DICE_DARK , 120, 242 );
                 }
 
                 // draw the dead dice
 
-                g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
+                g.drawSprite( blue_dice , DICE_DARK , 339, 180 );
 
                 if (deadDice > 1) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
                 }
 
                 if (deadDice > 2) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
                 }
 
         }
         // selecting the number of dice to defend
         else if (max != 0 ) {
 
-                g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 180, this );
+                g.drawSprite( blue_dice , DICE_NORMAL , 339, 180 );
 
                 if (nod > 1) {
-                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 211, this );
+                    g.drawSprite( blue_dice , DICE_NORMAL , 339, 211 );
                 }
                 else if (max > 1) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
                 }
 
 
                 if (nod > 2) {
-                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 242, this );
+                    g.drawSprite( blue_dice , DICE_NORMAL , 339, 242 );
                 }
                 else if (max > 2) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
                 }
 
         }
@@ -213,14 +248,14 @@ public class BattleDialog extends Frame {
         else if (max == 0 && nodd == 0 && atti == null && defi == null ) {
 
                 // draw the dead dice
-                g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
+                g.drawSprite( blue_dice , DICE_DARK , 339, 180 );
 
                 if (deadDice > 1) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
                 }
 
                 if (deadDice > 2) {
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
                 }
 
                 if (noda == 0) {
@@ -229,19 +264,19 @@ public class BattleDialog extends Frame {
                         int AdeadDice = myrisk.hasArmiesInt(c1num)-1;
                         // we assume that the attacker can attack with max of 3 dice
 
-                        g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 180, this );
+                        g.drawSprite( red_dice , DICE_DARK , 120, 180 );
 
                         if (AdeadDice > 1) {
-                                g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
+                                g.drawSprite( red_dice , DICE_DARK , 120, 211 );
                         }
                         if (AdeadDice > 2) {
-                                g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
+                                g.drawSprite( red_dice , DICE_DARK , 120, 242 );
                         }
 
                 }
 
         }
-
+/*
         // #####################################################
         // ##################### END DICE ######################
 
@@ -321,24 +356,24 @@ public class BattleDialog extends Frame {
 
 
                 // draw attacker dice
-                g.drawImage( getDice(true, atti[0] ), 120, 180, this );
+                g.drawSprite( getDice(true, atti[0] ), 120, 180, this );
 
                 if (atti.length > 1) {
-                        g.drawImage( getDice(true, atti[1] ), 120, 211, this );
+                        g.drawSprite( getDice(true, atti[1] ), 120, 211, this );
                 }
                 if (atti.length > 2) {
-                        g.drawImage( getDice(true, atti[2] ), 120, 242, this );
+                        g.drawSprite( getDice(true, atti[2] ), 120, 242, this );
                 }
 
                 // draw defender dice
-                g.drawImage( getDice(false, defi[0] ), 339, 180, this );
+                g.drawSprite( getDice(false, defi[0] ), 339, 180, this );
 
                 if (defi.length > 1) {
-                        g.drawImage( getDice(false, defi[1] ), 339, 211, this );
+                        g.drawSprite( getDice(false, defi[1] ), 339, 211, this );
                 }
 
                 if (defi.length > 2) {
-                    g.drawImage( getDice(false, defi[2] ), 339, 242, this );
+                    g.drawSprite( getDice(false, defi[2] ), 339, 242, this );
                 }
 
         }
