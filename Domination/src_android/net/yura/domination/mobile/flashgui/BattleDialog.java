@@ -1,12 +1,11 @@
 package net.yura.domination.mobile.flashgui;
 
-import and.awt.Color;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
+import java.util.Random;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.Frame;
@@ -20,6 +19,7 @@ public class BattleDialog extends Frame {
     MiniFlashGUI mainFrame;
     Sprite red_dice,blue_dice;
     Properties resBundle;
+    Random r = new Random();
 
     public BattleDialog(MiniFlashGUI a) {
         mainFrame = a;
@@ -285,7 +285,38 @@ public class BattleDialog extends Frame {
         // #####################################################
         // ##################### END DICE ######################
 
-        //drawDiceAnimated(g);
+        final int SPINS_OFFSET = 3;
+
+        if (noda != 0) {
+
+                g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 176);
+
+                if (noda > 1) {
+                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 207);
+                }
+                if (noda > 2) {
+                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 238);
+                }
+
+                //g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
+
+        }
+
+        if (nodd != 0) {
+
+                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 176);
+
+                if (nodd > 1) {
+                        g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 207);
+                }
+                if (nodd > 2) {
+                    g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 238);
+                }
+
+                //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
+
+        }
+
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
 
         if (atti != null && defi != null ) {
@@ -349,30 +380,91 @@ public class BattleDialog extends Frame {
                     }
                 }
 
-/*
                 // draw attacker dice
-                g.drawSprite( getDice(true, atti[0] ), 120, 180, this );
+                drawDice(true, atti[0] , 120, 180, g );
 
                 if (atti.length > 1) {
-                        g.drawSprite( getDice(true, atti[1] ), 120, 211, this );
+                        drawDice(true, atti[1] , 120, 211, g );
                 }
                 if (atti.length > 2) {
-                        g.drawSprite( getDice(true, atti[2] ), 120, 242, this );
+                        drawDice(true, atti[2] , 120, 242, g );
                 }
 
                 // draw defender dice
-                g.drawSprite( getDice(false, defi[0] ), 339, 180, this );
+                drawDice(false, defi[0] , 339, 180, g );
 
                 if (defi.length > 1) {
-                        g.drawSprite( getDice(false, defi[1] ), 339, 211, this );
+                        drawDice(false, defi[1] , 339, 211, g );
                 }
 
                 if (defi.length > 2) {
-                    g.drawSprite( getDice(false, defi[2] ), 339, 242, this );
+                    drawDice(false, defi[2] , 339, 242, g );
                 }
-*/
         }
 
+    }
+
+    public void drawDice(boolean isAttacker, int result,int dx,int dy,Graphics2D g) {
+                g.translate(dx, dy);
+
+		if (isAttacker) {
+			g.drawSprite(red_dice, DICE_NORMAL , 0, 0 );
+		}
+		else {
+			g.drawSprite(blue_dice, DICE_NORMAL , 0, 0 );
+		}
+
+		int size=3;
+
+		g.setColor( 0xC8FFFFFF );
+
+		if (result==0) {
+
+			g.fillOval(9, 9, size, size);
+
+		}
+		else if (result==1) {
+
+			g.fillOval(3, 3, size, size);
+			g.fillOval(15, 15, size, size);
+
+		}
+		else if (result==2) {
+
+			g.fillOval(3, 3, size, size);
+			g.fillOval(9, 9, size, size);
+			g.fillOval(15, 15, size, size);
+
+		}
+		else if (result==3) {
+
+			g.fillOval(3, 3, size, size);
+			g.fillOval(15, 3, size, size);
+			g.fillOval(15, 15, size, size);
+			g.fillOval(3, 15, size, size);
+
+		}
+		else if (result==4) {
+
+			g.fillOval(3, 3, size, size);
+			g.fillOval(15, 3, size, size);
+			g.fillOval(15, 15, size, size);
+			g.fillOval(3, 15, size, size);
+			g.fillOval(9, 9, size, size);
+
+		}
+		else if (result==5) {
+
+			g.fillOval(3, 3, size, size);
+			g.fillOval(15, 3, size, size);
+			g.fillOval(15, 15, size, size);
+			g.fillOval(3, 15, size, size);
+			g.fillOval(9, 3, size, size);
+			g.fillOval(9, 15, size, size);
+
+		}
+
+		g.translate(-dx, -dy);
     }
 
 }

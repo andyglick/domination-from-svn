@@ -636,24 +636,24 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 
 				// draw attacker dice
-				g.drawImage( getDice(true, atti[0] ), 120, 180, this );
+				drawDice(true, atti[0] , 120, 180, g2 );
 
 				if (atti.length > 1) {
-					g.drawImage( getDice(true, atti[1] ), 120, 211, this );
+					drawDice(true, atti[1] , 120, 211, g2 );
 				}
 				if (atti.length > 2) {
-					g.drawImage( getDice(true, atti[2] ), 120, 242, this );
+					drawDice(true, atti[2] , 120, 242, g2 );
 				}
 
 				// draw defender dice
-				g.drawImage( getDice(false, defi[0] ), 339, 180, this );
+				drawDice(false, defi[0] , 339, 180, g2 );
 
 				if (defi.length > 1) {
-					g.drawImage( getDice(false, defi[1] ), 339, 211, this );
+					drawDice(false, defi[1] , 339, 211, g2 );
 				}
 
                                 if (defi.length > 2) {
-                                    g.drawImage( getDice(false, defi[2] ), 339, 242, this );
+                                    drawDice(false, defi[2] , 339, 242, g2 );
                                 }
 
 			}
@@ -668,11 +668,11 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param result Result of the dice
 	 * @return BufferedImage The image of the die
 	 */
-	public BufferedImage getDice(boolean isAttacker, int result) {
+	public void drawDice(boolean isAttacker, int result,final int dx,final int dy,Graphics2D g) {
 
-		BufferedImage die = new BufferedImage(21, 21, java.awt.image.BufferedImage.TYPE_INT_RGB );
-
-		Graphics2D g = die.createGraphics();
+		//BufferedImage die = new BufferedImage(21, 21, java.awt.image.BufferedImage.TYPE_INT_RGB );
+                g.translate(dx, dy);
+		//Graphics2D g = die.createGraphics();
 
 		if (isAttacker) {
 
@@ -686,7 +686,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 		}
 
 		int size=3;
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor( new Color(255, 255, 255, 200) );
 
 		if (result==0) {
@@ -735,9 +735,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 		}
 
-		g.dispose();
-
-		return die;
+		g.translate(-dx, -dy);
 
 	}
 
