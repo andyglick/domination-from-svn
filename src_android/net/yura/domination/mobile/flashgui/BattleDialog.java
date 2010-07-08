@@ -10,6 +10,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.util.Properties;
 
 /**
  * @author Yura Mamyrin
@@ -18,11 +19,13 @@ public class BattleDialog extends Frame {
 
     MiniFlashGUI mainFrame;
     Sprite red_dice,blue_dice;
+    Properties resBundle;
 
     public BattleDialog(MiniFlashGUI a) {
         mainFrame = a;
+        resBundle = mainFrame.resBundle;
 
-        setTitle( mainFrame.resBundle.getProperty("battle.title") );
+        setTitle( resBundle.getProperty("battle.title") );
 
         try {
             Image red_img = Image.createImage("/red_dice.png");
@@ -100,6 +103,8 @@ public class BattleDialog extends Frame {
 
     private static final int DICE_NORMAL = 0;
     private static final int DICE_DARK = 1;
+    private static final int COLOR_BLUE = 0xFF0000FF;
+    private static final int COLOR_RED = 0xFFFF0000;
 
     public void paintComponent(Graphics2D g) {
 
@@ -276,33 +281,30 @@ public class BattleDialog extends Frame {
                 }
 
         }
-/*
+
         // #####################################################
         // ##################### END DICE ######################
 
-        drawDiceAnimated(g);
+        //drawDiceAnimated(g);
+        DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
 
         if (atti != null && defi != null ) {
 
 
                 if (defi[0] >= atti[0]) {
 
-                        g.setColor( Color.blue );
-
                         int xCoords[] = {339, 339, 140};
                         int yCoords[] = {180, 200, 190};
 
-                        g.fillPolygon(xCoords, yCoords, xCoords.length);
+                        g2.fillPolygon(xCoords, 0,yCoords,0, xCoords.length, COLOR_BLUE);
 
                 }
                 else {
 
-                        g.setColor( Color.red );
-
                         int xCoords[] = {140, 140, 339};
                         int yCoords[] = {180, 200, 190};
 
-                        g.fillPolygon(xCoords, yCoords, xCoords.length);
+                        g2.fillPolygon(xCoords, 0, yCoords,0, xCoords.length, COLOR_RED);
 
                 }
 
@@ -310,22 +312,17 @@ public class BattleDialog extends Frame {
 
                         if (defi[1] >= atti[1]) {
 
-                                g.setColor( Color.blue );
-
                                 int xCoords[] = {339, 339, 140};
                                 int yCoords[] = {211, 231, 221};
 
-                                g.fillPolygon(xCoords, yCoords, xCoords.length);
+                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
 
                         }
                         else {
-
-                                g.setColor( Color.red );
-
                                 int xCoords[] = {140, 140, 339};
                                 int yCoords[] = {211, 231, 221};
 
-                                g.fillPolygon(xCoords, yCoords, xCoords.length);
+                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_RED);
 
                         }
                 }
@@ -334,27 +331,25 @@ public class BattleDialog extends Frame {
 
                     if (defi[2] >= atti[2]) {
 
-                            g.setColor( Color.blue );
 
                             int xCoords[] = {339, 339, 140};
                             int yCoords[] = {242, 262, 252};
 
-                            g.fillPolygon(xCoords, yCoords, xCoords.length);
+                            g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
 
                     }
                     else {
 
-                            g.setColor( Color.red );
 
                             int xCoords[] = {140, 140, 339};
                             int yCoords[] = {242, 262, 252};
 
-                            g.fillPolygon(xCoords, yCoords, xCoords.length);
+                            g2.fillPolygon(xCoords,0, yCoords, 0,xCoords.length,COLOR_RED);
 
                     }
                 }
 
-
+/*
                 // draw attacker dice
                 g.drawSprite( getDice(true, atti[0] ), 120, 180, this );
 
@@ -375,9 +370,9 @@ public class BattleDialog extends Frame {
                 if (defi.length > 2) {
                     g.drawSprite( getDice(false, defi[2] ), 339, 242, this );
                 }
-
-        }
 */
+        }
+
     }
 
 }
