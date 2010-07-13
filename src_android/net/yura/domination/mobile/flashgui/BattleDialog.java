@@ -3,11 +3,14 @@ package net.yura.domination.mobile.flashgui;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.Random;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
+import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.util.Properties;
 
@@ -20,12 +23,11 @@ public class BattleDialog extends Frame {
     Sprite red_dice,blue_dice;
     Properties resBundle;
     Random r = new Random();
+    Button rollButton;
 
     public BattleDialog(MiniFlashGUI a) {
         mainFrame = a;
         resBundle = mainFrame.resBundle;
-
-        setTitle( resBundle.getProperty("battle.title") );
 
         try {
             Image red_img = Image.createImage("/red_dice.png");
@@ -33,16 +35,23 @@ public class BattleDialog extends Frame {
 
             Image blue_img = Image.createImage("/blue_dice.png");
             blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
-
-            //ProgressBar redbar = new ProgressBar(red_dice);
-            //ProgressBar bluebar = new ProgressBar(blue_dice);
-
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
         setName("TransparentDialog");
+
+        rollButton = new Button(resBundle.getProperty("battle.roll"));
+        getContentPane().add(rollButton,Graphics.TOP);
+
+        ActionListener al = new ActionListener() {
+            public void actionPerformed(String actionCommand) {
+                mainFrame.go("roll "+nod);
+            }
+        };
+        rollButton.addActionListener(al);
+
     }
 
     int[] att,def; // these are the dice results
@@ -60,6 +69,35 @@ public class BattleDialog extends Frame {
 
     }
 
+
+	/**
+	 * Sets number of attacking dice
+	 * @param n number of dice
+	 */
+	public void setNODAttacker(int n) {
+
+		att=null;
+		def=null;
+
+		noda = n;
+
+		repaint();
+
+                ani = true;
+		getDesktopPane().animateComponent(this);
+
+	}
+
+	/**
+	 * Sets number of defending dice
+	 * @param n number of dice
+	 */
+	public void setNODDefender(int n) {
+
+		nodd = n;
+
+	}
+
     public void showDiceResults(int[] atti, int[] defi) {
 
             ani = false;
@@ -76,7 +114,7 @@ public class BattleDialog extends Frame {
 
     void needInput(int n, boolean c) {
 
-//        button.setEnabled(true);
+        rollButton.setFocusable(true);
         max=n;
         nod=max;
         canRetreat=c;
@@ -86,10 +124,10 @@ public class BattleDialog extends Frame {
 
         if (canRetreat) {
 //                retreat.setVisible(true);
-//                setTitle(resb.getString("battle.select.attack"));
+                setTitle(resBundle.getProperty("battle.select.attack"));
         }
         else {
-//                setTitle(resb.getString("battle.select.defend"));
+                setTitle(resBundle.getProperty("battle.select.defend"));
         }
 
         repaint();
@@ -99,6 +137,15 @@ public class BattleDialog extends Frame {
     void setup(int c1num, int c2num) {
         this.c1num = c1num;
         this.c2num = c2num;
+        reset();
+    }
+
+    public void reset() {
+        rollButton.setFocusable(false);
+//        retreat.setVisible(false);
+        canRetreat=false;
+        max=0;
+        setTitle(resBundle.getProperty("battle.title"));
     }
 
     private static final int DICE_NORMAL = 0;
@@ -196,56 +243,63 @@ public class BattleDialog extends Frame {
             deadDice = myrisk.getGame().getMaxDefendDice();
         }
 
+        int ax = 116;
+        int dx = 335;
+
+        int y1 = 176;
+        int y2 = 207;
+        int y3 = 238;
+
         // selecting the number of attacking dice
         if (max != 0 && canRetreat) {
 
-                g.drawSprite(red_dice, DICE_NORMAL, 120, 180);
+                g.drawSprite(red_dice, DICE_NORMAL, ax, y1);
 
                 if (nod > 1) {
-                    g.drawSprite( red_dice , DICE_NORMAL , 120, 211);
+                    g.drawSprite( red_dice , DICE_NORMAL , ax, y2);
                 }
                 else if (max > 1) {
-                    g.drawSprite( red_dice , DICE_DARK , 120, 211 );
+                    g.drawSprite( red_dice , DICE_DARK , ax, y2 );
                 }
 
                 if (nod > 2) {
-                    g.drawSprite( red_dice, DICE_NORMAL , 120, 242 );
+                    g.drawSprite( red_dice, DICE_NORMAL , ax, y3 );
                 }
                 else if (max > 2) {
-                    g.drawSprite( red_dice , DICE_DARK , 120, 242 );
+                    g.drawSprite( red_dice , DICE_DARK , ax, y3 );
                 }
 
                 // draw the dead dice
 
-                g.drawSprite( blue_dice , DICE_DARK , 339, 180 );
+                g.drawSprite( blue_dice , DICE_DARK , dx, y1 );
 
                 if (deadDice > 1) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
 
                 if (deadDice > 2) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
 
         }
         // selecting the number of dice to defend
         else if (max != 0 ) {
 
-                g.drawSprite( blue_dice , DICE_NORMAL , 339, 180 );
+                g.drawSprite( blue_dice , DICE_NORMAL , dx, y1 );
 
                 if (nod > 1) {
-                    g.drawSprite( blue_dice , DICE_NORMAL , 339, 211 );
+                    g.drawSprite( blue_dice , DICE_NORMAL , dx, y2 );
                 }
                 else if (max > 1) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
 
 
                 if (nod > 2) {
-                    g.drawSprite( blue_dice , DICE_NORMAL , 339, 242 );
+                    g.drawSprite( blue_dice , DICE_NORMAL , dx, y3 );
                 }
                 else if (max > 2) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
 
         }
@@ -253,14 +307,14 @@ public class BattleDialog extends Frame {
         else if (max == 0 && nodd == 0 && atti == null && defi == null ) {
 
                 // draw the dead dice
-                g.drawSprite( blue_dice , DICE_DARK , 339, 180 );
+                g.drawSprite( blue_dice , DICE_DARK , dx, y1 );
 
                 if (deadDice > 1) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 211 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
 
                 if (deadDice > 2) {
-                    g.drawSprite( blue_dice , DICE_DARK , 339, 242 );
+                    g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
 
                 if (noda == 0) {
@@ -269,13 +323,13 @@ public class BattleDialog extends Frame {
                         int AdeadDice = myrisk.hasArmiesInt(c1num)-1;
                         // we assume that the attacker can attack with max of 3 dice
 
-                        g.drawSprite( red_dice , DICE_DARK , 120, 180 );
+                        g.drawSprite( red_dice , DICE_DARK , ax, y1 );
 
                         if (AdeadDice > 1) {
-                                g.drawSprite( red_dice , DICE_DARK , 120, 211 );
+                                g.drawSprite( red_dice , DICE_DARK , ax, y2 );
                         }
                         if (AdeadDice > 2) {
-                                g.drawSprite( red_dice , DICE_DARK , 120, 242 );
+                                g.drawSprite( red_dice , DICE_DARK , ax, y3 );
                         }
 
                 }
@@ -289,13 +343,13 @@ public class BattleDialog extends Frame {
 
         if (noda != 0) {
 
-                g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 176);
+                g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y1);
 
                 if (noda > 1) {
-                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 207);
+                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y2);
                 }
                 if (noda > 2) {
-                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , 116, 238);
+                        g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y3);
                 }
 
                 //g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
@@ -304,13 +358,13 @@ public class BattleDialog extends Frame {
 
         if (nodd != 0) {
 
-                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 176);
+                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y1);
 
                 if (nodd > 1) {
-                        g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 207);
+                        g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y2);
                 }
                 if (nodd > 2) {
-                    g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , 335, 238);
+                    g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y3);
                 }
 
                 //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
@@ -381,24 +435,24 @@ public class BattleDialog extends Frame {
                 }
 
                 // draw attacker dice
-                drawDice(true, atti[0] , 120, 180, g );
+                drawDice(true, atti[0] , ax, y1, g );
 
                 if (atti.length > 1) {
-                        drawDice(true, atti[1] , 120, 211, g );
+                        drawDice(true, atti[1] , ax, y2, g );
                 }
                 if (atti.length > 2) {
-                        drawDice(true, atti[2] , 120, 242, g );
+                        drawDice(true, atti[2] , ax, y3, g );
                 }
 
                 // draw defender dice
-                drawDice(false, defi[0] , 339, 180, g );
+                drawDice(false, defi[0] , dx, y1, g );
 
                 if (defi.length > 1) {
-                        drawDice(false, defi[1] , 339, 211, g );
+                        drawDice(false, defi[1] , dx, y2, g );
                 }
 
                 if (defi.length > 2) {
-                    drawDice(false, defi[2] , 339, 242, g );
+                    drawDice(false, defi[2] , dx, y3, g );
                 }
         }
 
@@ -415,52 +469,53 @@ public class BattleDialog extends Frame {
 		}
 
 		int size=3;
+                int offset=4;
 
 		g.setColor( 0xC8FFFFFF );
 
 		if (result==0) {
 
-			g.fillOval(9, 9, size, size);
+			g.fillOval(offset+9, offset+9, size, size);
 
 		}
 		else if (result==1) {
 
-			g.fillOval(3, 3, size, size);
-			g.fillOval(15, 15, size, size);
+			g.fillOval(offset+3, offset+3, size, size);
+			g.fillOval(offset+15, offset+15, size, size);
 
 		}
 		else if (result==2) {
 
-			g.fillOval(3, 3, size, size);
-			g.fillOval(9, 9, size, size);
-			g.fillOval(15, 15, size, size);
+			g.fillOval(offset+3, offset+3, size, size);
+			g.fillOval(offset+9, offset+9, size, size);
+			g.fillOval(offset+15, offset+15, size, size);
 
 		}
 		else if (result==3) {
 
-			g.fillOval(3, 3, size, size);
-			g.fillOval(15, 3, size, size);
-			g.fillOval(15, 15, size, size);
-			g.fillOval(3, 15, size, size);
+			g.fillOval(offset+3, offset+3, size, size);
+			g.fillOval(offset+15, offset+3, size, size);
+			g.fillOval(offset+15, offset+15, size, size);
+			g.fillOval(offset+3, offset+15, size, size);
 
 		}
 		else if (result==4) {
 
-			g.fillOval(3, 3, size, size);
-			g.fillOval(15, 3, size, size);
-			g.fillOval(15, 15, size, size);
-			g.fillOval(3, 15, size, size);
-			g.fillOval(9, 9, size, size);
+			g.fillOval(offset+3, offset+3, size, size);
+			g.fillOval(offset+15, offset+3, size, size);
+			g.fillOval(offset+15, offset+15, size, size);
+			g.fillOval(offset+3, offset+15, size, size);
+			g.fillOval(offset+9, offset+9, size, size);
 
 		}
 		else if (result==5) {
 
-			g.fillOval(3, 3, size, size);
-			g.fillOval(15, 3, size, size);
-			g.fillOval(15, 15, size, size);
-			g.fillOval(3, 15, size, size);
-			g.fillOval(9, 3, size, size);
-			g.fillOval(9, 15, size, size);
+			g.fillOval(offset+3, offset+3, size, size);
+			g.fillOval(offset+15, offset+3, size, size);
+			g.fillOval(offset+15, offset+15, size, size);
+			g.fillOval(offset+3, offset+15, size, size);
+			g.fillOval(offset+9, offset+3, size, size);
+			g.fillOval(offset+9, offset+15, size, size);
 
 		}
 
