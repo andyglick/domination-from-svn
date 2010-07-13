@@ -126,15 +126,29 @@ public class MiniFlashRiskAdapter implements RiskListener {
         // TODO Auto-generated method stub
     }
 
-    @Override
-    public void setNODAttacker(int n) {
-        // TODO Auto-generated method stub
-    }
+	/**
+	 * Sets number of attackers
+	 * @param n number of attackers
+	 */
+	public void setNODAttacker(int n) {
 
-    @Override
-    public void setNODDefender(int n) {
-        // TODO Auto-generated method stub
-    }
+		if (battle.isVisible() ) {
+			battle.setNODAttacker(n);
+		}
+
+	}
+
+	/**
+	 * Sets number of defenders
+	 * @param n number of defenders
+	 */
+	public void setNODDefender(int n) {
+
+		if (battle.isVisible() ) {
+			battle.setNODDefender(n);
+		}
+
+	}
 
     @Override
     public void setSlider(int min, int c1num, int c2num) {
@@ -148,7 +162,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showDiceResults(int[] att, int[] def) {
-        // TODO Auto-generated method stub
+        if (battle.isVisible() ) {
+                battle.showDiceResults(att, def);
+        }
     }
 
     @Override
