@@ -21,6 +21,7 @@ import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
@@ -132,6 +133,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         risk.addRiskListener( adapter );
 
         openMainMneu();
+    }
+
+    void setGameStatus(String state) {
+        if (status!=null) {
+            status.setText(state);
+        }
     }
 
     private XULLoader getPanel(String xmlfile) {
@@ -345,6 +352,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     PicturePanel pp;
     GamePanel gamecontrol;
     Button gobutton;
+    Label status;
+
     public void startGame(boolean s) {
 
         // ============================================ create UI
@@ -373,6 +382,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         gamepanel2.add( new Button("Cards") );
         gamepanel2.add( gobutton );
 
+        status = new Label();
+
         // ============================================ setup UI
 
         try {
@@ -395,7 +406,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         mainWindow.add(gamecontrol,Graphics.TOP);
         mainWindow.add(gamepanel2,Graphics.BOTTOM);
 
-        setContentPane( mainWindow );
+        Panel contentPane = new Panel( new BorderLayout() );
+        contentPane.add( mainWindow );
+        contentPane.add(status,Graphics.BOTTOM);
+        setContentPane(contentPane);
 
         setName("GameFrame");
         setBackground(0xFF666666);
