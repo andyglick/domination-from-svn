@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.logging.Logger;
 
 public class MiniFlashRiskAdapter implements RiskListener {
@@ -123,32 +124,28 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void setGameStatus(String state) {
-        // TODO Auto-generated method stub
+        mainFrame.setGameStatus(state);
     }
 
-	/**
-	 * Sets number of attackers
-	 * @param n number of attackers
-	 */
-	public void setNODAttacker(int n) {
+    /**
+     * Sets number of attackers
+     * @param n number of attackers
+     */
+    public void setNODAttacker(int n) {
+            if (battle.isVisible() ) {
+                    battle.setNODAttacker(n);
+            }
+    }
 
-		if (battle.isVisible() ) {
-			battle.setNODAttacker(n);
-		}
-
-	}
-
-	/**
-	 * Sets number of defenders
-	 * @param n number of defenders
-	 */
-	public void setNODDefender(int n) {
-
-		if (battle.isVisible() ) {
-			battle.setNODDefender(n);
-		}
-
-	}
+    /**
+     * Sets number of defenders
+     * @param n number of defenders
+     */
+    public void setNODDefender(int n) {
+            if (battle.isVisible() ) {
+                    battle.setNODDefender(n);
+            }
+    }
 
     @Override
     public void setSlider(int min, int c1num, int c2num) {
@@ -169,7 +166,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showMessageDialog(String a) {
-        // TODO Auto-generated method stub
+        OptionPane.showMessageDialog(null, a, "TODO: Title", OptionPane.INFORMATION_MESSAGE);
     }
 
 }
