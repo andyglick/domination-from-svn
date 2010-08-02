@@ -114,12 +114,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void sendDebug(String a) {
-        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void serverState(boolean s) {
-        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -149,7 +149,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void setSlider(int min, int c1num, int c2num) {
-        // TODO Auto-generated method stub
+        mainFrame.setupMove(min, c1num, c2num, false);
     }
 
     @Override

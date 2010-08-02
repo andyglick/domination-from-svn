@@ -25,6 +25,7 @@ import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
+import net.yura.mobile.gui.components.Slider;
 import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
@@ -469,7 +470,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                             break;
                     }
                     case RiskGame.STATE_BATTLE_WON: {
-//                            movedialog.setVisible(true);
+                            move.setVisible(true);
                             break;
                     }
                     // for gameState 4 look in FlashRiskAdapter.java
@@ -587,10 +588,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             else {
                 note="";
 
-                //openMove(1,countries[0] , countries[1], true);
-                //movedialog.setVisible(true);
-
-                // clean up
+                setupMove(1,countries[0] , countries[1], true);
+                move.setVisible(true);
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+                // TODO: clean up
                 //pp.setC1(255);
                 //pp.setC2(255);
                 //note=resb.getString("game.note.selectsource");
@@ -609,6 +610,99 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         if (repaintNeeded) {
             pp.repaint();
         }
+    }
+
+
+    // #############################################################
+    // moving!!!!
+    // #############################################################
+
+    Frame move;
+    Slider slider;
+    Button cancelMove;
+    public void setupMove(int min, int c1num, int c2num, boolean tacmove) {
+        if (move==null) {
+            move = new Frame();
+            slider = new Slider();
+            move.add(slider);
+            cancelMove = new Button(resBundle.getProperty("move.cancel"));
+            cancelMove.setActionCommand("cancel");
+            Button moveall = new Button(resBundle.getProperty("move.moveall"));
+            moveall.setActionCommand("all");
+            Button moveb = new Button(resBundle.getProperty("move.move"));
+            moveb.setActionCommand("move");
+
+            Panel moveControl = new Panel();
+            moveControl.add(moveall);
+            moveControl.add(moveb);
+            moveControl.add(cancelMove);
+
+            ActionListener moveAl = new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+
+                    boolean tacmove = myrisk.getGame().getState()==RiskGame.STATE_FORTIFYING;
+                    int c1num = pp.getC1();
+                    int c2num = pp.getC2();
+                    
+                    if (actionCommand.equals("cancel")) {
+                        move.setVisible(false);
+                    }
+                    else if (actionCommand.equals("all")) {
+                        int src = myrisk.hasArmiesInt( c1num );
+                        if (tacmove) {
+                                go("movearmies " +myrisk.getGame().getCountryInt(c1num).getColor()+ " " +myrisk.getGame().getCountryInt(c2num).getColor()+ " " + (src-1) );
+                        }
+                        else {
+                                go("move " + (src-1) );
+                        }
+                    }
+                    else if (actionCommand.equals("move")) {
+                        int move = ((Integer)slider.getValue());
+                        if (tacmove) {
+                                go("movearmies " +myrisk.getGame().getCountryInt(c1num).getColor()+ " " +myrisk.getGame().getCountryInt(c2num).getColor()+ " " + move );
+                        }
+                        else {
+                                go("move " + move);
+                        }
+                    }
+                }
+            };
+
+            cancelMove.addActionListener(moveAl);
+            moveall.addActionListener(moveAl);
+            moveb.addActionListener(moveAl);
+
+            move.getContentPane().add(moveControl,Graphics.BOTTOM);
+            move.setMaximum(true);
+        }
+
+
+        if (tacmove) {
+                move.setTitle(resBundle.getProperty("move.title.tactical"));
+                cancelMove.setVisible(true);
+        }
+        else {
+                move.setTitle(resBundle.getProperty("move.title.captured"));
+                cancelMove.setVisible(false);
+        }
+
+        int src = myrisk.hasArmiesInt( c1num );
+
+        slider.setMinimum(min);
+        slider.setMaximum( src-1 );
+        slider.setValue(min);
+
+        int spacig = Math.round( (src-1)/10f );
+/* TODO
+        if (spacig==0) {
+                slider.setMajorTickSpacing(1);
+        }
+        else {
+                slider.setMajorTickSpacing( spacig );
+                slider.setMinorTickSpacing(1);
+        }
+*/
+
     }
 
 }
