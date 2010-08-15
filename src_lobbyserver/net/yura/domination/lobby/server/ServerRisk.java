@@ -2,7 +2,7 @@ package net.yura.domination.lobby.server;
 
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.RiskUIUtil;
+//import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -20,17 +20,6 @@ public class ServerRisk extends Risk {
 
 		sgr = a;
 
-	}
-
-	public void setupMapsDir(java.applet.Applet a) {
-
-		try {
-			RiskUIUtil.mapsdir = new java.io.File( RiskUtil.getGameName() + "/maps").toURI().toURL();
-		}
-		catch(Exception ex) {
-
-			throw new RuntimeException(ex);
-		}
 	}
 
 	public void makeNewGame() {

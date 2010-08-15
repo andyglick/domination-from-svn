@@ -1,9 +1,8 @@
-package net.yura.domination.mobile.mapchooser;
+package net.yura.domination.mapstore;
 
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.mobile.MiniUtil;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Frame;
@@ -11,15 +10,16 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
+import net.yura.swingme.core.CoreUtil;
 
 /**
  * @author Yura Mamyrin
  */
 public class MapChooser implements ActionListener {
 
-    private Properties resBundle = MiniUtil.wrap(TranslationBundle.getBundle());
+    public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
-    public MapChooser() {
+    public MapChooser(ActionListener al) {
 
         XULLoader loader;
         try {
@@ -51,7 +51,7 @@ public class MapChooser implements ActionListener {
             b.setSelectedIcon( on.getSubimage(c*w, 0, w, off.getIconHeight()) );
             b.setText("");
             b.setHorizontalAlignment(Graphics.HCENTER);
-            b.setPadding(0);
+            b.setMargin(0);
         }
 
         //Frame mapframe = new Frame( resBundle.getProperty("newgame.choosemap") );
@@ -64,7 +64,11 @@ public class MapChooser implements ActionListener {
     }
 
     public void actionPerformed(String actionCommand) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+    }
+
+    public String getSelectedMap() {
+        return "todo";
     }
 
 }

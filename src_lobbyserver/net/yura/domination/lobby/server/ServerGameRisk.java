@@ -1,5 +1,9 @@
 package net.yura.domination.lobby.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import org.lobby.server.TurnBasedGame;
 
 import java.util.Iterator;
@@ -9,7 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import net.yura.domination.engine.RiskUIUtil;
+//import net.yura.domination.engine.RiskUIUtil;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import net.yura.domination.engine.RiskIO;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -22,9 +30,38 @@ public class ServerGameRisk extends TurnBasedGame {
 	private Map<String,String> inverseMap;
 
         static {
-            // we need RiskUIUtil static block to run
-            // TODO: this can be done much better
-            RiskUIUtil.setupMapsDir(null);
+            final URL mapsdir;
+            try {
+                mapsdir = new java.io.File( RiskUtil.getGameName() + "/maps").toURI().toURL();
+            }
+            catch(Exception ex) {
+                throw new RuntimeException(ex);
+            }
+
+            RiskUtil.streamOpener = new RiskIO() {
+                public InputStream openStream(String name) throws IOException {
+                    return new File(name).toURI().toURL().openStream();
+                }
+                public InputStream openMapStream(String name) throws IOException {
+                    return new URL(mapsdir,name).openStream();
+                }
+                public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
+                    // TODO this should be different for different clients connected to this server
+                    return ResourceBundle.getBundle(c.getPackage().getName()+"."+n, l );
+                }
+                public void openURL(URL url) throws Exception {
+
+                }
+                public void openDocs(String doc) throws Exception {
+
+                }
+                public void saveGameFile(String name,Object obj) throws Exception {
+
+                }
+                public InputStream loadGameFile(String file) throws Exception {
+                    return null;
+                }
+            };
         }
 
 	public ServerGameRisk() {

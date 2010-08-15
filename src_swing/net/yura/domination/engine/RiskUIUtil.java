@@ -39,10 +39,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -52,7 +49,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  *
- * @author Administrator
+ * @author Yura Mamyrin
  */
 public class RiskUIUtil {
     // TODO missing:
@@ -60,29 +57,32 @@ public class RiskUIUtil {
     // setupMapsDir(null) should be called b4 the Risk() object is created
 
     static {
-        RiskUtil.streamOpener = new RiskIO() {
-            public InputStream openStream(String name) throws IOException {
-                return getRiskFileURL(name).openStream();
-            }
-            public InputStream openMapStream(String name) throws IOException {
-                return new URL(mapsdir,name).openStream();
-            }
-            public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
-                return ResourceBundle.getBundle(c.getPackage().getName()+"."+n, l );
-            }
-            public void openURL(URL url) throws Exception {
-                riskOpenURL(url);
-            }
-            public void openDocs(String doc) throws Exception {
-                riskOpenURL(getRiskFileURL(doc));
-            }
-            public void saveGameFile(String name,Object obj) throws Exception {
-                saveFile(name,obj);
-            }
-            public InputStream loadGameFile(String file) throws Exception {
-                return getLoadFileInputStream(file);
-            }
-        };
+        // this could have alredy been set by lobby, so only set it if its null
+        if (RiskUtil.streamOpener==null) {
+            RiskUtil.streamOpener = new RiskIO() {
+                public InputStream openStream(String name) throws IOException {
+                    return getRiskFileURL(name).openStream();
+                }
+                public InputStream openMapStream(String name) throws IOException {
+                    return new URL(mapsdir,name).openStream();
+                }
+                public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
+                    return ResourceBundle.getBundle(c.getPackage().getName()+"."+n, l );
+                }
+                public void openURL(URL url) throws Exception {
+                    riskOpenURL(url);
+                }
+                public void openDocs(String doc) throws Exception {
+                    riskOpenURL(getRiskFileURL(doc));
+                }
+                public void saveGameFile(String name,Object obj) throws Exception {
+                    saveFile(name,obj);
+                }
+                public InputStream loadGameFile(String file) throws Exception {
+                    return getLoadFileInputStream(file);
+                }
+            };
+        }
     }
 
     public static URL mapsdir;
@@ -330,148 +330,147 @@ public class RiskUIUtil {
 */
 	}
 
-	public static String getNewFile(Frame f,String a) {
+        public static String getNewFileOLD(Frame f,String a) {
 
-		if (checkForNoSandbox()) {
+            String dir = mapsdir.toString();
+            File md;
 
-			String dir = mapsdir.toString();
-			File md;
+            try {
 
-			try {
+                    md = new File(new URI(dir));
 
-				md = new File(new URI(dir));
+            }
+            catch(IllegalArgumentException e) {
 
-			}
-			catch(IllegalArgumentException e) {
+                    // this is an attempt at a crazy workaround that should not really work
+                    if ( dir.startsWith("file://") ) {
 
-				// this is an attempt at a crazy workaround that should not really work
-				if ( dir.startsWith("file://") ) {
+                            md = new File( dir.substring(5,dir.length()).replaceAll("\\%20"," ") );
+                    }
+                    else {
 
-					md = new File( dir.substring(5,dir.length()).replaceAll("\\%20"," ") );
-				}
-				else {
+                            System.err.println("this should never happen! bad file: "+dir);
 
-					System.err.println("this should never happen! bad file: "+dir);
+                            md = new File( "maps/" );
 
-					md = new File( "maps/" );
+                    }
 
-				}
+                    // There is a bug in java 1.4/1.5 where it can not convert a URL like
+                    // file://Claire/BIG_DISK/Program Files/Risk/maps/
+                    // into a File Object so we will just try and make a simple file
+                    // object, and hope it works
 
-				// There is a bug in java 1.4/1.5 where it can not convert a URL like
-				// file://Claire/BIG_DISK/Program Files/Risk/maps/
-				// into a File Object so we will just try and make a simple file
-				// object, and hope it works
+                    // java.lang.IllegalArgumentException: URI has an authority component
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5086147
+                    // This has been fixed in java 1.6
 
-				// java.lang.IllegalArgumentException: URI has an authority component
-				// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5086147
-				// This has been fixed in java 1.6
+                    // also can not have %20 in the name on 1.4/1.5, needs to be " ".
 
-				// also can not have %20 in the name on 1.4/1.5, needs to be " ".
+            }
+            catch(Exception e) {
 
-			}
-			catch(Exception e) {
+                    throw new RuntimeException("Cant create file: "+ dir, e);
 
-				throw new RuntimeException("Cant create file: "+ dir, e);
+            }
 
-			}
+            JFileChooser fc = new JFileChooser( md );
+            RiskFileFilter filter = new RiskFileFilter(a);
+            fc.setFileFilter(filter);
 
-			JFileChooser fc = new JFileChooser( md );
-			RiskFileFilter filter = new RiskFileFilter(a);
-			fc.setFileFilter(filter);
+            int returnVal = fc.showOpenDialog( f );
 
-			int returnVal = fc.showOpenDialog( f );
+            if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
 
-			if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+                    java.io.File file = fc.getSelectedFile();
 
-				java.io.File file = fc.getSelectedFile();
+                    // useless chack, but sometimes this is null
+                    if (file==null) { return null; }
 
-				// useless chack, but sometimes this is null
-				if (file==null) { return null; }
+                    return file.getName();
 
-				return file.getName();
+            }
 
-			}
+            return null;
+            
+        }
 
-			return null;
 
-		}
-		else {
-/*                  // MAP SELECT GOES HERE!
 
-                    JFrame frame = new JFrame();
+        public static String getNewFile(Frame f,String a) {
 
-                    JList list = new JList();
+            if (checkForNoSandbox()) {
+                if ("map".equals(a)) {
+                    MapChooserSwingWrapper ch = new MapChooserSwingWrapper();
+                    return ch.getNewMap(f);
+                }
+                else {
+                    return getNewFileOLD(f, a);
+                }
+            }
+            else {
 
-                    // get file list
+                return getNewFileInSandbox(f, a);
+            }
 
-                    // add to list
+        }
 
-                    JTabbedPane tabs = new JTabbedPane();
+	public static String getNewFileInSandbox(Frame f,String a) {
 
-                    tabs.addTab("Local", null); // Featured
-                    tabs.addTab("Catagories", null);
-                    tabs.addTab("Top 25", null);
-                    tabs.addTab("Search", null);
-                    tabs.addTab("Updates", null);
 
-*/
+            String names=null;
 
-			String names=null;
+            if (applet!=null) {
 
-			if (applet!=null) {
+                    names = applet.getParameter(a);
+            }
+            else if (webstart!=null) {
 
-				names = applet.getParameter(a);
-			}
-			else if (webstart!=null) {
+                    if ("map".equals(a)) {
 
-				if ("map".equals(a)) {
+                            names = maps;
+                    }
+                    else if ("cards".equals(a)) {
 
-					names = maps;
-				}
-				else if ("cards".equals(a)) {
+                            names = cards;
+                    }
+            }
 
-					names = cards;
-				}
-			}
+            Vector namesvector = new Vector();
 
-			Vector namesvector = new Vector();
+            StringTokenizer tok = new StringTokenizer( names, ",");
+            while (tok.hasMoreTokens()) {
 
-			StringTokenizer tok = new StringTokenizer( names, ",");
-			while (tok.hasMoreTokens()) {
+                    namesvector.add( tok.nextToken() );
 
-				namesvector.add( tok.nextToken() );
+            }
 
-			}
+            JComboBox combobox = new JComboBox( namesvector );
 
-			JComboBox combobox = new JComboBox( namesvector );
+            // Messages
+            Object[] message = new Object[] {
+                    TranslationBundle.getBundle().getString("core.error.applet"),
+                    combobox
+            };
 
-			// Messages
-			Object[] message = new Object[] {
-				TranslationBundle.getBundle().getString("core.error.applet"),
-				combobox
-			};
+            // Options
+            String[] options = { "OK","Cancel" };
 
-			// Options
-			String[] options = { "OK","Cancel" };
+            int result = JOptionPane.showOptionDialog(
+                    f,				// the parent that the dialog blocks
+                    message,			// the dialog message array
+                    "select "+a,			// the title of the dialog window
+                    JOptionPane.OK_CANCEL_OPTION,	// option type
+                    JOptionPane.QUESTION_MESSAGE,	// message type
+                    null,				// optional icon, use null to use the default icon
+                    options,			// options string array, will be made into buttons
+                    options[0]			// option that should be made into a default button
+            );
 
-			int result = JOptionPane.showOptionDialog(
-				f,				// the parent that the dialog blocks
-				message,			// the dialog message array
-				"select "+a,			// the title of the dialog window
-				JOptionPane.OK_CANCEL_OPTION,	// option type
-				JOptionPane.QUESTION_MESSAGE,	// message type
-				null,				// optional icon, use null to use the default icon
-				options,			// options string array, will be made into buttons
-				options[0]			// option that should be made into a default button
-			);
+            if (result==JOptionPane.OK_OPTION) {
+                    return combobox.getSelectedItem()+"";
+            }
 
-			if (result==JOptionPane.OK_OPTION) {
-				return combobox.getSelectedItem()+"";
-			}
-
-			return null;
-
-		}
+            return null;
 
 	}
 

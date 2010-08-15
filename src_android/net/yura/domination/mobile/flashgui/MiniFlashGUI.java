@@ -12,7 +12,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
-import net.yura.domination.mobile.mapchooser.MapChooser;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
@@ -31,10 +31,11 @@ import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
+import net.yura.swingme.core.CoreUtil;
 
 public class MiniFlashGUI extends Frame implements ChangeListener {
 
-    public Properties resBundle = MiniUtil.wrap(TranslationBundle.getBundle());
+    public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
     public Risk myrisk;
 
     ActionListener al = new ActionListener() {
@@ -114,7 +115,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
             else if ("choosemap".equals(actionCommand)) {
 
-                new MapChooser();
+                new MapChooser(new ActionListener() {
+                    public void actionPerformed(String arg0) {
+                        // TODO
+                    }
+                });
             }
             else if ("go".equals(actionCommand)) {
                 goOn();
