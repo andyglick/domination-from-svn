@@ -1,6 +1,5 @@
 package net.yura.domination.lobby.client;
 
-import java.applet.Applet;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
@@ -10,23 +9,10 @@ public class ClientRisk extends Risk {
 
 	ClientGameRisk lgml;
 
-	public void setupMapsDir(Applet a) {
-
-		// TODO this should not be needed as there should
-		// be some OTHER way to check for sandbox
-		// as signed applets may be used, and unsigned webstart may be
-
-	}
-
 	public ClientRisk(ClientGameRisk b) {
-
 		super();
-
 		lgml = b;
-
 	}
-
-
 
 	public void createGame(String a ,RiskGame b) {
 
