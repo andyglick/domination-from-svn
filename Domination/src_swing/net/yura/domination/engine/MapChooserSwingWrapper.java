@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.tools.translation.ME4SEPanel;
@@ -28,12 +29,12 @@ public class MapChooserSwingWrapper {
             }
         });
 
-
+        wrapper.add( chooser.getRoot() );
     }
 
     public String getNewMap(Frame parent) {
 
-        dialog = new JDialog(parent, "Load Synth", true);
+        dialog = new JDialog(parent, TranslationBundle.getBundle().getString("newgame.choosemap") , true);
 
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
@@ -43,7 +44,7 @@ public class MapChooserSwingWrapper {
 
         dialog.add(wrapper);
         //dialog.pack();
-        dialog.setSize(800,600);
+        dialog.setSize(320,480); // same as Jesus Piece
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
 

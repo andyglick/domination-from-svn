@@ -400,7 +400,15 @@ public class RiskUIUtil {
 
             if (checkForNoSandbox()) {
                 if ("map".equals(a)) {
-                    MapChooserSwingWrapper ch = new MapChooserSwingWrapper();
+                    MapChooserSwingWrapper ch;
+                    try {
+                        // try and start new map chooser,
+                        // on fail revert to using the old one
+                        ch = new MapChooserSwingWrapper();
+                    }
+                    catch (Throwable th) {
+                        return getNewFileOLD(f, a);
+                    }
                     return ch.getNewMap(f);
                 }
                 else {

@@ -5,7 +5,6 @@ import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Icon;
-import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.layout.XULLoader;
@@ -19,9 +18,11 @@ public class MapChooser implements ActionListener {
 
     public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
+    XULLoader loader;
+
     public MapChooser(ActionListener al) {
 
-        XULLoader loader;
+        
         try {
             loader = XULLoader.load( getClass().getResourceAsStream("/maps.xml") , this, resBundle);
         }
@@ -47,8 +48,14 @@ public class MapChooser implements ActionListener {
         int w = off.getIconWidth() / buttons.size();
         for (int c=0;c<buttons.size();c++) {
             RadioButton b = (RadioButton)buttons.elementAt(c);
-            b.setIcon( off.getSubimage(c*w, 0, w, off.getIconHeight()) );
-            b.setSelectedIcon( on.getSubimage(c*w, 0, w, off.getIconHeight()) );
+            Icon oni = on.getSubimage(c*w, 0, w, off.getIconHeight());
+            Icon offi = off.getSubimage(c*w, 0, w, off.getIconHeight());
+
+            b.setIcon(offi);
+            b.setSelectedIcon(oni);
+            b.setRolloverIcon(offi);
+            b.setRolloverSelectedIcon(oni);
+
             b.setText("");
             b.setHorizontalAlignment(Graphics.HCENTER);
             b.setMargin(0);
@@ -56,15 +63,16 @@ public class MapChooser implements ActionListener {
 
         //Frame mapframe = new Frame( resBundle.getProperty("newgame.choosemap") );
 
-
-        ((Frame)loader.getRoot()).setVisible(true);
-
         //System.out.println("map: "+mapframe);
 
     }
 
     public void actionPerformed(String actionCommand) {
         
+    }
+
+    public Panel getRoot() {
+        return ((Panel)loader.getRoot());
     }
 
     public String getSelectedMap() {
