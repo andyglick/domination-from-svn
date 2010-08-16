@@ -115,11 +115,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
             else if ("choosemap".equals(actionCommand)) {
 
-                new MapChooser(new ActionListener() {
-                    public void actionPerformed(String arg0) {
-                        // TODO
-                    }
-                });
+                MapListener al = new MapListener();
+                MapChooser mapc = new MapChooser(al);
+                al.mapc = mapc;
+
+                Frame mapFrame = new Frame( resBundle.getProperty("newgame.choosemap") );
+                mapFrame.setContentPane( mapc.getRoot() );
+                mapFrame.setMaximum(true);
+                mapFrame.setVisible(true);
+
             }
             else if ("go".equals(actionCommand)) {
                 goOn();
@@ -130,6 +134,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         }
     };
 
+    class MapListener implements ActionListener {
+        MapChooser mapc;
+        public void actionPerformed(String arg0) {
+            mapc.getSelectedMap();
+        }
+    };
 
     public MiniFlashGUI(Risk risk) {
         myrisk = risk;

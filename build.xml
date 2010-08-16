@@ -108,6 +108,11 @@
 
                 <unzip src="lib/TranslationTool.jar" dest="${dir.build.classes}"/>
 
+                <!-- for the map chooser -->
+                <copy todir="${dir.build.classes}">
+			<fileset dir="assets" includes="bar_off.png,bar_on.png,maps.xml"/>
+		</copy>
+
                 <copy file="res_swing/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
 	</target>
 
@@ -167,6 +172,11 @@
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
 		<chmod file="${dir.build.game}/*.sh" perm="ugo+x" />
+
+                <!-- for the map chooser -->
+                <copy todir="${dir.build.game}">
+			<fileset dir="lib" includes="SwingME.jar,ToolsME.jar,midletrunner.jar"/>
+		</copy>
 
 	</target>
 
