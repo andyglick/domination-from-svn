@@ -8,6 +8,7 @@ import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.io.HTTPClient.Request;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -68,7 +69,32 @@ public class MapChooser implements ActionListener {
     }
 
     public void actionPerformed(String actionCommand) {
-        
+        if ("local".equals(actionCommand)) {
+
+        }
+        else if ("catagories".equals(actionCommand)) {
+
+            MapServerClient client = new MapServerClient();
+            client.start();
+
+            Request request = new Request();
+            request.url = "http://maps.domination.yura.net/xml/categories.dot";
+
+            client.makeRequest(request);
+
+        }
+        else if ("top25".equals(actionCommand)) {
+
+        }
+        else if ("search".equals(actionCommand)) {
+
+        }
+        else if ("update".equals(actionCommand)) {
+
+        }
+        else {
+            System.out.println("Unknown command "+actionCommand);
+        }
     }
 
     public Panel getRoot() {

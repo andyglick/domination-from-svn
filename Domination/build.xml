@@ -502,7 +502,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <gen-xml
             classNamesFile="${basedir}/game/gen.properties"
             outputPackage="net.yura.domination.mapstore.gen"
-            outputClass="XMLRiskMapAccess"
+            outputClass="XMLMapAccess"
             sourceRoot="${basedir}/src_mapstore"/>
 
     </target>
