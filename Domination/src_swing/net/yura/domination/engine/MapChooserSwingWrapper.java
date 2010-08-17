@@ -12,7 +12,7 @@ import net.yura.tools.translation.ME4SEPanel;
 /**
  * @author Yura Mamyrin
  */
-public class MapChooserSwingWrapper {
+public class MapChooserSwingWrapper implements ActionListener {
 
     JDialog dialog;
     ME4SEPanel wrapper;
@@ -22,23 +22,24 @@ public class MapChooserSwingWrapper {
 
         wrapper = new ME4SEPanel();
 
-        chooser = new MapChooser( new ActionListener() {
-            // called when the map chooser is closed
-            public void actionPerformed(String arg0) {
-                dialog.setVisible(false);
-            }
-        });
+        chooser = new MapChooser(this);
 
         wrapper.add( chooser.getRoot() );
+    }
+
+    // called when the map chooser is closed
+    public void actionPerformed(String arg0) {
+        dialog.setVisible(false);
     }
 
     public String getNewMap(Frame parent) {
 
         dialog = new JDialog(parent, TranslationBundle.getBundle().getString("newgame.choosemap") , true);
+        dialog.setDefaultCloseOperation( JDialog.DO_NOTHING_ON_CLOSE );
 
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                //PLAFLoader.this.actionPerformed("cancel_synth");
+                actionPerformed(null); // same as pressing cancel
             }
         });
 
