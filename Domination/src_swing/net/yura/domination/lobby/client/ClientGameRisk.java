@@ -35,15 +35,13 @@ import org.lobby.client.TurnBasedAdapter;
 public class ClientGameRisk extends TurnBasedAdapter {
 
 	private final static String product;
-	private final static String version = "0.1";
-
-	private final static String RISK_PATH;
-	private final static String MAP_PATH = "maps/";
+	private final static String version = "0.2";
 
 	static {
+                final String RISK_PATH = RiskUtil.getGameName() + "/";
+                final String MAP_PATH = "maps/";
 
 		product = RiskUtil.getGameName() + " Lobby Client";
-		RISK_PATH = RiskUtil.getGameName() + "/";
 
                 RiskUtil.streamOpener = new RiskIO() {
                     public InputStream openStream(String name) throws IOException {
@@ -81,7 +79,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 	private String newGameOptions;
 
-	private String mapsurl;
+	//private String mapsurl;
 	private RiskMap[] maps;
 
 	private JDialog dialog;

@@ -145,4 +145,8 @@ public class Map {
     String imageMapURL;
 */
 
+    public String toString() {
+        return id+" "+name;
+    }
+
 }

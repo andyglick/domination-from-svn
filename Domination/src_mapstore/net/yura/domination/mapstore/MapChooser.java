@@ -1,6 +1,7 @@
 package net.yura.domination.mapstore;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -76,7 +77,11 @@ public class MapChooser implements ActionListener {
 
         //System.out.println("map: "+mapframe);
 
+        client = new MapServerClient(this);
+        client.start();
+
     }
+    MapServerClient client;
 
     public void actionPerformed(String actionCommand) {
         if ("local".equals(actionCommand)) {
@@ -84,17 +89,25 @@ public class MapChooser implements ActionListener {
 
             // get list of maps
             File file = new File("maps");
-            String [] maps = file.list();
+            String [] maps = file.list( new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".map");
+                }
+            } );
 
+            Vector riskmaps = new Vector( maps.length );
+            for (int c=0;c<maps.length;c++) {
+                riskmaps.add( maps[c] );
+            }
+
+            List list = (List)loader.find("ResultList");
+            list.setListData( riskmaps );
 
         }
         else if ("catagories".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            MapServerClient client = new MapServerClient(this);
-            client.start();
-
-            client.makeRequest( "categories.dot",null );
+            client.makeRequest( "categories.dot" );
 
         }
         else if ("top25".equals(actionCommand)) {
@@ -111,22 +124,27 @@ public class MapChooser implements ActionListener {
         else if ("update".equals(actionCommand)) {
             mainCatList(actionCommand);
 
+            // TODO
         }
         else if ("TOP_NEW".equals(actionCommand)) {
-             
+            clearList();
+            client.makeRequest( "maps.dot","category","TOP_NEW" );
         }
         else if ("TOP_RATINGS".equals(actionCommand)) {
-            
+            clearList();
+            client.makeRequest( "maps.dot","category","TOP_RATINGS" );
         }
         else if ("TOP_DOWNLOADS".equals(actionCommand)) {
-            
+            clearList();
+            client.makeRequest( "maps.dot","category","TOP_DOWNLOADS" );
         }
         else if ("listSelect".equals(actionCommand)) {
             List list = (List)loader.find("ResultList");
             Object value = list.getSelectedValue();
             if (value instanceof Category) {
-
-
+                Category cat = (Category)value;
+                clearList();
+                client.makeRequest( "maps.dot","category",cat.getId() );
             }
             else {
                 // download the map
@@ -145,11 +163,10 @@ public class MapChooser implements ActionListener {
         }
         else if ("doMapSearch".equals(actionCommand)) {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
-
-            if (text == null || "".equals(text)) {
-                // clear list
+            clearList();
+            if (text != null && !"".equals(text)) {
+                client.makeRequest( "maps.dot","search", text );
             }
-
         }
         else {
             System.out.println("Unknown command "+actionCommand);
@@ -165,11 +182,15 @@ public class MapChooser implements ActionListener {
             panel.setVisible( action.equals(actionCommand) );
         }
 
-        List list = (List)loader.find("ResultList");
-        list.setListData( new Vector(0) ); // todo, use a constant?
+        clearList();
 
         getRoot().revalidate();
         getRoot().repaint();
+    }
+
+    void clearList() {
+        List list = (List)loader.find("ResultList");
+        list.setListData( new Vector(0) ); // todo, use a constant?
     }
 
     public Panel getRoot() {
@@ -181,11 +202,30 @@ public class MapChooser implements ActionListener {
     }
 
     void gotResult(Task task) {
+        String method = task.getMethod();
+        System.out.println("got "+task);
+
         List list = (List)loader.find("ResultList");
 
         Object param = task.getObject();
-        if (param instanceof Vector) {
-            list.setListData( (Vector)param );
+        if ("categories".equals(method)) {
+            if (param instanceof Vector) {
+                list.setListData( (Vector)param );
+            }
+        }
+        else if ("maps".equals(method)) {
+            if (param instanceof Hashtable) {
+                Hashtable map = (Hashtable)param;
+
+                map.get("search");
+                map.get("author");
+                map.get("category");
+
+                map.get("offset");
+                map.get("total");
+
+                list.setListData( (Vector)map.get("maps") );
+            }
         }
 
         getRoot().revalidate();
