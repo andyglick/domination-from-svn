@@ -8,7 +8,26 @@
         <checkbox action="search" group="MapView" text="Search" weightx="1" width="1"/>
         <checkbox action="update" group="MapView" text="Updates" weightx="1" width="1"/>
     </panel>
-    <list weightx="1" weighty="1"/>
+    <panel bottom="5" gap="5" left="5" name="localBar" right="5" top="5">
+        <label alignment="center" text="mapchooser.local" weightx="1"/>
+    </panel>
+    <panel bottom="5" gap="5" left="5" name="catagoriesBar" right="5" top="5" visible="false">
+        <label alignment="center" text="mapchooser.catagories" weightx="1"/>
+    </panel>
+    <panel bottom="5" gap="5" left="5" name="top25Bar" right="5" top="5" visible="false">
+        <checkbox action="TOP_NEW" group="Top25View" selected="true" text="mapchooser.topnew" weightx="1"/>
+        <checkbox action="TOP_RATINGS" group="Top25View" text="mapchooser.topratings" weightx="1"/>
+        <checkbox action="TOP_DOWNLOADS" group="Top25View" text="mapchooser.topdownload"/>
+    </panel>
+    <panel bottom="5" gap="5" left="5" name="searchBar" right="5" top="5" visible="false">
+        <textfield weightx="1"/>
+        <button text="mapchooser.searchgo"/>
+    </panel>
+    <panel bottom="5" gap="5" left="5" name="updateBar" right="5" top="5" visible="false">
+        <label alignment="center" text="mapchooser.update" weightx="1"/>
+        <button text="mapchooser.updateall"/>
+    </panel>
+    <list name="ResultList" weightx="1" weighty="1"/>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
         <button mnemonic="112" text="Cancel" type="cancel" weightx="1"/>
         <button text="Default" weightx="1"/>

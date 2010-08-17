@@ -14,6 +14,12 @@ import net.yura.mobile.logging.Logger;
  */
 public class MapServerClient extends HTTPClient {
 
+    MapChooser chooser;
+
+    public MapServerClient(MapChooser aThis) {
+        chooser = aThis;
+    }
+
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
         Logger.warn(ex);
     }
@@ -22,8 +28,7 @@ public class MapServerClient extends HTTPClient {
         XMLMapAccess access = new XMLMapAccess();
         Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
-
-        System.out.println("GOT TASK "+task);
+        chooser.gotResult(task);
     }
 
 }
