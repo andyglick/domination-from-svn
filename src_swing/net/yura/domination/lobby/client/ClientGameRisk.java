@@ -135,7 +135,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 					for (int c=0;c<maps.length;c++) {
 
-						maps[c].loadInfo(RISK_PATH+MAP_PATH);
+						maps[c].loadInfo();
 
 						if (c==0) {
 							gsp.setSelected(c);
@@ -171,7 +171,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 		String choosemap = options.split("\\n")[3];
 
 		RiskMap iconedmap = getRiskMap( choosemap.substring( 10 ,choosemap.length() ) );
-		iconedmap.loadInfo(RISK_PATH+MAP_PATH);
+		iconedmap.loadInfo();
 
 		return iconedmap.getSmallIcon();
 

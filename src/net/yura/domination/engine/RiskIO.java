@@ -8,8 +8,11 @@ import java.net.URL;
 
 public interface RiskIO {
 
-
+        /**
+         * for access to local files like game.ini or commands.txt, credits.htm
+         */
 	InputStream openStream(String name) throws IOException;
+
 	InputStream openMapStream(String name) throws IOException;
 	ResourceBundle getResourceBundle(Class a,String n,Locale l);
 	void openURL(URL url) throws Exception;
