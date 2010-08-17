@@ -1,6 +1,5 @@
 package net.yura.domination.lobby.client;
 
-import org.lobby.client.LobbyClientGUI;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
@@ -9,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskMap {
@@ -66,7 +66,7 @@ public class RiskMap {
 
 	}
 
-	public void loadInfo(String f) {
+	public void loadInfo() {
 
 		if (!loaded) {
 
@@ -76,7 +76,7 @@ public class RiskMap {
 
 			try {
 
-				BufferedReader bufferin=new BufferedReader(new InputStreamReader( LobbyClientGUI.openStream(f+fileName) ));
+				BufferedReader bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(fileName) ));
 				BufferedReader bufferin2=null;
 
 				StringTokenizer st=null;
@@ -111,12 +111,12 @@ public class RiskMap {
 
 								MapTranslator.setCards( name );
 
-								bufferin2=new BufferedReader(new InputStreamReader(LobbyClientGUI.openStream(f+name)));
+								bufferin2=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(name)));
 
 							}
 							else if ( fm.equals("prv") ) {
 
-								BufferedImage mapimageO = ImageIO.read( LobbyClientGUI.openStream(f+"preview/"+st.nextToken()) );
+								BufferedImage mapimageO = ImageIO.read( RiskUtil.openMapStream("preview/"+st.nextToken()) );
 
 								icon = new ImageIcon(mapimageO.getScaledInstance(50,31,Image.SCALE_SMOOTH));
 								iconSmall = new ImageIcon(mapimageO.getScaledInstance(32,20,Image.SCALE_SMOOTH));

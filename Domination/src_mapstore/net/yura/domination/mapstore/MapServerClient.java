@@ -31,4 +31,16 @@ public class MapServerClient extends HTTPClient {
         chooser.gotResult(task);
     }
 
+    void makeRequest(String string, Hashtable hashtable) {
+
+            Request request = new Request();
+            request.url = "http://maps.domination.yura.net/xml/"+string;
+            request.params = hashtable;
+
+            // TODO, should be using RiskIO to do this get
+            // as otherwise it will not work with lobby
+            makeRequest(request);
+
+    }
+
 }
