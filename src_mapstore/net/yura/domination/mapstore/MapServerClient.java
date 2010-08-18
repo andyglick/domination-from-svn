@@ -42,7 +42,7 @@ public class MapServerClient extends HTTPClient {
             if (a!=null&&b!=null) {
                 Hashtable params = new Hashtable();
                 params.put(a, b);
-                request.params = params;
+                //request.params = params;
             }
 
             // TODO, should be using RiskIO to do this get

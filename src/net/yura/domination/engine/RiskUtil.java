@@ -1,16 +1,21 @@
 package net.yura.domination.engine;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskUtil {
 
@@ -315,4 +320,138 @@ return Color.white;
 
             }
         }
+
+
+
+        /**
+         * gets the info for a map or cards file
+         * in the case of map files it will get the "name" "crd" "prv" "pic" "map" and any "comment"
+         * and for cards it will have a "missions" that will contain the String[] of all the missions
+         */
+	public static Hashtable loadInfo(String fileName,boolean cards) {
+
+            Hashtable info = new Hashtable();
+
+            for (int c=0;true;c++) {
+
+                BufferedReader bufferin=null;
+
+                try {
+
+                        bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(fileName) ));
+                        Vector misss=null;
+
+                        if (cards) {
+                            MapTranslator.setCards( fileName );
+                            misss = new Vector();
+                        }
+
+                        StringTokenizer st=null;
+                        String input = bufferin.readLine();
+                        String mode = null;
+
+                        while(input != null) {
+
+                                if (input.equals("")) {
+                                        // do nothing
+                                        //System.out.print("Nothing\n"); // testing
+                                }
+                                else if (input.charAt(0)==';') {
+                                    String comment = (String)info.get("comment");
+                                    String com = input.substring(1).trim();
+                                    if (comment==null) {
+                                        comment = com;
+                                    }
+                                    else {
+                                        comment = comment +"\n"+com;
+                                    }
+                                    info.put("comment", comment);
+                                }
+                                else {
+
+                                        if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
+                                                mode="newsection";
+                                        }
+                                        else { st = new StringTokenizer(input); }
+
+                                        if ("files".equals(mode)) {
+
+                                                String fm = st.nextToken();
+                                                String val = st.nextToken();
+
+                                                info.put( fm , val);
+
+                                        }
+                                        else if ("continents".equals(mode)) {
+
+                                                break;
+
+                                        }
+                                        else if ("missions".equals(mode)) {
+
+                                                String description=MapTranslator.getTranslatedMissionName(st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken());
+
+                                                if (description==null) {
+
+                                                        StringBuffer d = new StringBuffer();
+
+                                                        while (st.hasMoreElements()) {
+
+                                                                d.append( st.nextToken() );
+                                                                d.append( " " );
+                                                        }
+
+                                                        description = d.toString();
+
+                                                }
+
+                                                misss.add( description );
+
+                                        }
+                                        else if ("newsection".equals(mode)) {
+
+                                                mode = input.substring(1, input.length()-1); // set mode to the name of the section
+
+                                        }
+                                        else if (mode == null) {
+                                            if (input.indexOf(' ')>0) {
+                                                info.put( input.substring(0,input.indexOf(' ')) , input.substring(input.indexOf(' ')+1) );
+                                            }
+                                        }
+
+                                }
+
+                                input = bufferin.readLine(); // get next line
+
+                        }
+
+                        if (cards) {
+                            info.put("missions", (String[])misss.toArray(new String[misss.size()]) );
+                            misss = null;
+                        }
+
+                        break;
+                }
+                catch(IOException ex) {
+                        System.out.println("Error trying to load: "+fileName);
+                        ex.printStackTrace();
+                        if (c < 5) { // retry
+                                try { Thread.sleep(1000); } catch(Exception ex2) { }
+                        }
+                        else { // give up
+                                break;
+                        }
+                }
+                finally {
+                    if (bufferin!=null) {
+                        try { bufferin.close(); } catch(Exception ex2) { }
+                    }
+                }
+            }
+
+            return info;
+
+	}
+
+
 }

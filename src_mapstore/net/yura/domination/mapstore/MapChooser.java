@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
@@ -17,7 +18,6 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.io.HTTPClient.Request;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
@@ -73,9 +73,9 @@ public class MapChooser implements ActionListener {
             b.setMargin(0);
         }
 
-        //Frame mapframe = new Frame( resBundle.getProperty("newgame.choosemap") );
-
-        //System.out.println("map: "+mapframe);
+        List list = (List)loader.find("ResultList");
+        list.setDoubleClick(true);
+        list.setCellRenderer( new MapRenderer() );
 
         client = new MapServerClient(this);
         client.start();
@@ -97,7 +97,13 @@ public class MapChooser implements ActionListener {
 
             Vector riskmaps = new Vector( maps.length );
             for (int c=0;c<maps.length;c++) {
-                riskmaps.add( maps[c] );
+                Map map = new Map();
+                map.setMapUrl( maps[c] );
+                riskmaps.add( map );
+
+                Hashtable info = RiskUtil.loadInfo(maps[c], false);
+                map.setName( (String)info.get("name") );
+
             }
 
             List list = (List)loader.find("ResultList");
@@ -159,7 +165,7 @@ public class MapChooser implements ActionListener {
         }
         else if ("defaultMap".equals(actionCommand)) {
 
-
+            // TODO ???
         }
         else if ("doMapSearch".equals(actionCommand)) {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
@@ -184,13 +190,14 @@ public class MapChooser implements ActionListener {
 
         clearList();
 
-        getRoot().revalidate();
-        getRoot().repaint();
     }
 
     void clearList() {
         List list = (List)loader.find("ResultList");
         list.setListData( new Vector(0) ); // todo, use a constant?
+
+        getRoot().revalidate();
+        getRoot().repaint();
     }
 
     public Panel getRoot() {
