@@ -80,6 +80,8 @@ public class MapChooser implements ActionListener {
         client = new MapServerClient(this);
         client.start();
 
+        activateGroup("MapView");
+
     }
     MapServerClient client;
 
@@ -103,6 +105,7 @@ public class MapChooser implements ActionListener {
 
                 Hashtable info = RiskUtil.loadInfo(maps[c], false);
                 map.setName( (String)info.get("name") );
+                map.setPreviewUrl( (String)info.get("prv") );
 
             }
 
@@ -119,8 +122,7 @@ public class MapChooser implements ActionListener {
         else if ("top25".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            String mincat = ((ButtonGroup)loader.getGroups().get("Top25View")).getSelection().getActionCommand();
-            actionPerformed(mincat);
+            activateGroup("Top25View");
         }
         else if ("search".equals(actionCommand)) {
             mainCatList(actionCommand);
@@ -153,9 +155,13 @@ public class MapChooser implements ActionListener {
                 client.makeRequest( "maps.dot","category",cat.getId() );
             }
             else {
+                Map map = (Map)value;
+
                 // download the map
 
                 // set return value to this map
+
+                selectedMap = map.getMapUrl();
 
                 al.actionPerformed(null);
             }
@@ -204,8 +210,9 @@ public class MapChooser implements ActionListener {
         return ((Panel)loader.getRoot());
     }
 
+    private String selectedMap;
     public String getSelectedMap() {
-        return "todo";
+        return selectedMap;
     }
 
     void gotResult(Task task) {
@@ -237,6 +244,13 @@ public class MapChooser implements ActionListener {
 
         getRoot().revalidate();
         getRoot().repaint();
+    }
+
+    private void activateGroup(String string) {
+
+        String mincat = ((ButtonGroup)loader.getGroups().get(string)).getSelection().getActionCommand();
+        actionPerformed(mincat);
+
     }
 
 }

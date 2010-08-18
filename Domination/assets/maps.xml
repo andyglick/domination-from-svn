@@ -20,7 +20,7 @@
         <checkbox action="TOP_DOWNLOADS" group="Top25View" text="mapchooser.topdownload"/>
     </panel>
     <panel bottom="5" gap="5" left="5" name="searchBar" right="5" top="5" visible="false">
-        <textfield name="mapSearchBox" weightx="1"/>
+        <textfield action="doMapSearch" name="mapSearchBox" weightx="1"/>
         <button action="doMapSearch" text="mapchooser.searchgo"/>
     </panel>
     <panel bottom="5" gap="5" left="5" name="updateBar" right="5" top="5" visible="false">
