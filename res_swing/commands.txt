@@ -12,7 +12,7 @@ newplayer type (skill) color name - creates a new player with a name and a color
 (color can be: black blue cyan darkgray green lightgray magenta orange pink red white yellow)
 delplayer name - delete a player with a name
 startgame type cards (autoplaceall) - once all the players have been set up, start the game
-(type can be: domination capital mission) (cards can be: increasing fixed italian)
+(type can be: domination capital mission) (cards can be: increasing fixed italianlike)
 info - to check everything is set up, autosetup - auto setup some players
 
 undo - undo your go
