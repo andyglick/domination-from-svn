@@ -1318,171 +1318,155 @@ e.printStackTrace();
 						boolean newgame_recycle = false;
                                                 boolean threeDice = false;
 
-						boolean nocrap = true;
+						String crap = null;
 
 						while (StringT.hasMoreTokens()) {
-
 							String newOption = GetNext();
-
 							if ( newOption.equals("domination") ) {
-
 								newgame_type = RiskGame.MODE_DOMINATION;
-
 							}
 							else if ( newOption.equals("capital") ) {
-
 								newgame_type = RiskGame.MODE_CAPITAL;
-
 							}
 							else if ( newOption.equals("mission") ) {
-
 								newgame_type = RiskGame.MODE_SECRET_MISSION;
-
 							}
 							else if ( newOption.equals("increasing") ) {
-
 								newgame_cardType = RiskGame.CARD_INCREASING_SET;
-
 							}
 							else if ( newOption.equals("fixed") ) {
-
 								newgame_cardType = RiskGame.CARD_FIXED_SET;
-
 							}
 							else if ( newOption.equals("italianlike") ) {
-
 								newgame_cardType = RiskGame.CARD_ITALIANLIKE_SET;
                                                                 threeDice = true;
-
 							}
 							else if ( newOption.equals("autoplaceall") ) {
-
 								newgame_autoplaceall = true;
-
 							}
 							else if ( newOption.equals("recycle") ) {
-
 								newgame_recycle = true;
-
 							}
 							else {
-
-								nocrap = false;
-
+								crap = newOption;
 							}
-
 						}
 
+                                                if (crap==null) {
+                                                    // checks all the options are correct to start a game
+                                                    if ( newgame_type!=-1 && newgame_cardType!=-1 && n>=2 && n<=RiskGame.MAX_PLAYERS) {
 
-						// checks all the options are correct to start a game
+                                                            autoplaceall = newgame_autoplaceall;
 
-						if ( newgame_type!=-1 && newgame_cardType!=-1 && n>=2 && n<=RiskGame.MAX_PLAYERS && nocrap) {
+                                                            try {
 
-							autoplaceall = newgame_autoplaceall;
+                                                                    game.startGame(newgame_type,newgame_cardType,newgame_recycle,threeDice);
 
-							try {
+                                                            }
+                                                            catch (Exception e) {
 
-								game.startGame(newgame_type,newgame_cardType,newgame_recycle,threeDice);
+                                                                    e.printStackTrace();
 
-							}
-							catch (Exception e) {
+                                                            }
 
-								e.printStackTrace();
+                                                    }
 
-							}
+                                                    // this checks if the game was able to start or not
+                                                    if (game.getState() != RiskGame.STATE_NEW_GAME ) {
 
-						}
+                                                        controller.noInput();
 
+                                                        controller.startGame( unlimitedLocalMode );
 
-						// this checks if the game was able to start or not
+                                                        if (!replay) {
 
-						if (game.getState() != RiskGame.STATE_NEW_GAME ) {
-
-						    controller.noInput();
-
-                                                    controller.startGame( unlimitedLocalMode );
-
-						    if (!replay) {
-
-							// this cant be if(unlimitedLocalMode) as then it wont get called on the lobby server, as it IS restricted
-							if ( chatSocket == null ) {
-								GameParser( "PLAYER " + game.getRandomPlayer() );
-							}
-							else if ( myAddress.equals(Addr) ) { // if this is a network game
-								outChat.println( "PLAYER " + game.getRandomPlayer() ); // recursive call
-							}
+                                                            // this cant be if(unlimitedLocalMode) as then it wont get called on the lobby server, as it IS restricted
+                                                            if ( chatSocket == null ) {
+                                                                    GameParser( "PLAYER " + game.getRandomPlayer() );
+                                                            }
+                                                            else if ( myAddress.equals(Addr) ) { // if this is a network game
+                                                                    outChat.println( "PLAYER " + game.getRandomPlayer() ); // recursive call
+                                                            }
 
 
-							// do that mission thing
-							if (game.getGameMode()== RiskGame.MODE_SECRET_MISSION ) {
+                                                            // do that mission thing
+                                                            if (game.getGameMode()== RiskGame.MODE_SECRET_MISSION ) {
 
-								// do that mission thing
+                                                                    // do that mission thing
 
-								if ( chatSocket == null || myAddress.equals(Addr) ) {
+                                                                    if ( chatSocket == null || myAddress.equals(Addr) ) {
 
-									// give me a array of random numbers
-									Random r = new Random();
-									int a = game.getNoMissions();
-									int b = game.getNoPlayers();
+                                                                            // give me a array of random numbers
+                                                                            Random r = new Random();
+                                                                            int a = game.getNoMissions();
+                                                                            int b = game.getNoPlayers();
 
-									String outputa="MISSION";
+                                                                            String outputa="MISSION";
 
-									for (int c=0; c< b ; c++) {
+                                                                            for (int c=0; c< b ; c++) {
 
-										outputa=outputa + " " + r.nextInt(a) ;
-										a--;
+                                                                                    outputa=outputa + " " + r.nextInt(a) ;
+                                                                                    a--;
 
-									}
+                                                                            }
 
-									if (chatSocket == null) {
-										GameParser( outputa );
-									}
-									else if ( myAddress.equals(Addr) ) {
-										outChat.println( outputa );
-									}
+                                                                            if (chatSocket == null) {
+                                                                                    GameParser( outputa );
+                                                                            }
+                                                                            else if ( myAddress.equals(Addr) ) {
+                                                                                    outChat.println( outputa );
+                                                                            }
 
-								}
+                                                                    }
 
-							}
+                                                            }
 
-							// do that autoplace thing
-							if ( game.getGameMode()==RiskGame.MODE_SECRET_MISSION || autoplaceall==true ) {
-
-
-								if ( chatSocket == null || myAddress.equals(Addr) ) {
-
-									Vector a = game.shuffleCountries();
-
-									String outputb="PLACEALL";
-
-									for (int c=0; c< a.size() ; c++) {
-
-										outputb=outputb + " " + ((Country)a.elementAt(c)).getColor();
-										//outputb=outputb + " " + ((Country)a.elementAt(c)).getName() ;
-
-									}
-
-									if (chatSocket == null) {
-										GameParser( outputb );
-									}
-									else if ( myAddress.equals(Addr) ) {
-										outChat.println( outputb );
-									}
+                                                            // do that autoplace thing
+                                                            if ( game.getGameMode()==RiskGame.MODE_SECRET_MISSION || autoplaceall==true ) {
 
 
-								}
+                                                                    if ( chatSocket == null || myAddress.equals(Addr) ) {
 
-							}
+                                                                            Vector a = game.shuffleCountries();
 
-						    }
+                                                                            String outputb="PLACEALL";
 
-						    output=null;
-						    needInput=false;
+                                                                            for (int c=0; c< a.size() ; c++) {
 
-						}
-						else { output=resb.getString( "core.start.error.players"); }
+                                                                                    outputb=outputb + " " + ((Country)a.elementAt(c)).getColor();
+                                                                                    //outputb=outputb + " " + ((Country)a.elementAt(c)).getName() ;
+
+                                                                            }
+
+                                                                            if (chatSocket == null) {
+                                                                                    GameParser( outputb );
+                                                                            }
+                                                                            else if ( myAddress.equals(Addr) ) {
+                                                                                    outChat.println( outputb );
+                                                                            }
+
+
+                                                                    }
+
+                                                            }
+
+                                                        }
+
+                                                        output=null;
+                                                        needInput=false;
+
+                                                    }
+                                                    else {
+                                                        output=resb.getString( "core.start.error.players");
+                                                    }
+                                                }
+                                                else {
+                                                    output="unknown option: "+crap;
+                                                }
 					}
-					else { output=resb.getString( "core.error.syntax").replaceAll( "\\{0\\}", "startgame gametype cardtype (autoplaceall recycle)"); }
+					else {
+                                            output=resb.getString( "core.error.syntax").replaceAll( "\\{0\\}", "startgame gametype cardtype (autoplaceall recycle)");
+                                        }
 				}
 
 				// REPLAY A GAME

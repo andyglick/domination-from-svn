@@ -138,6 +138,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         MapChooser mapc;
         public void actionPerformed(String arg0) {
             mapc.getSelectedMap();
+
+            mapc.getRoot().getWindow().setVisible(false);
         }
     };
 
