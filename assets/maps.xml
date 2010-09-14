@@ -27,7 +27,9 @@
         <label alignment="center" text="mapchooser.update" weightx="1"/>
         <button text="mapchooser.updateall"/>
     </panel>
-    <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
+    <panel scrollable="true" weighty="1">
+        <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
+    </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
         <button action="cancel" mnemonic="112" text="Cancel" type="cancel" weightx="1"/>
         <button action="defaultMap" text="Default" weightx="1"/>
