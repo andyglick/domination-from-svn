@@ -12,6 +12,12 @@ public class TranslationToolPanel extends MessageTool implements SwingGUITab {
 
     private Mtcomm mycomm1;
 
+    public TranslationToolPanel() {
+
+        // this is the name that is seen at the top of the tab
+        setName("Translation Tool");
+    }
+
     public void load() {
 
         if (!RiskUIUtil.checkForNoSandbox()) {
