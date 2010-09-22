@@ -8,26 +8,16 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import java.io.PrintStream;
-import java.io.StringWriter;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
-import net.yura.domination.engine.guishared.SimplePrintStream;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Risk Listener for FlashGUI </p>
@@ -48,11 +38,7 @@ public class FlashRiskAdapter implements RiskListener {
 	private int nod;
 	private int nogames;
 
-	private JFrame errFrame;
-	private JTextArea debugText;
-
-
-	public FlashRiskAdapter(Risk r) {
+        public FlashRiskAdapter(Risk r) {
 
 		myrisk = r;
 
@@ -80,133 +66,21 @@ public class FlashRiskAdapter implements RiskListener {
 
 		menu = m;
 
-		errFrame=null;
-		debugText = new JTextArea();
-
 		newgameframe = new NewGameFrame(myrisk);
 
 
-		PrintStream ps = SimplePrintStream.getSimplePrintStream(
-
-		    new StringWriter() {
-			public void write(String x) {
-
-			    // only create all this stuff if an error has happened
-			    if (errFrame==null) {
-
-			    	errFrame = new JFrame("an error has occurred!!!");
-
-				errFrame.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
-
-				debugText.setEditable(false);
-
-				JScrollPane errScroll = new JScrollPane(debugText);
-
-				Dimension size = new Dimension(400,400);
-
-				errScroll.setMaximumSize(size);
-				errScroll.setPreferredSize(size);
-				errScroll.setMinimumSize(size);
-
-				JLabel label = new JLabel("an error happened, please send it to yura@yura.net");
-				label.setBorder( BorderFactory.createMatteBorder(10,10,10,10,Color.RED) );
-
-				JButton saveErr = new JButton("click here to send");
-
-				saveErr.addActionListener(
-				    new ActionListener() {
-					public void actionPerformed(ActionEvent a) {
-
-						String email = JOptionPane.showInputDialog(errFrame,"tell me your e-mail please");
-
-						if (email == null) { email ="none"; }
-
-						try {
-
-							RiskUIUtil.sendText(email , debugText.getText(), "FlashGUI Bug");
-
-							JOptionPane.showMessageDialog(errFrame, "SENT!");
-
-
-						}
-						catch(Exception ex) {
-
-							JOptionPane.showMessageDialog(errFrame, "ERROR: "+ex.getMessage() );
-
-						}
-
-/*
-
-			JFileChooser fc = new JFileChooser();
-			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_LOG_FILES);
-			fc.setFileFilter(filter);
-
-			int returnVal = fc.showSaveDialog(errFrame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				java.io.File file = fc.getSelectedFile();
-				// Write your code here what to do with selected file
-
-				String fileName = file.getAbsolutePath();
-
-				if (!(fileName.endsWith( "." + RiskFileFilter.RISK_LOG_FILES ))) {
-					fileName = fileName + "." + RiskFileFilter.RISK_LOG_FILES;
-				}
-
-				try {
-
-					FileWriter fileout = new FileWriter(fileName);
-					BufferedWriter buffer = new BufferedWriter(fileout);
-					PrintWriter printer = new PrintWriter(buffer);
-
-					printer.write(debugText.getText());
-
-					printer.close();
-
-				}
-
-				catch(Exception error) {
-					JOptionPane.showMessageDialog(errFrame, "unable to save file: " + error.getMessage(), "save error", JOptionPane.ERROR_MESSAGE);
-				}
-
-			} else {
-				// Write your code here what to do if user has canceled Save dialog
-			}
-
-
-*/
-
-
-					}
-				    }
-				);
-
-				errFrame.getContentPane().add( label , BorderLayout.NORTH );
-				errFrame.getContentPane().add( errScroll , BorderLayout.CENTER);
-				errFrame.getContentPane().add( saveErr , BorderLayout.SOUTH);
-
-				errFrame.pack();
-
-				String n = System.getProperty("line.separator");
-				debugText.append(n+n+"Date: "+new java.util.Date().toString()+n+n+n);
-
-				errFrame.setVisible(true);
-
-			    }
-
-			    debugText.append(x);
-
-			}
-		    }
-
-		);
-
 		if (RiskUIUtil.checkForNoSandbox()) {
-
 			// catch everything in my PrintStream
-			//System.setOut(ps);
-			System.setErr(ps);
-		}
+                    try {
 
+                        net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,
+                                Risk.RISK_VERSION+" FlashGUI" // "(save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
+                                , TranslationBundle.getBundle().getLocale().toString());
+                    }
+                    catch(Throwable th) {
+                        System.out.println("Grasshopper not loaded");
+                    }
+		}
 	}
 
 	/**
@@ -228,7 +102,13 @@ public class FlashRiskAdapter implements RiskListener {
 		catch (NullPointerException e) { }
 	}
 
-	public void sendDebug(String a) { debugText.append(a + System.getProperty("line.separator") ); }
+	public void sendDebug(String a) {
+            try {
+                net.yura.grasshopper.PopupBug.log( a + System.getProperty("line.separator") );
+            }
+            catch(Throwable th) {
+            }
+        }
 
 	public void showMessageDialog(String a) {
 
@@ -260,7 +140,6 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param state The game state
 	 */
 	public void setGameStatus(String state) {
-
 		try {
 			gameFrame.setGameStatus(state);
 		}
@@ -487,11 +366,12 @@ public class FlashRiskAdapter implements RiskListener {
 
 		nogames++;
 
-		if (errFrame==null) {
-
-			debugText.setText("game "+nogames+" closed, log cleared"+System.getProperty("line.separator") );
-
-		}
+                try {
+                    net.yura.grasshopper.PopupBug.clearLog();
+                    net.yura.grasshopper.PopupBug.log( "game "+nogames+" closed, log cleared"+System.getProperty("line.separator") );
+                }
+                catch(Throwable th) {
+                }
 
 		newgameframe.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 

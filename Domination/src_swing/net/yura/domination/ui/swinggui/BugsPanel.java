@@ -16,7 +16,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.RiskUtil;
 
 /**
  * @author Yura Mamyrin
@@ -66,19 +65,8 @@ public class BugsPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		if (a.getActionCommand().equals("send")) {
 
-			try {
+                    SwingGUIPanel.submitBug(this,text.getText(), from.getText(), "Suggestion");
 
-				RiskUIUtil.sendText( from.getText(), text.getText(),"Suggestion" );
-
-				JOptionPane.showMessageDialog(this, "SENT!");
-
-
-			}
-			catch(Exception ex) {
-
-				JOptionPane.showMessageDialog(this, "ERROR: "+ex.getMessage() );
-
-			}
 		}
 
 	}
