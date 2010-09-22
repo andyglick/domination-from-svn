@@ -26,9 +26,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.AbstractButton;
@@ -73,7 +72,6 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
-import net.yura.domination.engine.guishared.SimplePrintStream;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
@@ -1388,6 +1386,24 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 }
 
+    public static void submitBug(Component parent, String text,String from,String subject) {
+
+            try {
+                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+
+                            TranslationBundle.getBundle().getLocale().toString()+" "+subject,
+                            RiskUtil.GAME_NAME,
+                                Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
+                                , TranslationBundle.getBundle().getLocale().toString()
+
+                            );
+                    JOptionPane.showMessageDialog(parent, "SENT!");
+            }
+            catch(Throwable ex) {
+                    JOptionPane.showMessageDialog(parent, "ERROR: "+ex.toString() );
+            }
+
+    }
+
 class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 	private JTextArea debugText;
@@ -1559,33 +1575,29 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		g.dispose();
 		final Icon icon = new ImageIcon(img);
 
-		PrintStream ps = SimplePrintStream.getSimplePrintStream(
 
-		    new StringWriter() {
-			public void write(String x) {
+                if (RiskUIUtil.checkForNoSandbox()) {
 
-			    int nom = tabbedpane.indexOfComponent(DebugTab.this);
+                    net.yura.grasshopper.SimplePrintStream.interceptAndAlert(new Writer() {
+                        public void write(char[] cbuf, int off, int len) throws IOException {
+                            errText.append(String.valueOf(cbuf, off, len));
+                        }
+                        public void flush() throws IOException {
+                        }
+                        public void close() throws IOException {
+                        }
+                    }, new net.yura.grasshopper.SimplePrintStream() {
+                        public void action() {
+                                int nom = tabbedpane.indexOfComponent(DebugTab.this);
 
-			    if (tabbedpane.getIconAt(nom)==null) {
-				tabbedpane.setIconAt(nom,icon);
+                                if (tabbedpane.getIconAt(nom)==null) {
+                                    tabbedpane.setIconAt(nom,icon);
 
-				String n = System.getProperty("line.separator");
-				errText.append(n+n+"Date: "+new java.util.Date().toString()+n+n+n);
-			    }
-
-			    errText.append(x);
-
-			}
-		    }
-
-		);
-
-		if (RiskUIUtil.checkForNoSandbox()) {
-
-			// catch everything in my PrintStream
-			//System.setOut(ps);
-			// only care about errors
-			System.setErr(ps);
+                                    String n = System.getProperty("line.separator");
+                                    errText.append(n+n+"Date: "+new java.util.Date().toString()+n+n+n);
+                                }
+                        }
+                    });
 
 		}
 
@@ -1632,24 +1644,11 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 		else if (a.getActionCommand().equals("send error")) {
 
-						String email = JOptionPane.showInputDialog(this,"tell me your e-mail please");
+                        String email = JOptionPane.showInputDialog(this,"tell me your e-mail please");
 
-						if (email == null) { email ="none"; }
+                        if (email == null) { email ="none"; }
 
-						try {
-
-							RiskUIUtil.sendText(email , debugText.getText() + errText.getText(), "SwingGUI Bug" );
-
-							JOptionPane.showMessageDialog(this, "SENT!");
-
-
-						}
-						catch(Exception ex) {
-
-							showError("unable to send: "+ex.getMessage() );
-
-						}
-
+                        submitBug( this, debugText.getText() + errText.getText(), email, "Bug" );
 
 		}
 		else {
