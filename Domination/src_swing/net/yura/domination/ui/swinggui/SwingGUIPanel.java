@@ -1579,22 +1579,17 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                 if (RiskUIUtil.checkForNoSandbox()) {
 
                     net.yura.grasshopper.SimplePrintStream.interceptAndAlert(new Writer() {
-                        public void write(char[] cbuf, int off, int len) throws IOException {
+                        public void write(char[] cbuf, int off, int len) {
                             errText.append(String.valueOf(cbuf, off, len));
                         }
-                        public void flush() throws IOException {
-                        }
-                        public void close() throws IOException {
-                        }
+                        public void flush() { }
+                        public void close() { }
                     }, new net.yura.grasshopper.SimplePrintStream() {
                         public void action() {
                                 int nom = tabbedpane.indexOfComponent(DebugTab.this);
 
                                 if (tabbedpane.getIconAt(nom)==null) {
                                     tabbedpane.setIconAt(nom,icon);
-
-                                    String n = System.getProperty("line.separator");
-                                    errText.append(n+n+"Date: "+new java.util.Date().toString()+n+n+n);
                                 }
                         }
                     });
