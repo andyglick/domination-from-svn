@@ -1,5 +1,9 @@
 package net.yura.domination.mapstore;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import net.yura.domination.mapstore.gen.XMLMapAccess;
+
 /**
  * @author Yura
  */
@@ -146,7 +150,13 @@ public class Map {
 */
 
     public String toString() {
-        return id+" "+name;
+
+        // print out full info with XML
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try { new XMLMapAccess().save(out, this); } catch (IOException ex) { ex.printStackTrace(); }
+        return out.toString();
+
+        //return id+" "+name;
     }
 
 }
