@@ -6,8 +6,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
+import net.yura.abba.Events;
+import net.yura.abba.persistence.AbbaRepository;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.Icon;
@@ -79,6 +82,10 @@ public class MapChooser implements ActionListener {
 
         client = new MapServerClient(this);
         client.start();
+
+        AbbaRepository repo = new AbbaRepository(256 * 1024, 2 * 1024 * 1024, new BinMapAccess(), client);
+        Events.CLIENT_RESOURCE.subscribe(repo);
+        Events.SERVER_GET_RESOURCE.resubscribe(client,repo);
 
         activateGroup("MapView");
 

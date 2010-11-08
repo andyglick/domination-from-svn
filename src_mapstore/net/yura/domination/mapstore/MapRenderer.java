@@ -1,6 +1,9 @@
 package net.yura.domination.mapstore;
 
+import java.util.Hashtable;
 import javax.microedition.lcdui.Graphics;
+import net.yura.abba.persistence.ImageManager;
+import net.yura.abba.ui.components.IconCache;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
@@ -12,6 +15,9 @@ import net.yura.mobile.gui.components.Component;
 public class MapRenderer extends DefaultListCellRenderer {
 
     String line2;
+
+    ImageManager manager = new ImageManager();
+    Hashtable images = new Hashtable();
 
     public MapRenderer() {
         setVerticalAlignment( Graphics.TOP );
@@ -31,6 +37,18 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             setText( map.getName() );
             line2 = map.getAuthorName();
+
+            String key = map.getPreviewUrl();
+
+            key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
+
+            IconCache icon = (IconCache)images.get( key );
+            if (icon==null) {
+                icon = new IconCache(key, null, 0, 0, 0, 0, manager);
+                images.put(key, icon);
+            }
+
+            setIcon( icon );
         }
         // else just do nothing
 
