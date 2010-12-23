@@ -162,12 +162,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		toolbar.addSeparator();
 
-		loadimagepic = new JButton("Load Image Pic");
+		loadimagepic = new JButton("Load Image Pic",new javax.swing.ImageIcon(this.getClass().getResource("edit_pic.png")) );
 		loadimagepic.setActionCommand("loadimagepic");
 		loadimagepic.addActionListener(this);
 		toolbar.add(loadimagepic);
 
-		loadimagemap = new JButton("Load Image Map");
+		loadimagemap = new JButton("Load Image Map",new javax.swing.ImageIcon(this.getClass().getResource("edit_map.png")) );
 		loadimagemap.setActionCommand("loadimagemap");
 		loadimagemap.addActionListener(this);
 		toolbar.add(loadimagemap);
