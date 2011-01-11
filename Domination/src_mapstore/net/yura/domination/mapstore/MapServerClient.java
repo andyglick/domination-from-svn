@@ -84,7 +84,9 @@ public class MapServerClient extends HTTPClient implements EventListener {
         }
     }
 
-    public boolean isUiEvent(Event arg0) {
+    @Override
+    public boolean isUiEvent(Event event, Object message) {
+        // TODO Auto-generated method stub
         return false;
     }
 }

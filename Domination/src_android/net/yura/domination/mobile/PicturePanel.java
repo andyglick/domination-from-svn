@@ -5,15 +5,9 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
-import and.awt.Color;
-import and.awt.Polygon;
-import and.awt.geom.Ellipse2D;
-
 import android.graphics.ColorMatrix;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
-
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
@@ -317,10 +311,10 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 int w = font.getWidth(text);
                                 int h = font.getHeight();
 
-                                g.setColor( new Color(255,255,255, 150).getRGB() );
+                                g.setColor( 0x96FFFFFF );
                                 g.fillRect( 5 , 5, w+3, h+1 );
 
-                                g.setColor( Color.black.getRGB() );
+                                g.setColor( 0xFF000000 );
                                 g.drawString(text, 6, 15);
                         }
 
@@ -364,8 +358,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                         g2.drawImage(CountryImages[a-1].getHighLightImage() ,CountryImages[a-1].getX1() ,CountryImages[a-1].getY1() );
                         g2.drawImage(CountryImages[b-1].getHighLightImage() ,CountryImages[b-1].getX1() ,CountryImages[b-1].getY1() );
 
-                        Color ac = new Color( game.getAttacker().getOwner().getColor() );
-                        int argb = new Color(ac.getRed(),ac.getGreen(), ac.getBlue(), 150).getRGB();
+                        int ac = game.getAttacker().getOwner().getColor();
+
+                        int argb = colorWithAlpha( ac, 150 );
                         //g2.setStroke(new BasicStroke(3));
 
                         if ( Math.abs( game.getAttacker().getX() - game.getDefender().getX() ) > (map.length / 2) ) {
@@ -407,15 +402,13 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         if ( ((Player)t.getOwner()) != null ) {
 
-                                g.setARGBColor( new Color( ((Player)t.getOwner()).getColor() ).getRGB() );
+                                g.setARGBColor( ((Player)t.getOwner()).getColor() );
 
-                                Ellipse2D ellipse = new Ellipse2D.Double();
-                                ellipse.setFrame( t.getX()-r , t.getY()-r , (r*2), (r*2) );
-                                g2.fillArc( (int)ellipse.getX(), (int)ellipse.getY(), (int)ellipse.getWidth(), (int)ellipse.getHeight(), 0, 360);
+                                g2.fillArc( t.getX()-r , t.getY()-r , (r*2), (r*2) , 0, 360);
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
 
-                                g.setARGBColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ).getRGB() );
+                                g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 
                                 g2.setFont( font );
                                 int h = t.getY() -(font.getHeight()/2 -1);
@@ -443,17 +436,13 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 if ( ((Player)players.elementAt(c)).getCapital() !=null ) {
                                         Country capital = ((Country)((Player)players.elementAt(c)).getCapital());
 
-                                        g.setARGBColor( new Color( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) ).getRGB() );
+                                        g.setARGBColor( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
 
-                                        Ellipse2D ellipse = new Ellipse2D.Double();
-                                        ellipse.setFrame( capital.getX()-10 , capital.getY()-10 , 19, 19);
-                                        g2.drawArc( (int)ellipse.getX(), (int)ellipse.getY(), (int)ellipse.getWidth(), (int)ellipse.getHeight(), 0, 360);
+                                        g2.drawArc( capital.getX()-10 , capital.getY()-10 , 19, 19 , 0, 360);
 
-                                        g.setARGBColor( new Color( ((Player)players.elementAt(c)).getColor() ).getRGB() );
+                                        g.setARGBColor( ((Player)players.elementAt(c)).getColor() );
 
-                                        Ellipse2D ellipse2 = new Ellipse2D.Double();
-                                        ellipse2.setFrame( capital.getX()-12 , capital.getY()-12 , 23, 23);
-                                        g2.drawArc( (int)ellipse2.getX(), (int)ellipse2.getY(), (int)ellipse2.getWidth(), (int)ellipse2.getHeight(), 0, 360);
+                                        g2.drawArc( capital.getX()-12 , capital.getY()-12 , 23, 23, 0, 360);
 
                                 }
 
@@ -588,24 +577,24 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 for (int c=0; c < CountryImages.length ; c++) {
 
-                    Color val=null;
+                    int val=0;
 
                     if (view == VIEW_CONTINENTS) {
 
-                                val = new Color(0,true);
+                                val = 0x00000000;
 
                     }
                     else if (view == VIEW_OWNERSHIP) {
 
 
                                 if ( ((Country)game.getCountryInt( c+1 )).getOwner() != null ) {
-                                        val = new Color( ((Player)((Country)game.getCountryInt( c+1 )).getOwner()).getColor() );
+                                        val = ((Player)((Country)game.getCountryInt( c+1 )).getOwner()).getColor();
                                 }
                                 else {
-                                        val = Color.GRAY;
+                                        val = GRAY;
                                 }
 
-                                val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 100);
+                                val = colorWithAlpha(val, 100);
 
                     }
                     else if (view == VIEW_BORDER_THREAT) {
@@ -613,7 +602,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 Player player = ((Country)game.getCountryInt( c+1 )).getOwner();
 
                                 if (player != game.getCurrentPlayer() ) {
-                                        val = Color.gray;
+                                        val = GRAY;
                                 }
                                 else {
                                         Vector neighbours = ((Country)game.getCountryInt( c+1 )).getNeighbours();
@@ -631,17 +620,17 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                         if (threat > 255) { threat=255; }
 
-                                        val = (new Color( threat, 0, 0));
+                                        val = newColor( threat, 0, 0);
                                 }
 
-                                val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 200);
+                                val = colorWithAlpha(val, 200);
 
 
                     }
                     else if (view == VIEW_CARD_OWNERSHIP) {
 
                                 if (  game.getCurrentPlayer()==null  || ((Country)game.getCountryInt(c+1)).getOwner() != (Player)game.getCurrentPlayer()) {
-                                        val = Color.lightGray;
+                                        val = LIGHT_GRAY;
                                 }
                                 else {
                                         Vector cards = ((Player)game.getCurrentPlayer()).getCards();
@@ -649,21 +638,21 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         for (int j = 0; j < cards.size() ; j++) {
 
                                                 if ( ((Card)cards.elementAt(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
-                                                        val = Color.blue;
+                                                        val = BLUE;
                                                 }
 
                                         }
 
-                                        if (val == null) val = Color.darkGray;
+                                        if (val == 0) val = DARK_GRAY;
                                 }
 
-                                val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 100);
+                                val = colorWithAlpha(val, 100);
 
                     }
                     else if (view == VIEW_TROOP_STRENGTH) {
 
                                 if (((Country)game.getCountryInt(c+1)).getOwner() != (Player)game.getCurrentPlayer()) {
-                                        val = Color.gray;
+                                        val = GRAY;
                                 }
                                 else {
                                         int armies = ((Country)game.getCountryInt(c+1)).getArmies();
@@ -672,10 +661,10 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                         if (armies > 255) { armies=255; }
 
-                                        val = (new Color( 0 , armies, 0));
+                                        val = newColor( 0 , armies, 0);
                                 }
 
-                                val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 200);
+                                val = colorWithAlpha(val, 200);
 
                     }
                     else if (view == VIEW_CONNECTED_EMPIRE) {
@@ -684,19 +673,19 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 if ( thecountry.getOwner() == null ) {
 
-                                        val = Color.LIGHT_GRAY;
+                                        val = LIGHT_GRAY;
 
                                 }
                                 else if ( b.contains( thecountry ) ) {
 
-                                        val = new Color( ((Player)thecountry.getOwner()).getColor() );
+                                        val = ((Player)thecountry.getOwner()).getColor();
 
                                 }
                                 else {
-                                        val = Color.DARK_GRAY;
+                                        val = DARK_GRAY;
                                 }
 
-                                val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 100);
+                                val = colorWithAlpha(val, 100);
 
 /*
 
@@ -743,7 +732,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         else {
 
                                 tempg.drawImage( ci.getGrayImage(), 0, 0, 0);
-                                DirectUtils.getDirectGraphics(tempg).setARGBColor( val.getRGB() );
+                                DirectUtils.getDirectGraphics(tempg).setARGBColor( val );
                                 tempg.fillRect(0,0,w,h);
 
                         }
@@ -859,7 +848,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 private Image temp1;
                 private Image temp2;
 
-                private Color color;
+                private int  color;
 
                 public countryImage() {
                         x1=map.length;
@@ -873,9 +862,9 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 }
 
-                public boolean checkChange(Color b) {
+                public boolean checkChange(int b) {
 
-                        if (!b.equals(color) ) {
+                        if (b != color) {
 
                                 color = b;
                                 return true;
@@ -1081,9 +1070,9 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 if (incolor) {
 
-                        Color ownerColor = new Color( ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor() );
+                        int ownerColor = ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor();
 
-                        DirectUtils.getDirectGraphics(g).setARGBColor( new Color(ownerColor.getRed(), ownerColor.getGreen(), ownerColor.getBlue(), 100).getRGB() );
+                        DirectUtils.getDirectGraphics(g).setARGBColor( colorWithAlpha(ownerColor, 100) );
                         g.fillRect(0,0,w,h);
 
                 }
@@ -1099,6 +1088,35 @@ public class PicturePanel extends ImageView implements MapPanel {
                 return pictureB;
 
         }
+
+        public final static int GRAY      = newColor(128, 128, 128);
+        public final static int DARK_GRAY  = newColor(64, 64, 64);
+        public final static int LIGHT_GRAY = newColor(192, 192, 192);
+        public final static int BLUE  = newColor(0, 0, 255);
+
+        private static int colorWithAlpha(int color, int alpha) {
+            return ((alpha & 0xFF) << 24) | (color & 0xFFFFFF);
+        }
+        private static int newColor(int r,int g,int b) {
+            return ((255 & 0xFF) << 24) |
+            ((r & 0xFF) << 16) |
+            ((g & 0xFF) << 8)  |
+            ((b & 0xFF) << 0);
+        }
+
+        class Polygon {
+
+            public int[] xpoints;
+            public int[] ypoints;
+            public int npoints;
+
+            public Polygon(int[] xCoords, int[] yCoords, int length) {
+                this.xpoints = xCoords;
+                this.ypoints = yCoords;
+                this.npoints = length;
+            }
+        }
+
 /*
         public static Image getImage(RiskGame game) throws Exception {
 

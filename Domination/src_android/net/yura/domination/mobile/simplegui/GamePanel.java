@@ -1,7 +1,5 @@
 package net.yura.domination.mobile.simplegui;
 
-import and.awt.Color;
-import and.awt.Dimension;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
@@ -36,9 +34,7 @@ public class GamePanel extends Panel {
 
                     //JButton leave = new JButton("leave");
 
-                    Dimension mapViewSize = new Dimension(150 , 20);
-
-                    mapViewComboBox.setPreferredSize(mapViewSize.width,mapViewSize.height);
+                    mapViewComboBox.setPreferredSize(150 , 20);
 
                     mapViewComboBox.addItem("Continents");
                     mapViewComboBox.addItem("Ownership");
@@ -58,13 +54,11 @@ public class GamePanel extends Panel {
 
                     Label playersLabel = new Label("Players:");
 
-                    Dimension playerPanelSize = new Dimension(120 , 20);
-
                     Panel players = new PlayersPanel();
 
-                    players.setBorder(new LineBorder(new Color(0,0,0).getRGB(),1));
+                    players.setBorder(new LineBorder(0xFF000000,1));
 
-                    players.setPreferredSize(playerPanelSize.width,playerPanelSize.height);
+                    players.setPreferredSize(120 , 20);
 
                     closegame.addActionListener(
                         new ActionListener() {
@@ -90,9 +84,7 @@ public class GamePanel extends Panel {
                         }
                     );
 
-                    Dimension size = new Dimension(PicturePanel.PP_X , 30);
-
-                    setPreferredSize(size.width,size.height);
+                    setPreferredSize(PicturePanel.PP_X , 30);
 
                     add(mapLookLabel);
                     add(mapViewComboBox);
@@ -132,15 +124,15 @@ public class GamePanel extends Panel {
                     int[] colors = risk.getPlayerColors();
 
                     for (int c=0; c < colors.length ; c++) {
-                            g.setColor( new Color( colors[c] ).getRGB() );
+                            g.setColor( colors[c] );
                             g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
                     }
 
-                    g.setColor( new Color( RiskUtil.getTextColorFor( colors[0] ) ).getRGB() );
+                    g.setColor( RiskUtil.getTextColorFor( colors[0] ) );
 
                     g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
 
-                    g.setColor( Color.black.getRGB() );
+                    g.setColor( 0xFF000000 );
                     g.drawLine( (120/colors.length)-1 , 0, (120/colors.length)-1, 19);
 
             }
