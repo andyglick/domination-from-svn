@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="src_Abba"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src_android"/>
+	<classpathentry kind="src" path="src_mapstore"/>
+	<classpathentry kind="src" path="src_SwingME"/>
+	<classpathentry kind="src" path="src_UtilME"/>
+	<classpathentry kind="src" path="src_AndroidME"/>
+	<classpathentry kind="src" path="src_MIDP"/>
+	<classpathentry kind="src" path="src_JSR135_Multimedia"/>
+	<classpathentry kind="src" path="src_JSR179_Location"/>
+	<classpathentry kind="src" path="src_JSR82_Bluetooth"/>
+	<classpathentry kind="src" path="src_JSR184_3D"/>
+	<classpathentry kind="src" path="src_JSR120_SMS"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="E:/My_World/6_Yura/linuxhome/UtilME/lib/kxml2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

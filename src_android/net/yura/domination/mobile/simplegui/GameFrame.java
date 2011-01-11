@@ -4,10 +4,6 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
-
-import and.awt.Color;
-import and.awt.Dimension;
-
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUtil;
@@ -255,13 +251,9 @@ public class GameFrame extends Frame {
 
             getContentPane().setLayout( new GridBagLayout(2,3,3,3,3,3) );
 
+            pp.setPreferredSize(PicturePanel.PP_X,PicturePanel.PP_Y);
 
-            Dimension ppSize = new Dimension(PicturePanel.PP_X,PicturePanel.PP_Y);
-
-            pp.setPreferredSize(ppSize.width,ppSize.height);
-
-
-            pp.setBorder(new LineBorder(new Color(0,0,0).getRGB(),1));
+            pp.setBorder(new LineBorder(0xFF000000,1));
 
             //pp.addMouseListener(this);
             //pp.addMouseMotionListener(this);
@@ -279,8 +271,7 @@ public class GameFrame extends Frame {
 
             guiMain = new Panel();
 
-            Dimension guiMainSize = new Dimension(PicturePanel.PP_X, PicturePanel.PP_Y+30);
-            //guiMain.setPreferredSize(guiMainSize.width,guiMainSize.height);
+            //guiMain.setPreferredSize(PicturePanel.PP_X, PicturePanel.PP_Y+30);
             guiMain.setPreferredSize(200,200);
 
             guiMain.setLayout(new BorderLayout());
