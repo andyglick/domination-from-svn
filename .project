@@ -102,6 +102,11 @@
 			<location>E:/My_World/6_Yura/linuxhome/SwingME/src</location>
 		</link>
 		<link>
+			<name>src_SwingME_plaf</name>
+			<type>2</type>
+			<location>E:/My_World/6_Yura/linuxhome/AndroidME/src_SwingME_plaf</location>
+		</link>
+		<link>
 			<name>src_UtilME</name>
 			<type>2</type>
 			<location>E:/My_World/6_Yura/linuxhome/UtilME/src</location>
