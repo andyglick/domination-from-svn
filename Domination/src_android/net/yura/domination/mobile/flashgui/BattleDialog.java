@@ -168,7 +168,7 @@ public class BattleDialog extends Frame {
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         Font font = g.getFont();
-        g.setColor( getCurrentForeground() );
+        g.setColor( getForeground() );
 
         //tl = new TextLayout( country1.getName(), font, frc); // Display
         //tl.draw( g, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
