@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="src_SwingME_plaf"/>
 	<classpathentry kind="src" path="src_Abba"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src_android"/>
