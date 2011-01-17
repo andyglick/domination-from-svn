@@ -2958,7 +2958,7 @@ public void setNODDefender(int n) {}
 					new ActionListener() {
 						public void actionPerformed(ActionEvent a) {
 
-							String name = RiskUIUtil.getNewFile( RiskUIUtil.findParentFrame(SwingGUIPanel.this), RiskFileFilter.RISK_MAP_FILES);
+							String name = RiskUIUtil.getNewMap( RiskUIUtil.findParentFrame(SwingGUIPanel.this) );
 
 							if (name != null) {
 
