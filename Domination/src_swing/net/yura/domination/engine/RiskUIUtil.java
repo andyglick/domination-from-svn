@@ -21,14 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -330,7 +327,34 @@ public class RiskUIUtil {
 */
 	}
 
-        public static String getNewFileOLD(Frame f,String a) {
+
+
+
+        public static String getNewMap(Frame f) {
+
+            MapChooserSwingWrapper ch;
+            try {
+                // try and start new map chooser,
+                // on fail revert to using the old one
+                ch = new MapChooserSwingWrapper();
+            }
+            catch (Throwable th) {
+                return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
+            }
+            return ch.getNewMap(f);
+
+        }
+
+        public static String getNewFile(Frame f,String a) {
+            if (checkForNoSandbox()) {
+                return getNewFileNoSandbox(f, a);
+            }
+            else {
+                return getNewFileInSandbox(f, a);
+            }
+        }
+
+        public static String getNewFileNoSandbox(Frame f,String a) {
 
             String dir = mapsdir.toString();
             File md;
@@ -392,34 +416,6 @@ public class RiskUIUtil {
 
             return null;
             
-        }
-
-
-
-        public static String getNewFile(Frame f,String a) {
-
-            if (checkForNoSandbox()) {
-                if ("map".equals(a)) {
-                    MapChooserSwingWrapper ch;
-                    try {
-                        // try and start new map chooser,
-                        // on fail revert to using the old one
-                        ch = new MapChooserSwingWrapper();
-                    }
-                    catch (Throwable th) {
-                        return getNewFileOLD(f, a);
-                    }
-                    return ch.getNewMap(f);
-                }
-                else {
-                    return getNewFileOLD(f, a);
-                }
-            }
-            else {
-
-                return getNewFileInSandbox(f, a);
-            }
-
         }
 
 	public static String getNewFileInSandbox(Frame f,String a) {

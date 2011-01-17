@@ -839,7 +839,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		if (e.getSource()==chooseMap) {
 
-			String name = RiskUIUtil.getNewFile( this, RiskFileFilter.RISK_MAP_FILES);
+			String name = RiskUIUtil.getNewMap(this);
 
 			if (name != null) {
 
