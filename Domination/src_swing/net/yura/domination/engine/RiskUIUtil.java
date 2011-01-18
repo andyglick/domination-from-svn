@@ -339,6 +339,7 @@ public class RiskUIUtil {
                 ch = new MapChooserSwingWrapper();
             }
             catch (Throwable th) {
+                th.printStackTrace();
                 return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
             }
             return ch.getNewMap(f);
