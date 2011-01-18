@@ -51,6 +51,13 @@ public class MapChooserSwingWrapper implements ActionListener {
 
         // come here when the dialog is closed
 
+        // TODO
+        // TODO this is wrong here, as the chooser can be reused
+        // TODO
+        // TODO
+        // TODO 
+        chooser.destroy(); // shutdown abba repo, write index to rms
+
         dialog.dispose();
 
         return chooser.getSelectedMap();

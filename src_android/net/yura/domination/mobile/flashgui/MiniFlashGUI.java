@@ -418,7 +418,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         ScrollPane sp = new ScrollPane(pp);
 
 
-        sp.setMode( ScrollPane.MODE_FLOATING_SCROLLBARS );
+        //sp.setMode( ScrollPane.MODE_FLOATING_SCROLLBARS );
         sp.setClip(false);
         mainWindow.add( sp );
         mainWindow.add(gamecontrol,Graphics.TOP);
@@ -660,7 +660,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                     boolean tacmove = myrisk.getGame().getState()==RiskGame.STATE_FORTIFYING;
                     int c1num = pp.getC1();
                     int c2num = pp.getC2();
-                    
+
                     if (actionCommand.equals("cancel")) {
                         move.setVisible(false);
                     }

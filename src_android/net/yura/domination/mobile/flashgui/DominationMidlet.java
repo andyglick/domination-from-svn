@@ -15,28 +15,6 @@ public class DominationMidlet extends Midlet {
 
 
 
-        LookAndFeel lookandfeel=null;
-        try {
-                if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {
-                        lookandfeel = (SynthLookAndFeel)Class.forName("net.yura.android.plaf.AndroidLookAndFeel").newInstance();
-                }
-                //else if (Midlet.getPlatform() == Midlet.PLATFORM_BLACKBERRY) {
-                //      lookandfeel = (LookAndFeel)Class.forName("net.yura.blackberry.plaf.BlackBerryLookAndFeel").newInstance();
-                //}
-        }
-        catch (Throwable ex) {
-                ex.printStackTrace();
-        }
-        if (lookandfeel==null) {
-                lookandfeel = new net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel(16);
-        }
-        rootpane.setLookAndFeel( lookandfeel );
-
-
-
-
-        //rootpane.setLookAndFeel( new net.yura.mobile.gui.plaf.MetalLookAndFeel() );
-/*
         SynthLookAndFeel synth = new SynthLookAndFeel();
         try {
             synth.load( getClass().getResourceAsStream("/domFlash.xml") );
@@ -45,7 +23,13 @@ public class DominationMidlet extends Midlet {
             throw new RuntimeException(ex);
         }
         rootpane.setLookAndFeel( synth );
-*/
+
+
+
+
+
+
+
 
         RiskUtil.streamOpener = new RiskMiniIO();
 
