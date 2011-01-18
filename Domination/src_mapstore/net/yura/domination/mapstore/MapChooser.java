@@ -35,6 +35,9 @@ public class MapChooser implements ActionListener {
     XULLoader loader;
     ActionListener al;
 
+    AbbaRepository repo;
+    MapServerClient client;
+
     public MapChooser(ActionListener al) {
         this.al = al;
         
@@ -83,14 +86,17 @@ public class MapChooser implements ActionListener {
         client = new MapServerClient(this);
         client.start();
 
-        AbbaRepository repo = new AbbaRepository(256 * 1024, 2 * 1024 * 1024, new BinMapAccess(), client);
+        repo = new AbbaRepository(256 * 1024, 2 * 1024 * 1024, new BinMapAccess(), client);
         Events.CLIENT_RESOURCE.subscribe(repo);
         Events.SERVER_GET_RESOURCE.resubscribe(client,repo);
 
         activateGroup("MapView");
 
     }
-    MapServerClient client;
+
+    public void destroy() {
+        repo.destroy();
+    }
 
     public void actionPerformed(String actionCommand) {
         if ("local".equals(actionCommand)) {

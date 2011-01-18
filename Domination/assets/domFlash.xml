@@ -43,23 +43,13 @@
 
 
 
-    <style id="scrollpane">
-      <imageIcon id="thumb_top" path="/thumb.png" x="0" y="0" width="5" height="2"/>
-      <imageIcon id="thumb_fill" path="/thumb.png" x="0" y="2" width="5" height="24"/>
-      <imageIcon id="thumb_bottom" path="/thumb.png" x="0" y="26" width="5" height="2"/>
-      <imageIcon id="track_top" path="/track.png" x="0" y="0" width="9" height="2"/>
-      <imageIcon id="track_fill" path="/track.png" x="0" y="2" width="9" height="24"/>
-      <imageIcon id="track_bottom" path="/track.png" x="0" y="26" width="9" height="2"/>
-      <state>
-        <property key="thumbTop" value="thumb_top"/>
-        <property key="thumbBottom" value="thumb_bottom"/>
-        <property key="thumbFill" value="thumb_fill"/>
-        <property key="trackTop" value="track_top"/>
-        <property key="trackBottom" value="track_bottom"/>
-        <property key="trackFill" value="track_fill"/>
-      </state>
+    <style id="scrollBarThumbStyle">
+        <insets top="4" left="4" bottom="5" right="5"/>
+        <state>
+            <imagePainter method="scrollBarThumbBackground" path="/thumb.png" sourceInsets="4 4 5 5" />
+        </state>
     </style>
-    <bind style="scrollpane" type="region" key="ScrollPane"/>
+    <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb" />
 
 
     <style id="textfield">
