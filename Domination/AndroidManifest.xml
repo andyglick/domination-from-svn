@@ -28,4 +28,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> 
     <uses-permission android:name="android.permission.SEND_SMS" />
+    
+    <!-- this means i dont need different assets for different resolutions -->
+    <supports-screens android:anyDensity="false"/>
 </manifest>
