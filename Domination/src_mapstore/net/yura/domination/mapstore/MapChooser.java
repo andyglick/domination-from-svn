@@ -14,6 +14,7 @@ import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.border.LineBorder;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.List;
@@ -74,9 +75,12 @@ public class MapChooser implements ActionListener {
             b.setRolloverIcon(offi);
             b.setRolloverSelectedIcon(oni);
 
+            b.setToolTipText( b.getText() );
+
             b.setText("");
             b.setHorizontalAlignment(Graphics.HCENTER);
             b.setMargin(0);
+
         }
 
         List list = (List)loader.find("ResultList");

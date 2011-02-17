@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<synth>
+
+    <style id="tabbar">
+	   <state>
+	      <imagePainter path="/tabbar.png" sourceInsets="30 0 0 0"/>
+              <color type="BORDERFILL" value="#000000"/>
+              <color type="BACKGROUND" value="#00FFFFFF"/>
+              <!-- as nimbus background default is a color, we need to clear it -->
+	   </state>
+    </style>
+    <bind style="tabbar" key="TabBar"/>
+
+</synth>
