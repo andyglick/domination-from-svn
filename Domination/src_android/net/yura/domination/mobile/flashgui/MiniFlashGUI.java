@@ -1,7 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
+import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
@@ -30,6 +30,7 @@ import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.io.NativeUtil;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -115,8 +116,31 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
             else if ("choosemap".equals(actionCommand)) {
 
+
+                //WebView webView = new WebView( AndroidMeActivity.DEFAULT_ACTIVITY );
+                //webView.loadUrl("file:///android_asset/help/index.htm");
+                //AndroidMeActivity.DEFAULT_ACTIVITY.setContentView(webView);
+
+
+
                 MapListener al = new MapListener();
-                MapChooser mapc = new MapChooser(al);
+
+
+
+                Enumeration en = NativeUtil.getDirectoryFiles("file:///android_asset/maps/");
+
+                Vector result = new Vector();
+                while (en.hasMoreElements()) {
+                    String file = (String)en.nextElement();
+                    if (file.endsWith(".map")) {
+                        result.addElement( file );
+                    }
+                }
+
+
+
+
+                MapChooser mapc = new MapChooser(al,result);
                 al.mapc = mapc;
 
                 Frame mapFrame = new Frame( resBundle.getProperty("newgame.choosemap") );
@@ -495,13 +519,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                     default: break;
             }
 
-            if (goButtonText!=null) {
-                    gobutton.setFocusable(true);
-                    gobutton.setText(goButtonText);
-            }
-            else {
-                    gobutton.setFocusable(false);
-                    gobutton.setText("");
+            if (gobutton!=null) {
+                if (goButtonText!=null) {
+                        gobutton.setFocusable(true);
+                        gobutton.setText(goButtonText);
+                }
+                else {
+                        gobutton.setFocusable(false);
+                        gobutton.setText("");
+                }
             }
 //
 //            if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
@@ -621,11 +647,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     }
 
     public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
-        if(redrawNeeded) {
-            pp.repaintCountries( gamecontrol.getMapView() );
-        }
-        if (repaintNeeded) {
-            pp.repaint();
+        if (pp!=null) {
+            if(redrawNeeded) {
+                pp.repaintCountries( gamecontrol.getMapView() );
+            }
+            if (repaintNeeded) {
+                pp.repaint();
+            }
         }
     }
 

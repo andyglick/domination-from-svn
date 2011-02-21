@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -328,21 +329,63 @@ public class RiskUIUtil {
 	}
 
 
+        private static Vector getFileList(final String a) {
+
+            Vector namesvector = new Vector();
+
+            if (checkForNoSandbox()) {
+                // get list of maps
+                File file = new File("maps");
+                File [] maps = file.listFiles( new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith("."+a);
+                    }
+                } );
+
+                for (int c=0;c<maps.length;c++) {
+                    namesvector.addElement( maps[c].getName() );
+                }
+
+            }
+            else {
+
+                String names=null;
+                if (applet!=null) {
+                        names = applet.getParameter(a);
+                }
+                else if (webstart!=null) {
+                        if ("map".equals(a)) {
+                                names = maps;
+                        }
+                        else if ("cards".equals(a)) {
+                                names = cards;
+                        }
+                }
+                StringTokenizer tok = new StringTokenizer( names, ",");
+                while (tok.hasMoreTokens()) {
+                        namesvector.add( tok.nextToken() );
+                }
+            }
+
+            return namesvector;
+        }
 
 
         public static String getNewMap(Frame f) {
 
-            MapChooserSwingWrapper ch;
             try {
+                Vector mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
+
                 // try and start new map chooser,
                 // on fail revert to using the old one
-                ch = new MapChooserSwingWrapper();
+                MapChooserSwingWrapper ch = new MapChooserSwingWrapper(mapsList);
+                return ch.getNewMap(f);
             }
             catch (Throwable th) {
                 th.printStackTrace();
                 return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
             }
-            return ch.getNewMap(f);
+            
 
         }
 
@@ -421,33 +464,7 @@ public class RiskUIUtil {
 
 	public static String getNewFileInSandbox(Frame f,String a) {
 
-
-            String names=null;
-
-            if (applet!=null) {
-
-                    names = applet.getParameter(a);
-            }
-            else if (webstart!=null) {
-
-                    if ("map".equals(a)) {
-
-                            names = maps;
-                    }
-                    else if ("cards".equals(a)) {
-
-                            names = cards;
-                    }
-            }
-
-            Vector namesvector = new Vector();
-
-            StringTokenizer tok = new StringTokenizer( names, ",");
-            while (tok.hasMoreTokens()) {
-
-                    namesvector.add( tok.nextToken() );
-
-            }
+            Vector namesvector = getFileList(a);
 
             JComboBox combobox = new JComboBox( namesvector );
 
