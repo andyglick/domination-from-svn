@@ -7,8 +7,10 @@ import net.yura.abba.Events;
 import net.yura.abba.eventex.Event;
 import net.yura.abba.eventex.EventListener;
 import net.yura.abba.persistence.ClientResource;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.HTTPClient;
+import net.yura.mobile.io.NativeUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.logging.Logger;
@@ -34,12 +36,8 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
         if (request.id == Events.SERVER_GET_RESOURCE) {
 
-            ClientResource cr = new ClientResource();
+            publishClientResource(request.url, is, length);
 
-            cr.setResourceId( request.url ); //  same as uid
-            cr.setData( getData(is, (int)length) );
-
-            Events.CLIENT_RESOURCE.publish(request.url, cr, this);
         }
         else {
 
@@ -48,6 +46,21 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
             chooser.gotResult(task);
         }
+    }
+
+    private void publishClientResource(String id,InputStream is,long length) {
+
+        ClientResource cr = new ClientResource();
+
+        cr.setResourceId( id ); //  same as uid
+        try {
+            cr.setData( getData(is, (int)length) );
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        Events.CLIENT_RESOURCE.publish(id, cr, this);
+
     }
 
     void makeRequest(String string) {
@@ -73,14 +86,26 @@ public class MapServerClient extends HTTPClient implements EventListener {
     public void eventReceived(Event arg0, Object arg1, Object arg2) {
         if (arg0 == Events.SERVER_GET_RESOURCE) {
 
-            Request request = new Request();
-            request.url = (String)arg1;
-            request.id = arg0;
+            String url = (String)arg1;
 
-            makeRequest( request );
+            if (url.indexOf(':')<0) {
+                try {
+                    InputStream in = RiskUtil.openMapStream(url);
+                    publishClientResource(url, in, -1);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            else {
+                Request request = new Request();
+                request.url = url;
+                request.id = arg0;
+                makeRequest( request );
+            }
         }
         else {
-            System.out.println("AAAAAAAAA unknown event "+arg0);
+            System.err.println("AAAAAAAAA unknown event "+arg0);
         }
     }
 

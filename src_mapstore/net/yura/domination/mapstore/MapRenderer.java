@@ -40,7 +40,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             String key = map.getPreviewUrl();
 
-            key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
+            //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
             IconCache icon = (IconCache)images.get( key );
             if (icon==null) {

@@ -3,6 +3,7 @@ package net.yura.domination.engine;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 import javax.swing.JDialog;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
@@ -20,7 +21,7 @@ public class MapChooserSwingWrapper implements ActionListener {
     ME4SEPanel wrapper;
     MapChooser chooser;
 
-    public MapChooserSwingWrapper() {
+    public MapChooserSwingWrapper(Vector files) {
 
         wrapper = new ME4SEPanel();
 
@@ -35,7 +36,7 @@ public class MapChooserSwingWrapper implements ActionListener {
         }
         catch(Exception ex) { ex.printStackTrace(); }
 
-        chooser = new MapChooser(this);
+        chooser = new MapChooser(this,files);
 
         wrapper.add( chooser.getRoot() );
     }

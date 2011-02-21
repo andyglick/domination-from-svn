@@ -486,6 +486,19 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <copy todir="${dir.build}/swingme" filtering="true">
                 <fileset dir="${dir.properties}" includes="**/*.properties,**/*.ini"/>
         </copy>
+        
+        <!-- copy maps into assets -->
+        
+		<mkdir dir="assets/maps"/>
+		<copy todir="assets/maps">
+			<fileset dir="game/${game.name}/maps" includes="**/*.*"/>
+		</copy>
+        
+        <!-- copy assets into jar -->
+        
+        <copy todir="${dir.build}/swingme">
+                <fileset dir="${basedir}" includes="assets/**"/>
+        </copy>
 
         <jar destfile="dist/${game.name}4ME.jar" basedir="${dir.build}/swingme"/>
 

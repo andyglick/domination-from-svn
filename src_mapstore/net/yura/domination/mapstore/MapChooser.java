@@ -22,6 +22,7 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.io.NativeUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
@@ -39,9 +40,12 @@ public class MapChooser implements ActionListener {
     AbbaRepository repo;
     MapServerClient client;
 
-    public MapChooser(ActionListener al) {
+    Vector mapfiles;
+
+    public MapChooser(ActionListener al,Vector mapfiles) {
         this.al = al;
-        
+        this.mapfiles = mapfiles;
+
         try {
             loader = XULLoader.load( getClass().getResourceAsStream("/maps.xml") , this, resBundle);
         }
@@ -106,23 +110,18 @@ public class MapChooser implements ActionListener {
         if ("local".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            // get list of maps
-            File file = new File("maps");
-            String [] maps = file.list( new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".map");
-                }
-            } );
 
-            Vector riskmaps = new Vector( maps.length );
-            for (int c=0;c<maps.length;c++) {
+            Vector riskmaps = new Vector( mapfiles.size() );
+            for (int c=0;c<mapfiles.size();c++) {
+                String file = (String)mapfiles.elementAt(c);
+
                 Map map = new Map();
-                map.setMapUrl( maps[c] );
+                map.setMapUrl( file );
                 riskmaps.add( map );
 
-                Hashtable info = RiskUtil.loadInfo(maps[c], false);
+                Hashtable info = RiskUtil.loadInfo(file, false);
                 map.setName( (String)info.get("name") );
-                map.setPreviewUrl( (String)info.get("prv") );
+                map.setPreviewUrl( "preview/"+(String)info.get("prv") );
 
             }
 

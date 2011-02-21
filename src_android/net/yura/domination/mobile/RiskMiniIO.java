@@ -8,6 +8,7 @@ package net.yura.domination.mobile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.RiskIO;
@@ -20,11 +21,12 @@ import net.yura.mobile.io.NativeUtil;
 public class RiskMiniIO implements RiskIO {
 
     public InputStream openStream(String name) throws IOException {
+        // TODO, this is useless as should load a file outside the jar
         return getClass().getResourceAsStream("/"+name);
     }
 
     public InputStream openMapStream(String name) throws IOException {
-        return getClass().getResourceAsStream("/"+name);
+        return NativeUtil.getInputStreamFromFileConnector("file:///android_asset/maps/"+name);
     }
 
     public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
