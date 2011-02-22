@@ -103,7 +103,12 @@ public class MapChooser implements ActionListener {
     }
 
     public void destroy() {
+
+        Events.CLIENT_RESOURCE.unsubscribe(repo);
+        Events.SERVER_GET_RESOURCE.unsubscribe(repo);
+
         repo.destroy();
+        repo=null;
     }
 
     public void actionPerformed(String actionCommand) {
