@@ -8,6 +8,7 @@ import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.plaf.Style;
 
 /**
  * @author Yura Mamyrin
@@ -20,7 +21,7 @@ public class MapRenderer extends DefaultListCellRenderer {
     Hashtable images = new Hashtable();
 
     public MapRenderer() {
-        setVerticalAlignment( Graphics.TOP );
+        setVerticalTextPosition( Graphics.TOP );
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -36,7 +37,8 @@ public class MapRenderer extends DefaultListCellRenderer {
             Map map = (Map)value;
 
             setText( map.getName() );
-            line2 = map.getAuthorName();
+            //line2 = map.getAuthorName();
+            line2 = map.getDescription();
 
             String key = map.getPreviewUrl();
 
@@ -60,6 +62,15 @@ public class MapRenderer extends DefaultListCellRenderer {
 
         if (line2!=null) {
             Icon i = getIcon();
+
+            int state = getCurrentState();
+
+            // if NOT focused or selected
+            if ( (state&Style.FOCUSED)==0 && (state&Style.SELECTED)==0 ) {
+                int color = theme.getForeground(Style.DISABLED);
+                g.setColor( color );
+            }
+
             g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), padding + getFont().getHeight() + gap);
         }
 
@@ -68,7 +79,8 @@ public class MapRenderer extends DefaultListCellRenderer {
     public void workoutMinimumSize() {
         super.workoutMinimumSize();
 
-        if (line2!=null) {
+        // TODO could be done better!
+        if (line2!=null && getIcon()==null ) {
             height = height + getFont().getHeight()+gap;
         }
     }

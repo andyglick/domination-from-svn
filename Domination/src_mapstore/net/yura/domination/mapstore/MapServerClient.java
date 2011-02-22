@@ -10,7 +10,6 @@ import net.yura.abba.persistence.ClientResource;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.HTTPClient;
-import net.yura.mobile.io.NativeUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.logging.Logger;
@@ -88,6 +87,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
             String url = (String)arg1;
 
+            // if this is a local map
             if (url.indexOf(':')<0) {
                 try {
                     InputStream in = RiskUtil.openMapStream(url);

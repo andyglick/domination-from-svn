@@ -120,14 +120,15 @@ public class MapChooser implements ActionListener {
             for (int c=0;c<mapfiles.size();c++) {
                 String file = (String)mapfiles.elementAt(c);
 
+                Hashtable info = RiskUtil.loadInfo(file, false);
+
                 Map map = new Map();
                 map.setMapUrl( file );
-                riskmaps.add( map );
-
-                Hashtable info = RiskUtil.loadInfo(file, false);
                 map.setName( (String)info.get("name") );
                 map.setPreviewUrl( "preview/"+(String)info.get("prv") );
-
+                map.setDescription( (String)info.get("comment") );
+                
+                riskmaps.add( map );
             }
 
             List list = (List)loader.find("ResultList");
