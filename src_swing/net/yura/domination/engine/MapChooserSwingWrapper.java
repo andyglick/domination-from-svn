@@ -25,6 +25,8 @@ public class MapChooserSwingWrapper implements ActionListener {
 
         wrapper = new ME4SEPanel();
 
+        wrapper.getApplicationManager().applet = RiskUIUtil.applet;
+
         try {
             LookAndFeel laf = wrapper.getDesktopPane().getLookAndFeel();
             if (laf instanceof SynthLookAndFeel) {
