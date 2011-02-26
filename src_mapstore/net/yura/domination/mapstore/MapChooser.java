@@ -1,7 +1,5 @@
 package net.yura.domination.mapstore;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -14,7 +12,6 @@ import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.Icon;
-import net.yura.mobile.gui.border.LineBorder;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.List;
@@ -22,7 +19,6 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.io.NativeUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
