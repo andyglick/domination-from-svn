@@ -176,7 +176,7 @@
 
                 <!-- for the map chooser -->
                 <copy todir="${dir.build.game}">
-			<fileset dir="lib" includes="Abba.jar,ToolsME.jar,midletrunner.jar"/>
+			<fileset dir="lib" includes="Abba.jar,ToolsME.jar,midletrunner.jar,m3gbasic.jar"/>
 		</copy>
 
 	</target>

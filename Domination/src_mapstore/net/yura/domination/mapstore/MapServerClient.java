@@ -1,14 +1,17 @@
 package net.yura.domination.mapstore;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
+import javax.microedition.lcdui.Image;
 import net.yura.abba.Events;
 import net.yura.abba.eventex.Event;
 import net.yura.abba.eventex.EventListener;
 import net.yura.abba.persistence.ClientResource;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
+import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
@@ -35,7 +38,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
         if (request.id == Events.SERVER_GET_RESOURCE) {
 
-            publishClientResource(request.url, is, length);
+            publishClientResource(request.url, is, length, false);
 
         }
         else {
@@ -47,13 +50,41 @@ public class MapServerClient extends HTTPClient implements EventListener {
         }
     }
 
-    private void publishClientResource(String id,InputStream is,long length) {
+    private void publishClientResource(String id,InputStream is,long length,boolean reEncode) {
 
         ClientResource cr = new ClientResource();
 
         cr.setResourceId( id ); //  same as uid
         try {
-            cr.setData( getData(is, (int)length) );
+        	byte[] data=null;
+
+            if (reEncode) {
+            	
+            	System.out.println("#################################### am going to re-encode img: "+id);
+
+                try {
+                    Image img = Image.createImage(is);
+                    Image prv = Image.createImage(150, 94);
+                    new Graphics2D(prv.getGraphics()).drawScaledImage(img, 0, 0, prv.getWidth(), prv.getHeight() );
+                    img = null; // drop the large image as soon as we can
+
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    Image.saveImage(prv, bytes);
+                    prv = null; // drop the small image as soon as we can
+
+                    data = bytes.toByteArray();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    // not sure what to do here??
+                }
+
+            }
+            else {
+            	data = getData(is, (int)length);
+            }
+
+            cr.setData( data );
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -91,7 +122,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
             if (url.indexOf(':')<0) {
                 try {
                     InputStream in = RiskUtil.openMapStream(url);
-                    publishClientResource(url, in, -1);
+                    publishClientResource(url, in, -1, !url.startsWith("preview/") );
                 }
                 catch (Exception ex) {
                     ex.printStackTrace();

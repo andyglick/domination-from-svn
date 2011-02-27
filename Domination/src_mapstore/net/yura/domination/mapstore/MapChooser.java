@@ -120,9 +120,28 @@ public class MapChooser implements ActionListener {
 
                 Map map = new Map();
                 map.setMapUrl( file );
-                map.setName( (String)info.get("name") );
-                map.setPreviewUrl( "preview/"+(String)info.get("prv") );
+
+                String name = (String)info.get("name");
+                if (name==null) {
+                    if (file.toLowerCase().endsWith(".map")) {
+                        name = file.substring(0, file.length()-4);
+                    }
+                    else {
+                        name = file;
+                    }
+                }
+                map.setName(name);
                 map.setDescription( (String)info.get("comment") );
+
+                String prv = (String)info.get("prv");
+                if (prv!=null) {
+                    map.setPreviewUrl( "preview/"+prv );
+                }
+                else {
+                    // TODO how do we differentiate between a preview pic and one we will need to reencode
+                    prv = (String)info.get("pic");
+                    map.setPreviewUrl( prv );
+                }
                 
                 riskmaps.add( map );
             }
