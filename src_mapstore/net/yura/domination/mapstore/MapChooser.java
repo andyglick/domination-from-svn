@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Graphics;
 import net.yura.abba.Events;
 import net.yura.abba.persistence.AbbaRepository;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
@@ -194,21 +195,26 @@ public class MapChooser implements ActionListener {
             else {
                 Map map = (Map)value;
 
+                // TODO
+
                 // download the map
 
                 // set return value to this map
 
                 selectedMap = map.getMapUrl();
-
                 al.actionPerformed(null);
             }
         }
-        else if ("cancel".equals(actionCommand)) {
-            al.actionPerformed(null);
-        }
         else if ("defaultMap".equals(actionCommand)) {
 
-            // TODO ???
+            selectedMap = RiskGame.getDefaultMap();
+            al.actionPerformed(null);
+
+        }
+        else if ("cancel".equals(actionCommand)) {
+
+            al.actionPerformed(null);
+
         }
         else if ("doMapSearch".equals(actionCommand)) {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
