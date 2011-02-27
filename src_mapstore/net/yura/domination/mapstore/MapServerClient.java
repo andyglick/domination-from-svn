@@ -30,6 +30,13 @@ public class MapServerClient extends HTTPClient implements EventListener {
         Events.SERVER_GET_RESOURCE.subscribe(this);
     }
 
+    public void kill() {
+        super.kill();
+
+        Events.SERVER_GET_RESOURCE.unsubscribe(this);
+    }
+
+
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
         Logger.warn(ex);
     }

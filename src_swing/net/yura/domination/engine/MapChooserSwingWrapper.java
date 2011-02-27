@@ -8,8 +8,6 @@ import javax.swing.JDialog;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.ActionListener;
-import net.yura.mobile.gui.plaf.LookAndFeel;
-import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.tools.translation.ME4SEPanel;
 
 /**
@@ -26,17 +24,6 @@ public class MapChooserSwingWrapper implements ActionListener {
         wrapper = new ME4SEPanel();
 
         wrapper.getApplicationManager().applet = RiskUIUtil.applet;
-
-        try {
-            LookAndFeel laf = wrapper.getDesktopPane().getLookAndFeel();
-            if (laf instanceof SynthLookAndFeel) {
-                ((SynthLookAndFeel)laf).load( getClass().getResourceAsStream("/tabbar.xml") );
-            }
-            else {
-                System.err.println("LookAndFeel not SynthLookAndFeel "+laf);
-            }
-        }
-        catch(Exception ex) { ex.printStackTrace(); }
 
         chooser = new MapChooser(this,files);
 

@@ -12,6 +12,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
@@ -20,6 +21,8 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.gui.plaf.LookAndFeel;
+import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
@@ -42,6 +45,32 @@ public class MapChooser implements ActionListener {
     public MapChooser(ActionListener al,Vector mapfiles) {
         this.al = al;
         this.mapfiles = mapfiles;
+
+
+        // TODO,
+        // TODO
+        // TODO in android mode we should do this ONLY once!!!
+        // TODO but on me4se it should happen each time!
+        // TODO
+        // TODO
+        try {
+            LookAndFeel laf = DesktopPane.getDesktopPane().getLookAndFeel();
+            if (laf instanceof SynthLookAndFeel) {
+                ((SynthLookAndFeel)laf).load( getClass().getResourceAsStream("/tabbar.xml") );
+            }
+            else {
+                System.err.println("LookAndFeel not SynthLookAndFeel "+laf);
+            }
+        }
+        catch(Exception ex) {
+            // this is a none faital error, we will go on
+            ex.printStackTrace();
+        }
+
+
+
+
+
 
         try {
             loader = XULLoader.load( getClass().getResourceAsStream("/maps.xml") , this, resBundle);
@@ -106,6 +135,10 @@ public class MapChooser implements ActionListener {
 
         repo.destroy();
         repo=null;
+
+        client.kill();
+        client=null;
+
     }
 
     public void actionPerformed(String actionCommand) {
