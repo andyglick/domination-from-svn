@@ -1,5 +1,6 @@
 cd ..
+cd ..
 cd build
 cd game
-java -cp Risk.jar risk.ui.SwingGUI.SwingGUIFrame --lang=%1
+java -cp Risk.jar;Domination.jar net.yura.domination.ui.swinggui.SwingGUIFrame --lang=%1
 pause

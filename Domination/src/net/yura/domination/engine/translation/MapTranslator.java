@@ -97,11 +97,12 @@ public class MapTranslator
 
 		} catch( Exception ioe ) {
 
-		    if ( INstrFile.endsWith("/risk.cards") || INstrFile.endsWith("\\risk.cards") ) { // only use this with the default cards file
+		    if ( INstrFile.equals("risk.cards") ) { // only use this with the default cards file
 			//load default cards translation bundle
 			try {
 				CardsResb = ResourceBundle.getBundle( "net.yura.domination.engine.translation.DefaultCards", TranslationBundle.getBundle().getLocale());
 			} catch( MissingResourceException e) {
+
 				//ok, we don't have one
 				CardsResb = null;
 			}
