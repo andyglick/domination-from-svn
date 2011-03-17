@@ -42,6 +42,15 @@ public class MapChooser implements ActionListener {
 
     Vector mapfiles;
 
+    //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
+    //public static final String MAP_PAGE="maps.dot";
+    //public static final String CATEGORIES_PAGE="categories.dot";
+
+    public static final String SERVER_URL="http://192.168.21.193:8000/";
+    public static final String MAP_PAGE="maps?format=xml";
+    public static final String CATEGORIES_PAGE="categories?format=xml";
+
+
     public MapChooser(ActionListener al,Vector mapfiles) {
         this.al = al;
         this.mapfiles = mapfiles;
@@ -117,7 +126,7 @@ public class MapChooser implements ActionListener {
         list.setDoubleClick(true);
         list.setCellRenderer( new MapRenderer() );
 
-        client = new MapServerClient(this);
+        client = new MapServerClient(this,SERVER_URL);
         client.start();
 
         repo = new AbbaRepository(256 * 1024, 2 * 1024 * 1024, new BinMapAccess(), client);
@@ -187,7 +196,7 @@ public class MapChooser implements ActionListener {
         else if ("catagories".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            client.makeRequest( "categories.dot" );
+            client.makeRequest( CATEGORIES_PAGE );
 
         }
         else if ("top25".equals(actionCommand)) {
@@ -207,15 +216,15 @@ public class MapChooser implements ActionListener {
         }
         else if ("TOP_NEW".equals(actionCommand)) {
             clearList();
-            client.makeRequest( "maps.dot","category","TOP_NEW" );
+            client.makeRequest( MAP_PAGE,"sort","TOP_NEW" );
         }
         else if ("TOP_RATINGS".equals(actionCommand)) {
             clearList();
-            client.makeRequest( "maps.dot","category","TOP_RATINGS" );
+            client.makeRequest( MAP_PAGE,"sort","TOP_RATINGS" );
         }
         else if ("TOP_DOWNLOADS".equals(actionCommand)) {
             clearList();
-            client.makeRequest( "maps.dot","category","TOP_DOWNLOADS" );
+            client.makeRequest( MAP_PAGE,"sort","TOP_DOWNLOADS" );
         }
         else if ("listSelect".equals(actionCommand)) {
             List list = (List)loader.find("ResultList");
@@ -223,7 +232,7 @@ public class MapChooser implements ActionListener {
             if (value instanceof Category) {
                 Category cat = (Category)value;
                 clearList();
-                client.makeRequest( "maps.dot","category",cat.getId() );
+                client.makeRequest( MAP_PAGE,"category",cat.getId() );
             }
             else {
                 Map map = (Map)value;
@@ -253,7 +262,7 @@ public class MapChooser implements ActionListener {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
             clearList();
             if (text != null && !"".equals(text)) {
-                client.makeRequest( "maps.dot","search", text );
+                client.makeRequest( MAP_PAGE,"search", text );
             }
         }
         else {

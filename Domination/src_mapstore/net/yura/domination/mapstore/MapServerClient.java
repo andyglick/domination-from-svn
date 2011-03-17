@@ -12,20 +12,26 @@ import net.yura.abba.persistence.ClientResource;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.logging.Logger;
+import net.yura.mobile.util.Url;
 
 /**
  * @author Yura Mamyrin
  */
 public class MapServerClient extends HTTPClient implements EventListener {
 
-    MapChooser chooser;
+    public static final Object XML_REQUEST_ID = new Object();
 
-    public MapServerClient(MapChooser aThis) {
+    MapChooser chooser;
+    String xmlServerURL;
+
+    public MapServerClient(MapChooser aThis,String url) {
         chooser = aThis;
+        xmlServerURL = url;
 
         Events.SERVER_GET_RESOURCE.subscribe(this);
     }
@@ -38,22 +44,26 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
 
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
+
+        // TODO make this better
+
+        OptionPane.showMessageDialog(null, "error: "+ex.toString(), "Error!", OptionPane.ERROR_MESSAGE);
+
         Logger.warn(ex);
     }
 
     protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {
 
-        if (request.id == Events.SERVER_GET_RESOURCE) {
-
-            publishClientResource(request.url, is, length, false);
-
-        }
-        else {
-
+        if (request.id == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
             chooser.gotResult(task);
+            
+        }
+        else {
+
+            publishClientResource( (String)request.id, is, length, false);
         }
     }
 
@@ -106,13 +116,16 @@ public class MapServerClient extends HTTPClient implements EventListener {
     void makeRequest(String string,String a,String b) {
 
             Request request = new Request();
-            request.url = "http://maps.domination.yura.net/xml/"+string;
+
+            request.url = xmlServerURL+string;
 
             if (a!=null&&b!=null) {
                 Hashtable params = new Hashtable();
                 params.put(a, b);
-                //request.params = params;
+                request.params = params;
             }
+
+            request.id = XML_REQUEST_ID;
 
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby
@@ -120,13 +133,13 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
     }
 
-    public void eventReceived(Event arg0, Object arg1, Object arg2) {
+    public void eventReceived(final Event arg0, final Object arg1, final Object arg2) {
         if (arg0 == Events.SERVER_GET_RESOURCE) {
 
             String url = (String)arg1;
 
             // if this is a local map
-            if (url.indexOf(':')<0) {
+            if (url.indexOf(':')<0 && !url.startsWith("/")) {
                 try {
                     InputStream in = RiskUtil.openMapStream(url);
                     publishClientResource(url, in, -1, !url.startsWith("preview/") );
@@ -137,8 +150,17 @@ public class MapServerClient extends HTTPClient implements EventListener {
             }
             else {
                 Request request = new Request();
+                if (url.startsWith("/")) {
+
+                    Url surl = new Url(xmlServerURL);
+                    surl.setPath(url.substring(1));
+                    surl.setQuery("");
+
+                    url = surl.toString();
+                }
+
                 request.url = url;
-                request.id = arg0;
+                request.id = arg1;
                 makeRequest( request );
             }
         }
