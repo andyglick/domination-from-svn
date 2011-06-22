@@ -4,7 +4,9 @@ package net.yura.domination.tools.mapeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -111,6 +115,37 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 	countriesList.addListSelectionListener(this);
 
+        continentsList.setCellRenderer(new DefaultListCellRenderer() {
+            
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                
+                Continent con = (Continent)value;
+                
+                final Color color = new Color(con.getColor());
+                //setBackground( color );
+                //setForeground( RiskUIUtil.getTextColorFor(color) );
+                
+                setIcon( new Icon() {
+
+                    public void paintIcon(Component c, Graphics g, int x, int y) {
+                        g.setColor(color);
+                        g.fillOval(x, y, getIconWidth(), getIconHeight());
+                    }
+
+                    public int getIconWidth() {
+                        return 10;
+                    }
+
+                    public int getIconHeight() {
+                        return 10;
+                    }
+                } );
+                
+                return c;
+            }
+        });
+        
     }
 
     public void valueChanged(ListSelectionEvent e) {
