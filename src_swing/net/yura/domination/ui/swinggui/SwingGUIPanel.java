@@ -1060,6 +1060,8 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		}
 		else if (a.getActionCommand().equals("undo")) {
 
+                        pp.setC1(PicturePanel.NO_COUNTRY);
+                        pp.setC2(PicturePanel.NO_COUNTRY);
 
 			go("undo");
 

@@ -1028,6 +1028,10 @@ public class GameFrame extends JFrame implements KeyListener {
 	 */
 	private void doUndo()
 	{
+            
+                pp.setC1(PicturePanel.NO_COUNTRY);
+                pp.setC2(PicturePanel.NO_COUNTRY);
+            
 		go("undo");
 	}//private void doUndo()
 
