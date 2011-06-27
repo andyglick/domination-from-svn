@@ -9,6 +9,9 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +37,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
@@ -99,6 +101,22 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	cardsList = new JList( new CardsListModel() );
 	missionsList = new JList( new MissionsListModel() );
 
+        MouseListener clicky = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    //int index = ((JList)e.getSource()).locationToIndex(e.getPoint());
+                    //if (index>=0) {
+                        edit.doClick();
+                    //}
+                }
+            }
+        };
+        
+        countriesList.addMouseListener( clicky );
+	continentsList.addMouseListener( clicky );
+	cardsList.addMouseListener( clicky );
+	missionsList.addMouseListener( clicky );
+        
 	tabs.addTab("Countries",new JScrollPane( countriesList ));
 	tabs.addTab("Continents",new JScrollPane( continentsList ));
 	tabs.addTab("Cards",new JScrollPane( cardsList ));

@@ -12,6 +12,11 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
+1.1.0.2
+
+	continents in map editor show color in list
+        can double click on items in list
+
 Risk 1.1.0.1
 
 	in FlashGUI when u make a new game, it remembers your old player state
