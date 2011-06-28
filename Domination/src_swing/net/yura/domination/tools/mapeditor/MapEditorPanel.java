@@ -321,18 +321,14 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	    }
 
-
-
-	}
-	else {
-
-		super.paintComponent(g);
-
 	}
 
     }
 
+    int badness;
     private void drawCountries(Graphics g) {
+        
+            long time = System.currentTimeMillis();
 
 	    int r=10;
 
@@ -401,14 +397,30 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
                 g.drawRect(x-2,y-2,4,4);
                 g.drawRect(x-3,y-3,6,6);
 
+                // some java platforms have a HUGE bug where XOR is REALLY EEALLY SLOW
+                // so if we find this method is being very slow, we must turn off using XOR
+                boolean doXor = badness < 5;
 
-		g.setXORMode(Color.WHITE);
+                if (doXor) {
+                    g.setXORMode(Color.WHITE);
+                    //((Graphics2D)g).setComposite(AlphaComposite.Xor); // not sure how this works
+                }
+
 		g.setColor(Color.BLACK);
 
 		g.drawString(n.getIdString(), x,y);
 		g.drawString(String.valueOf(i+1), x,y+10);
 
-		g.setPaintMode();
+                if (doXor) {
+                    g.setPaintMode();
+                }
+            }
+            
+            long timeTaken = (System.currentTimeMillis() - time);
+            
+            if (timeTaken > 100) {
+                System.out.println("XORMode Badness: "+timeTaken);
+                badness++;
             }
 
     }
