@@ -16,6 +16,7 @@ CURRENT VERSION:
 
 	continents in map editor show color in list
         can double click on items in list
+	German update - Oliver S.
 
 Risk 1.1.0.1
 

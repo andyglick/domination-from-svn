@@ -31,8 +31,8 @@
         <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
     </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
-        <button action="cancel" mnemonic="112" text="Cancel" type="cancel" weightx="1"/>
-        <button action="defaultMap" text="Default" weightx="1"/>
-        <button action="listSelect" mnemonic="113" text="Select" weightx="1"/>
+        <button action="cancel" mnemonic="112" text="mapchooser.cancel" i18n="true" type="cancel" weightx="1"/>
+        <button action="defaultMap" text="mapchooser.default" i18n="true" weightx="1"/>
+        <button action="listSelect" mnemonic="113" text="mapchooser.select" i18n="true" weightx="1"/>
     </panel>
 </panel>
