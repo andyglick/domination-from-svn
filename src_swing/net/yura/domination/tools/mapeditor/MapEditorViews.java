@@ -998,7 +998,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
     }
 
-    class OptionPaneTextArea extends JScrollPane {
+    static class OptionPaneTextArea extends JScrollPane {
 
 	private JTextArea textarea;
 

@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
@@ -68,6 +69,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	private Risk myrisk;
 	private RiskGame myMap;
+        private String fileName;
+        
 	private MapEditorPanel editPanel;
 	private JToolBar toolbar;
 
@@ -160,6 +163,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		play.addActionListener(this);
 		toolbar.add(play);
 
+		JButton publish = new JButton("Publish");
+		publish.setActionCommand("publish");
+		publish.addActionListener(this);
+		toolbar.add(publish);
+                
 		toolbar.addSeparator();
 
 		loadimagepic = new JButton("Load Image Pic",new javax.swing.ImageIcon(this.getClass().getResource("edit_pic.png")) );
@@ -355,7 +363,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im) {
+	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname) {
 
 		myMap = m;
 
@@ -371,6 +379,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		loadimagemap.setEnabled(true);
 		fixButton.setEnabled(true);
 
+                fileName = fname;
+                
 		revalidate();
 		repaint();
 
@@ -414,7 +424,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				g.fillRect(0,0,PicturePanel.PP_X , PicturePanel.PP_Y);
 				g.dispose();
 
-				setNewMap(map,ipic,imap);
+				setNewMap(map,ipic,imap,null);
 
 			}
 			catch(Exception ex) {
@@ -445,7 +455,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 				map.setMemoryLoad();
 
-				setNewMap(map,ipic,imap);
+				setNewMap(map,ipic,imap,name);
 			}
 
 		    }
@@ -473,6 +483,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_MAP_FILES);
 			fc.setFileFilter(filter);
 
+                        if (fileName!=null) {
+                            fc.setSelectedFile( new File( fileName ) );
+                        }
+                        
 			int returnVal = fc.showSaveDialog( RiskUIUtil.findParentFrame(this) );
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -510,6 +524,60 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			}
 
 		}
+                else if (a.getActionCommand().equals("publish")) {
+
+                    // load big XML file
+                    Vector maps = MapsTools.loadMaps();
+                    
+                    if (fileName==null) {
+                        JOptionPane.showMessageDialog(this, "please save to disk first!");
+                        return;
+                    }
+                    
+                    net.yura.domination.mapstore.Map map2 = MapsTools.findMap(maps,fileName);
+                    
+                    if (map2==null) {
+                        map2 = new net.yura.domination.mapstore.Map();
+                        map2.setMapUrl( fileName );
+                        map2.setDateAdded( String.valueOf( System.currentTimeMillis() ) ); // todays date
+                        maps.add(map2);
+                    }
+
+                    
+                    JTextField authorName = new JTextField( map2.getAuthorName() );
+                    MapEditorViews.OptionPaneTextArea description = new MapEditorViews.OptionPaneTextArea( map2.getDescription() );
+
+                    JTextField mapName = new JTextField( map2.getName() );
+                    JTextField authorEmail = new JTextField( map2.getAuthorId() ); // TODO using email as ID!!!
+                    
+                    
+                    int result = showInputDialog(
+                            new String[] {"Author Name:","Email:","Map Name:","Description:"},
+                            new JComponent[] {authorName,authorEmail,mapName,description},
+                            "edit info"
+                    );
+                    
+                    if (result == JOptionPane.OK_OPTION) {
+                        
+                        // set back info on map object
+                        map2.setAuthorName( authorName.getText() );
+                        map2.setDescription( description.getText() );
+
+                        map2.setName( mapName.getText() );
+                        map2.setAuthorId (authorEmail.getText() ); // TODO using email as ID!!!
+
+                        // add extra info
+                        map2.setMapWidth( String.valueOf( editPanel.getImagePic().getWidth() ) );
+                        map2.setMapHeight( String.valueOf( editPanel.getImagePic().getHeight() ) );
+                        
+                        // generate preview
+                        
+                        // save back to big XML file
+                        MapsTools.saveMaps(maps);
+                        
+                    }
+                    
+                }
 		else if (a.getActionCommand().equals("loadimagepic")) {
 
 			BufferedImage img = getNewImage();
@@ -594,6 +662,42 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 
 	}
+        
+        private int showInputDialog(String[] labels, JComponent[] comps,String title) {
+            
+            if (labels.length != comps.length) {
+                throw new RuntimeException();
+            }
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new java.awt.GridBagLayout());
+            
+            java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+            c.insets = new java.awt.Insets(3, 3, 3, 3);
+            c.fill = java.awt.GridBagConstraints.BOTH;
+            
+            for (int i=0;i<labels.length;i++) {
+            
+                JLabel label = new JLabel(labels[i]);
+                label.setHorizontalAlignment( JLabel.RIGHT );
+                //label.setVerticalAlignment( JLabel.TOP ); // TODO not nice, as the lebels stick to the top too much
+
+		c.gridx = 0; // col
+		c.gridy = i; // row
+		c.gridwidth = 1; // width
+		c.gridheight = 1; // height
+		panel.add(label, c);
+                
+                c.gridx = 1; // col
+		c.gridy = i; // row
+		c.gridwidth = 1; // width
+		c.gridheight = 1; // height
+		panel.add(comps[i], c);
+                
+            }
+
+            return JOptionPane.showConfirmDialog(this, panel,title,JOptionPane.OK_CANCEL_OPTION);
+        }
 
 	private BufferedImage getNewImage() {
 
@@ -628,7 +732,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	private void removeBadMapColors() {
 
-		Map updateMap = new HashMap();
+		java.util.Map updateMap = new HashMap();
 
 		// go though ALL the colors that can be in the image map
 		for (int c=0;c<256;c++) {
