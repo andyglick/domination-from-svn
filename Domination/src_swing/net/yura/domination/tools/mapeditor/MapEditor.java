@@ -719,12 +719,16 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		c.gridy = i; // row
 		c.gridwidth = 1; // width
 		c.gridheight = 1; // height
-		panel.add(label, c);
+		c.weightx = 0;
+                c.weighty = 0;
+                panel.add(label, c);
                 
                 c.gridx = 1; // col
 		c.gridy = i; // row
 		c.gridwidth = 1; // width
 		c.gridheight = 1; // height
+                c.weightx = 1;
+                c.weighty = (comps[i] instanceof JScrollPane)?1:0;
 		panel.add(comps[i], c);
                 
             }
