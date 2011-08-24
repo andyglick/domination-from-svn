@@ -1057,7 +1057,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 			//g.drawImage(s.getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ),0,0,null );
 
-			g.drawImage(s,0,0,203,127,0,0,s.getWidth(),s.getHeight(),null);
+			g.drawImage(s,0,0,tmpimg.getWidth(),tmpimg.getHeight(),0,0,s.getWidth(),s.getHeight(),null);
 
 			//AffineTransform at = AffineTransform.getScaleInstance((double)203/s.getWidth(),(double)127/s.getHeight());
 			//g.drawRenderedImage(s,at);

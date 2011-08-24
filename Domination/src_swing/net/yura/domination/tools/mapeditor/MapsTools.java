@@ -12,6 +12,7 @@ import java.util.Vector;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
+import net.yura.mobile.io.ServiceLink.Task;
 
 /**
  *
@@ -32,8 +33,10 @@ public class MapsTools {
 
                 XMLMapAccess access = new XMLMapAccess();
                 
+                Task task = (Task)access.load( new FileReader(xml) ); // TODO should we need to say its UTF-8 ???
+                
                 // load big XML file
-                Vector maps = (Vector)access.load( new FileReader(xml) ); // TODO should we need to say its UTF-8 ???
+                Vector maps = (Vector)task.getObject();
         
                 return maps;
             }
@@ -52,18 +55,30 @@ public class MapsTools {
     public static void saveMaps(Vector maps) {
         
         try {
+            
+            Task task = new Task("categories", maps);
         
             File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
             File xml = new File(mapsDir,MAPS_XML_FILE);
 
             XMLMapAccess access = new XMLMapAccess();
             
-            access.save( new FileOutputStream(xml) , maps);
+            access.save( new FileOutputStream(xml) , task);
             
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+
+    }
+    
+    public static void saveMapsHTML(Vector maps) {
+        
+        
+        
+        String a = "<div class='thumbnail'><a href=\"maps/haiti.zip\">"
+                + "<img src=\"images/maps/haiti.jpg\" border=\"1\" width=\"150\" height=\"94\"><br>"
+                + "29. Haiti Map</a><br> by Louis-Pierre Charbonneau </div>";
 
     }
 
@@ -82,5 +97,16 @@ public class MapsTools {
         }
     
         return null;
+    }
+
+    static String makePreviewName(String file) {
+        
+        if (file.toLowerCase().endsWith(".map")) {
+            return file.substring(0, file.length()-4);
+        }
+        else {
+            return file;
+        }
+        
     }
 }

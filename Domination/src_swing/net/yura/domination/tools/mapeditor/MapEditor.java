@@ -537,9 +537,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     net.yura.domination.mapstore.Map map2 = MapsTools.findMap(maps,fileName);
                     
                     if (map2==null) {
-                        map2 = new net.yura.domination.mapstore.Map();
-                        map2.setMapUrl( fileName );
+                        //map2 = new net.yura.domination.mapstore.Map();
+                        //map2.setMapUrl( fileName );
+                        
+                        map2 = net.yura.domination.mapstore.MapChooser.createMap(fileName);
+                        
                         map2.setDateAdded( String.valueOf( System.currentTimeMillis() ) ); // todays date
+                        
                         maps.add(map2);
                     }
 
@@ -570,7 +574,36 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         map2.setMapWidth( String.valueOf( editPanel.getImagePic().getWidth() ) );
                         map2.setMapHeight( String.valueOf( editPanel.getImagePic().getHeight() ) );
                         
-                        // generate preview
+                        // check if we already have a preview
+                        if (!map2.getPreviewUrl().startsWith("preview/")) {
+
+                            String jpg = "jpg";
+                            
+                            // we do NOT have a preview, we need to generate one
+                            String prv = "preview/"+MapsTools.makePreviewName(fileName)+"."+jpg;
+                            
+                            try {
+
+                                File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+                                
+                                BufferedImage fullimg = ImageIO.read( new File(mapsDir, map2.getPreviewUrl() ) );
+                                BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
+
+                                Graphics g = prvimg.getGraphics();
+                                g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
+                                g.dispose();
+
+                                boolean done = ImageIO.write( prvimg , jpg , new File(mapsDir,prv) );
+                                
+                                if (!done) throw new RuntimeException("not done");
+
+                                map2.setPreviewUrl(prv);
+                            }
+                            catch(Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+                        }
                         
                         // save back to big XML file
                         MapsTools.saveMaps(maps);
