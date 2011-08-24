@@ -46,9 +46,14 @@ public class MapChooser implements ActionListener {
     //public static final String MAP_PAGE="maps.dot";
     //public static final String CATEGORIES_PAGE="categories.dot";
 
-    public static final String SERVER_URL="http://192.168.21.193:8000/";
-    public static final String MAP_PAGE="maps?format=xml";
-    public static final String CATEGORIES_PAGE="categories?format=xml";
+    //public static final String SERVER_URL="http://192.168.21.193:8000/";
+    //public static final String MAP_PAGE="maps?format=xml";
+    //public static final String CATEGORIES_PAGE="categories?format=xml";
+
+    
+    public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
+    public static final String MAP_PAGE="";
+    public static final String CATEGORIES_PAGE="maps.xml";
 
 
     public MapChooser(ActionListener al,Vector mapfiles) {
@@ -89,37 +94,39 @@ public class MapChooser implements ActionListener {
         }
 
         Panel TabBar = (Panel)loader.find("TabBar");
-        Vector buttons = TabBar.getComponents();
+        
+        if (TabBar!=null) {
+        
+            Vector buttons = TabBar.getComponents();
 
+            Icon on,off;
 
+            try {
+                on = new Icon("/bar_on.png");
+                off = new Icon("/bar_off.png");
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
 
-        Icon on,off;
+            int w = off.getIconWidth() / buttons.size();
+            for (int c=0;c<buttons.size();c++) {
+                RadioButton b = (RadioButton)buttons.elementAt(c);
+                Icon oni = on.getSubimage(c*w, 0, w, off.getIconHeight());
+                Icon offi = off.getSubimage(c*w, 0, w, off.getIconHeight());
 
-        try {
-            on = new Icon("/bar_on.png");
-            off = new Icon("/bar_off.png");
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+                b.setIcon(offi);
+                b.setSelectedIcon(oni);
+                b.setRolloverIcon(offi);
+                b.setRolloverSelectedIcon(oni);
 
-        int w = off.getIconWidth() / buttons.size();
-        for (int c=0;c<buttons.size();c++) {
-            RadioButton b = (RadioButton)buttons.elementAt(c);
-            Icon oni = on.getSubimage(c*w, 0, w, off.getIconHeight());
-            Icon offi = off.getSubimage(c*w, 0, w, off.getIconHeight());
+                b.setToolTipText( b.getText() );
 
-            b.setIcon(offi);
-            b.setSelectedIcon(oni);
-            b.setRolloverIcon(offi);
-            b.setRolloverSelectedIcon(oni);
+                b.setText("");
+                b.setHorizontalAlignment(Graphics.HCENTER);
+                b.setMargin(0);
 
-            b.setToolTipText( b.getText() );
-
-            b.setText("");
-            b.setHorizontalAlignment(Graphics.HCENTER);
-            b.setMargin(0);
-
+            }
         }
 
         List list = (List)loader.find("ResultList");
@@ -150,15 +157,8 @@ public class MapChooser implements ActionListener {
 
     }
 
-    public void actionPerformed(String actionCommand) {
-        if ("local".equals(actionCommand)) {
-            mainCatList(actionCommand);
-
-
-            Vector riskmaps = new Vector( mapfiles.size() );
-            for (int c=0;c<mapfiles.size();c++) {
-                String file = (String)mapfiles.elementAt(c);
-
+    public static Map createMap(String file) {
+        
                 Hashtable info = RiskUtil.loadInfo(file, false);
 
                 Map map = new Map();
@@ -185,6 +185,21 @@ public class MapChooser implements ActionListener {
                     prv = (String)info.get("pic");
                     map.setPreviewUrl( prv );
                 }
+        
+                return map;
+        
+    }
+    
+    public void actionPerformed(String actionCommand) {
+        if ("local".equals(actionCommand)) {
+            mainCatList(actionCommand);
+
+            Vector riskmaps = new Vector( mapfiles.size() );
+            for (int c=0;c<mapfiles.size();c++) {
+                String file = (String)mapfiles.elementAt(c);
+
+                // we create a Map object for every localy stored map
+                Map map = createMap(file);
                 
                 riskmaps.add( map );
             }

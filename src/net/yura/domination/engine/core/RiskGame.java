@@ -1722,6 +1722,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	}
 
+        /**
+         * we need to call this if we do not want to reload data from disk when we start a game
+         */
 	public void setMemoryLoad() {
 
 		mapfile = null;
