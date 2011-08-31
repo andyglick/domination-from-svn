@@ -204,8 +204,7 @@ public class MapChooser implements ActionListener {
                 riskmaps.add( map );
             }
 
-            List list = (List)loader.find("ResultList");
-            list.setListData( riskmaps );
+            setListData( null, riskmaps );
 
         }
         else if ("catagories".equals(actionCommand)) {
@@ -299,8 +298,7 @@ public class MapChooser implements ActionListener {
     }
 
     void clearList() {
-        List list = (List)loader.find("ResultList");
-        list.setListData( new Vector(0) ); // todo, use a constant?
+        setListData( null, new Vector(0) ); // todo, use a constant?
 
         getRoot().revalidate();
         getRoot().repaint();
@@ -315,16 +313,16 @@ public class MapChooser implements ActionListener {
         return selectedMap;
     }
 
-    void gotResult(Task task) {
+    void gotResult(String url,Task task) {
         String method = task.getMethod();
         System.out.println("got "+task);
 
-        List list = (List)loader.find("ResultList");
+        
 
         Object param = task.getObject();
         if ("categories".equals(method)) {
             if (param instanceof Vector) {
-                list.setListData( (Vector)param );
+                setListData( url, (Vector)param );
             }
         }
         else if ("maps".equals(method)) {
@@ -338,12 +336,30 @@ public class MapChooser implements ActionListener {
                 map.get("offset");
                 map.get("total");
 
-                list.setListData( (Vector)map.get("maps") );
+                setListData( url, (Vector)map.get("maps") );
             }
         }
 
         getRoot().revalidate();
         getRoot().repaint();
+    }
+    
+    
+    private void setListData(String context,Vector items) {
+        
+        if (context!=null) {
+            int i = context.lastIndexOf('/');
+            if (i>0) {
+                context = context.substring(0, i+1);
+            }
+        }
+        
+        List list = (List)loader.find("ResultList");
+        
+        ((MapRenderer)list.getCellRenderer()).setContext(context);
+        
+        list.setListData( items );
+        
     }
 
     private void activateGroup(String string) {
