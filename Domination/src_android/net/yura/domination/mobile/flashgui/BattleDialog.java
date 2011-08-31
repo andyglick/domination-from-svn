@@ -60,7 +60,7 @@ public class BattleDialog extends Frame {
     boolean ani,canRetreat;
     int nod,max;
     //@Override
-    public void animate() throws InterruptedException {
+    public void run() throws InterruptedException {
 
         while(ani) {
             repaint();
