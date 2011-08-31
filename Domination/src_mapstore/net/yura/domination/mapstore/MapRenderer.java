@@ -20,8 +20,14 @@ public class MapRenderer extends DefaultListCellRenderer {
     ImageManager manager = new ImageManager();
     Hashtable images = new Hashtable();
 
+    private String context;
+    
     public MapRenderer() {
         setVerticalTextPosition( Graphics.TOP );
+    }
+    
+    public void setContext(String c) {
+        context = c;
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -41,6 +47,10 @@ public class MapRenderer extends DefaultListCellRenderer {
             line2 = map.getDescription();
 
             String key = map.getPreviewUrl();
+
+            if (key.indexOf(':')<0 && context!=null) {
+                key = context + key;
+            }
 
             //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 

@@ -58,7 +58,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
-            chooser.gotResult(task);
+            chooser.gotResult(request.url,task);
             
         }
         else {
