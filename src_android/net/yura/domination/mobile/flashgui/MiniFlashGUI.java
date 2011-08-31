@@ -30,7 +30,7 @@ import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.io.NativeUtil;
+import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -127,7 +127,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
 
 
-                Enumeration en = NativeUtil.getDirectoryFiles("file:///android_asset/maps/");
+                Enumeration en = FileUtil.getDirectoryFiles("file:///android_asset/maps/");
 
                 Vector result = new Vector();
                 while (en.hasMoreElements()) {

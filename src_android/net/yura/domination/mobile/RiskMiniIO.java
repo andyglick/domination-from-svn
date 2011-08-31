@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.RiskIO;
 import net.yura.mobile.gui.Midlet;
-import net.yura.mobile.io.NativeUtil;
+import net.yura.mobile.io.FileUtil;
 
 /**
  * @author Administrator
@@ -26,7 +26,7 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public InputStream openMapStream(String name) throws IOException {
-        return NativeUtil.getInputStreamFromFileConnector("file:///android_asset/maps/"+name);
+        return FileUtil.getInputStreamFromFileConnector("file:///android_asset/maps/"+name);
     }
 
     public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
@@ -46,7 +46,7 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public InputStream loadGameFile(String file) throws Exception {
-        return NativeUtil.getInputStreamFromFileConnector(file);
+        return FileUtil.getInputStreamFromFileConnector(file);
     }
 
 }

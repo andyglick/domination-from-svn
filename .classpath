@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="src_JSR234_Advanced_Multimedia"/>
 	<classpathentry kind="src" path="res_mapchooser"/>
 	<classpathentry kind="src" path="res_android"/>
 	<classpathentry kind="src" path="src_SwingME_plaf"/>
@@ -18,6 +19,6 @@
 	<classpathentry kind="src" path="src_JSR184_3D"/>
 	<classpathentry kind="src" path="src_JSR120_SMS"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="E:/My_World/6_Yura/linuxhome/UtilME/lib/kxml2.jar"/>
+	<classpathentry kind="lib" path="I:/6_Yura/linuxhome/UtilME/lib/xmlpull_1_1_3_1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
