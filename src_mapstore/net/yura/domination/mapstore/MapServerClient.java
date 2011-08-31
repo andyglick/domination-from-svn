@@ -165,7 +165,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
                 }
             }
             else {
-                Request request = new Request();
+
                 if (url.startsWith("/")) {
 
                     Url surl = new Url(xmlServerURL);
@@ -175,9 +175,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
                     url = surl.toString();
                 }
 
-                request.url = url;
-                request.id = arg1;
-                makeRequest( request );
+                makeRequest( url,null,arg1 );
             }
         }
         else {
