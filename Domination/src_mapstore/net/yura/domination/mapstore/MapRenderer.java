@@ -29,6 +29,10 @@ public class MapRenderer extends DefaultListCellRenderer {
     public void setContext(String c) {
         context = c;
     }
+    
+    public String getContext() {
+        return context;
+    }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
