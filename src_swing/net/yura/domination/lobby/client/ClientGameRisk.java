@@ -3,6 +3,7 @@ package net.yura.domination.lobby.client;
 import java.awt.Frame;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.io.OutputStream;
 import javax.swing.border.EmptyBorder;
 import java.util.HashMap;
 import javax.swing.JDialog;
@@ -63,6 +64,9 @@ public class ClientGameRisk extends TurnBasedAdapter {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                     public InputStream loadGameFile(String file) throws Exception {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                    public OutputStream saveMapFile(String fileName) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
             };
