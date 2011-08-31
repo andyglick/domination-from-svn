@@ -251,13 +251,47 @@ public class MapChooser implements ActionListener {
             else {
                 Map map = (Map)value;
 
-                // TODO
+                String mapUrl = map.mapUrl;
 
-                // download the map
 
-                // set return value to this map
+                int i = mapUrl.lastIndexOf('/');
+                String fileUID = (i>=0)?mapUrl.substring(i+1):mapUrl;
 
-                selectedMap = map.getMapUrl();
+                String context = ((MapRenderer)list.getCellRenderer()).getContext();
+                
+                if (context!=null) { // we have a context, this means this is a remote map
+
+                    java.io.InputStream file=null;
+                    
+                    try {
+                        file = RiskUtil.openMapStream(fileUID);
+                    }
+                    catch (Exception ex) { } // not found?
+                    finally{ net.yura.mobile.io.FileUtil.close(file); }
+                
+                    if (file!=null) { // we already have this file
+
+                        // TODO if this is happening because of a update, we need to compare versions
+
+                    }
+                    else {
+                        
+                        if ( mapUrl.indexOf(':')<0 ) { // we do not have a full URL, so we pre-pend the context
+                            mapUrl = context + mapUrl;
+                        }
+
+
+
+                        // TODO download map, and all the other parts of this map
+
+
+
+                        client.makeRequest( mapUrl );
+                        
+                    }
+                }
+
+                selectedMap = fileUID;
                 al.actionPerformed(null);
             }
         }
@@ -349,7 +383,7 @@ public class MapChooser implements ActionListener {
         
         if (context!=null) {
             int i = context.lastIndexOf('/');
-            if (i>0) {
+            if (i> "http://.".length() ) {
                 context = context.substring(0, i+1);
             }
         }

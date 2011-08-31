@@ -13,6 +13,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.OptionPane;
+import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
@@ -67,6 +68,11 @@ public class MapServerClient extends HTTPClient implements EventListener {
         }
     }
 
+    /**
+     * This is used for thumbnails of the maps previews
+     * these images are cached on the client
+     * the image is also re-encoded into a small image if needed
+     */
     private void publishClientResource(String id,InputStream is,long length,boolean reEncode) {
 
         ClientResource cr = new ClientResource();
@@ -86,7 +92,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
                     img = null; // drop the large image as soon as we can
 
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    Image.saveImage(prv, bytes);
+                    net.yura.mobile.util.ImageUtil.saveImage(prv, bytes);
                     prv = null; // drop the small image as soon as we can
 
                     data = bytes.toByteArray();
@@ -98,7 +104,7 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
             }
             else {
-            	data = getData(is, (int)length);
+            	data = FileUtil.getData(is, (int)length);
             }
 
             cr.setData( data );

@@ -4,7 +4,7 @@ import net.yura.domination.mapstore.Map;
 import net.yura.mobile.io.ServiceLink.Task;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.kxml2.io.KXmlParser;
+import net.yura.mobile.io.kxml2.KXmlParser;
 import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import net.yura.mobile.io.XMLUtil;

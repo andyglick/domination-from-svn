@@ -142,6 +142,16 @@ NOT GOING TO DO OR NOT UNDER MY CONTROLL:
 
 
 
+Some ideas for Domination:
+
+    * Checkbox to disable popup-window if others dices are rolling
+    * Checkbox to enable a popup-window if its your turn
+    * List of online servers / optional listing of the own server at an well-known online-list
+
+
+
+
+
 
 - beside a circle brush - it would be nice to have the alternative to draw lines also, because is easier then to follow borders.
 - draw shape?!
