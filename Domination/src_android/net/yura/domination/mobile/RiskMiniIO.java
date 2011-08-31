@@ -7,6 +7,7 @@ package net.yura.domination.mobile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -41,12 +42,16 @@ public class RiskMiniIO implements RiskIO {
         Midlet.openURL(doc.toString());
     }
 
+    public InputStream loadGameFile(String file) throws Exception {
+        return FileUtil.getInputStreamFromFileConnector(file);
+    }
+
     public void saveGameFile(String name, Object obj) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public InputStream loadGameFile(String file) throws Exception {
-        return FileUtil.getInputStreamFromFileConnector(file);
+    public OutputStream saveMapFile(String fileName) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

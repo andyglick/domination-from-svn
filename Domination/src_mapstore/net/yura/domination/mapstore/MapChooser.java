@@ -1,5 +1,8 @@
 package net.yura.domination.mapstore;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -23,6 +26,7 @@ import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.LookAndFeel;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
+import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
@@ -190,6 +194,11 @@ public class MapChooser implements ActionListener {
         
     }
     
+    private String getFileUID(String mapUrl) {
+            int i = mapUrl.lastIndexOf('/');
+            return (i>=0)?mapUrl.substring(i+1):mapUrl;
+    }
+    
     public void actionPerformed(String actionCommand) {
         if ("local".equals(actionCommand)) {
             mainCatList(actionCommand);
@@ -210,7 +219,7 @@ public class MapChooser implements ActionListener {
         else if ("catagories".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            client.makeRequest( CATEGORIES_PAGE );
+            client.makeRequestXML( CATEGORIES_PAGE );
 
         }
         else if ("top25".equals(actionCommand)) {
@@ -230,15 +239,15 @@ public class MapChooser implements ActionListener {
         }
         else if ("TOP_NEW".equals(actionCommand)) {
             clearList();
-            client.makeRequest( MAP_PAGE,"sort","TOP_NEW" );
+            client.makeRequestXML( MAP_PAGE,"sort","TOP_NEW" );
         }
         else if ("TOP_RATINGS".equals(actionCommand)) {
             clearList();
-            client.makeRequest( MAP_PAGE,"sort","TOP_RATINGS" );
+            client.makeRequestXML( MAP_PAGE,"sort","TOP_RATINGS" );
         }
         else if ("TOP_DOWNLOADS".equals(actionCommand)) {
             clearList();
-            client.makeRequest( MAP_PAGE,"sort","TOP_DOWNLOADS" );
+            client.makeRequestXML( MAP_PAGE,"sort","TOP_DOWNLOADS" );
         }
         else if ("listSelect".equals(actionCommand)) {
             List list = (List)loader.find("ResultList");
@@ -246,18 +255,18 @@ public class MapChooser implements ActionListener {
             if (value instanceof Category) {
                 Category cat = (Category)value;
                 clearList();
-                client.makeRequest( MAP_PAGE,"category",cat.getId() );
+                client.makeRequestXML( MAP_PAGE,"category",cat.getId() );
             }
             else {
                 Map map = (Map)value;
 
                 String mapUrl = map.mapUrl;
 
-
-                int i = mapUrl.lastIndexOf('/');
-                String fileUID = (i>=0)?mapUrl.substring(i+1):mapUrl;
+                String fileUID = getFileUID(mapUrl);
 
                 String context = ((MapRenderer)list.getCellRenderer()).getContext();
+                
+                selectedMap = fileUID;
                 
                 if (context!=null) { // we have a context, this means this is a remote map
 
@@ -273,6 +282,8 @@ public class MapChooser implements ActionListener {
 
                         // TODO if this is happening because of a update, we need to compare versions
 
+                        // so we already have this map, just fire event to load it
+                        al.actionPerformed(null);
                     }
                     else {
                         
@@ -280,19 +291,13 @@ public class MapChooser implements ActionListener {
                             mapUrl = context + mapUrl;
                         }
 
-
-
-                        // TODO download map, and all the other parts of this map
-
-
-
-                        client.makeRequest( mapUrl );
+                        client.makeRequest( mapUrl, null, MapServerClient.MAP_REQUEST_ID );
                         
                     }
                 }
-
-                selectedMap = fileUID;
-                al.actionPerformed(null);
+                else { // this is a local map, we will fire the event right away that we got it
+                    al.actionPerformed(null);
+                }
             }
         }
         else if ("defaultMap".equals(actionCommand)) {
@@ -310,7 +315,7 @@ public class MapChooser implements ActionListener {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
             clearList();
             if (text != null && !"".equals(text)) {
-                client.makeRequest( MAP_PAGE,"search", text );
+                client.makeRequestXML( MAP_PAGE,"search", text );
             }
         }
         else {
@@ -347,7 +352,7 @@ public class MapChooser implements ActionListener {
         return selectedMap;
     }
 
-    void gotResult(String url,Task task) {
+    void gotResultXML(String url,Task task) {
         String method = task.getMethod();
         System.out.println("got "+task);
 
@@ -378,6 +383,50 @@ public class MapChooser implements ActionListener {
         getRoot().repaint();
     }
     
+    void gotResultMap(String url,java.io.InputStream is) {
+        
+        if (url.endsWith(".map")) {
+            String fileUID = getFileUID(url);
+            
+            OutputStream out = null;
+            try {
+                out = RiskUtil.streamOpener.saveMapFile(fileUID);
+                
+                saveFile(is, out);
+                
+                Hashtable info = RiskUtil.loadInfo(fileUID, false);
+                
+                System.out.println("################################### "+info);
+                
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                // TODO what to do here?
+                // TODO what if disk is full??
+            }
+            finally {
+                FileUtil.close(is);
+                FileUtil.close(out);
+            }
+            
+        }
+        
+        
+        
+        
+    }
+    
+    private static void saveFile(InputStream is,OutputStream out) throws IOException {
+
+        int COPY_BLOCK_SIZE=1024;
+
+        byte[] data = new byte[COPY_BLOCK_SIZE];
+        int i = 0;
+        while( ( i = is.read(data,0,COPY_BLOCK_SIZE ) ) != -1  ) {
+            out.write(data,0,i);
+        }
+
+    }
     
     private void setListData(String context,Vector items) {
         

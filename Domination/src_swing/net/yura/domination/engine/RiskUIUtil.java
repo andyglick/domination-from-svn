@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.URI;
@@ -78,6 +79,9 @@ public class RiskUIUtil {
                 }
                 public InputStream loadGameFile(String file) throws Exception {
                     return getLoadFileInputStream(file);
+                }
+                public OutputStream saveMapFile(String fileName) throws Exception {
+                    return new FileOutputStream( new File(getFile(mapsdir),fileName) );
                 }
             };
         }
@@ -400,46 +404,7 @@ public class RiskUIUtil {
 
         public static String getNewFileNoSandbox(Frame f,String a) {
 
-            String dir = mapsdir.toString();
-            File md;
-
-            try {
-
-                    md = new File(new URI(dir));
-
-            }
-            catch(IllegalArgumentException e) {
-
-                    // this is an attempt at a crazy workaround that should not really work
-                    if ( dir.startsWith("file://") ) {
-
-                            md = new File( dir.substring(5,dir.length()).replaceAll("\\%20"," ") );
-                    }
-                    else {
-
-                            System.err.println("this should never happen! bad file: "+dir);
-
-                            md = new File( "maps/" );
-
-                    }
-
-                    // There is a bug in java 1.4/1.5 where it can not convert a URL like
-                    // file://Claire/BIG_DISK/Program Files/Risk/maps/
-                    // into a File Object so we will just try and make a simple file
-                    // object, and hope it works
-
-                    // java.lang.IllegalArgumentException: URI has an authority component
-                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5086147
-                    // This has been fixed in java 1.6
-
-                    // also can not have %20 in the name on 1.4/1.5, needs to be " ".
-
-            }
-            catch(Exception e) {
-
-                    throw new RuntimeException("Cant create file: "+ dir, e);
-
-            }
+            File md = getFile( mapsdir );
 
             JFileChooser fc = new JFileChooser( md );
             RiskFileFilter filter = new RiskFileFilter(a);
@@ -869,6 +834,46 @@ public class RiskUIUtil {
 
 	}
 
+        private static File getFile(URL url) {
+
+            String dir = url.toString();
+            File md;
+
+            try {
+                    md = new File(new URI(dir));
+            }
+            catch(IllegalArgumentException e) {
+
+                    // this is an attempt at a crazy workaround that should not really work
+                    if ( dir.startsWith("file://") ) {
+                            md = new File( dir.substring(5,dir.length()).replaceAll("\\%20"," ") );
+                    }
+                    else {
+                            System.err.println("this should never happen! bad file: "+dir);
+                            md = new File( "maps/" );
+                    }
+
+                    // There is a bug in java 1.4/1.5 where it can not convert a URL like
+                    // file://Claire/BIG_DISK/Program Files/Risk/maps/
+                    // into a File Object so we will just try and make a simple file
+                    // object, and hope it works
+
+                    // java.lang.IllegalArgumentException: URI has an authority component
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5086147
+                    // This has been fixed in java 1.6
+
+                    // also can not have %20 in the name on 1.4/1.5, needs to be " ".
+
+            }
+            catch(Exception e) {
+                    throw new RuntimeException("Cant create file: "+ dir, e);
+            }
+            
+            return md;
+            
+        }
+        
+        
 	private static void setupLookAndFeel() {
 
 		// set up system Look&Feel

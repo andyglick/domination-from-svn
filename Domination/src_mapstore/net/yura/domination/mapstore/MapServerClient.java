@@ -26,6 +26,7 @@ import net.yura.mobile.util.Url;
 public class MapServerClient extends HTTPClient implements EventListener {
 
     public static final Object XML_REQUEST_ID = new Object();
+    public static final Object MAP_REQUEST_ID = new Object();
 
     MapChooser chooser;
     String xmlServerURL;
@@ -48,9 +49,11 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
         // TODO make this better
 
-        OptionPane.showMessageDialog(null, "error: "+ex.toString(), "Error!", OptionPane.ERROR_MESSAGE);
+        OptionPane.showMessageDialog(null, "error: "+responseCode+" "+ex+" "+request+"\n\n"+headers, "Error!", OptionPane.ERROR_MESSAGE);
 
-        Logger.warn(ex);
+        if (ex!=null) {
+            Logger.warn(ex);
+        }
     }
 
     protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {
@@ -59,7 +62,12 @@ public class MapServerClient extends HTTPClient implements EventListener {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
-            chooser.gotResult(request.url,task);
+            chooser.gotResultXML(request.url,task);
+            
+        }
+        else if (request.id == MAP_REQUEST_ID) {
+            
+            chooser.gotResultMap(request.url,is);
             
         }
         else {
@@ -116,27 +124,29 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
     }
 
-    void makeRequest(String string) {
-            makeRequest(string,null,null);
+    void makeRequestXML(String string) {
+            makeRequestXML(string,null,null);
     }
-    void makeRequest(String string,String a,String b) {
-
+    void makeRequestXML(String string,String a,String b) {
+        Hashtable params = null;
+        if (a!=null&&b!=null) {
+            params = new Hashtable();
+            params.put(a, b);
+        }
+        makeRequest( xmlServerURL+string , params, XML_REQUEST_ID);
+    }
+    
+    void makeRequest(String url,Hashtable params,Object type) {
+        
             Request request = new Request();
-
-            request.url = xmlServerURL+string;
-
-            if (a!=null&&b!=null) {
-                Hashtable params = new Hashtable();
-                params.put(a, b);
-                request.params = params;
-            }
-
-            request.id = XML_REQUEST_ID;
+            request.url = url;
+            request.params = params;
+            request.id = type;
 
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby
             makeRequest(request);
-
+        
     }
 
     public void eventReceived(final Event arg0, final Object arg1, final Object arg2) {
