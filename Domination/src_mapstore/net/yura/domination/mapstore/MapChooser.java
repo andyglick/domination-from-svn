@@ -20,6 +20,7 @@ import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.List;
+import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.RadioButton;
 import net.yura.mobile.gui.components.TextComponent;
@@ -135,7 +136,7 @@ public class MapChooser implements ActionListener {
 
         List list = (List)loader.find("ResultList");
         list.setDoubleClick(true);
-        list.setCellRenderer( new MapRenderer() );
+        list.setCellRenderer( new MapRenderer(this) );
 
         client = new MapServerClient(this,SERVER_URL);
         client.start();
@@ -194,7 +195,7 @@ public class MapChooser implements ActionListener {
         
     }
     
-    private String getFileUID(String mapUrl) {
+    public static String getFileUID(String mapUrl) {
             int i = mapUrl.lastIndexOf('/');
             return (i>=0)?mapUrl.substring(i+1):mapUrl;
     }
@@ -270,20 +271,24 @@ public class MapChooser implements ActionListener {
                 
                 if (context!=null) { // we have a context, this means this is a remote map
 
-                    java.io.InputStream file=null;
-                    
-                    try {
-                        file = RiskUtil.openMapStream(fileUID);
-                    }
-                    catch (Exception ex) { } // not found?
-                    finally{ net.yura.mobile.io.FileUtil.close(file); }
+                    //java.io.InputStream file=null;
+                    //try {
+                    //    file = RiskUtil.openMapStream(fileUID);
+                    //}
+                    //catch (Exception ex) { } // not found?
+                    //finally{ net.yura.mobile.io.FileUtil.close(file); }
                 
-                    if (file!=null) { // we already have this file
+                    //if (file!=null) { // we already have this file
+                    if ( mapfiles.contains(fileUID) ) {
 
                         // TODO if this is happening because of a update, we need to compare versions
 
                         // so we already have this map, just fire event to load it
                         al.actionPerformed(null);
+                    }
+                    else if (isDownloading(fileUID)) {
+                        
+                        OptionPane.showMessageDialog(null, "already downloading", "message", 0);
                     }
                     else {
                         
@@ -291,8 +296,9 @@ public class MapChooser implements ActionListener {
                             mapUrl = context + mapUrl;
                         }
 
-                        client.makeRequest( mapUrl, null, MapServerClient.MAP_REQUEST_ID );
+                        downloadMap( mapUrl );
                         
+                        list.repaint();
                     }
                 }
                 else { // this is a local map, we will fire the event right away that we got it
@@ -379,43 +385,51 @@ public class MapChooser implements ActionListener {
             }
         }
 
-        getRoot().revalidate();
-        getRoot().repaint();
+
     }
     
-    void gotResultMap(String url,java.io.InputStream is) {
+    Vector downloads = new Vector();
+    private void downloadMap(String fullMapUrl) {
         
-        if (url.endsWith(".map")) {
-            String fileUID = getFileUID(url);
-            
-            OutputStream out = null;
-            try {
-                out = RiskUtil.streamOpener.saveMapFile(fileUID);
-                
-                saveFile(is, out);
-                
-                Hashtable info = RiskUtil.loadInfo(fileUID, false);
-                
-                System.out.println("################################### "+info);
-                
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                // TODO what to do here?
-                // TODO what if disk is full??
-            }
-            finally {
-                FileUtil.close(is);
-                FileUtil.close(out);
-            }
-            
+        MapDownload download = new MapDownload(fullMapUrl);
+
+        downloads.addElement(download); // TODO thread safe??
+    }
+    
+    private void downloadFinished(MapDownload download) {
+        
+        if ( !this.mapfiles.contains( download.mapUID ) ) {
+            this.mapfiles.addElement( download.mapUID );
+        }
+        else {
+            OptionPane.showMessageDialog(null, "got map, but we already have it "+download, "error", 0);
         }
         
-        
-        
+        downloads.removeElement(download);
         
     }
     
+    public boolean isDownloading(String mapUID) {
+        for (int c=0;c<downloads.size();c++) {
+            MapDownload download = (MapDownload)downloads.elementAt(c);
+            if ( download.mapUID.equals(mapUID) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void gotResultMap(final String url,java.io.InputStream is) {
+        for (int c=0;c<downloads.size();c++) {
+            MapDownload download = (MapDownload)downloads.elementAt(c);
+            if ( download.hasUrl(url) ) {
+                download.gotRes(url,is);
+                return;
+            }
+        }
+        
+    }
+
     private static void saveFile(InputStream is,OutputStream out) throws IOException {
 
         int COPY_BLOCK_SIZE=1024;
@@ -443,6 +457,9 @@ public class MapChooser implements ActionListener {
         
         list.setListData( items );
         
+        getRoot().revalidate();
+        getRoot().repaint();
+        
     }
 
     private void activateGroup(String string) {
@@ -452,4 +469,122 @@ public class MapChooser implements ActionListener {
 
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    class MapDownload {
+
+        String mapUID;
+        String mapContext;
+        Vector urls = new Vector();
+        
+        MapDownload(String url) {
+            
+            mapUID = getFileUID(url);
+            
+            mapContext = url.substring(0, url.length() - mapUID.length() );
+
+            downloadFile( mapUID );
+        }
+        
+        public String toString() {
+            return mapUID;
+        }
+        
+        final void downloadFile(String fileName) {
+            
+            String url = mapContext + fileName;
+            
+            urls.addElement(url);
+            client.makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
+        }
+        
+        boolean hasUrl(String url) {
+            return urls.contains(url);
+        }
+
+        private void gotRes(String url, InputStream is) {
+            
+            urls.removeElement(url);
+            
+            String fileName = url.substring(mapContext.length());
+
+            OutputStream out = null;
+            try {
+                out = RiskUtil.streamOpener.saveMapFile(fileName);
+
+                saveFile(is, out);
+
+                if (fileName.endsWith(".map")) {
+
+                    Hashtable info = RiskUtil.loadInfo(fileName, false);
+
+                    // {prv=ameroki.jpg, pic=ameroki_pic.png, name=Ameroki Map, crd=ameroki.cards, map=ameroki_map.gif, comment=map: ameroki.map blah... }
+
+                    // files to download
+                    String pic = (String)info.get("pic");
+                    String crd = (String)info.get("crd");
+                    String map = (String)info.get("map");
+                    String prv = (String)info.get("prv");
+
+                    downloadFile( pic );
+                    downloadFile( crd );
+                    downloadFile( map );
+                    if (prv!=null) {
+                        downloadFile( "preview/"+prv );
+                    }
+
+                }
+
+                if (urls.isEmpty()) {
+                    downloadFinished(this);
+                }
+
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                // TODO what to do here?
+                // TODO what if disk is full??
+            }
+            finally {
+                FileUtil.close(is);
+                FileUtil.close(out);
+            }
+            
+            
+        }
+    }
+    
+    
 }
