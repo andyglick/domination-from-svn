@@ -2,12 +2,16 @@ package net.yura.domination.mapstore;
 
 import java.util.Hashtable;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.Sprite;
 import net.yura.abba.persistence.ImageManager;
 import net.yura.abba.ui.components.IconCache;
+import net.yura.mobile.gui.Animation;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.components.ProgressBar;
 import net.yura.mobile.gui.plaf.Style;
 
 /**
@@ -20,11 +24,43 @@ public class MapRenderer extends DefaultListCellRenderer {
     ImageManager manager = new ImageManager();
     Hashtable images = new Hashtable();
 
+    private ProgressBar bar = new ProgressBar();
+    private Component list;
+    
     private String context;
     
-    public MapRenderer() {
+    Image play,download;
+    
+    MapChooser chooser;
+    Map map;
+    
+    public MapRenderer(MapChooser chooser) {
         setVerticalTextPosition( Graphics.TOP );
+        
+        this.chooser = chooser;
+        
+        try {
+            Image img = Image.createImage("/strip.png");
+            Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
+            bar.setSprite(spin1);
+            bar.workoutPreferredSize();
+            
+            play = Image.createImage("/play.png");
+            download = Image.createImage("/download.png");
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
+    
+    public void animate() {
+        bar.animate();
+
+        if (list!=null) {
+            list.repaint();
+        }
+    }
+    
     
     public void setContext(String c) {
         context = c;
@@ -36,7 +72,11 @@ public class MapRenderer extends DefaultListCellRenderer {
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        
+        this.list = list;
+        
         line2 = null; // reset everything
+        map = null;
 
         if (value instanceof Category) {
             Category category = (Category)value;
@@ -44,7 +84,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             setText( category.getName() );
         }
         else if (value instanceof Map) {
-            Map map = (Map)value;
+            map = (Map)value;
 
             setText( map.getName() );
             //line2 = map.getAuthorName();
@@ -88,6 +128,39 @@ public class MapRenderer extends DefaultListCellRenderer {
             g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), padding + getFont().getHeight() + gap);
         }
 
+        if (map!=null) {
+        
+            int gap = 5;
+
+            String mapUID = MapChooser.getFileUID( map.getMapUrl() );
+            
+            if ( chooser.mapfiles.contains( mapUID ) ) {
+
+                g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
+
+            }
+            else if ( chooser.isDownloading( mapUID ) ) {
+
+                // position spinner in top right corner
+                int x = getWidth()-bar.getWidth()-gap;
+                int y = gap;
+
+                g.translate(x, y);
+
+                bar.paintComponent(g);
+
+                g.translate(-x, -y);
+
+
+                // its ok to register more than once
+                Animation.registerAnimated(this);
+            }
+            else {
+                
+                g.drawImage(download, getWidth()-download.getWidth()-gap, gap);
+                
+            }
+        }
     }
 
     public void workoutMinimumSize() {
