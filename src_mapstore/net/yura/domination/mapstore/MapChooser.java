@@ -47,15 +47,17 @@ public class MapChooser implements ActionListener {
 
     Vector mapfiles;
 
+    // Nnathans server
     //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
     //public static final String MAP_PAGE="maps.dot";
     //public static final String CATEGORIES_PAGE="categories.dot";
 
-    //public static final String SERVER_URL="http://192.168.21.193:8000/";
+    // theos server
+    //public static final String SERVER_URL="http://riskmaps.x.com/";
     //public static final String MAP_PAGE="maps?format=xml";
     //public static final String CATEGORIES_PAGE="categories?format=xml";
 
-    
+    // yura test server
     public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
     public static final String MAP_PAGE="";
     public static final String CATEGORIES_PAGE="maps.xml";
@@ -137,6 +139,8 @@ public class MapChooser implements ActionListener {
         List list = (List)loader.find("ResultList");
         list.setDoubleClick(true);
         list.setCellRenderer( new MapRenderer(this) );
+        list.setFixedCellHeight(100);
+        list.setFixedCellWidth(10); // will streach
 
         client = new MapServerClient(this,SERVER_URL);
         client.start();
