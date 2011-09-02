@@ -92,19 +92,30 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             String key = map.getPreviewUrl();
 
-            if (key.indexOf(':')<0 && context!=null) {
-                key = context + key;
+            if (key!=null) {
+            
+                if (key.indexOf(':')<0 && context!=null) {
+                    if (key.startsWith("/")) {
+                        key = context.substring(0, context.indexOf('/', "http://.".length()) ) + key;
+                    }
+                    else {
+                        key = context + key;
+                    }
+                }
+  
+                //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
+
+                IconCache icon = (IconCache)images.get( key );
+                if (icon==null) {
+                    icon = new IconCache(key, null, 0, 0, 0, 0, manager);
+                    images.put(key, icon);
+                }
+
+                setIcon( icon );
             }
-
-            //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
-
-            IconCache icon = (IconCache)images.get( key );
-            if (icon==null) {
-                icon = new IconCache(key, null, 0, 0, 0, 0, manager);
-                images.put(key, icon);
+            else {
+                System.out.println("No PreviewUrl for map "+map);
             }
-
-            setIcon( icon );
         }
         // else just do nothing
 
