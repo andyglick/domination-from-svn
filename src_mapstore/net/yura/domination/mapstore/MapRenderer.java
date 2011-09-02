@@ -94,14 +94,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             if (key!=null) {
             
-                if (key.indexOf(':')<0 && context!=null) {
-                    if (key.startsWith("/")) {
-                        key = context.substring(0, context.indexOf('/', "http://.".length()) ) + key;
-                    }
-                    else {
-                        key = context + key;
-                    }
-                }
+                key = MapChooser.getURL(context, key);
   
                 //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 

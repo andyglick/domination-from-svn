@@ -265,13 +265,9 @@ public class MapChooser implements ActionListener {
             else {
                 Map map = (Map)value;
 
-                String mapUrl = map.mapUrl;
-
-                String fileUID = getFileUID(mapUrl);
+                String fileUID = getFileUID( map.mapUrl );
 
                 String context = ((MapRenderer)list.getCellRenderer()).getContext();
-                
-                selectedMap = fileUID;
                 
                 if (context!=null) { // we have a context, this means this is a remote map
 
@@ -288,32 +284,29 @@ public class MapChooser implements ActionListener {
                         // TODO if this is happening because of a update, we need to compare versions
 
                         // so we already have this map, just fire event to load it
-                        al.actionPerformed(null);
+                        chosenMap(fileUID);
                     }
                     else if (isDownloading(fileUID)) {
                         
                         OptionPane.showMessageDialog(null, "already downloading", "message", 0);
                     }
                     else {
-                        
-                        if ( mapUrl.indexOf(':')<0 ) { // we do not have a full URL, so we pre-pend the context
-                            mapUrl = context + mapUrl;
-                        }
 
-                        downloadMap( mapUrl );
+                        downloadMap( getURL(context, map.mapUrl ) );
                         
                         list.repaint();
                     }
                 }
                 else { // this is a local map, we will fire the event right away that we got it
-                    al.actionPerformed(null);
+                    
+                    chosenMap(fileUID);
+
                 }
             }
         }
         else if ("defaultMap".equals(actionCommand)) {
 
-            selectedMap = RiskGame.getDefaultMap();
-            al.actionPerformed(null);
+            chosenMap( RiskGame.getDefaultMap() );
 
         }
         else if ("cancel".equals(actionCommand)) {
@@ -331,6 +324,27 @@ public class MapChooser implements ActionListener {
         else {
             System.out.println("Unknown command "+actionCommand);
         }
+    }
+    
+    private void chosenMap(String mapName) {
+        
+        selectedMap = mapName;
+        al.actionPerformed(null);
+
+    }
+    
+    public static String getURL(String context,String mapUrl) {
+        
+        if (mapUrl.indexOf(':')<0 && context!=null) { // we do not have a full URL, so we pre-pend the context
+            if (mapUrl.startsWith("/")) {
+                mapUrl = context.substring(0, context.indexOf('/', "http://.".length()) ) + mapUrl;
+            }
+            else {
+                mapUrl = context + mapUrl;
+            }
+        }
+        
+        return mapUrl;
     }
 
     public void mainCatList(String actionCommand) {
