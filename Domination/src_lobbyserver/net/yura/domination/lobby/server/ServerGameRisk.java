@@ -61,6 +61,9 @@ public class ServerGameRisk extends TurnBasedGame {
                 public InputStream loadGameFile(String file) throws Exception {
                     return null;
                 }
+                public java.io.OutputStream saveMapFile(String fileName) throws Exception {
+                    throw new UnsupportedOperationException("can not add maps to server");
+                }
             };
         }
 
