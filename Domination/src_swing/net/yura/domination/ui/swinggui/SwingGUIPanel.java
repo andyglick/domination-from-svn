@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.AbstractButton;
@@ -812,7 +813,19 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		Pix.add( pixlogo );
 
 
-
+                JButton donate = new JButton();
+		donate.addActionListener( this );
+		donate.setActionCommand("donate");
+                donate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                URL donateNow = this.getClass().getResource("donateNow.gif");
+                if (donateNow!=null) {
+                     donate.setIcon( new ImageIcon( donateNow ) );
+                }
+                else {
+                    donate.setText("Donate");
+                }
+                Pix.add(donate, BorderLayout.SOUTH );
+                
 
 		setLayout(new java.awt.BorderLayout());
 
@@ -1044,21 +1057,19 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 	public void actionPerformed(ActionEvent a) {
 
-		if (a.getActionCommand().equals("showmission")) {
-
+                String actionCommand = a.getActionCommand();
+            
+		if ("showmission".equals(actionCommand)) {
 
 			showMission( myrisk.getCurrentMission() );
 
-
 		}
-		else if (a.getActionCommand().equals("showcards")) {
-
+		else if ("showcards".equals(actionCommand)) {
 
 			openCards();
 
-
 		}
-		else if (a.getActionCommand().equals("undo")) {
+		else if ("undo".equals(actionCommand)) {
 
                         pp.setC1(PicturePanel.NO_COUNTRY);
                         pp.setC2(PicturePanel.NO_COUNTRY);
@@ -1067,7 +1078,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 
 		}
-		else if (a.getActionCommand().equals("continents")) {
+		else if ("continents".equals(actionCommand)) {
 
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("<html><table>");
@@ -1095,35 +1106,35 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			JOptionPane.showMessageDialog(this, buffer.toString(), resbundle.getString("swing.button.continents"), JOptionPane.PLAIN_MESSAGE );
 
 		}
-		else if (a.getActionCommand().equals("roll 1")) {
+		else if ("roll 1".equals(actionCommand)) {
 
 			go("roll 1");
 
 		}
-		else if (a.getActionCommand().equals("roll 2")) {
+		else if ("roll 2".equals(actionCommand)) {
 
 			go("roll 2");
 
 		}
-		else if (a.getActionCommand().equals("roll 3")) {
+		else if ("roll 3".equals(actionCommand)) {
 
 			go("roll 3");
 
 		}
-		else if (a.getActionCommand().equals("join game")) {
+		else if ("join game".equals(actionCommand)) {
 
 			String result = JOptionPane.showInputDialog(RiskUIUtil.findParentFrame(this), "type the server name", myrisk.getRiskConfig("default.host") );
 			if (result!=null) { go("join "+result); }
 
 		}
-		else if (a.getActionCommand().equals("new game")) {
+		else if ("new game".equals(actionCommand)) {
 
 			SwingGUIPanel.this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			go("newgame");
 
 		}
-		else if (a.getActionCommand().equals("load game")) {
+		else if ("load game".equals(actionCommand)) {
 
 			String name = RiskUIUtil.getLoadFileName(
 				RiskUIUtil.findParentFrame(this),
@@ -1138,7 +1149,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			}
 
 		}
-		else if (a.getActionCommand().equals("save game")) {
+		else if ("save game".equals(actionCommand)) {
 
 			String name = RiskUIUtil.getSaveFileName(
 				RiskUIUtil.findParentFrame(this),
@@ -1153,7 +1164,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			}
 
 		}
-		else if (a.getActionCommand().equals("close game")) {
+		else if ("close game".equals(actionCommand)) {
 
 			//if (localGame) {
 				go("closegame");
@@ -1162,7 +1173,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			//	go("leave");
 			//}
 		}
-		else if (a.getActionCommand().equals("options")) {
+		else if ("options".equals(actionCommand)) {
 
 			Object[] message = new Object[2];
 			message[0] = new JCheckBox("Auto End Go");
@@ -1210,12 +1221,12 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			optionsDialog.setVisible(true);
 */
 		}
-		else if (a.getActionCommand().equals("replay")) {
+		else if ("replay".equals(actionCommand)) {
 
 			go("replay");
 
 		}
-		else if (a.getActionCommand().equals("start server")) {
+		else if ("start server".equals(actionCommand)) {
 
 			if (serverOn) {
 				go("killserver");
@@ -1226,11 +1237,16 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 
 		}
-		else if (a.getActionCommand().equals("lobby")) {
+		else if ("lobby".equals(actionCommand)) {
 
 			RiskUIUtil.runLobby(myrisk);
 
 		}
+                else if ("donate".equals(actionCommand)) {
+                    
+                        RiskUIUtil.donate(this);
+                    
+                }
 		else {
 
 			SwingGUIPanel.this.actionPerformed(a);

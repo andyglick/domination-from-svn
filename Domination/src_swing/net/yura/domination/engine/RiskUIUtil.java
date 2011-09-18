@@ -7,6 +7,7 @@ package net.yura.domination.engine;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -960,5 +961,16 @@ public class RiskUIUtil {
 
     public static Color getTextColorFor(Color color) {
         return new Color( RiskUtil.getTextColorFor(color.getRGB()) );
+    }
+
+    public static void donate(Component parent) {
+        
+        try {
+                RiskUtil.donate();
+        }
+        catch(Exception e) {
+                JOptionPane.showMessageDialog( parent ,"Unable to open web browser: "+e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
     }
 }
