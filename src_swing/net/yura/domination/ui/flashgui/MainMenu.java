@@ -412,13 +412,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 				}
 				case MainMenu.BUTTON_DONATE: {
 
-					try {
-						RiskUtil.donate();
-					}
-					catch(Exception e) {
-						JOptionPane.showMessageDialog( RiskUIUtil.findParentFrame(this) ,"Unable to open manual: "+e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-					}
-
+					RiskUIUtil.donate(this);
 
 					break;
 				}
