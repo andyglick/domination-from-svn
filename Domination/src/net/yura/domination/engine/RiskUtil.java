@@ -240,7 +240,11 @@ return Color.white;
                 return "#" + Integer.toHexString((  c & 0xffffff) | 0x1000000).substring(1);
         }
 
-	public static void donate() throws Exception {
+        public static void donate() throws Exception {
+		openURL(new URL("http://domination.sourceforge.net/donate.shtml"));
+	}
+        
+	public static void donatePayPal() throws Exception {
 		openURL(new URL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yura%40yura%2enet&item_name="+GAME_NAME+"%20Donation&no_shipping=0&no_note=1&tax=0&currency_code=GBP&lc=GB&bn=PP%2dDonationsBF&charset=UTF%2d8"));
 	}
 
