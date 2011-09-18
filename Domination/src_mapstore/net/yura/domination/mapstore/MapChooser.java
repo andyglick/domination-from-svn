@@ -47,7 +47,7 @@ public class MapChooser implements ActionListener {
 
     Vector mapfiles;
 
-    // Nnathans server
+    // Nathans server
     //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
     //public static final String MAP_PAGE="maps.dot";
     //public static final String CATEGORIES_PAGE="categories.dot";
@@ -271,29 +271,45 @@ public class MapChooser implements ActionListener {
                 
                 if (context!=null) { // we have a context, this means this is a remote map
 
-                    //java.io.InputStream file=null;
-                    //try {
-                    //    file = RiskUtil.openMapStream(fileUID);
-                    //}
-                    //catch (Exception ex) { } // not found?
-                    //finally{ net.yura.mobile.io.FileUtil.close(file); }
-                
-                    //if (file!=null) { // we already have this file
-                    if ( mapfiles.contains(fileUID) ) {
-
-                        // TODO if this is happening because of a update, we need to compare versions
-
-                        // so we already have this map, just fire event to load it
-                        chosenMap(fileUID);
-                    }
-                    else if (isDownloading(fileUID)) {
+                    if (isDownloading(fileUID)) { // we may be doing a update
                         
                         OptionPane.showMessageDialog(null, "already downloading", "message", 0);
+                    }
+                    else if ( mapfiles.contains(fileUID) ) {
+
+                        Hashtable info = RiskUtil.loadInfo(fileUID, false);
+
+                        String ver = (String)info.get("ver");
+                        
+                        if (map.getVersion()!=null && !"".equals(map.getVersion()) && !"1".equals(map.getVersion()) && !map.getVersion().equals( ver ) ) {
+                            // update needed!!!
+                            
+                            downloadMap( getURL(context, map.mapUrl ) );
+                            list.repaint();
+                            return;
+                        }
+                        
+                        String pic = (String)info.get("pic");
+                        String crd = (String)info.get("crd");
+                        String imap = (String)info.get("map");
+                        String prv = (String)info.get("prv");
+                        
+                        if ( !fileExists(pic) || !fileExists(crd) || !fileExists(imap) || (prv!=null && !fileExists("preview/"+prv)) ) {
+                            // we are missing a file, need to re-download this map
+                        
+                            downloadMap( getURL(context, map.mapUrl ) );
+                            list.repaint();
+                            return;
+                            
+                        }
+                        
+                        // so we already have this map, just fire event to load it
+                        chosenMap(fileUID);
+                        
                     }
                     else {
 
                         downloadMap( getURL(context, map.mapUrl ) );
-                        
                         list.repaint();
                     }
                 }
@@ -324,6 +340,18 @@ public class MapChooser implements ActionListener {
         else {
             System.out.println("Unknown command "+actionCommand);
         }
+    }
+    
+    public static boolean fileExists(String fileUID) {
+        
+        java.io.InputStream file=null;
+        try {
+            file = RiskUtil.openMapStream(fileUID);
+        }
+        catch (Exception ex) { } // not found?
+        finally{ net.yura.mobile.io.FileUtil.close(file); }
+        
+        return (file!=null); // we already have this file
     }
     
     private void chosenMap(String mapName) {

@@ -138,12 +138,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             String mapUID = MapChooser.getFileUID( map.getMapUrl() );
             
-            if ( chooser.mapfiles.contains( mapUID ) ) {
-
-                g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
-
-            }
-            else if ( chooser.isDownloading( mapUID ) ) {
+            if ( chooser.isDownloading( mapUID ) ) { // we need to check for this first as we may have it and also be updating it
 
                 // position spinner in top right corner
                 int x = getWidth()-bar.getWidth()-gap;
@@ -158,6 +153,11 @@ public class MapRenderer extends DefaultListCellRenderer {
 
                 // its ok to register more than once
                 Animation.registerAnimated(this);
+            }
+            else if ( chooser.mapfiles.contains( mapUID ) ) {
+
+                g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
+
             }
             else {
                 
