@@ -17,6 +17,8 @@ CURRENT VERSION:
 	continents in map editor show color in list
         can double click on items in list
 	German update - Oliver S.
+	Map Store added for downloading new maps
+	Donate switched from paypal to google
 
 Risk 1.1.0.1
 
