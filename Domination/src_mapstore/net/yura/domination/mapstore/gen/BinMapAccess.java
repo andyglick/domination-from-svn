@@ -1,7 +1,7 @@
 package net.yura.domination.mapstore.gen;
-import net.yura.abba.persistence.ClientResource;
-import net.yura.domination.mapstore.Category;
 import net.yura.domination.mapstore.Map;
+import net.yura.domination.mapstore.Category;
+import net.yura.abba.persistence.ClientResource;
 import net.yura.mobile.io.ServiceLink.Task;
 import java.util.Hashtable;
 import java.util.Vector;
