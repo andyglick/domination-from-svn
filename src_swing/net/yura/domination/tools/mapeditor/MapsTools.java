@@ -158,7 +158,7 @@ public class MapsTools {
                 
                 requestContent.addPart("mapZipFile", new FileBody(zipFile));
 
-                return doPost( "http://maps.yura.net/upload", requestContent ); // http://maps.yura.net/upload-unauthorised
+                return doPost( "http://maps.yura.net/upload-unauthorised", requestContent );
 
             }
             catch (Exception ex) {
@@ -210,7 +210,16 @@ public class MapsTools {
 
             	URLConnection conn = new URL(url).openConnection();
         	conn.setDoOutput(true);
-                
+
+                org.apache.http.Header contentType = requestContent.getContentType();
+                conn.setRequestProperty(contentType.getName(), contentType.getValue());
+
+                // this seems to be null and does not seem to be needed
+                //org.apache.http.Header contentEncoding = requestContent.getContentEncoding();
+                //conn.setRequestProperty(contentEncoding.getName(), contentEncoding.getValue());
+
+                conn.setRequestProperty("Content-Length", String.valueOf(requestContent.getContentLength()) );
+
                 OutputStream out = conn.getOutputStream();
                 requestContent.writeTo( out );
         	out.close();
