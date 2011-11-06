@@ -52,16 +52,15 @@ public class MapChooser implements ActionListener {
     //public static final String MAP_PAGE="maps.dot";
     //public static final String CATEGORIES_PAGE="categories.dot";
 
-    // theos server
-    //public static final String SERVER_URL="http://riskmaps.x.com/";
-    //public static final String MAP_PAGE="maps?format=xml";
-    //public static final String CATEGORIES_PAGE="categories?format=xml";
-
     // yura test server
-    public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
-    public static final String MAP_PAGE="";
-    public static final String CATEGORIES_PAGE="maps.xml";
-
+    //public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
+    //public static final String MAP_PAGE="";
+    //public static final String CATEGORIES_PAGE="maps.xml";
+    
+    // theos server
+    public static final String SERVER_URL="http://maps.yura.net/";
+    public static final String MAP_PAGE="maps?format=xml";
+    public static final String CATEGORIES_PAGE="categories?format=xml";
 
     public MapChooser(ActionListener al,Vector mapfiles) {
         this.al = al;

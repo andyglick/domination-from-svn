@@ -5,7 +5,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.abba.persistence.ImageManager;
-import net.yura.abba.ui.components.IconCache;
 import net.yura.mobile.gui.Animation;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
@@ -98,9 +97,12 @@ public class MapRenderer extends DefaultListCellRenderer {
   
                 //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
-                IconCache icon = (IconCache)images.get( key );
+                Icon icon = (Icon)images.get( key );
                 if (icon==null) {
-                    icon = new IconCache(key, null, 0, 0, 0, 0, manager);
+                    //icon = new net.yura.abba.ui.components.IconCache(key, null, 0, 0, 0, 0, manager);
+                    icon = net.yura.abba.ui.AbbaIcon.getIcon(key, 0, 0, 0, 0);
+                    // AbbaIcon has a STRONG ref to the image, if we keep all of these in a hashmap
+                    // we are keeping string refs to all the images that this renderer uses
                     images.put(key, icon);
                 }
 

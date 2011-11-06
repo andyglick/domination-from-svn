@@ -29,6 +29,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -37,7 +38,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
@@ -59,7 +59,6 @@ import net.yura.domination.ui.swinggui.SwingGUITab;
 /**
  * @author Yura Mamyrin
  */
-
 public class MapEditor extends JPanel implements ActionListener, ChangeListener, SwingGUITab {
 
 	private final static String IMAGE_MAP_EXTENSION;
@@ -525,7 +524,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		}
                 else if (a.getActionCommand().equals("publish")) {
-
+                    
                     // load big XML file
                     Vector maps = MapsTools.loadMaps();
                     
@@ -608,6 +607,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         // save back to big XML file
                         MapsTools.saveMaps(maps);
                         
+                        JEditorPane editorPane = new JEditorPane();
+                        editorPane.setEditable(false);
+                        editorPane.setContentType( "text/html" );
+                        editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
+                        editorPane.setText( MapsTools.publish(map2) );
+                        JScrollPane scroll = new JScrollPane(editorPane);
+                        scroll.setPreferredSize( new Dimension(500, 500) );
+                        JOptionPane.showMessageDialog(this, scroll );
+
                     }
                     
                 }
@@ -695,7 +703,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 
 	}
-        
+
         private int showInputDialog(String[] labels, JComponent[] comps,String title) {
             
             if (labels.length != comps.length) {

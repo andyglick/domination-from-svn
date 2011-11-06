@@ -4,19 +4,32 @@
  */
 package net.yura.domination.tools.mapeditor;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Hashtable;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.ServiceLink.Task;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 /**
- *
- * @author Administrator
+ * @author Yura
  */
 public class MapsTools {
     
@@ -109,4 +122,110 @@ public class MapsTools {
         }
         
     }
+    
+    static String publish(Map map) {
+        
+            try {     
+
+                File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+                
+                File zipFile = new File(mapsDir, MapsTools.makePreviewName(map.getMapUrl())+".zip" );
+                if (!zipFile.exists()) {
+                    
+                    Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
+                    
+                    String[] files = new String[ info.get("prv")==null?4:5 ];
+                    files[0] = map.getMapUrl();
+                    files[1] = (String)info.get("crd");
+                    files[2] = (String)info.get("pic");
+                    files[3] = (String)info.get("map");
+                    if (info.get("prv")!=null) {
+                        files[4] = "preview/"+(String)info.get("prv");
+                    }
+                    
+                    makeZipFile(zipFile, mapsDir, files);
+                    
+                }
+                
+                // create the multipart request and add the parts to it
+                MultipartEntity requestContent = new MultipartEntity();
+                
+                requestContent.addPart("first_name", new StringBody( map.getAuthorName() ));
+                requestContent.addPart("email", new StringBody( map.getAuthorId() ));
+                
+                requestContent.addPart("name", new StringBody( map.getName() ));
+                requestContent.addPart("description", new StringBody( map.getDescription() ));
+                
+                requestContent.addPart("mapZipFile", new FileBody(zipFile));
+
+                return doPost( "http://maps.yura.net/upload", requestContent ); // http://maps.yura.net/upload-unauthorised
+
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+    }
+    
+    public static void makeZipFile(File zipFile,File root, String[] files) {
+        
+        
+        byte[] buf = new byte[1024];
+
+        try {
+            // Create the ZIP file
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+
+            // Compress the files
+            for (int i=0; i<files.length; i++) {
+                FileInputStream in = new FileInputStream( new File(root, files[i] ));
+
+                // Add ZIP entry to output stream.
+                out.putNextEntry(new ZipEntry( files[i] ));
+
+                // Transfer bytes from the file to the ZIP file
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+
+                // Complete the entry
+                out.closeEntry();
+                in.close();
+            }
+
+            // Complete the ZIP file
+            out.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        
+    }
+    
+    
+        public static String doPost(String url, MultipartEntity requestContent) throws IOException {
+
+        	StringBuffer buffer = new StringBuffer();
+
+            	URLConnection conn = new URL(url).openConnection();
+        	conn.setDoOutput(true);
+                
+                OutputStream out = conn.getOutputStream();
+                requestContent.writeTo( out );
+        	out.close();
+
+        	// Get the response
+        	BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        	String line;
+        	while ((line = rd.readLine()) != null) {
+			buffer.append(line);
+                        buffer.append("\n");
+        	}
+        	rd.close();
+		return buffer.toString();
+
+    }
+    
+    
 }
