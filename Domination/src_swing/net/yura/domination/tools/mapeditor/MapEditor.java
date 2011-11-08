@@ -616,21 +616,26 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         
                         // save back to big XML file
                         MapsTools.saveMaps(maps);
-                        
-                        try {
-                            String responce = MapsTools.publish(map2,myCategoriesIds);
-                            JEditorPane editorPane = new JEditorPane();
-                            editorPane.setEditable(false);
-                            editorPane.setContentType( "text/html" );
-                            editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
-                            editorPane.setText( responce );
-                            JScrollPane scroll = new JScrollPane(editorPane);
-                            scroll.setPreferredSize( new Dimension(500, 500) );
-                            JOptionPane.showMessageDialog(this, scroll );
+
+                        if (myCategoriesIds.length>0) {
+                            try {
+                                String responce = MapsTools.publish(map2,myCategoriesIds);
+                                JEditorPane editorPane = new JEditorPane();
+                                editorPane.setEditable(false);
+                                editorPane.setContentType( "text/html" );
+                                editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
+                                editorPane.setText( responce );
+                                JScrollPane scroll = new JScrollPane(editorPane);
+                                scroll.setPreferredSize( new Dimension(500, 250) );
+                                JOptionPane.showMessageDialog(this, new Object[] {"Congratulations! your map has been send to the server.",scroll} );
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "something went wrong! did you enter a valid email?\n" + ex.toString() );
+                            }
                         }
-                        catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(this, "something went wrong! did you enter a valid email?\n" + ex.toString() );
+                        else {
+                            JOptionPane.showMessageDialog(this, "map info has been saved to disk, it has NOT been sent to the server as you did not select any Categories.");
                         }
                     }
                 }
