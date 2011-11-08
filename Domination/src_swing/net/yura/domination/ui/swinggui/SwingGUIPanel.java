@@ -2036,24 +2036,20 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 		}
 
 		public void sendDebug(String a) {
-
+                    if (debugTab!=null) {
 			debugTab.sendDebug(a);
-
+                    }
 		}
 
 		public void showMessageDialog(String a) {
-
 			showError(a);
-
 		}
 
 		/**
 		 * Blocks the game panel
 		 */
 		public void noInput() {
-
 			blockInput();
-
 		}
 
 		/**
@@ -2125,7 +2121,6 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 		 * @param state The message that is needed to be displayed
 		 */
 		public void setGameStatus(String state) {
-
 			gameTab.setGameStatus(state);
 		}
 
@@ -2143,79 +2138,55 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 		}
 
 		public void newGame(boolean t) { // t==true: this is a local game
-
 			localGame = t;
-
 			gameTab.newGame();
-
 		}
-
-		private boolean memoryload;
 
 		/**
 		 * Starts the game
 		 * @param s If the game is a local game
 		 */
 		public void startGame(boolean s) {
-
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			localGame = s;
-
 			// check maybe we should load from memory
 			if (myrisk.getGame().getMapFile() == null && myrisk.getGame().getCardsFile() == null) {
-
 				pp.memoryLoad(editorTab.getImageMap(),editorTab.getImagePic());
-
 			}
 			else {
-
 				try {
 					pp.load();
 				}
 				catch(IOException e) {
 					e.printStackTrace();
 				}
-
 			}
-
 
 
 			// YURA: not sure why this needs to be here, used to work without it
 			pprepaintCountries();
-
 			gameTab.startGame();
-
 			statisticsTab.startGame();
 
 
-
-
 			SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-
 		}
 
 		/**
 		 * Closes the game
 		 */
 		public void closeGame() {
-
 			gameTab.closeGame();
-
 			statisticsTab.closeGame();
-
 			System.gc();
-
 		}
 
 		public void setSlider(int min, int c1num, int c2num) {
-
 			int max = myrisk.hasArmiesInt( c1num ) -1;
-
 			slider.setMaximum(max);
 			slider.setMinimum(min);
 			slider.setValue(min);
-
 		}
 
 		public void armiesLeft(int l, boolean s) {
@@ -2299,27 +2270,19 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 		}
 
 		public void closeBattle() {
-
 			blockInput();
-
 		}
 
 		public void serverState(boolean s) {
-
 			gameTab.serverState(s);
-
 		}
 
 		public void addPlayer(int t, String name, int color, String ip) {
-
 			guiSetup.addPlayer(t, name, color, ip);
-
 		}
 
 		public void delPlayer(String name) {
-
 			guiSetup.delPlayer(name);
-
 		}
 
 /*  // other things that need to be done
