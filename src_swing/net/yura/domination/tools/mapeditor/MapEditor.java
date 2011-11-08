@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -553,14 +554,23 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     JTextField mapName = new JTextField( map2.getName() );
                     JTextField authorEmail = new JTextField( map2.getAuthorId() ); // TODO using email as ID!!!
                     
+                    Vector categories = MapsTools.getCategories();
+
+                    JList list = new JList(categories);
                     
                     int result = showInputDialog(
-                            new String[] {"Author Name:","Email:","Map Name:","Description:"},
-                            new JComponent[] {authorName,authorEmail,mapName,description},
+                            new String[] {"Author Name:","Email:","Map Name:","Description:","Categories:"},
+                            new JComponent[] {authorName,authorEmail,mapName,description,list},
                             "edit info"
                     );
                     
                     if (result == JOptionPane.OK_OPTION) {
+                        
+                        Object[] myCategories = list.getSelectedValues();
+                        String[] myCategoriesIds = new String[myCategories.length];
+                        for (int c=0;c<myCategories.length;c++) {
+                            myCategoriesIds[c] = ((net.yura.domination.mapstore.Category)myCategories[c]).getId();
+                        }
                         
                         // set back info on map object
                         map2.setAuthorName( authorName.getText() );
@@ -608,7 +618,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         MapsTools.saveMaps(maps);
                         
                         try {
-                            String responce = MapsTools.publish(map2);
+                            String responce = MapsTools.publish(map2,myCategoriesIds);
                             JEditorPane editorPane = new JEditorPane();
                             editorPane.setEditable(false);
                             editorPane.setContentType( "text/html" );

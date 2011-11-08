@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
@@ -22,8 +23,10 @@ import java.util.zip.ZipOutputStream;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.Map;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.ServiceLink.Task;
+import net.yura.mobile.io.UTF8InputStreamReader;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -123,7 +126,7 @@ public class MapsTools {
         
     }
     
-    static String publish(Map map) {
+    static String publish(Map map, String[] myCategoriesIds) {
         
             try {     
 
@@ -156,9 +159,11 @@ public class MapsTools {
                 requestContent.addPart("name", new StringBody( map.getName() ));
                 requestContent.addPart("description", new StringBody( map.getDescription() ));
                 
-                requestContent.addPart("mapZipFile", new FileBody(zipFile));
+                for (int c=0;c<myCategoriesIds.length;c++) {
+                    requestContent.addPart("categories", new StringBody( myCategoriesIds[c] ) );
+                }
                 
-                requestContent.addPart("categories", new StringBody("2"));
+                requestContent.addPart("mapZipFile", new FileBody(zipFile));
 
                 return doPost( "http://maps.yura.net/upload-unauthorised", requestContent );
 
@@ -237,6 +242,19 @@ public class MapsTools {
 		return buffer.toString();
 
     }
-    
-    
+
+    public static Vector getCategories() {
+        try {
+            URLConnection conn = new URL( MapChooser.SERVER_URL+MapChooser.CATEGORIES_PAGE ).openConnection();
+            XMLMapAccess access = new XMLMapAccess();
+            InputStream in = conn.getInputStream();
+            net.yura.mobile.io.ServiceLink.Task result = (net.yura.mobile.io.ServiceLink.Task)access.load( new UTF8InputStreamReader( in ) );
+            in.close();
+            return (Vector)result.getObject();
+        }
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 }
