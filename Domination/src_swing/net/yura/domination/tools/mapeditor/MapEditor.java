@@ -524,14 +524,14 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		}
                 else if (a.getActionCommand().equals("publish")) {
-                    
-                    // load big XML file
-                    Vector maps = MapsTools.loadMaps();
-                    
+
                     if (fileName==null) {
                         JOptionPane.showMessageDialog(this, "please save to disk first!");
                         return;
                     }
+
+                    // load big XML file
+                    Vector maps = MapsTools.loadMaps();
                     
                     net.yura.domination.mapstore.Map map2 = MapsTools.findMap(maps,fileName);
                     
@@ -607,17 +607,22 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         // save back to big XML file
                         MapsTools.saveMaps(maps);
                         
-                        JEditorPane editorPane = new JEditorPane();
-                        editorPane.setEditable(false);
-                        editorPane.setContentType( "text/html" );
-                        editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
-                        editorPane.setText( MapsTools.publish(map2) );
-                        JScrollPane scroll = new JScrollPane(editorPane);
-                        scroll.setPreferredSize( new Dimension(500, 500) );
-                        JOptionPane.showMessageDialog(this, scroll );
-
+                        try {
+                            String responce = MapsTools.publish(map2);
+                            JEditorPane editorPane = new JEditorPane();
+                            editorPane.setEditable(false);
+                            editorPane.setContentType( "text/html" );
+                            editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
+                            editorPane.setText( responce );
+                            JScrollPane scroll = new JScrollPane(editorPane);
+                            scroll.setPreferredSize( new Dimension(500, 500) );
+                            JOptionPane.showMessageDialog(this, scroll );
+                        }
+                        catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(this, "something went wrong! did you enter a valid email?\n" + ex.toString() );
+                        }
                     }
-                    
                 }
 		else if (a.getActionCommand().equals("loadimagepic")) {
 
