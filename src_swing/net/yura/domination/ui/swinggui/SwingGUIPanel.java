@@ -201,17 +201,28 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		gameTab = new GameTab();
 		consoleTab = new ConsoleTab();
 		statisticsTab = new StatisticsTab();
-		debugTab = new DebugTab();
+		
 		editorTab = new MapEditor(myrisk,this);
 
 		addTab(gameTab);
 		addTab( new FX3DPanel(pp) );
 		addTab(consoleTab);
 		addTab(statisticsTab);
-		addTab(debugTab);
+                try {
+                    debugTab = new DebugTab();
+                    addTab(debugTab);
+                }
+                catch (Throwable th) {
+                    th.printStackTrace(); // Grasshopper.jar could be missing
+                }
 		addTab( new TestPanel(myrisk,pp) );
 		addTab(editorTab);
-		addTab( new TranslationToolPanel() );
+                try {
+                    addTab( new TranslationToolPanel() );
+                }
+                catch (Throwable th) {
+                    th.printStackTrace(); // TranslationTool.jar could be missing
+                }
 		addTab(new BugsPanel());
 
 		final JPanel oddpanelbug = new JPanel();
@@ -289,7 +300,9 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		// now gui is setup u can listen
 		myrisk.addRiskListener( new SwingRiskAdapter() );
 
-                debugTab.start();
+                if (debugTab!=null) {
+                    debugTab.start();
+                }
 	}
 
 	public void setupLobbyButton() {

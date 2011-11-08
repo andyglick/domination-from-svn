@@ -106,8 +106,10 @@
 			<fileset dir="game/${game.name}/jar" includes="**/*.*"/>
 		</copy>
 
+<!-- this is how it used to work, but really this is not a very good idea
                 <unzip src="lib/TranslationTool.jar" dest="${dir.build.classes}"/>
 		<unzip src="lib/Grasshopper.jar" dest="${dir.build.classes}"/>
+-->
 
                 <!-- for the map chooser -->
                 <copy todir="${dir.build.classes}">
@@ -176,7 +178,7 @@
 
                 <!-- for the map chooser -->
                 <copy todir="${dir.build.game}">
-			<fileset dir="lib" includes="Abba.jar,ToolsME.jar,midletrunner.jar,m3gbasic.jar"/>
+			<fileset dir="lib" includes="Abba.jar,ToolsME.jar,midletrunner.jar,m3gbasic.jar,TranslationTool.jar,Grasshopper.jar,httpmime-4.1.2.jar,httpcore-4.1.2.jar"/>
 		</copy>
 
 	</target>

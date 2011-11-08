@@ -157,6 +157,8 @@ public class MapsTools {
                 requestContent.addPart("description", new StringBody( map.getDescription() ));
                 
                 requestContent.addPart("mapZipFile", new FileBody(zipFile));
+                
+                requestContent.addPart("categories", new StringBody("2"));
 
                 return doPost( "http://maps.yura.net/upload-unauthorised", requestContent );
 
