@@ -62,6 +62,8 @@ public class MapServerClient extends HTTPClient implements EventListener {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
+System.out.println("Got XML "+task);
+            
             chooser.gotResultXML(request.url,task);
             
         }
@@ -142,6 +144,8 @@ public class MapServerClient extends HTTPClient implements EventListener {
             request.url = url;
             request.params = params;
             request.id = type;
+
+System.out.println("Make Request: "+request);
 
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby
