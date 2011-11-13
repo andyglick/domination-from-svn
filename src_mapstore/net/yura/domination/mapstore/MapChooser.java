@@ -406,9 +406,7 @@ public class MapChooser implements ActionListener {
 
     void gotResultXML(String url,Task task) {
         String method = task.getMethod();
-        System.out.println("got "+task);
 
-        
 
         Object param = task.getObject();
         if ("categories".equals(method)) {
