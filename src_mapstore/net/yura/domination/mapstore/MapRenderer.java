@@ -76,11 +76,14 @@ public class MapRenderer extends DefaultListCellRenderer {
         
         line2 = null; // reset everything
         map = null;
+        String iconUrl=null;
 
         if (value instanceof Category) {
             Category category = (Category)value;
 
             setText( category.getName() );
+            
+            iconUrl = category.getIconURL();
         }
         else if (value instanceof Map) {
             map = (Map)value;
@@ -96,31 +99,33 @@ public class MapRenderer extends DefaultListCellRenderer {
                 line2 = (line2==null?"":line2+"\n")+description;
             }
 
-            String key = map.getPreviewUrl();
-
-            if (key!=null) {
-            
-                key = MapChooser.getURL(context, key);
-  
-                //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
-
-                Icon icon = (Icon)images.get( key );
-                if (icon==null) {
-                    //icon = new net.yura.abba.ui.components.IconCache(key, null, 0, 0, 0, 0, manager);
-                    icon = net.yura.abba.ui.AbbaIcon.getIcon(key, 0, 0, 0, 0);
-                    // AbbaIcon has a STRONG ref to the image, if we keep all of these in a hashmap
-                    // we are keeping string refs to all the images that this renderer uses
-                    images.put(key, icon);
-                }
-
-                setIcon( icon );
-            }
-            else {
-                System.out.println("No PreviewUrl for map "+map);
-            }
+            iconUrl = map.getPreviewUrl();
         }
         // else just do nothing
 
+
+        if (iconUrl!=null) {
+
+            iconUrl = MapChooser.getURL(context, iconUrl);
+
+            //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
+
+            Icon icon = (Icon)images.get( iconUrl );
+            if (icon==null) {
+                //icon = new net.yura.abba.ui.components.IconCache(key, null, 0, 0, 0, 0, manager);
+                icon = net.yura.abba.ui.AbbaIcon.getIcon(iconUrl, 0, 0, 0, 0);
+                // AbbaIcon has a STRONG ref to the image, if we keep all of these in a hashmap
+                // we are keeping string refs to all the images that this renderer uses
+                images.put(iconUrl, icon);
+            }
+
+            setIcon( icon );
+        }
+        else {
+            System.out.println("No PreviewUrl for map or category: "+value);
+        }
+
+        
         return c;
     }
 
