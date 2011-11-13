@@ -86,8 +86,15 @@ public class MapRenderer extends DefaultListCellRenderer {
             map = (Map)value;
 
             setText( map.getName() );
-            //line2 = map.getAuthorName();
-            line2 = map.getDescription();
+            
+            String author = map.getAuthorName();
+            if (author!=null && !"".equals(author)) {
+                line2 = "By "+author;
+            }
+            String description = map.getDescription();
+            if (description!=null && !"".equals(description)) {
+                line2 = (line2==null?"":line2+"\n")+description;
+            }
 
             String key = map.getPreviewUrl();
 
