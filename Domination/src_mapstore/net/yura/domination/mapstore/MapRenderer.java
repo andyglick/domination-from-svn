@@ -29,12 +29,12 @@ public class MapRenderer extends DefaultListCellRenderer {
     private String context;
     
     Image play,download;
+    Icon loading;
     
     MapChooser chooser;
     Map map;
     
     public MapRenderer(MapChooser chooser) {
-        setVerticalTextPosition( Graphics.TOP );
         
         this.chooser = chooser;
         
@@ -46,6 +46,8 @@ public class MapRenderer extends DefaultListCellRenderer {
             
             play = Image.createImage("/play.png");
             download = Image.createImage("/download.png");
+            
+            loading = new Icon("/icon_loading.png");
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -72,6 +74,8 @@ public class MapRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
+        setVerticalTextPosition( Graphics.TOP );
+        
         this.list = list;
         
         line2 = null; // reset everything
@@ -82,6 +86,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             Category category = (Category)value;
 
             setText( category.getName() );
+            setVerticalTextPosition( Graphics.VCENTER );
             
             iconUrl = category.getIconURL();
         }
@@ -130,8 +135,14 @@ public class MapRenderer extends DefaultListCellRenderer {
     }
 
     public void paintComponent(Graphics2D g) {
-        super.paintComponent(g);
+        
+        Icon icon = getIcon();
+        if (icon==null || icon.getImage()==null) {
+            setIcon(loading);
+        }
 
+        super.paintComponent(g);
+        
         if (line2!=null) {
             Icon i = getIcon();
 
@@ -179,6 +190,8 @@ public class MapRenderer extends DefaultListCellRenderer {
                 
             }
         }
+        
+        setIcon(icon);
     }
 
     public void workoutMinimumSize() {
