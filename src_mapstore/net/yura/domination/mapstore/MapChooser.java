@@ -261,7 +261,7 @@ public class MapChooser implements ActionListener {
                 clearList();
                 client.makeRequestXML( MAP_PAGE,"category",cat.getId() );
             }
-            else {
+            else if (value instanceof Map) {
                 Map map = (Map)value;
 
                 String fileUID = getFileUID( map.mapUrl );
@@ -318,6 +318,7 @@ public class MapChooser implements ActionListener {
 
                 }
             }
+            //else value is null coz the list is empty
         }
         else if ("defaultMap".equals(actionCommand)) {
 

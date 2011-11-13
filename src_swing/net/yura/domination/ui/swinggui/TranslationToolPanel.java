@@ -15,7 +15,7 @@ public class TranslationToolPanel extends MessageTool implements SwingGUITab {
     public TranslationToolPanel() {
 
         // this is the name that is seen at the top of the tab
-        setName("Translation Tool");
+        setName("Translation");
     }
 
     public void load() {
