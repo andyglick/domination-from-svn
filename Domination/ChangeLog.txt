@@ -19,6 +19,7 @@ CURRENT VERSION:
 	German update - Oliver S.
 	Map Store added for downloading new maps
 	Donate switched from paypal to google
+        Map editor will default to user dir if it does not have access to save in normal maps dir, e.g win7
 
 Risk 1.1.0.1
 
