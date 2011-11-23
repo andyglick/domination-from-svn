@@ -478,8 +478,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		    }
 
 		    try {
-
-			JFileChooser fc = new JFileChooser( new File(new URI(RiskUIUtil.mapsdir.toString())) );
+			JFileChooser fc = new JFileChooser( RiskUIUtil.getSaveMapDir() );
 			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_MAP_FILES);
 			fc.setFileFilter(filter);
 

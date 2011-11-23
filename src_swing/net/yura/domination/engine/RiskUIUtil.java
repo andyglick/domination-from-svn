@@ -88,7 +88,7 @@ public class RiskUIUtil {
         }
     }
 
-    public static URL mapsdir;
+    public static URL mapsdir; // bundled maps are in this dir
 
     public static Applet applet;
     private static String webstart;
@@ -377,21 +377,21 @@ public class RiskUIUtil {
 
 
         public static String getNewMap(Frame f) {
-
             try {
-                Vector mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
-
-                // try and start new map chooser,
-                // on fail revert to using the old one
-                MapChooserSwingWrapper ch = new MapChooserSwingWrapper(mapsList);
-                return ch.getNewMap(f);
+                if (checkForNoSandbox()) {
+                    Vector mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
+                    // try and start new map chooser,
+                    // on fail revert to using the old one
+                    MapChooserSwingWrapper ch = new MapChooserSwingWrapper(mapsList);
+                    return ch.getNewMap(f);
+                }
             }
             catch (Throwable th) {
                 th.printStackTrace();
-                return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
             }
             
-
+            // can not have the map store, fall back to normal map chooser
+            return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
         }
 
         public static String getNewFile(Frame f,String a) {
@@ -972,5 +972,40 @@ public class RiskUIUtil {
                 JOptionPane.showMessageDialog( parent ,"Unable to open web browser: "+e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
         }
         
+    }
+    
+    public static boolean canWriteTo(File dir) {
+        try {
+            File tmp = new File(dir, "del.me");
+            tmp.createNewFile();
+            tmp.deleteOnExit();
+            tmp.delete();
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
+        
+    }
+    
+    public static File getSaveMapDir() {
+        try {
+            File saveDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+            if (RiskUIUtil.canWriteTo(saveDir)) {
+                return saveDir;
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        // oh crap, we have hit Win Vista/7 UAC
+
+        File userHome = new File( System.getProperty("user.home") );
+        File userMaps = new File(userHome, RiskUtil.getGameName()+" Maps");
+        if (!userMaps.mkdirs()) {
+            throw new RuntimeException("can not create dir "+userMaps);
+        }
+        return userMaps;
     }
 }
