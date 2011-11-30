@@ -786,7 +786,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 return makeRGBImage(img);
                             }
 
-                            JOptionPane.showMessageDialog(this,"no registered ImageReader claims to be able to read this file: "+newFile);
+                            JOptionPane.showMessageDialog(this,
+                                    "no registered ImageReader claims to be able to read this file:\n"+
+                                    newFile+"\n"+
+                                    "supported file formats are:\n"+
+                                    Arrays.asList(ImageIO.getReaderFormatNames()) );
 
 			}
 
