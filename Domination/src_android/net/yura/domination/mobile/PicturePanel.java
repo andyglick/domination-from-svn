@@ -93,7 +93,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 this.y=y;
             }
             else {
-                if (getDesktopPane().isAccurate(this.x, this.y, x, y)) {
+                DesktopPane dp = DesktopPane.getDesktopPane();
+                if (DesktopPane.isAccurate(this.x, x, dp.inaccuracy) && DesktopPane.isAccurate(this.y, y, dp.inaccuracy)) {
                     if (type == DesktopPane.RELEASED && ml!=null) {
                         ml.click(x,y);
                     }
