@@ -42,7 +42,7 @@ public class MapsTools {
 
         try {
 
-            File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+            File mapsDir = RiskUIUtil.getSaveMapDir();
             File xml = new File(mapsDir,MAPS_XML_FILE);
 
             if (xml.exists()) {
@@ -74,7 +74,7 @@ public class MapsTools {
             
             Task task = new Task("categories", maps);
         
-            File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+            File mapsDir = RiskUIUtil.getSaveMapDir();
             File xml = new File(mapsDir,MAPS_XML_FILE);
 
             XMLMapAccess access = new XMLMapAccess();
