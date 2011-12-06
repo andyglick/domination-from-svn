@@ -64,7 +64,13 @@ public class RiskUIUtil {
                     return getRiskFileURL(name).openStream();
                 }
                 public InputStream openMapStream(String name) throws IOException {
-                    return new URL(mapsdir,name).openStream();
+                    try {
+                        return new URL(mapsdir,name).openStream();
+                    }
+                    catch (IOException ex) {
+                        // now try the saveDir if we have one;
+                        throw new IOException(ex);
+                    }
                 }
                 public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
                     return ResourceBundle.getBundle(c.getPackage().getName()+"."+n, l );
@@ -1004,7 +1010,7 @@ public class RiskUIUtil {
 
         File userHome = new File( System.getProperty("user.home") );
         File userMaps = new File(userHome, RiskUtil.getGameName()+" Maps");
-        if (!userMaps.mkdirs()) {
+        if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
             throw new RuntimeException("can not create dir "+userMaps);
         }
         return userMaps;

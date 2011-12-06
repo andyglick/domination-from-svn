@@ -502,7 +502,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				}
 
 
-				saveMap( fileName );
+				saveMap( new File(file.getParentFile(),fileName) );
 
 			}
 
@@ -1086,8 +1086,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public void saveMap(String mapName) throws Exception {
+	public void saveMap(File mapFile) throws Exception {
 
+            String mapName = mapFile.getName();
 
 	    String name = mapName.substring(0, mapName.lastIndexOf('.') );
 
@@ -1095,10 +1096,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    String imageMapName = name+"_map."+IMAGE_MAP_EXTENSION;
 	    String imagePicName = name+"_pic."+IMAGE_PIC_EXTENSION;
 
-	    File mapFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+mapName) );
-	    File cardsFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+cardsName) );
-	    File imageMapFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+imageMapName) );
-	    File imagePicFile = new File( new URI(RiskUIUtil.mapsdir.toString()+"/"+imagePicName) );
+	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
+	    File imageMapFile = new File( mapFile.getParentFile(),imageMapName );
+	    File imagePicFile = new File( mapFile.getParentFile(),imagePicName );
 
 	    if (mapFile.exists() || cardsFile.exists() || imageMapFile.exists() || imagePicFile.exists()) {
 
