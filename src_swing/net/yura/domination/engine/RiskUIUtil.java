@@ -82,7 +82,7 @@ public class RiskUIUtil {
                     return getLoadFileInputStream(file);
                 }
                 public OutputStream saveMapFile(String fileName) throws Exception {
-                    return new FileOutputStream( new File(getFile(mapsdir),fileName) );
+                    return new FileOutputStream( new File(getSaveMapDir(),fileName) );
                 }
             };
         }
@@ -989,8 +989,9 @@ public class RiskUIUtil {
     }
     
     public static File getSaveMapDir() {
+
         try {
-            File saveDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+            File saveDir = getFile(mapsdir);
             if (RiskUIUtil.canWriteTo(saveDir)) {
                 return saveDir;
             }
