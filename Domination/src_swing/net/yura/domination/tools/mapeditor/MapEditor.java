@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -640,7 +642,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 }
 		else if (a.getActionCommand().equals("loadimagepic")) {
 
-			BufferedImage img = getNewImage();
+			BufferedImage img = getNewImage(true);
 
 			if (img!=null) {
 				editPanel.setImagePic(img,true);
@@ -651,7 +653,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		else if (a.getActionCommand().equals("loadimagemap")) {
 
-			BufferedImage img = getNewImage();
+			BufferedImage img = getNewImage(false);
 
 			if (img!=null) {
 				editPanel.setImageMap(img);
@@ -763,7 +765,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             return JOptionPane.showConfirmDialog(this, panel,title,JOptionPane.OK_CANCEL_OPTION);
         }
 
-	private BufferedImage getNewImage() {
+	private BufferedImage getNewImage(boolean jpeg) {
 
 		if (!RiskUIUtil.checkForNoSandbox()) {
 			RiskUIUtil.showAppletWarning(RiskUIUtil.findParentFrame(this));
@@ -774,6 +776,38 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 			JFileChooser fc = new JFileChooser( new File(new URI(RiskUIUtil.mapsdir.toString())) );
 
+                        String[] extensions = ImageIO.getReaderFormatNames();
+                        final ArrayList list = new ArrayList();
+                        for (int c=0;c<extensions.length;c++) {
+                            String extension = extensions[c].toLowerCase();
+                            if (!list.contains(extension)) {
+                                list.add(extension);
+                            }
+                        }
+
+                        if (!jpeg) {
+                            list.remove("jpg");
+                            list.remove("jpeg");
+                        }
+                        
+                        fc.setFileFilter( new FileFilter() {
+                            public boolean accept(File file) {
+                                if (file.isDirectory()) {
+                                    return true;
+                                }
+                                String name = file.getName().toLowerCase();
+                                for (int c=0;c<list.size();c++) {
+                                    if (name.endsWith( (String)list.get(c) )) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            }
+                            public String getDescription() {
+                                return "Images "+list;
+                            }
+                        } );
+                        
 			int returnVal = fc.showOpenDialog( RiskUIUtil.findParentFrame(this) );
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -790,7 +824,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                     "no registered ImageReader claims to be able to read this file:\n"+
                                     newFile+"\n"+
                                     "supported file formats are:\n"+
-                                    Arrays.asList(ImageIO.getReaderFormatNames()) );
+                                    list );
 
 			}
 
