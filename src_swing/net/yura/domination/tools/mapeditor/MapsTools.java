@@ -130,7 +130,7 @@ public class MapsTools {
         
             try {     
 
-                File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+                File mapsDir = RiskUIUtil.getSaveMapDir();
                 
                 File zipFile = new File(mapsDir, MapsTools.makePreviewName(map.getMapUrl())+".zip" );
                 if (!zipFile.exists()) {
