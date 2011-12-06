@@ -594,7 +594,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             
                             try {
 
-                                File mapsDir = new File(new URI(RiskUIUtil.mapsdir.toString()));
+                                File mapsDir = RiskUIUtil.getSaveMapDir();
                                 
                                 BufferedImage fullimg = ImageIO.read( new File(mapsDir, map2.getPreviewUrl() ) );
                                 BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
