@@ -1036,37 +1036,47 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 	}
 
-	public static Image getImage(RiskGame game) throws Exception {
-
+        public final static int PREVIEW_WIDTH=203;
+        public final static int PREVIEW_HEIGHT=127;
+        
+	public static Image getImage(RiskGame game) throws IOException {
 		// attempt to get the preview as its smaller
 		String imagename = game.getPreviewPic();
+                String name = game.getMapName();
+                Image img;
+                int width,height;
 
 		if (imagename==null) {
-
-			return Toolkit.getDefaultToolkit().getImage( new URL(RiskUIUtil.mapsdir,game.getImagePic() ) ).getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH );
-
+                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream( game.getImagePic() ) );
+                        img = s.getScaledInstance(PREVIEW_WIDTH,PREVIEW_HEIGHT, java.awt.Image.SCALE_SMOOTH );
+                        width = PREVIEW_WIDTH;
+                        height = PREVIEW_HEIGHT;
 		}
 		else {
+                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream("preview/"+imagename) );
+			img = s;
+                        width = s.getWidth();
+                        height = s.getHeight();
+		}
 
-			BufferedImage s = ImageIO.read(RiskUtil.openMapStream("preview/"+imagename) );
-			String name = game.getMapName();
 
-			BufferedImage tmpimg = new BufferedImage( 203,127, java.awt.image.BufferedImage.TYPE_INT_RGB );
-			Graphics2D g = tmpimg.createGraphics();
+                if (name!=null || width!=PREVIEW_WIDTH || height!=PREVIEW_HEIGHT) {
 
-
+                        //return Toolkit.getDefaultToolkit().getImage( new URL(RiskUIUtil.mapsdir,game.getImagePic() ) ).getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH );
 			//g.drawImage(s.getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ),0,0,null );
-
-			g.drawImage(s,0,0,tmpimg.getWidth(),tmpimg.getHeight(),0,0,s.getWidth(),s.getHeight(),null);
-
 			//AffineTransform at = AffineTransform.getScaleInstance((double)203/s.getWidth(),(double)127/s.getHeight());
 			//g.drawRenderedImage(s,at);
 
+                        
+                        BufferedImage tmpimg = new BufferedImage( PREVIEW_WIDTH,PREVIEW_HEIGHT, java.awt.image.BufferedImage.TYPE_INT_RGB );
+			Graphics2D g = tmpimg.createGraphics();
+
+			g.drawImage(img,0,0,PREVIEW_WIDTH,PREVIEW_HEIGHT,0,0,width,height,null);
 
 			if (name!=null) {
 
 				g.setColor( new Color(255,255,255, 150) );
-				g.fillRect(0,0,203,20);
+				g.fillRect(0,0,PREVIEW_WIDTH,20);
 				g.setColor( Color.BLACK );
 				g.drawString(name,5,15);
 
@@ -1075,8 +1085,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 			g.dispose();
 
 			return tmpimg;
-
-		}
+                }
+                return img;
+                
 	}
 
 	public Image getImage() {
