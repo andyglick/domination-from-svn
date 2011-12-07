@@ -468,21 +468,27 @@ public class RiskUIUtil {
 
 	}
 
-	public static String getLoadFileName(Frame frame,String dir,String extension) {
-
+        
+        public static final String SAVES_DIR = "saves/";
+        
+	public static String getLoadFileName(Frame frame) {
+            
 		if (applet!=null) {
 
 			showAppletWarning(frame);
 
 			return null;
 		}
+                
+                String extension = RiskFileFilter.RISK_SAVE_FILES;
+                
 		if (webstart!=null) {
 
 			try {
 
 				javax.jnlp.FileOpenService fos = (javax.jnlp.FileOpenService)javax.jnlp.ServiceManager.lookup("javax.jnlp.FileOpenService");
 
-				javax.jnlp.FileContents fc = fos.openFileDialog(dir, new String[] { extension } );
+				javax.jnlp.FileContents fc = fos.openFileDialog(SAVES_DIR, new String[] { extension } );
 
 				if (fc!=null) {
 
@@ -503,6 +509,7 @@ public class RiskUIUtil {
 		}
 		else {
 
+                        File dir = getSaveGameDir();
 			JFileChooser fc = new JFileChooser(dir);
 
 			fc.setFileFilter(new RiskFileFilter(extension));
@@ -514,7 +521,8 @@ public class RiskUIUtil {
 				// Write your code here what to do with selected file
 				return file.getAbsolutePath();
 
-			} else {
+			}
+                        else {
 				// Write your code here what to do if user has canceled Open dialog
 				return null;
 			}
@@ -543,7 +551,7 @@ public class RiskUIUtil {
 	}
 
 
-	public static String getSaveFileName(Frame frame,String dir,String extension) {
+	public static String getSaveFileName(Frame frame) {
 
 		if (applet!=null) {
 
@@ -551,14 +559,18 @@ public class RiskUIUtil {
 
 			return null;
 		}
+
+                String extension = RiskFileFilter.RISK_SAVE_FILES;
+                
 		if (webstart!=null) {
 
 			JOptionPane.showMessageDialog(frame,"Please make sure to select a file name ending with \"."+extension+"\"");
-			return dir+"filename."+extension;
+			return SAVES_DIR+"filename."+extension;
 
 		}
 		else {
 
+                        File dir = getSaveGameDir();
 			JFileChooser fc = new JFileChooser(dir);
 			fc.setFileFilter(new RiskFileFilter(extension));
 
@@ -576,7 +588,8 @@ public class RiskUIUtil {
 
 				return fileName;
 
-			} else {
+			}
+                        else {
 				// Write your code here what to do if user has canceled Save dialog
 				return null;
 			}
@@ -994,23 +1007,50 @@ public class RiskUIUtil {
         
     }
     
+    
+    private static File gameDir;
+    public static File getSaveGameDir() {
+        
+        if (gameDir!=null) {
+            return gameDir;
+        }
+
+        File saveDir = new File(SAVES_DIR);
+        if (RiskUIUtil.canWriteTo(saveDir)) {
+
+            gameDir = saveDir;
+            return saveDir;
+        }
+
+        // oh crap, we have hit Win Vista/7 UAC
+
+        File userHome = new File( System.getProperty("user.home") );
+        File userMaps = new File(userHome, RiskUtil.getGameName()+" Saves");
+        if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
+            throw new RuntimeException("can not create dir "+userMaps);
+        }
+
+        gameDir = userMaps;
+        return userMaps;
+    }
+    
+    
+    
+    
+    
+    
     private static File mapsDir;
     public static File getSaveMapDir() {
 
         if (mapsDir!=null) {
             return mapsDir;
         }
-        
-        try {
-            File saveDir = getFile(mapsdir);
-            if (RiskUIUtil.canWriteTo(saveDir)) {
 
-                mapsDir = saveDir;
-                return saveDir;
-            }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        File saveDir = getFile(mapsdir);
+        if (RiskUIUtil.canWriteTo(saveDir)) {
+
+            mapsDir = saveDir;
+            return saveDir;
         }
 
         // oh crap, we have hit Win Vista/7 UAC

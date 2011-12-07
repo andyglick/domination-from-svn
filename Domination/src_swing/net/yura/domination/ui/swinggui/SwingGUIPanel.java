@@ -1150,9 +1150,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		else if ("load game".equals(actionCommand)) {
 
 			String name = RiskUIUtil.getLoadFileName(
-				RiskUIUtil.findParentFrame(this),
-				RiskUtil.SAVES_DIR,
-				RiskFileFilter.RISK_SAVE_FILES
+				RiskUIUtil.findParentFrame(this)
+				//RiskUtil.SAVES_DIR,
+				//RiskFileFilter.RISK_SAVE_FILES
 			);
 
 			if (name!=null) {
@@ -1165,9 +1165,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		else if ("save game".equals(actionCommand)) {
 
 			String name = RiskUIUtil.getSaveFileName(
-				RiskUIUtil.findParentFrame(this),
-				RiskUtil.SAVES_DIR,
-				RiskFileFilter.RISK_SAVE_FILES
+				RiskUIUtil.findParentFrame(this)
+				//RiskUtil.SAVES_DIR,
+				//RiskFileFilter.RISK_SAVE_FILES
 			);
 
 			if (name!=null) {
