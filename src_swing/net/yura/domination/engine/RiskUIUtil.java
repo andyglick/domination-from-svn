@@ -345,18 +345,32 @@ public class RiskUIUtil {
             Vector namesvector = new Vector();
 
             if (checkForNoSandbox()) {
-                // get list of maps
-                File file = new File("maps");
-                File [] maps = file.listFiles( new FilenameFilter() {
+                
+                FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         return name.endsWith("."+a);
                     }
-                } );
-
-                for (int c=0;c<maps.length;c++) {
-                    namesvector.addElement( maps[c].getName() );
+                };
+                
+                
+                // get list of maps
+                File file = getSaveMapDir();
+                File [] mapsList = file.listFiles( filter );
+                for (int c=0;c<mapsList.length;c++) {
+                    namesvector.addElement( mapsList[c].getName() );
                 }
 
+                
+                File file2 = getFile(mapsdir);
+                if (!file.equals(file2)) {
+                    mapsList = file2.listFiles( filter );
+                    for (int c=0;c<mapsList.length;c++) {
+                        String name = mapsList[c].getName();
+                        if (!namesvector.contains(name)) {
+                            namesvector.addElement( name );
+                        }
+                    }
+                }
             }
             else {
 
