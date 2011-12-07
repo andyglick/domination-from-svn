@@ -2084,23 +2084,13 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param file The filename of the save
 	 * @return boolean Return trues if you saved, returns false if you cannot
 	 */
-	public boolean saveGame(String file) { //added RiskGame parameter g, so remember to change in parser
+	public void saveGame(String file) throws Exception { //added RiskGame parameter g, so remember to change in parser
 
-		try {
+            RiskUtil.saveFile(file,this);
 
-			RiskUtil.saveFile(file,this);
-
-			//XMLEncoder e = new XMLEncoder( new BufferedOutputStream( new FileOutputStream(file)));
-			//e.writeObject(this);
-			//e.close();
-
-		}
-		catch (Exception e) {
-			//e.printStackTrace();
-			//System.out.println(e.getMessage());
-			return false;
-		}
-		return true;
+            //XMLEncoder e = new XMLEncoder( new BufferedOutputStream( new FileOutputStream(file)));
+            //e.writeObject(this);
+            //e.close();
 	}
 
 	/**
