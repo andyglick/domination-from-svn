@@ -65,11 +65,11 @@ public class RiskUIUtil {
                 }
                 public InputStream openMapStream(String name) throws IOException {
                     try {
-                        return new URL(mapsdir,name).openStream();
+                        File mapsDir = getSaveMapDir();
+                        return new FileInputStream( new File(mapsDir,name) );
                     }
-                    catch (IOException ex) {
-                        // now try the saveDir if we have one;
-                        throw new IOException(ex);
+                    catch (Throwable th) {
+                        return new URL(mapsdir,name).openStream();
                     }
                 }
                 public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
@@ -994,11 +994,18 @@ public class RiskUIUtil {
         
     }
     
+    private static File mapsDir;
     public static File getSaveMapDir() {
 
+        if (mapsDir!=null) {
+            return mapsDir;
+        }
+        
         try {
             File saveDir = getFile(mapsdir);
             if (RiskUIUtil.canWriteTo(saveDir)) {
+
+                mapsDir = saveDir;
                 return saveDir;
             }
         }
@@ -1013,6 +1020,8 @@ public class RiskUIUtil {
         if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
             throw new RuntimeException("can not create dir "+userMaps);
         }
+
+        mapsDir = userMaps;
         return userMaps;
     }
 }
