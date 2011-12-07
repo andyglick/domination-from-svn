@@ -524,9 +524,9 @@ public class GameFrame extends JFrame implements KeyListener {
 			else if (e.getSource()==savebutton) {
 
 				String name = RiskUIUtil.getSaveFileName(
-					GameFrame.this,
-					RiskUtil.SAVES_DIR,
-					RiskFileFilter.RISK_SAVE_FILES
+					GameFrame.this
+					//RiskUtil.SAVES_DIR,
+					//RiskFileFilter.RISK_SAVE_FILES
 				);
 
 				if (name!=null) {

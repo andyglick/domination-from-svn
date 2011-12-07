@@ -25,8 +25,6 @@ public class RiskUtil {
 	public static final String GAME_NAME;
 //	private static final String DEFAULT_MAP;
 
-	public static final String SAVES_DIR = "saves/";
-
 	public static RiskIO streamOpener;
 
 	private final static Properties settings;

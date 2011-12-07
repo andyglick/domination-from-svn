@@ -346,9 +346,9 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 				case MainMenu.BUTTON_LOADGAME: {
 
 					String name = RiskUIUtil.getLoadFileName(
-						RiskUIUtil.findParentFrame(this),
-						RiskUtil.SAVES_DIR,
-						RiskFileFilter.RISK_SAVE_FILES
+						RiskUIUtil.findParentFrame(this)
+						//RiskUtil.SAVES_DIR,
+						//RiskFileFilter.RISK_SAVE_FILES
 					);
 
 					if (name!=null) {
