@@ -378,7 +378,8 @@ e.printStackTrace();
 
 							}
 							catch (Exception ex) {
-								output=resb.getString( "core.loadgame.error.load")+" "+ex.toString();
+                                                                ex.printStackTrace();
+								output=resb.getString( "core.loadgame.error.load")+" "+ex;
 								showMessageDialog(output);
 							}
 						//}
@@ -457,7 +458,8 @@ e.printStackTrace();
 								output="AccessControlException:\n"+resb.getString( "core.error.applet");
 							}
 							catch (Exception e) { // catch not being able to make a new game, so game is null
-								output=resb.getString( "core.join.error.create")+" "+e.toString();
+                                                                game=null; // just in case ;-)
+								output=resb.getString( "core.join.error.create")+" "+e;
 							}
 
 
@@ -493,7 +495,7 @@ e.printStackTrace();
 							catch(Exception e) {
 
 								chatter = null;
-								output=resb.getString( "core.startserver.error")+" "+e.getMessage();
+								output=resb.getString( "core.startserver.error")+" "+e;
 								showMessageDialog(output);
 
 							}
@@ -1158,10 +1160,9 @@ e.printStackTrace();
 
 						}
 						catch (Exception e) {
-							output=resb.getString( "core.choosemap.error.unable");
-							//if ( chatSocket != null ) {
-								showMessageDialog("Error loading map: "+filename+" "+e.getMessage());
-							//}
+                                                        e.printStackTrace();
+							output=resb.getString( "core.choosemap.error.unable")+" "+e;
+                                                        showMessageDialog(output);
 						}
 
 					}
@@ -1665,11 +1666,20 @@ e.printStackTrace();
 						filename = filename + " " + GetNext();
 					}
 
-					if ( battle==false && game.saveGame(filename) ) {
-						output=resb.getString( "core.save.saved");
-					}
-					else {
-						output=resb.getString( "core.save.error.unable");
+					if (battle) {
+						output=resb.getString( "core.save.error.unable"); // TODO better error message, can not save during battle
+                                                showMessageDialog(output);
+                                        }
+                                        else {
+                                            try {
+                                                game.saveGame(filename);
+                                                output=resb.getString( "core.save.saved");
+                                            }
+                                            catch (Exception ex) {
+                                                ex.printStackTrace();
+                                                output=resb.getString( "core.save.error.unable")+" "+ex;
+                                                showMessageDialog(output);
+                                            }
 					}
 
 				    }
