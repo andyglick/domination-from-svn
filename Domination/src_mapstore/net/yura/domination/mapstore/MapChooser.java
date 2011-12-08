@@ -552,6 +552,7 @@ public class MapChooser implements ActionListener {
         String mapUID;
         String mapContext;
         Vector urls = new Vector();
+        MapServerClient myClient;
         
         MapDownload(String url) {
             
@@ -559,6 +560,8 @@ public class MapChooser implements ActionListener {
             
             mapContext = url.substring(0, url.length() - mapUID.length() );
 
+            myClient = client; // keep copy of http client
+            
             downloadFile( mapUID );
         }
         
@@ -571,7 +574,8 @@ public class MapChooser implements ActionListener {
             String url = mapContext + fileName;
             
             urls.addElement(url);
-            client.makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
+
+            myClient.makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
         }
         
         boolean hasUrl(String url) {
