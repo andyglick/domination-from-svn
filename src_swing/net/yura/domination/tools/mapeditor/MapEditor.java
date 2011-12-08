@@ -584,13 +584,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         map2.setMapWidth( String.valueOf( editPanel.getImagePic().getWidth() ) );
                         map2.setMapHeight( String.valueOf( editPanel.getImagePic().getHeight() ) );
                         
+                        final String PREVIEW = "preview";
+                        
                         // check if we already have a preview
-                        if (!map2.getPreviewUrl().startsWith("preview/")) {
+                        if (!map2.getPreviewUrl().startsWith(PREVIEW+"/")) {
 
-                            String jpg = "jpg";
+                            final String jpg = "jpg";
                             
                             // we do NOT have a preview, we need to generate one
-                            String prv = "preview/"+MapsTools.makePreviewName(fileName)+"."+jpg;
+                            String prv = MapsTools.makePreviewName(fileName)+"."+jpg;
                             
                             try {
 
@@ -603,11 +605,16 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
                                 g.dispose();
 
-                                boolean done = ImageIO.write( prvimg , jpg , new File(mapsDir,prv) );
+                                File previewDir = new File(mapsDir,PREVIEW);
+                                if (!previewDir.isDirectory() && !previewDir.mkdirs()) { // if it does not exist and i cant make it
+                                    throw new RuntimeException("can not create dir "+previewDir);
+                                }
+                                
+                                boolean done = ImageIO.write( prvimg , jpg , new File(previewDir,prv) );
                                 
                                 if (!done) throw new RuntimeException("not done");
 
-                                map2.setPreviewUrl(prv);
+                                map2.setPreviewUrl(PREVIEW+"/"+prv);
                             }
                             catch(Exception ex) {
                                 throw new RuntimeException(ex);
