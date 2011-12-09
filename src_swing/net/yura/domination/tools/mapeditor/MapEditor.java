@@ -479,40 +479,39 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			return;
 		    }
 
-		    try {
-			JFileChooser fc = new JFileChooser( RiskUIUtil.getSaveMapDir() );
-			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_MAP_FILES);
-			fc.setFileFilter(filter);
+                    JFileChooser fc = new JFileChooser( RiskUIUtil.getSaveMapDir() );
+                    RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_MAP_FILES);
+                    fc.setFileFilter(filter);
 
-                        if (fileName!=null) {
-                            fc.setSelectedFile( new File( fileName ) );
+                    String newFileName = fileName;
+
+                    while(true) {
+                        if (newFileName!=null) {
+                            fc.setSelectedFile( new File( newFileName ) );
+                        }                        
+                        int returnVal = fc.showSaveDialog( RiskUIUtil.findParentFrame(this) );
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File file = fc.getSelectedFile();
+                            newFileName = file.getName();
+                            if (!(newFileName.endsWith( "." + RiskFileFilter.RISK_MAP_FILES ))) {
+                                    newFileName = newFileName + "." + RiskFileFilter.RISK_MAP_FILES;
+                            }
+
+                            try {
+                                boolean result = saveMap( new File(file.getParentFile(),newFileName) );
+                                if (result) {
+                                    fileName = newFileName;
+                                    break; // everything is saved
+                                }
+                            }
+                            catch(Throwable ex) {
+                                showError(ex);
+                            }
                         }
-                        
-			int returnVal = fc.showSaveDialog( RiskUIUtil.findParentFrame(this) );
-
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-				File file = fc.getSelectedFile();
-
-
-				String fileName = file.getName();
-
-				if (!(fileName.endsWith( "." + RiskFileFilter.RISK_MAP_FILES ))) {
-					fileName = fileName + "." + RiskFileFilter.RISK_MAP_FILES;
-				}
-
-
-				saveMap( new File(file.getParentFile(),fileName) );
-
-			}
-
-		    }
-		    catch(Throwable ex) {
-
-			showError(ex);
-
-		    }
-
+                        else {
+                            break; // user cancelled!
+                        }
+                    }
 		}
 		else if (a.getActionCommand().equals("play")) {
 
@@ -1093,7 +1092,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public void saveMap(File mapFile) throws Exception {
+        /**
+         * @return true if everything is ok, false if the user cancelled
+         */
+	public boolean saveMap(File mapFile) throws Exception {
 
             String mapName = mapFile.getName();
 
@@ -1117,7 +1119,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		if (result != JOptionPane.YES_OPTION) {
 
-			return;
+			return false;
 
 		}
 
@@ -1344,6 +1346,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		throw new Exception("unable to save image files!\nPlease email yura@yura.net and tell!");
 
 	    }
+            
+            return true;
+            
 	}
 
 }
