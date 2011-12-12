@@ -21,7 +21,7 @@ public class RiskUtil {
 
 	public static final String RISK_VERSION_URL;
 	public static final String RISK_LOBBY_URL;
-	public static final String RISK_POST_URL;
+//	public static final String RISK_POST_URL; // look in Grasshopper.jar now
 	public static final String GAME_NAME;
 //	private static final String DEFAULT_MAP;
 
@@ -41,7 +41,7 @@ public class RiskUtil {
 
 		RISK_VERSION_URL = settings.getProperty("VERSION_URL");
 		RISK_LOBBY_URL = settings.getProperty("LOBBY_URL");
-		RISK_POST_URL = settings.getProperty("POST_URL");
+//		RISK_POST_URL = settings.getProperty("POST_URL");
 		GAME_NAME = settings.getProperty("name");
 		//DEFAULT_MAP = settings.getProperty("defaultmap");
 		Risk.RISK_VERSION = settings.getProperty("version");
