@@ -579,14 +579,16 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         map2.setName( mapName.getText() );
                         map2.setAuthorId (authorEmail.getText() ); // TODO using email as ID!!!
 
+                        final BufferedImage fullimg = editPanel.getImagePic();
+                        
                         // add extra info
-                        map2.setMapWidth( String.valueOf( editPanel.getImagePic().getWidth() ) );
-                        map2.setMapHeight( String.valueOf( editPanel.getImagePic().getHeight() ) );
+                        map2.setMapWidth( String.valueOf( fullimg.getWidth() ) );
+                        map2.setMapHeight( String.valueOf( fullimg.getHeight() ) );
                         
                         final String PREVIEW = "preview";
                         
                         // check if we already have a preview
-                        if (!map2.getPreviewUrl().startsWith(PREVIEW+"/")) {
+                        if (map2.getPreviewUrl()==null || !map2.getPreviewUrl().startsWith(PREVIEW+"/")) {
 
                             final String jpg = "jpg";
                             
@@ -596,10 +598,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             try {
 
                                 File mapsDir = RiskUIUtil.getSaveMapDir();
-                                
-                                BufferedImage fullimg = ImageIO.read( new File(mapsDir, map2.getPreviewUrl() ) );
-                                BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
 
+                                BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
                                 Graphics g = prvimg.getGraphics();
                                 g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
                                 g.dispose();
