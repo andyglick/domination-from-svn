@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.1
+	Risk Game:	1.1.0.2
 	 * Save:	7
 	 * Network:	8
 
@@ -12,7 +12,7 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.2
+1.1.0.2 (12.12.2011)
 
 	continents in map editor show color in list
         can double click on items in list
@@ -20,8 +20,9 @@ CURRENT VERSION:
 	Map Store added for downloading new maps
 	Donate switched from paypal to google
         Map editor will default to user dir if it does not have access to save in normal maps dir, e.g win7
+	publish button added to send maps to the server
 
-Risk 1.1.0.1
+Risk 1.1.0.1 (18.06.2010)
 
 	in FlashGUI when u make a new game, it remembers your old player state
 	bug with trading cards in CARD_INCREASING_SET fixed
