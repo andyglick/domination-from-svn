@@ -10,21 +10,16 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
-//import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-//import java.awt.image.ColorConvertOp;
 import java.awt.image.RescaleOp;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
@@ -1041,26 +1036,32 @@ public class PicturePanel extends JPanel implements MapPanel {
         
 	public static Image getImage(RiskGame game) throws IOException {
 		// attempt to get the preview as its smaller
-		String imagename = game.getPreviewPic();
+		String previewName = game.getPreviewPic();
                 String name = game.getMapName();
-                Image img;
-                int width,height;
+                Image img=null;
+                int width=-1,height=-1;
+                boolean error = false;
 
-		if (imagename==null) {
+		if (previewName!=null) {
+                    try {
+                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream("preview/"+previewName) );
+			img = s;
+                        width = s.getWidth();
+                        height = s.getHeight();
+                    }
+                    catch (IOException ex) { // if we fail to load the preview its not the end of the world
+                        error = true;
+                    }
+		}
+
+                if (img==null) {
                         BufferedImage s = ImageIO.read(RiskUtil.openMapStream( game.getImagePic() ) );
                         img = s.getScaledInstance(PREVIEW_WIDTH,PREVIEW_HEIGHT, java.awt.Image.SCALE_SMOOTH );
                         width = PREVIEW_WIDTH;
                         height = PREVIEW_HEIGHT;
 		}
-		else {
-                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream("preview/"+imagename) );
-			img = s;
-                        width = s.getWidth();
-                        height = s.getHeight();
-		}
 
-
-                if (name!=null || width!=PREVIEW_WIDTH || height!=PREVIEW_HEIGHT) {
+                if (name!=null || width!=PREVIEW_WIDTH || height!=PREVIEW_HEIGHT || error) {
 
                         //return Toolkit.getDefaultToolkit().getImage( new URL(RiskUIUtil.mapsdir,game.getImagePic() ) ).getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH );
 			//g.drawImage(s.getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ),0,0,null );
@@ -1081,6 +1082,11 @@ public class PicturePanel extends JPanel implements MapPanel {
 				g.drawString(name,5,15);
 
 			}
+
+                        if (error) {
+                            g.setColor( Color.RED );
+                            g.fillOval(PREVIEW_WIDTH-20, 5, 10, 10);
+                        }
 
 			g.dispose();
 
