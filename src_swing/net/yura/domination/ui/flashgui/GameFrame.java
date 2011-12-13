@@ -46,6 +46,8 @@ import net.yura.domination.engine.translation.TranslationBundle;
  */
 public class GameFrame extends JFrame implements KeyListener {
 
+        public static final Color UI_COLOR = Color.RED;
+    
 	private BufferedImage game;
 	private Risk myrisk;
 	private PicturePanel pp;

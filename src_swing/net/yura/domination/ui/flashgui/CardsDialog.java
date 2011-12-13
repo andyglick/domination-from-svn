@@ -365,7 +365,7 @@ public class CardsDialog extends JDialog {
 
 				LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
 
-				g2.setColor( Color.blue );
+				g2.setColor( GameFrame.UI_COLOR );
 				TextLayout tl = new TextLayout(aci, frc);
 
 				float y = 5;
@@ -404,7 +404,7 @@ public class CardsDialog extends JDialog {
 			//TextLayout tl = new TextLayout( card.getName() , font, frc);
 			//tl.draw( g2, (float) (100/2-tl.getBounds().getWidth()/2), (float)160 );
 
-			g2.setColor( Color.blue );
+			g2.setColor( GameFrame.UI_COLOR );
 
 			Shape shape2 = new RoundRectangle2D.Float(2, 2, 95, 165, 20, 20);
 
