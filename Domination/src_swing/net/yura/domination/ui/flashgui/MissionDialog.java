@@ -6,7 +6,6 @@ import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -123,7 +122,7 @@ public class MissionDialog extends JDialog implements MouseListener {
 
             LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
 
-	    g2.setColor( Color.blue );
+	    g2.setColor( GameFrame.UI_COLOR );
 	    TextLayout tl = new TextLayout(aci, frc);
 
             float y = 70;
