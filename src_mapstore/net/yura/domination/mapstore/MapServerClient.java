@@ -13,11 +13,11 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.OptionPane;
-import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.logging.Logger;
+import net.yura.mobile.util.SystemUtil;
 import net.yura.mobile.util.Url;
 
 /**
@@ -63,14 +63,14 @@ public class MapServerClient extends HTTPClient implements EventListener {
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
 System.out.println("Got XML "+task);
-            
+
             chooser.gotResultXML(request.url,task);
-            
+
         }
         else if (request.id == MAP_REQUEST_ID) {
-            
+
             chooser.gotResultMap(request.url,is);
-            
+
         }
         else {
 
@@ -92,7 +92,7 @@ System.out.println("Got XML "+task);
         	byte[] data=null;
 
             if (reEncode) {
-            	
+
             	System.out.println("#################################### am going to re-encode img: "+id);
 
                 try {
@@ -114,7 +114,7 @@ System.out.println("Got XML "+task);
 
             }
             else {
-            	data = FileUtil.getData(is, (int)length);
+            	data = SystemUtil.getData(is, (int)length);
             }
 
             cr.setData( data );
@@ -137,9 +137,9 @@ System.out.println("Got XML "+task);
         }
         makeRequest( xmlServerURL+string , params, XML_REQUEST_ID);
     }
-    
+
     void makeRequest(String url,Hashtable params,Object type) {
-        
+
             Request request = new Request();
             request.url = url;
             request.params = params;
@@ -150,7 +150,7 @@ System.out.println("Make Request: "+request);
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby
             makeRequest(request);
-        
+
     }
 
     public void eventReceived(final Event arg0, final Object arg1, final Object arg2) {
