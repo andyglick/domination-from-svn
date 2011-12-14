@@ -47,13 +47,13 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
-        // TODO make this better
-
-        OptionPane.showMessageDialog(null, "error: "+responseCode+" "+ex+" "+request+"\n\n"+headers, "Error!", OptionPane.ERROR_MESSAGE);
-
+        Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n\n"+headers );
         if (ex!=null) {
             Logger.warn(ex);
         }
+
+        // TODO make this better
+        OptionPane.showMessageDialog(null, "error: "+responseCode , "Error!", OptionPane.ERROR_MESSAGE);
     }
 
     protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {
