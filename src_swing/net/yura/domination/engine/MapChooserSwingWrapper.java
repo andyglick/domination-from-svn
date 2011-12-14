@@ -8,7 +8,7 @@ import javax.swing.JDialog;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.ActionListener;
-import net.yura.tools.translation.ME4SEPanel;
+import net.yura.me4se.ME4SEPanel;
 
 /**
  * @author Yura Mamyrin
@@ -46,7 +46,7 @@ public class MapChooserSwingWrapper implements ActionListener {
             }
         });
 
-        dialog.add(wrapper);
+        dialog.getContentPane().add(wrapper);
         //dialog.pack();
         dialog.setSize(320,480); // same as Jesus Piece
         dialog.setLocationRelativeTo(parent);
