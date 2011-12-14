@@ -12,6 +12,12 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
+1.1.0.3
+
+	NewGameFrame will show preview of map even if preview file is missing (shows red dot)
+	support for java 1.4 again, got rid of the dependence on ToolsME.jar
+
+
 1.1.0.2 (12.12.2011)
 
 	continents in map editor show color in list
