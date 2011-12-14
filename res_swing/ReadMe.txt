@@ -15,4 +15,4 @@ The full source to Risk is included in src.zip
 
 send questions and comments to: yura@yura.net
 
-Copyright (c) 2003-2010 yura.net
+Copyright (c) 2003-2012 yura.net
