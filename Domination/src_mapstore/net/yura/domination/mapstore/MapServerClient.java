@@ -30,10 +30,10 @@ public class MapServerClient extends HTTPClient implements EventListener {
     public static final Object XML_REQUEST_ID = new Object();
     public static final Object MAP_REQUEST_ID = new Object();
 
-    MapChooser chooser;
+    MapServerListener chooser;
     String xmlServerURL;
 
-    public MapServerClient(MapChooser aThis,String url) {
+    public MapServerClient(MapServerListener aThis,String url) {
         chooser = aThis;
         xmlServerURL = url;
 

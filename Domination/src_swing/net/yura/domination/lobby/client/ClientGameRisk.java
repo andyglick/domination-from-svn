@@ -21,6 +21,7 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -67,6 +68,9 @@ public class ClientGameRisk extends TurnBasedAdapter {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                     public OutputStream saveMapFile(String fileName) throws Exception {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                    public void getMap(String filename, Risk risk) {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
             };

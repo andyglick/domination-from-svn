@@ -31,7 +31,7 @@ import net.yura.swingme.core.CoreUtil;
 /**
  * @author Yura Mamyrin
  */
-public class MapChooser implements ActionListener {
+public class MapChooser implements ActionListener,MapServerListener {
 
     public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
@@ -400,7 +400,7 @@ public class MapChooser implements ActionListener {
         return selectedMap;
     }
 
-    void gotResultXML(String url,Task task) {
+    public void gotResultXML(String url,Task task) {
         String method = task.getMethod();
 
 
@@ -427,7 +427,7 @@ public class MapChooser implements ActionListener {
 
     }
     
-    void onError(String error) {
+    public void onError(String error) {
         // TODO make this better
         OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
     }
@@ -442,14 +442,19 @@ public class MapChooser implements ActionListener {
         }
     }
 
-    private void setListData(String context,Vector items) {
-        
-        if (context!=null) {
-            int i = context.lastIndexOf('/');
+    public static String getContext(String url) {
+        if (url!=null) {
+            int i = url.lastIndexOf('/');
             if (i> "http://.".length() ) {
-                context = context.substring(0, i+1);
+                url = url.substring(0, i+1);
             }
         }
+        return url;
+    }
+    
+    private void setListData(String url,Vector items) {
+        
+        String context = getContext(url);
         
         List list = (List)loader.find("ResultList");
         
