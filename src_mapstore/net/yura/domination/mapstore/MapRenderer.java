@@ -163,7 +163,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             String mapUID = MapChooser.getFileUID( map.getMapUrl() );
             
-            if ( chooser.isDownloading( mapUID ) ) { // we need to check for this first as we may have it and also be updating it
+            if ( chooser.client.isDownloading( mapUID ) ) { // we need to check for this first as we may have it and also be updating it
 
                 // position spinner in top right corner
                 int x = getWidth()-bar.getWidth()-gap;
