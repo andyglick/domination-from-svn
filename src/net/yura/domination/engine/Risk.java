@@ -1149,20 +1149,12 @@ e.printStackTrace();
 						}
 
 						try {
-
-							boolean yesmissions = game.setMapfile(filename);
-
-							setupPreview();
-
-							controller.showCardsFile( game.getCardsFile() , yesmissions );
-							//New map file selected: "{0}" (cards have been reset to the default for this map)
-							output=resb.getString( "core.choosemap.mapselected").replaceAll( "\\{0\\}", filename);
-
+                                                    setMap(filename);
 						}
 						catch (Exception e) {
-                                                        e.printStackTrace();
-							output=resb.getString( "core.choosemap.error.unable")+" "+e;
-                                                        showMessageDialog(output);
+                                                    // crap, we wanted to use this map, but we would not load it
+                                                    // maybe we can download it from the server and then use it
+                                                    RiskUtil.streamOpener.getMap(filename,this);
 						}
 
 					}
@@ -2375,10 +2367,26 @@ e.printStackTrace();
 
 	}
 
+        // TODO is this thread safe???
+        public void setMap(String filename) throws Exception {
+            
+            boolean yesmissions = game.setMapfile(filename);
+
+            setupPreview();
+
+            controller.showCardsFile( game.getCardsFile() , yesmissions );
+            //New map file selected: "{0}" (cards have been reset to the default for this map)
+            String output=resb.getString( "core.choosemap.mapselected").replaceAll( "\\{0\\}", filename);
+            
+            controller.sendMessage(output, false , true);
+        }
+        public void getMapError(String string) {
+            controller.sendMessage(string, false , true);
+            showMessageDialog(string);
+        }
+        
 	private void setupPreview() {
-            if (controller.countListeners()>0) {
-                    controller.showMapPic( game );
-            }
+            controller.showMapPic( game );
 	}
 
 	public static int getType(String type) {

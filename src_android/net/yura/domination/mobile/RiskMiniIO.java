@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.io.FileUtil;
@@ -52,6 +54,11 @@ public class RiskMiniIO implements RiskIO {
 
     public OutputStream saveMapFile(String fileName) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void getMap(String filename, Risk risk) {
+        net.yura.domination.mapstore.GetMap.getMap(filename, risk);
     }
 
 }

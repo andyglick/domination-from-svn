@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import net.yura.domination.engine.Risk;
 import org.lobby.server.TurnBasedGame;
 
 import java.util.Iterator;
@@ -63,6 +64,9 @@ public class ServerGameRisk extends TurnBasedGame {
                 }
                 public java.io.OutputStream saveMapFile(String fileName) throws Exception {
                     throw new UnsupportedOperationException("can not add maps to server");
+                }
+                public void getMap(String filename, Risk risk) {
+                    throw new UnsupportedOperationException("Not supported yet.");
                 }
             };
         }

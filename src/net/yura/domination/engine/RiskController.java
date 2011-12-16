@@ -51,7 +51,7 @@ public class RiskController {
     }
 
 
-    public void sendMessage(String output, boolean a, boolean b) {
+    public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
 
         Object[] arrLocal;
 
@@ -61,7 +61,7 @@ public class RiskController {
 
 	try {
             for (int i = arrLocal.length-1; i>=0; i--)
-                ((RiskListener)arrLocal[i]).sendMessage(output,a,b);
+                ((RiskListener)arrLocal[i]).sendMessage(output,redrawNeeded,repaintNeeded);
 	}
 	catch(Exception ex) {
 	    ex.printStackTrace();
