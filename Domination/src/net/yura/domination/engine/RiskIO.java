@@ -25,5 +25,5 @@ public interface RiskIO {
         
         OutputStream saveMapFile(String fileName) throws Exception;
         
-        void getMap(String filename,Risk risk);
+        void getMap(String filename,Risk risk,Exception ex);
 }
