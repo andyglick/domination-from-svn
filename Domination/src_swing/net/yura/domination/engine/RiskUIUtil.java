@@ -90,8 +90,8 @@ public class RiskUIUtil {
                 public OutputStream saveMapFile(String fileName) throws Exception {
                     return new FileOutputStream( new File(getSaveMapDir(),fileName) );
                 }
-                public void getMap(String filename, Risk risk) {
-                    net.yura.domination.mapstore.GetMap.getMap(filename,risk);
+                public void getMap(String filename, Risk risk,Exception ex) {
+                    net.yura.domination.mapstore.GetMap.getMap(filename,risk,ex);
                 }
             };
         }

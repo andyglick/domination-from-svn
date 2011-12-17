@@ -3,7 +3,6 @@ package net.yura.domination.mapstore;
 import java.util.Hashtable;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.io.ServiceLink.Task;
 
 /**
@@ -26,8 +25,8 @@ public class GetMap implements MapServerListener {
         get.client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",filename );
     }
 
-    public void onError(String string) {
-        myrisk.getMapError(string);
+    public void onError(String exception) {
+        myrisk.getMapError(exception);
         client.kill();
     }
 
@@ -38,14 +37,12 @@ public class GetMap implements MapServerListener {
             Map themap = (Map)maps.elementAt(0);
             client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
         }
-        else if (maps.size()==0) {
-            
-            
-        }
-        else { // this should never happen
-            String error = "wrong number of maps: "+maps.size()+" for map: "+filename;
-            System.err.println(error);
-            onError(error);
+        else {
+            if (maps.size() != 0) { // this should never happen
+                System.err.println( "wrong number of maps: "+maps.size()+" for map: "+filename );
+            }
+            problem.printStackTrace();
+            onError(problem.toString());
         }
     }
 
@@ -56,7 +53,7 @@ public class GetMap implements MapServerListener {
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            onError( TranslationBundle.getBundle().getString( "core.choosemap.error.unable")+" "+ex );
+            onError(ex.toString());
         }
     }
     
