@@ -14,11 +14,13 @@ public class GetMap implements MapServerListener {
     MapServerClient client;
     Risk myrisk;
     String filename;
+    Exception problem;
     
-    public static void getMap(String filename, Risk risk) {
+    public static void getMap(String filename, Risk risk,Exception ex) {
         GetMap get = new GetMap();
         get.filename = filename;
         get.myrisk = risk;
+        get.problem = ex;
         get.client = new MapServerClient(get, MapChooser.SERVER_URL);
         get.client.start();
         get.client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",filename );
@@ -35,6 +37,10 @@ public class GetMap implements MapServerListener {
         if (maps.size()==1) {
             Map themap = (Map)maps.elementAt(0);
             client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
+        }
+        else if (maps.size()==0) {
+            
+            
         }
         else { // this should never happen
             String error = "wrong number of maps: "+maps.size()+" for map: "+filename;

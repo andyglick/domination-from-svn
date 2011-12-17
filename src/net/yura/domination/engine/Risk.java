@@ -1154,7 +1154,7 @@ e.printStackTrace();
 						catch (Exception e) {
                                                     // crap, we wanted to use this map, but we would not load it
                                                     // maybe we can download it from the server and then use it
-                                                    RiskUtil.streamOpener.getMap(filename,this);
+                                                    RiskUtil.streamOpener.getMap(filename,this,e);
 						}
 
 					}
