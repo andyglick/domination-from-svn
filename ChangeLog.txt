@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.2
+	Risk Game:	1.1.0.3
 	 * Save:	7
 	 * Network:	8
 
@@ -14,18 +14,19 @@ CURRENT VERSION:
 
 1.1.0.3
 
+	when there is a new version out, clicking ok takes you to the website
 	NewGameFrame will show preview of map even if preview file is missing (shows red dot)
 	support for java 1.4 again, got rid of the dependence on ToolsME.jar
-
+	in network play if a user is missing a map, it will try to download it from the server
 
 1.1.0.2 (12.12.2011)
 
 	continents in map editor show color in list
-        can double click on items in list
+	can double click on items in list
 	German update - Oliver S.
 	Map Store added for downloading new maps
 	Donate switched from paypal to google
-        Map editor will default to user dir if it does not have access to save in normal maps dir, e.g win7
+	Map editor will default to user dir if it does not have access to save in normal maps dir, e.g win7
 	publish button added to send maps to the server
 
 Risk 1.1.0.1 (18.06.2010)
