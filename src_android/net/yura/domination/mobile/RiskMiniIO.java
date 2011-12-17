@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.mobile.gui.Midlet;
@@ -56,9 +54,8 @@ public class RiskMiniIO implements RiskIO {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void getMap(String filename, Risk risk) {
-        net.yura.domination.mapstore.GetMap.getMap(filename, risk);
+    public void getMap(String filename, Risk risk,Exception ex) {
+        net.yura.domination.mapstore.GetMap.getMap(filename, risk,ex);
     }
 
 }

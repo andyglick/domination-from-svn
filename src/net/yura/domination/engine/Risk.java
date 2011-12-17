@@ -2380,9 +2380,11 @@ e.printStackTrace();
             
             controller.sendMessage(output, false , true);
         }
-        public void getMapError(String string) {
-            controller.sendMessage(string, false , true);
-            showMessageDialog(string);
+        public void getMapError(String exception) {
+            
+            String output = resb.getString( "core.choosemap.error.unable")+" "+exception;
+            controller.sendMessage(output, false , true);
+            showMessageDialog(output);
         }
         
 	private void setupPreview() {
