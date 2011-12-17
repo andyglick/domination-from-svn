@@ -49,12 +49,12 @@ public class MapServerClient extends HTTPClient implements EventListener {
 
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
-        Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n\n"+headers );
-        if (ex!=null) {
-            Logger.warn(ex);
-        }
+        // print error to console
+        Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n"+headers );
+        if (ex!=null) { Logger.warn(ex); }
 
-        chooser.onError("error: "+responseCode);
+        // show error dialog to the user
+        chooser.onError("error: "+responseCode+(ex!=null?" "+ex:"") );
     }
 
     protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {

@@ -814,7 +814,21 @@ public class RiskUIUtil {
 
 							}
 
-							risk.showMessageDialog("There is a new version of "+RiskUtil.GAME_NAME+": "+v);
+                                                        ResourceBundle resb = TranslationBundle.getBundle();
+                                                        
+                                                        v = resb.getString("mainmenu.new-version.text").replaceAll("\\{0\\}", RiskUtil.GAME_NAME) + " "+v;
+                                                        
+                                                        String link = getURL(v);
+                                                        if (link!=null) {
+                                                            int result = JOptionPane.showConfirmDialog(null, v, resb.getString("mainmenu.new-version.title"), JOptionPane.OK_CANCEL_OPTION);
+                                                            if (result == JOptionPane.OK_OPTION) {
+                                                                RiskUtil.streamOpener.openURL( new URL(link) );
+                                                            }
+                                                        }
+                                                        else {
+                                                            // do not use this, this is used for errors
+                                                            risk.showMessageDialog(v);
+                                                        }
 
 						}
 					}
@@ -827,7 +841,23 @@ public class RiskUIUtil {
 		return canlobby;
 	}
 
-
+        public static String getURL(String v) {
+            
+            int site = v.indexOf("http://");
+            if (site >=0) {
+                int end = v.length();
+                String chars = " \n\r\t";
+                for (int c=0;c<chars.length();c++) {
+                    int r = v.indexOf(chars.charAt(c), site);
+                    if (r>=0 && r <end) {
+                        end = r;
+                    }
+                }
+                return v.substring(site, end);
+            }
+            return null;
+            
+        }
 
 	public static void runLobby(Risk risk) {
 
