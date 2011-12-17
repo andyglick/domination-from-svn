@@ -1156,6 +1156,7 @@ e.printStackTrace();
                                                     // maybe we can download it from the server and then use it
                                                     RiskUtil.streamOpener.getMap(filename,this,e);
 						}
+                                                output = null; // we have nothing to output now
 
 					}
 					else  { output=resb.getString( "core.error.syntax").replaceAll( "\\{0\\}", "choosemap filename"); }
