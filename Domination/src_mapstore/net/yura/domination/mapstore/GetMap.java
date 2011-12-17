@@ -38,9 +38,8 @@ public class GetMap implements MapServerListener {
             client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
         }
         else {
-            if (maps.size() != 0) { // this should never happen
-                System.err.println( "wrong number of maps: "+maps.size()+" for map: "+filename );
-            }
+            System.err.println( "wrong number of maps on server: "+maps.size()+" for map: "+filename );
+
             problem.printStackTrace();
             onError(problem.toString());
         }
