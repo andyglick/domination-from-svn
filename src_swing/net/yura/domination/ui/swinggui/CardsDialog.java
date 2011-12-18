@@ -21,7 +21,6 @@ import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.Vector;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -166,6 +165,7 @@ public class CardsDialog extends JDialog {
 
 
 	CardsPlane = new JScrollPane();
+        CardsPlane.setOpaque(false); // this is needed as without it, the colors looks wrong on os x
 
 	CardsPlane.getViewport().add(CardsPanel);
 
