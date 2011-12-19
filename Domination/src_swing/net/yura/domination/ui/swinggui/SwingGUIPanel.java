@@ -29,6 +29,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.AbstractButton;
@@ -1417,11 +1418,12 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 }
 
-    public static void submitBug(Component parent, String text,String from,String subject) {
+    public static void submitBug(Component parent, String text,String from,String subjectIn) {
 
+            String subject = RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
+        
             try {
-                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+
-                            TranslationBundle.getBundle().getLocale().toString()+" "+subject,
+                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, subject,
                             RiskUtil.GAME_NAME,
                                 Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
                                 , TranslationBundle.getBundle().getLocale().toString()
@@ -1430,7 +1432,17 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
                     JOptionPane.showMessageDialog(parent, "SENT!");
             }
             catch(Throwable ex) {
-                    JOptionPane.showMessageDialog(parent, "ERROR: "+ex.toString() );
+                try {
+                    // for some reason + does not get decoded, so we set it back to a space
+                    URL url = new URL("mailto:yura@yura.net"+
+                            "?subject="+URLEncoder.encode(subject, "UTF-8").replace('+', ' ')+
+                            "&body="+URLEncoder.encode(text, "UTF-8").replace('+', ' '));
+                
+                    RiskUtil.openURL(url);
+                }
+                catch (Throwable th) {
+                    JOptionPane.showMessageDialog(parent, "ERROR: "+ex+" "+th );
+                }
             }
 
     }
