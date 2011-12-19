@@ -17,4 +17,6 @@ public interface MapPanel {
     public void setC2(int i);
     public int getC2();
 
+    public int getMapWidth();
+    public int getMapHeight();
 }
