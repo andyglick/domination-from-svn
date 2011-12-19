@@ -634,7 +634,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 editorPane.setText( responce );
                                 JScrollPane scroll = new JScrollPane(editorPane);
                                 scroll.setPreferredSize( new Dimension(500, 250) );
-                                JOptionPane.showMessageDialog(this, new Object[] {"Congratulations! your map has been send to the server.",scroll} );
+                                JOptionPane.showMessageDialog(this, new Object[] {"Congratulations! your map has been send to the server.\n"
+                                        + "It will appear in the MapStore once it has been approved by one of the moderators.",scroll} );
                             }
                             catch (Exception ex) {
                                 ex.printStackTrace();
