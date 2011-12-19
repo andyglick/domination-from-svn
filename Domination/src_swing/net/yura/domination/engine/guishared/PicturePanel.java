@@ -2,6 +2,8 @@
 
 package net.yura.domination.engine.guishared;
 
+import collisionphysics.Ball;
+import collisionphysics.BallWorld;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -292,6 +294,13 @@ public class PicturePanel extends JPanel implements MapPanel {
 		return Math.min(getHeight()/(double)map[0].length,getWidth()/(double)map.length);
 
 	}
+        
+        public int getMapWidth() {
+            return map.length;
+        }
+        public int getMapHeight() {
+            return map[0].length;
+        }
 
 	/**
 	 * Paints the army components
@@ -302,11 +311,10 @@ public class PicturePanel extends JPanel implements MapPanel {
 		RiskGame game = myrisk.getGame();
 
 		Country[] v = game.getCountries();
-		Country t;
 
 		int r=10;
 
-		if (game.getState()==4 || game.getState()==5 || game.getState()==10) {
+		if (game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_BATTLE_WON || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
 
 			int a=game.getAttacker().getColor();
 			int b=game.getDefender().getColor();
@@ -341,38 +349,59 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		}
 
-		for (int c=0; c< v.length ; c++) {
 
-			t = v[c];
+                if (myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER) {
+                    
+                    //if (ballWorld==null) {
+                    //    ballWorld = new BallWorld(myrisk, this, r); // start the ball world!!
+                    //}
+                    
+                }
 
-			if ( ((Player)t.getOwner()) != null ) {
+                Country t;
+                for (int c=0; c< v.length ; c++) {
 
-				g2.setColor( new Color( ((Player)t.getOwner()).getColor() ) );
+                        t = v[c];
 
-				Ellipse2D ellipse = new Ellipse2D.Double();
-				ellipse.setFrame( t.getX()-r , t.getY()-r , (r*2), (r*2) );
-				g2.fill(ellipse);
+                        if ( ((Player)t.getOwner()) != null ) {
 
-				//g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
 
-				g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ) );
+                                int x,y;
+                                if (ballWorld==null) {
+                                    x = t.getX();
+                                    y = t.getY();
+                                }
+                                else {
+                                    x = (int)ballWorld.balls[c].x;
+                                    y = (int)ballWorld.balls[c].y;
+                                }
 
-				g2.setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, 11) );
-				int noa=t.getArmies();
-				if (noa < 10) {
-					g2.drawString( String.valueOf( noa ) , t.getX()-3, t.getY()+4 );
-				}
-				else if (noa < 100) {
-					g2.drawString( String.valueOf( noa ) , t.getX()-6, t.getY()+4 );
-				}
-				else {
-					g2.drawString( String.valueOf( noa ) , t.getX()-9, t.getY()+4 );
-				}
-			}
+                                g2.setColor( new Color( ((Player)t.getOwner()).getColor() ) );
 
-		}
+                                Ellipse2D ellipse = new Ellipse2D.Double();
+                                ellipse.setFrame( x-r , y-r , (r*2), (r*2) );
+                                g2.fill(ellipse);
 
-		if (game.getGameMode() == 2 && game.getSetup() && game.getState() !=9 ) {
+                                //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
+
+                                g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ) );
+
+                                g2.setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, 11) );
+                                int noa=t.getArmies();
+                                if (noa < 10) {
+                                        g2.drawString( String.valueOf( noa ) , x-3, y+4 );
+                                }
+                                else if (noa < 100) {
+                                        g2.drawString( String.valueOf( noa ) , x-6, y+4 );
+                                }
+                                else {
+                                        g2.drawString( String.valueOf( noa ) , x-9, y+4 );
+                                }
+                        }
+
+                }
+
+		if (game.getGameMode() == RiskGame.STATE_PLACE_ARMIES && game.getSetup() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL ) {
 
 			g2.setStroke(new BasicStroke(2));
 			Vector players = game.getPlayers();
@@ -401,7 +430,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
 	}
-
+        
+        BallWorld ballWorld;
+        
 	/**
 	 * Paints the arrows for the game, ie - when attacking
 	 * @param x1i x point of the attacker's co-ordinates.
