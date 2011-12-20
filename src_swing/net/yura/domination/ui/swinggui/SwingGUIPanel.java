@@ -1360,6 +1360,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 			add(Pix, java.awt.BorderLayout.CENTER );
 
+                        pp.stopAni(); // stop anmations
 	}
 
 	public void startGame() {

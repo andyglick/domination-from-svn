@@ -18,6 +18,7 @@ CURRENT VERSION:
 	NewGameFrame will show preview of map even if preview file is missing (shows red dot)
 	support for java 1.4 again, got rid of the dependence on ToolsME.jar
 	in network play if a user is missing a map, it will try to download it from the server
+	special FX on game end :-)
 
 1.1.0.2 (12.12.2011)
 
