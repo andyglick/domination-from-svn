@@ -148,6 +148,13 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
+        public int getMapWidth() {
+            return map.length;
+        }
+        public int getMapHeight() {
+            return map[0].length;
+        }
+        
         public void memoryLoad(Image m, Image O) {
 
                 imgW = O.getWidth();
