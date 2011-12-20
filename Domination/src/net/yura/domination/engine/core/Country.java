@@ -181,6 +181,7 @@ public class Country implements Serializable {
 
 	/**
 	 * Returns the colour (unique) of the country
+         * starting from 1, NOT FROM ZERO
 	 * @return color
 	 */
 	public int getColor() {

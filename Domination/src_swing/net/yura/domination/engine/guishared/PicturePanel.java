@@ -350,12 +350,16 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
 
-                if (myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER) {
-                    
-                    //if (ballWorld==null) {
-                    //    ballWorld = new BallWorld(myrisk, this, r); // start the ball world!!
-                    //}
-                    
+                if (game.getState() == RiskGame.STATE_GAME_OVER) {
+                    if (ballWorld==null) {
+                        ballWorld = new BallWorld(myrisk, this, r); // start the ball world!!
+                    }
+                }
+                else {
+                    if (ballWorld!=null) {
+                        ballWorld.stop();
+                        ballWorld = null;
+                    }
                 }
 
                 Country t;
@@ -363,8 +367,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                         t = v[c];
 
-                        if ( ((Player)t.getOwner()) != null ) {
-
+                        if ( t.getOwner() != null ) {
 
                                 int x,y;
                                 if (ballWorld==null) {
@@ -376,7 +379,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                                     y = (int)ballWorld.balls[c].y;
                                 }
 
-                                g2.setColor( new Color( ((Player)t.getOwner()).getColor() ) );
+                                g2.setColor( new Color( t.getOwner().getColor() ) );
 
                                 Ellipse2D ellipse = new Ellipse2D.Double();
                                 ellipse.setFrame( x-r , y-r , (r*2), (r*2) );
@@ -384,7 +387,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
 
-                                g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) ) );
+                                g2.setColor( new Color( RiskUtil.getTextColorFor( t.getOwner().getColor() ) ) );
 
                                 g2.setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, 11) );
                                 int noa=t.getArmies();
@@ -401,26 +404,39 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 }
 
-		if (game.getGameMode() == RiskGame.STATE_PLACE_ARMIES && game.getSetup() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL ) {
+		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL ) {
 
 			g2.setStroke(new BasicStroke(2));
 			Vector players = game.getPlayers();
 
 			for (int c=0; c< players.size() ; c++) {
+                            
+                                Country capital = ((Player)players.elementAt(c)).getCapital();
 
-				if ( ((Player)players.elementAt(c)).getCapital() !=null ) {
-					Country capital = ((Country)((Player)players.elementAt(c)).getCapital());
+				if ( capital !=null ) {
+					
+                                        int pos = capital.getColor()-1;
 
-					g2.setColor( new Color( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) ) );
+                                        int x,y;
+                                        if (ballWorld==null) {
+                                            x = v[pos].getX();
+                                            y = v[pos].getY();
+                                        }
+                                        else {
+                                            x = (int)ballWorld.balls[pos].x;
+                                            y = (int)ballWorld.balls[pos].y;
+                                        }
+
+					g2.setColor( new Color( RiskUtil.getTextColorFor( capital.getOwner().getColor() ) ) );
 
 					Ellipse2D ellipse = new Ellipse2D.Double();
-					ellipse.setFrame( capital.getX()-10 , capital.getY()-10 , 19, 19);
+					ellipse.setFrame( x-10 , y-10 , 19, 19);
 					g2.draw(ellipse);
 
 					g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ) );
 
 					Ellipse2D ellipse2 = new Ellipse2D.Double();
-					ellipse2.setFrame( capital.getX()-12 , capital.getY()-12 , 23, 23);
+					ellipse2.setFrame( x-12 , y-12 , 23, 23);
 					g2.draw(ellipse2);
 
 				}

@@ -9,20 +9,27 @@ import net.yura.domination.engine.guishared.MapPanel;
  */
 public class BallWorld implements Runnable {
 
+        private static final int UPDATE_RATE = 30;    // Frames per second (fps)
+        private static final float EPSILON_TIME = 1e-2f;  // Threshold for zero time
+
+        int[] box = new int[2];
         MapPanel panel;
         public Ball[] balls;
         boolean running;
-    
+
         public BallWorld(Risk risk,MapPanel panel, int r) {
 
             Country[] v = risk.getGame().getCountries();
             int currentNumBalls = v.length;
 
             this.panel = panel;
+            
+            box[0] = panel.getMapWidth();
+            box[1] = panel.getMapHeight();
           
             balls = new Ball[currentNumBalls];  
             for (int c=0;c<v.length;c++) {
-                balls[c] = new Ball(v[c].getX(), v[c].getY(), r, 2, 14);
+                balls[c] = new Ball(v[c].getX(), v[c].getY(), r, 2, 270);
             }
             running = true;
             new Thread(this).start();
@@ -31,21 +38,17 @@ public class BallWorld implements Runnable {
         public void stop() {
             running = false;
         }
-    
-        private static final int UPDATE_RATE = 30;    // Frames per second (fps)
+
         public void run() {
-            
-            
+
             while (running) {
                long beginTimeMillis, timeTakenMillis, timeLeftMillis;
                beginTimeMillis = System.currentTimeMillis();
-               
 
                   // Execute one game step
                   gameUpdate();
                   // Refresh the display
                   panel.repaint();
-
                
                // Provide the necessary delay to meet the target rate
                timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
@@ -57,19 +60,12 @@ public class BallWorld implements Runnable {
                   Thread.sleep(timeLeftMillis);
                } catch (InterruptedException ex) {}
             }
-            
-            
-        }
-        
-        private static final float EPSILON_TIME = 1e-2f;  // Threshold for zero time
 
-        int[] box = new int[2];
-    
+        }
+
         public void gameUpdate() {
             
-            int currentNumBalls = balls.length;
-            box[0] = panel.getMapWidth();
-            box[1] = panel.getMapHeight();
+          int currentNumBalls = balls.length;
             
           float timeLeft = 1.0f;  // One time-step to begin with
 
@@ -106,10 +102,6 @@ public class BallWorld implements Runnable {
              timeLeft -= tMin;                // Subtract the time consumed and repeat
           } while (timeLeft > EPSILON_TIME);  // Ignore remaining time less than threshold
        }
-    
-    
-    
-    
-    
-    
+
+
 }
