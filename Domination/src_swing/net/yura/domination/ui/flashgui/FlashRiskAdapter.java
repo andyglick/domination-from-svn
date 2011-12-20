@@ -356,6 +356,8 @@ public class FlashRiskAdapter implements RiskListener {
 
 		if ( gameFrame.isVisible() ) {
 
+                        pp.stopAni(); // stop any animations
+                    
 			gameFrame.setVisible(false);
 
 		}

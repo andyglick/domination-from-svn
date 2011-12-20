@@ -356,10 +356,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                     }
                 }
                 else {
-                    if (ballWorld!=null) {
-                        ballWorld.stop();
-                        ballWorld = null;
-                    }
+                    stopAni();
                 }
 
                 Country t;
@@ -448,6 +445,15 @@ public class PicturePanel extends JPanel implements MapPanel {
 	}
         
         BallWorld ballWorld;
+        /**
+         * stop all animations
+         */
+        public void stopAni() {
+            if (ballWorld!=null) {
+                ballWorld.stop();
+                ballWorld = null;
+            }
+        }
         
 	/**
 	 * Paints the arrows for the game, ie - when attacking
