@@ -121,7 +121,7 @@ public class FX3DPanel extends JPanel implements ActionListener, SwingGUITab, Mo
 
 						while (!stopflag) {
 
-							fx3d.rotate(2,0);
+							fx3d.rotate(-3,0);
 
 							try { Thread.sleep(100); }
 							catch(InterruptedException e) {}
