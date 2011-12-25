@@ -1495,15 +1495,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 				if (mode.equals("files")) {
 					//System.out.print("Adding files\n"); // testing
 
-					String fm = st.nextToken();
-
-					if ( fm.equals("pic") )  { ImagePic = st.nextToken(); } //System.out.print("file: ImagePic added!\n"); // testing
-					else if ( fm.equals("map") ) { ImageMap = st.nextToken(); } //System.out.print("file: ImageMap added!\n"); // testing
-					else if ( fm.equals("crd") ) { st.nextToken(); }
-					else if ( fm.equals("prv") ) { st.nextToken(); }
-					else { throw new Exception("error with files section in map file: "+fm); }
-
-					if ( st.hasMoreTokens() ) { throw new Exception("unknown item found in map file: "+ st.nextToken() ); }
+					if ( input.startsWith("pic ") )  { ImagePic = input.substring(4); } //System.out.print("file: ImagePic added!\n"); // testing
+					else if ( input.startsWith("map ") ) { ImageMap = input.substring(4); } //System.out.print("file: ImageMap added!\n"); // testing
+					else if ( input.startsWith("crd ") ) { }
+					else if ( input.startsWith("prv ") ) { }
+					else { throw new Exception("error with files section in map file: "+input); }
 
 				}
 				else if (mode.equals("continents")) {
@@ -1626,8 +1622,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 */
 	public boolean setMapfile(String f) throws Exception {
 
-		StringTokenizer st=null;
-
 		if (f.equals("default")) {
 			f = defaultMap;
 		}
@@ -1670,17 +1664,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 				if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
 					mode="newsection";
 				}
-				else { st = new StringTokenizer(input); }
 
 				if ("files".equals(mode)) {
 
-					String fm = st.nextToken();
+					if ( input.startsWith("pic ") ) { ImagePic = input.substring(4); }
 
-					if ( fm.equals("pic") ) { ImagePic = st.nextToken(); }
+					else if ( input.startsWith("prv ") ) { previewPic = input.substring(4); }
 
-					else if ( fm.equals("prv") ) { previewPic = st.nextToken(); }
-
-					else if ( fm.equals("crd") ) { yescards=true; returnvalue = setCardsfile( st.nextToken() ); }
+					else if ( input.startsWith("crd ") ) { yescards=true; returnvalue = setCardsfile( input.substring(4) ); }
 
 				}
 				else if ("borders".equals(mode)) {
@@ -1846,11 +1837,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					if (description==null) {
 
-					    description=st.nextToken();
+					    description="";
 					    while (st.hasMoreElements()) {
-
-							description = description +" "+ (String)st.nextToken();
-
+							description = description +("".equals(description)?"":" ")+ st.nextToken();
 					    }
 
 					}
