@@ -182,13 +182,17 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                 String prv = (String)info.get("prv");
                 if (prv!=null) {
-                    map.setPreviewUrl( "preview/"+prv );
+                    prv = "preview/"+prv;
+                    if (!fileExists(prv)) {
+                        prv=null;
+                    }
                 }
-                else {
+
+                if (prv==null) {
                     // TODO how do we differentiate between a preview pic and one we will need to reencode
                     prv = (String)info.get("pic");
-                    map.setPreviewUrl( prv );
                 }
+                map.setPreviewUrl( prv );
         
                 return map;
         
