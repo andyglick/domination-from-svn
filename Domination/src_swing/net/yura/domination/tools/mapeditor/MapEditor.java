@@ -1071,8 +1071,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 			Mission m = (Mission)missions.elementAt(i);
 
-			Player p = m.getPlayer();
+                        if ("".equals( m.getDiscription() )) {
+                            errors = errors + "\n* You have a mission with an empty Discription";
+                        }
 
+                        Player p = m.getPlayer();
 			if (p !=null && m.getDiscription().indexOf( p.getName() ) == -1) {
 
 				errors = errors + "\n* You have a mission that is to destroy "+p.getName()+", yet you do NOT have the text \""+p.getName()+"\" in the description.";

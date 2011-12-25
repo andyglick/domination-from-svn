@@ -101,12 +101,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	public void setImagePic(BufferedImage a,boolean checkmap) {
 
+		pic = a;
+            
 		if (a.getWidth()!=PicturePanel.PP_X || a.getHeight()!=PicturePanel.PP_Y) {
 
 			JOptionPane.showMessageDialog(this,"Only Risk 1.0.9.5+ supports any size maps!\nfor older version use: width="+PicturePanel.PP_X+" height="+PicturePanel.PP_Y);
 		}
-
-		pic = a;
 
                 if (checkmap && (pic.getWidth()!=map.getWidth() || pic.getHeight()!=map.getHeight())) {
 
