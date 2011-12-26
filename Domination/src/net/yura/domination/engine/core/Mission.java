@@ -104,7 +104,7 @@ public class Mission implements Serializable {
 
     public String toString() {
 
-	return discription;
+	return "".equals(discription)?"(Discription Missing)":discription;
 
     }
 

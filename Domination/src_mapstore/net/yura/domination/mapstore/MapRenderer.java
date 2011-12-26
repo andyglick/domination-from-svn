@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
-import net.yura.abba.persistence.ImageManager;
 import net.yura.mobile.gui.Animation;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
@@ -20,7 +19,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
     String line2;
 
-    ImageManager manager = new ImageManager();
+    //net.yura.abba.persistence.ImageManager manager = new net.yura.abba.persistence.ImageManager();
     Hashtable images = new Hashtable();
 
     private ProgressBar bar = new ProgressBar();
