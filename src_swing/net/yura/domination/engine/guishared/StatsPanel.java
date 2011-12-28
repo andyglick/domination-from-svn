@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -178,7 +179,7 @@ public class StatsPanel extends JPanel {
     private int gridSizeX;
     private int gridSizeY;
 
-    public void drawPlayerGraph(int a, Player p, Graphics g) {
+    public void drawPlayerGraph(int a, Player p, Graphics2D g) {
 
 	int[] PointToDraw = p.getStatistics(a);
 	g.setColor(new Color( p.getColor() ) );
@@ -190,16 +191,47 @@ public class StatsPanel extends JPanel {
 	for (i = 0; i < PointToDraw.length; i++) {
 
 	    if (a==1 || a==2 || a==0 || a==6 || a==7) {
-	    newPoint = tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
+                newPoint = tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
 	    }
 	    else {
-	    newPoint += tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
+                newPoint += tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
 	    }
-	    g.drawLine((int)(ZeroX + i*gridSizeX),(int)(ZeroY-(oldPoint*gridSizeY)),(int)(ZeroX +(i+1)*gridSizeX),(int)(ZeroY-(newPoint*gridSizeY)));
+
+            int x1 = (int)(ZeroX + i*gridSizeX);
+            int y1 = (int)(ZeroY-(oldPoint*gridSizeY));
+            int x2 = (int)(ZeroX +(i+1)*gridSizeX);
+            int y2 = (int)(ZeroY-(newPoint*gridSizeY));
+
+            Color color = g.getColor();
+            Stroke stroke = g.getStroke();
+
+            if (Color.BLACK.equals( color )) {
+                g.setColor(Color.WHITE);
+                g.setStroke( new BasicStroke(3) );
+                g.drawLine(x1,y1,x2,y2);
+                g.setColor(color);
+                g.setStroke(stroke);
+            }
+
+	    g.drawLine(x1,y1,x2,y2);
 	    oldPoint = newPoint;
 	}
 
-	g.drawString(p.getName(),(int)(ZeroX + i*gridSizeX),(int)(ZeroY - (oldPoint*gridSizeY)+11));
+        int x = (int)(ZeroX + i*gridSizeX);
+        int y = (int)(ZeroY - (oldPoint*gridSizeY)+11);
+
+        Color color = g.getColor();
+
+        if (Color.BLACK.equals( color )) {
+            g.setColor(Color.WHITE);
+            g.drawString(p.getName(),x+1,y+1);
+            g.drawString(p.getName(),x-1,y-1);
+            g.drawString(p.getName(),x+1,y-1);
+            g.drawString(p.getName(),x-1,y+1);
+            g.setColor(color);
+        }
+
+	g.drawString(p.getName(),x,y);
 
     }
 

@@ -62,6 +62,8 @@ public class MapChooserSwingWrapper implements ActionListener {
         chooser.destroy(); // shutdown abba repo, write index to rms
 
         dialog.dispose();
+        
+        wrapper.destroy();
 
         return chooser.getSelectedMap();
 
