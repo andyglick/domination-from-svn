@@ -1505,13 +1505,21 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		tdSaveError.addActionListener(this);
 		sendError.addActionListener(this);
 
+                
+                JButton gc = new JButton("GC");
+		gc.setActionCommand("gc");
+		gc.addActionListener(this);
+		
+                
+                
 		toolbarDebug.add(tdSaveDebug);
 		toolbarDebug.add(tdPlayDebug);
 		toolbarDebug.add(tdClearDebug);
 		toolbarDebug.addSeparator();
 		toolbarDebug.add(tdSaveError);
 		toolbarDebug.add(sendError);
-
+                toolbarDebug.addSeparator();
+                toolbarDebug.add(gc);
 
 		toolbarDebug.setFloatable(false);
 
@@ -1690,9 +1698,14 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                         submitBug( this, debugText.getText() + errText.getText(), email, "Bug" );
 
 		}
+                else if (a.getActionCommand().equals("gc")) {
+                    
+                    System.gc();
+                    
+                }
 		else {
 
-			System.out.print("command \""+a.getActionCommand()+"\" is not implemented yet\n");
+			throw new RuntimeException("command \""+a.getActionCommand()+"\" is not implemented yet\n");
 
 		}
 	}

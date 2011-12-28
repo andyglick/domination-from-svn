@@ -17,6 +17,7 @@ CURRENT VERSION:
 	fallback to png if can not save jpeg in OpenJDK
 	map editor, can load maps with empty missions and spaces in the names
 	MapStore will show scaled down full image when preview image is missing
+	Black player on stats panel has a white background
 
 1.1.0.3
 
