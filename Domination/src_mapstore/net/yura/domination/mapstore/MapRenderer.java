@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
+import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.Animation;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
@@ -96,7 +97,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             
             String author = map.getAuthorName();
             if (author!=null && !"".equals(author)) {
-                line2 = "By "+author;
+                line2 = TranslationBundle.getBundle().getString("mapchooser.by").replaceAll("\\{0\\}", author);
             }
             String description = map.getDescription();
             if (description!=null && !"".equals(description)) {
@@ -201,5 +202,5 @@ public class MapRenderer extends DefaultListCellRenderer {
             height = height + getFont().getHeight()+gap;
         }
     }
-
+    
 }
