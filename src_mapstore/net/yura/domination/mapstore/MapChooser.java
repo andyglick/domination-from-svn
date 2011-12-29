@@ -166,6 +166,9 @@ public class MapChooser implements ActionListener,MapServerListener,EventListene
         Events.CLIENT_RESOURCE.unsubscribe(this);
         Events.SERVER_GET_RESOURCE.unsubscribe(this);
 
+        // if this is not here, for some crazy reason a ME4SE can pop open after the mapchooser is closed
+        Events.CLIENT_RESOURCE.unsubscribe(null); // this will unsubscribe all the AbbaIcons that may be listening
+        
         client.kill();
         client=null;
 
