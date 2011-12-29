@@ -1,15 +1,20 @@
 package net.yura.domination.mapstore;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import net.yura.abba.Events;
-import net.yura.abba.persistence.AbbaRepository;
+import net.yura.abba.eventex.Event;
+import net.yura.abba.eventex.EventListener;
+import net.yura.abba.persistence.ClientResource;
+import net.yura.cache.Cache;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.mapstore.gen.BinMapAccess;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.DesktopPane;
@@ -25,38 +30,40 @@ import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.LookAndFeel;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.io.ServiceLink.Task;
+import net.yura.mobile.logging.Logger;
+import net.yura.mobile.util.ImageUtil;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
 /**
  * @author Yura Mamyrin
  */
-public class MapChooser implements ActionListener,MapServerListener {
+public class MapChooser implements ActionListener,MapServerListener,EventListener {
 
     public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
     XULLoader loader;
     ActionListener al;
 
-    AbbaRepository repo;
+    Cache repo;
     MapServerClient client;
 
     Vector mapfiles;
 
     // Nathans server
     //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
-    //public static final String MAP_PAGE="maps.dot";
-    //public static final String CATEGORIES_PAGE="categories.dot";
+    //public static final String MAP_PAGE=SERVER_URL+"maps.dot";
+    //public static final String CATEGORIES_PAGE=SERVER_URL+"categories.dot";
 
     // yura test server
     //public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
-    //public static final String MAP_PAGE="";
-    //public static final String CATEGORIES_PAGE="maps.xml";
+    //public static final String MAP_PAGE=SERVER_URL+"";
+    //public static final String CATEGORIES_PAGE=SERVER_URL+"maps.xml";
     
     // theos server
     public static final String SERVER_URL="http://maps.yura.net/";
-    public static final String MAP_PAGE="maps?format=xml";
-    public static final String CATEGORIES_PAGE="categories?format=xml";
+    public static final String MAP_PAGE=SERVER_URL+"maps?format=xml";
+    public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml";
 
     public MapChooser(ActionListener al,Vector mapfiles) {
         this.al = al;
@@ -137,12 +144,18 @@ public class MapChooser implements ActionListener,MapServerListener {
         list.setFixedCellHeight(100);
         list.setFixedCellWidth(10); // will streach
 
-        client = new MapServerClient(this,SERVER_URL);
+        client = new MapServerClient(this);
         client.start();
 
-        repo = new AbbaRepository(256 * 1024, 2 * 1024 * 1024, new BinMapAccess(), client);
-        Events.CLIENT_RESOURCE.subscribe(repo);
-        Events.SERVER_GET_RESOURCE.resubscribe(client,repo);
+        try {
+            repo = new Cache();
+        }
+        catch (Throwable ex) {
+            System.err.println("[MapChooser] no cache: "+ex);
+        }
+        
+        Events.CLIENT_RESOURCE.subscribe(this);
+        Events.SERVER_GET_RESOURCE.subscribe(this);
 
         activateGroup("MapView");
 
@@ -150,15 +163,70 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     public void destroy() {
 
-        Events.CLIENT_RESOURCE.unsubscribe(repo);
-        Events.SERVER_GET_RESOURCE.unsubscribe(repo);
-
-        repo.destroy();
-        repo=null;
+        Events.CLIENT_RESOURCE.unsubscribe(this);
+        Events.SERVER_GET_RESOURCE.unsubscribe(this);
 
         client.kill();
         client=null;
 
+    }
+    
+    public void eventReceived(Event event, Object o, Object o1) {
+        if (event == Events.CLIENT_RESOURCE) {
+            ClientResource cr = (ClientResource)o;
+            if (cr.getData()!=null && repo!=null && !repo.containsKey( cr.getResourceId() ) ) {
+                repo.put( cr.getResourceId() , cr.getData() );
+            }
+        }
+        else if (event == Events.SERVER_GET_RESOURCE) {
+            String url = (String)o;
+            boolean locale = url.indexOf(':')<0;
+            if (!locale || !url.startsWith("preview/") ) {
+                InputStream in = repo!=null?repo.get(url):null;
+                if (in!=null) {
+                    Events.CLIENT_RESOURCE.publish(url, new ClientResource(url, in), this);
+                }
+                else {
+                    if (locale) {
+                        try {
+                            System.out.println("[MapChooser] ### Going to re-encode img: "+url);
+                            InputStream min = RiskUtil.openMapStream(url);
+                            Image img = Image.createImage(min);                    
+                            img = ImageUtil.scaleImage(img, 150, 94);
+                            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                            ImageUtil.saveImage(img, bytes);
+                            img = null; // drop the small image as soon as we can
+                            ClientResource cr = new ClientResource();
+                            cr.setResourceId(url);
+                            cr.setData( bytes.toByteArray() );
+                            Events.CLIENT_RESOURCE.publish(url, cr, this);
+                        }
+                        catch (Exception ex) {
+                            Logger.warn(ex);
+                        }
+                    }
+                    else {
+                        client.makeRequest( url,null,MapServerClient.IMG_REQUEST_ID );
+                    }
+                }
+            }
+            else {
+                try {
+                    InputStream in = RiskUtil.openMapStream(url);
+                    Events.CLIENT_RESOURCE.publish(url, new ClientResource(url, in), this);
+                }
+                catch (Exception ex) {
+                    Logger.warn(ex);
+                }
+            }
+        }
+        else {
+            System.err.println("[MapChooser] unknown event "+event);
+        }
+    }
+
+    public boolean isUiEvent(Event event, Object o) {
+        return false;
     }
 
     public static Map createMap(String file) {
@@ -189,7 +257,6 @@ public class MapChooser implements ActionListener,MapServerListener {
                 }
 
                 if (prv==null) {
-                    // TODO how do we differentiate between a preview pic and one we will need to reencode
                     prv = (String)info.get("pic");
                 }
                 map.setPreviewUrl( prv );
@@ -203,6 +270,10 @@ public class MapChooser implements ActionListener,MapServerListener {
             return (i>=0)?mapUrl.substring(i+1):mapUrl;
     }
     
+    void makeRequestForMap(String a,String b) {
+        client.makeRequestXML( MAP_PAGE , a, b);
+    }
+
     public void actionPerformed(String actionCommand) {
         if ("local".equals(actionCommand)) {
             mainCatList(actionCommand);
@@ -223,7 +294,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("catagories".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            client.makeRequestXML( CATEGORIES_PAGE );
+            client.makeRequestXML( CATEGORIES_PAGE , (String)null, (String)null);
 
         }
         else if ("top25".equals(actionCommand)) {
@@ -243,15 +314,15 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
         else if ("TOP_NEW".equals(actionCommand)) {
             clearList();
-            client.makeRequestXML( MAP_PAGE,"sort","TOP_NEW" );
+            makeRequestForMap("sort","TOP_NEW" );
         }
         else if ("TOP_RATINGS".equals(actionCommand)) {
             clearList();
-            client.makeRequestXML( MAP_PAGE,"sort","TOP_RATINGS" );
+            makeRequestForMap("sort","TOP_RATINGS" );
         }
         else if ("TOP_DOWNLOADS".equals(actionCommand)) {
             clearList();
-            client.makeRequestXML( MAP_PAGE,"sort","TOP_DOWNLOADS" );
+            makeRequestForMap("sort","TOP_DOWNLOADS" );
         }
         else if ("listSelect".equals(actionCommand)) {
             List list = (List)loader.find("ResultList");
@@ -259,7 +330,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             if (value instanceof Category) {
                 Category cat = (Category)value;
                 clearList();
-                client.makeRequestXML( MAP_PAGE,"category",cat.getId() );
+                makeRequestForMap("category",cat.getId() );
             }
             else if (value instanceof Map) {
                 Map map = (Map)value;
@@ -334,7 +405,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
             clearList();
             if (text != null && !"".equals(text)) {
-                client.makeRequestXML( MAP_PAGE,"search", text );
+                makeRequestForMap("search", text );
             }
         }
         else {
@@ -478,39 +549,4 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
 }

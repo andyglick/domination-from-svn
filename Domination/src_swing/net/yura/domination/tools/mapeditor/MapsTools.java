@@ -245,7 +245,7 @@ public class MapsTools {
 
     public static Vector getCategories() {
         try {
-            URLConnection conn = new URL( MapChooser.SERVER_URL+MapChooser.CATEGORIES_PAGE ).openConnection();
+            URLConnection conn = new URL( MapChooser.CATEGORIES_PAGE ).openConnection();
             XMLMapAccess access = new XMLMapAccess();
             InputStream in = conn.getInputStream();
             net.yura.mobile.io.ServiceLink.Task result = (net.yura.mobile.io.ServiceLink.Task)access.load( new UTF8InputStreamReader( in ) );

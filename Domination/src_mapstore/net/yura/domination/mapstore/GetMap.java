@@ -20,7 +20,7 @@ public class GetMap implements MapServerListener {
         get.filename = filename;
         get.myrisk = risk;
         get.problem = ex;
-        get.client = new MapServerClient(get, MapChooser.SERVER_URL);
+        get.client = new MapServerClient(get);
         get.client.start();
         get.client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",filename );
     }
