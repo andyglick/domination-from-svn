@@ -14,10 +14,11 @@ CURRENT VERSION:
 
 1.1.0.4
 
-	fallback to png if can not save jpeg in OpenJDK
+	fallback to png if can not save jpeg for OpenJDK Linux users
 	map editor, can load maps with empty missions and spaces in the names
 	MapStore will show scaled down full image when preview image is missing
 	Black player on stats panel has a white background
+	got rid of dependence on AbbaRepository, replaces it with net.yura.cache.Cache
 
 1.1.0.3
 

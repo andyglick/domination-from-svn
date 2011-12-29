@@ -1,15 +1,11 @@
 package net.yura.domination.mapstore;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.microedition.lcdui.Image;
 import net.yura.abba.Events;
-import net.yura.abba.eventex.Event;
-import net.yura.abba.eventex.EventListener;
 import net.yura.abba.persistence.ClientResource;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
@@ -18,34 +14,22 @@ import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.logging.Logger;
-import net.yura.mobile.util.ImageUtil;
 import net.yura.mobile.util.SystemUtil;
-import net.yura.mobile.util.Url;
 
 /**
  * @author Yura Mamyrin
  */
-public class MapServerClient extends HTTPClient implements EventListener {
+public class MapServerClient extends HTTPClient {
 
     public static final Object XML_REQUEST_ID = new Object();
     public static final Object MAP_REQUEST_ID = new Object();
+    public static final Object IMG_REQUEST_ID = new Object();
 
     MapServerListener chooser;
-    String xmlServerURL;
 
-    public MapServerClient(MapServerListener aThis,String url) {
+    public MapServerClient(MapServerListener aThis) {
         chooser = aThis;
-        xmlServerURL = url;
-
-        Events.SERVER_GET_RESOURCE.subscribe(this);
     }
-
-    public void kill() {
-        super.kill();
-
-        Events.SERVER_GET_RESOURCE.unsubscribe(this);
-    }
-
 
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
@@ -63,10 +47,19 @@ public class MapServerClient extends HTTPClient implements EventListener {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
 
-System.out.println("Got XML "+task);
+//System.out.println("Got XML "+task);
 
             chooser.gotResultXML(request.url,task);
 
+        }
+        else if (request.id == IMG_REQUEST_ID) {
+
+            String uid = request.url;
+            
+            ClientResource cr = new ClientResource();
+            cr.setResourceId( uid ); //  same as uid
+            cr.setData( SystemUtil.getData(is, (int)length) ); // download image from server
+            Events.CLIENT_RESOURCE.publish( uid , cr, this);
         }
         else if (request.id == MAP_REQUEST_ID) {
 
@@ -74,67 +67,17 @@ System.out.println("Got XML "+task);
 
         }
         else {
-
-            publishClientResource( (String)request.id, is, length, false);
+            System.err.println("[MapServerClient] unknown id "+request.id);
         }
     }
 
-    /**
-     * This is used for thumbnails of the maps previews
-     * these images are cached on the client
-     * the image is also re-encoded into a small image if needed
-     */
-    private void publishClientResource(String id,InputStream is,long length,boolean reEncode) {
-
-        ClientResource cr = new ClientResource();
-
-        cr.setResourceId( id ); //  same as uid
-        try {
-        	byte[] data=null;
-
-            if (reEncode) {
-
-            	System.out.println("#################################### am going to re-encode img: "+id);
-
-                try {
-                    Image img = Image.createImage(is);                    
-                    img = ImageUtil.scaleImage(img, 150, 94);
-
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    ImageUtil.saveImage(img, bytes);
-                    img = null; // drop the small image as soon as we can
-
-                    data = bytes.toByteArray();
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                    // not sure what to do here??
-                }
-
-            }
-            else {
-            	data = SystemUtil.getData(is, (int)length);
-            }
-
-            cr.setData( data );
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        Events.CLIENT_RESOURCE.publish(id, cr, this);
-
-    }
-
-    void makeRequestXML(String string) {
-            makeRequestXML(string,null,null);
-    }
     void makeRequestXML(String string,String a,String b) {
         Hashtable params = null;
         if (a!=null&&b!=null) {
             params = new Hashtable();
             params.put(a, b);
         }
-        makeRequest( xmlServerURL+string , params, XML_REQUEST_ID);
+        makeRequest( string , params, XML_REQUEST_ID);
     }
 
     void makeRequest(String url,Hashtable params,Object type) {
@@ -151,51 +94,6 @@ System.out.println("Make Request: "+request);
             makeRequest(request);
 
     }
-
-    public void eventReceived(final Event arg0, final Object arg1, final Object arg2) {
-        if (arg0 == Events.SERVER_GET_RESOURCE) {
-
-            String url = (String)arg1;
-
-            // if this is a local map
-            if (url.indexOf(':')<0 && !url.startsWith("/")) {
-                try {
-                    InputStream in = RiskUtil.openMapStream(url);
-                    publishClientResource(url, in, -1, !url.startsWith("preview/") );
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            else {
-
-                if (url.startsWith("/")) {
-
-                    Url surl = new Url(xmlServerURL);
-                    surl.setPath(url.substring(1));
-                    surl.setQuery("");
-
-                    url = surl.toString();
-                }
-
-                makeRequest( url,null,arg1 );
-            }
-        }
-        else {
-            System.err.println("AAAAAAAAA unknown event "+arg0);
-        }
-    }
-
-    //@Override
-    public boolean isUiEvent(Event event, Object message) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
-    
-    
-    
-    
     
     Vector downloads = new Vector();
     

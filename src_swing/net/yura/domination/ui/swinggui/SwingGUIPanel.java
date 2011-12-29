@@ -1505,6 +1505,9 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		tdSaveError.addActionListener(this);
 		sendError.addActionListener(this);
 
+                JButton cr = new JButton("Clear Error");
+		cr.setActionCommand("clear error");
+		cr.addActionListener(this);
                 
                 JButton gc = new JButton("GC");
 		gc.setActionCommand("gc");
@@ -1518,6 +1521,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		toolbarDebug.addSeparator();
 		toolbarDebug.add(tdSaveError);
 		toolbarDebug.add(sendError);
+                toolbarDebug.add(cr);
                 toolbarDebug.addSeparator();
                 toolbarDebug.add(gc);
 
@@ -1698,6 +1702,12 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                         submitBug( this, debugText.getText() + errText.getText(), email, "Bug" );
 
 		}
+                else if (a.getActionCommand().equals("clear error")) {
+                
+                    errText.setText("");
+                    tabbedpane.setIconAt(tabbedpane.indexOfComponent(this), null);
+                    
+                }
                 else if (a.getActionCommand().equals("gc")) {
                     
                     System.gc();

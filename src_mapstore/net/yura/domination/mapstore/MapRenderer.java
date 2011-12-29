@@ -43,6 +43,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
             bar.setSprite(spin1);
             bar.workoutPreferredSize();
+            //add(bar); // YURA do we need this???
             
             play = Image.createImage("/play.png");
             download = Image.createImage("/download.png");
@@ -127,7 +128,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             setIcon( icon );
         }
         else {
-            System.out.println("No PreviewUrl for map or category: "+value);
+            System.out.println("[MapRenderer] No PreviewUrl for map or category: "+value);
         }
 
         
@@ -202,5 +203,5 @@ public class MapRenderer extends DefaultListCellRenderer {
             height = height + getFont().getHeight()+gap;
         }
     }
-    
+
 }
