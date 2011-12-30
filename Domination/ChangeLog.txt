@@ -12,7 +12,7 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.4
+1.1.0.4 (30.12.2011)
 
 	fallback to png if can not save jpeg for OpenJDK Linux users
 	map editor, can load maps with empty missions and spaces in the names
@@ -20,7 +20,7 @@ CURRENT VERSION:
 	Black player on stats panel has a white background
 	got rid of dependence on AbbaRepository, replaces it with net.yura.cache.Cache
 
-1.1.0.3
+1.1.0.3 (21.12.2011)
 
 	when there is a new version out, clicking ok takes you to the website
 	NewGameFrame will show preview of map even if preview file is missing (shows red dot)
