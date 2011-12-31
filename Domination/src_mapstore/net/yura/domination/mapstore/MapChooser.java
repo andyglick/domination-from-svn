@@ -1,5 +1,6 @@
 package net.yura.domination.mapstore;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -7,10 +8,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.yura.abba.Events;
-import net.yura.abba.eventex.Event;
-import net.yura.abba.eventex.EventListener;
-import net.yura.abba.persistence.ClientResource;
 import net.yura.cache.Cache;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -38,7 +35,7 @@ import net.yura.swingme.core.CoreUtil;
 /**
  * @author Yura Mamyrin
  */
-public class MapChooser implements ActionListener,MapServerListener,EventListener {
+public class MapChooser implements ActionListener,MapServerListener {
 
     public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
@@ -153,41 +150,24 @@ public class MapChooser implements ActionListener,MapServerListener,EventListene
         catch (Throwable ex) {
             System.err.println("[MapChooser] no cache: "+ex);
         }
-        
-        Events.CLIENT_RESOURCE.subscribe(this);
-        Events.SERVER_GET_RESOURCE.subscribe(this);
 
         activateGroup("MapView");
 
     }
 
     public void destroy() {
-
-        Events.CLIENT_RESOURCE.unsubscribe(this);
-        Events.SERVER_GET_RESOURCE.unsubscribe(this);
-
-        // if this is not here, for some crazy reason a ME4SE can pop open after the mapchooser is closed
-        Events.CLIENT_RESOURCE.unsubscribe(null); // this will unsubscribe all the AbbaIcons that may be listening
         
         client.kill();
         client=null;
 
     }
-    
-    public void eventReceived(Event event, Object o, Object o1) {
-        if (event == Events.CLIENT_RESOURCE) {
-            ClientResource cr = (ClientResource)o;
-            if (cr.getData()!=null && repo!=null && !repo.containsKey( cr.getResourceId() ) ) {
-                repo.put( cr.getResourceId() , cr.getData() );
-            }
-        }
-        else if (event == Events.SERVER_GET_RESOURCE) {
-            String url = (String)o;
+
+    public void loadImg(String url) {
             boolean locale = url.indexOf(':')<0;
             if (!locale || !url.startsWith("preview/") ) {
                 InputStream in = repo!=null?repo.get(url):null;
                 if (in!=null) {
-                    Events.CLIENT_RESOURCE.publish(url, new ClientResource(url, in), this);
+                    gotImg(url, in);
                 }
                 else {
                     if (locale) {
@@ -199,10 +179,7 @@ public class MapChooser implements ActionListener,MapServerListener,EventListene
                             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                             ImageUtil.saveImage(img, bytes);
                             img = null; // drop the small image as soon as we can
-                            ClientResource cr = new ClientResource();
-                            cr.setResourceId(url);
-                            cr.setData( bytes.toByteArray() );
-                            Events.CLIENT_RESOURCE.publish(url, cr, this);
+                            gotImg(url, bytes.toByteArray() );
                         }
                         catch (Exception ex) {
                             Logger.warn(ex);
@@ -216,20 +193,34 @@ public class MapChooser implements ActionListener,MapServerListener,EventListene
             else {
                 try {
                     InputStream in = RiskUtil.openMapStream(url);
-                    Events.CLIENT_RESOURCE.publish(url, new ClientResource(url, in), this);
+                    gotImg(url, in);
                 }
                 catch (Exception ex) {
                     Logger.warn(ex);
                 }
             }
+    }
+    
+    public void gotImg(String url,byte[] data) {
+        if (repo!=null && !repo.containsKey( url ) ) {
+            repo.put( url , data );
         }
-        else {
-            System.err.println("[MapChooser] unknown event "+event);
-        }
+        gotImg(url, new ByteArrayInputStream(data));
     }
 
-    public boolean isUiEvent(Event event, Object o) {
-        return false;
+    private void gotImg(String url,InputStream in) {
+        try {
+            if (client!=null) { // if we have shut down, dont need to do anything
+                List list = (List)loader.find("ResultList");
+                MapRenderer ren = (MapRenderer)list.getCellRenderer();
+                Image img = Image.createImage(in);
+                ren.gotImg(url, img);
+                list.repaint();
+            }
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("failed to decode img "+url, ex);
+        }
     }
 
     public static Map createMap(String file) {

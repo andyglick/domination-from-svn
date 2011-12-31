@@ -10,5 +10,6 @@ public interface MapServerListener {
     public void onError(String string);
     public void gotResultXML(String url, Task task);
     public void downloadFinished(String mapUID);
+    public void gotImg(String url,byte[] data);
     
 }
