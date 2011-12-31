@@ -15,6 +15,8 @@ CURRENT VERSION:
 1.1.0.5
 
 	got rid of Abba dependence, now just uses SwingME
+	fix for maps that link to existing cards files, such as france.map
+	fix for MapStore showing local maps with spaces in names
 
 1.1.0.4 (30.12.2011)
 

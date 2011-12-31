@@ -132,7 +132,6 @@
 		description="copies all the necessary files for the game to one directory, from which it can be played then"
 		depends="distribution.jar"><!-- ,manual -->
 
-		<delete dir="${dir.build.game}"/>
 		<mkdir dir="${dir.build.game}"/>
 
 		<copy file="ChangeLog.txt" todir="${dir.build.game}"/>
@@ -305,7 +304,6 @@ ${basedir}/installer/jsmooth/jsmoothgen-ant.jar
 
 	<target name="manual" description="compiles the manual from docbook into html">
 
-		<delete dir="${dir.build.manual}"/>
 		<mkdir dir="${dir.build.manual}"/>
 		<!-- compile the manual with xmlto -->
 		<exec executable="xmlto" dir="newhelp">
