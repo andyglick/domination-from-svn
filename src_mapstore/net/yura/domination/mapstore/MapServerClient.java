@@ -31,6 +31,10 @@ public class MapServerClient extends HTTPClient {
 
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
+        if (request.id == MAP_REQUEST_ID && getMapDownload(request.url).ignoreErrorInDownload(request.url)) {
+            return;
+        }
+
         // print error to console
         Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n"+headers );
         if (ex!=null) { Logger.warn(ex); }
@@ -56,7 +60,7 @@ public class MapServerClient extends HTTPClient {
         }
         else if (request.id == MAP_REQUEST_ID) {
 
-            gotResultMap(request.url,is);
+            getMapDownload(request.url).gotRes(request.url, is );
 
         }
         else {
@@ -107,14 +111,14 @@ System.out.println("Make Request: "+request);
         return false;
     }
 
-    void gotResultMap(final String url,java.io.InputStream is) {
+    MapDownload getMapDownload(final String url) {
         for (int c=0;c<downloads.size();c++) {
             MapDownload download = (MapDownload)downloads.elementAt(c);
             if ( download.hasUrl(url) ) {
-                download.gotRes(url,is);
-                return;
+                return download;
             }
         }
+        throw new IllegalArgumentException("no download for url "+url);
     }
     
     private static void saveFile(InputStream is,OutputStream out) throws IOException {
@@ -213,6 +217,17 @@ System.out.println("Make Request: "+request);
                 FileUtil.close(out);
             }
             
+            
+        }
+
+        private boolean ignoreErrorInDownload(String url) {
+
+            urls.removeElement(url);
+            
+            String fileName = url.substring(mapContext.length());
+            
+            // we got a error, but we already have this file, so ignore the error
+            return MapChooser.fileExists(fileName);
             
         }
     }

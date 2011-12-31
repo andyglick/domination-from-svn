@@ -348,7 +348,6 @@ return Color.white;
                             misss = new Vector();
                         }
 
-                        StringTokenizer st=null;
                         String input = bufferin.readLine();
                         String mode = null;
 
@@ -374,12 +373,13 @@ return Color.white;
                                         if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
                                                 mode="newsection";
                                         }
-                                        else { st = new StringTokenizer(input); }
 
                                         if ("files".equals(mode)) {
 
-                                                String fm = st.nextToken();
-                                                String val = st.nextToken();
+                                                int space = input.indexOf(' ');
+                                            
+                                                String fm = input.substring(0,space);
+                                                String val = input.substring(space+1);
 
                                                 info.put( fm , val);
 
@@ -391,6 +391,8 @@ return Color.white;
                                         }
                                         else if ("missions".equals(mode)) {
 
+                                                StringTokenizer st = new StringTokenizer(input);
+                                            
                                                 String description=MapTranslator.getTranslatedMissionName(st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken()+"-"+st.nextToken());
 
                                                 if (description==null) {
