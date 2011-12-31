@@ -116,16 +116,18 @@ public class MapRenderer extends DefaultListCellRenderer {
 
             //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
-            Icon icon = (Icon)images.get( iconUrl );
-            if (icon==null) {
+            Icon aicon = (Icon)images.get( iconUrl );
+            if (aicon==null) {
                 //icon = new net.yura.abba.ui.components.IconCache(key, null, 0, 0, 0, 0, manager);
-                icon = net.yura.abba.ui.AbbaIcon.getIcon(iconUrl, 0, 0, 0, 0);
-                // AbbaIcon has a STRONG ref to the image, if we keep all of these in a hashmap
-                // we are keeping string refs to all the images that this renderer uses
-                images.put(iconUrl, icon);
+                //icon = net.yura.abba.ui.AbbaIcon.getIcon(iconUrl, 0, 0, 0, 0);
+                
+                aicon = new LazyIcon();
+                images.put(iconUrl, aicon);
+                
+                chooser.loadImg( iconUrl );
             }
 
-            setIcon( icon );
+            setIcon( aicon );
         }
         else {
             System.out.println("[MapRenderer] No PreviewUrl for map or category: "+value);
@@ -133,6 +135,33 @@ public class MapRenderer extends DefaultListCellRenderer {
 
         
         return c;
+    }
+    
+    public void gotImg(String url,Image img) {
+        LazyIcon aicon = (LazyIcon)images.get( url );
+        aicon.setImage(img);
+    }
+    
+    public static class LazyIcon extends Icon {
+
+        Image img;
+        
+        void setImage(Image img) {
+            this.img = img;
+            height = this.img.getHeight();
+            width = this.img.getWidth();
+        }
+
+        public void paintIcon(Component c, Graphics2D g, int x, int y) {
+            if (img!=null) {
+                g.drawImage(img, x, y);
+            }
+        }
+
+        public Image getImage() {
+            return img;
+        }
+
     }
 
     public void paintComponent(Graphics2D g) {

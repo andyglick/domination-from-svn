@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
-import net.yura.abba.Events;
-import net.yura.abba.persistence.ClientResource;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.FileUtil;
@@ -53,13 +51,8 @@ public class MapServerClient extends HTTPClient {
 
         }
         else if (request.id == IMG_REQUEST_ID) {
-
-            String uid = request.url;
             
-            ClientResource cr = new ClientResource();
-            cr.setResourceId( uid ); //  same as uid
-            cr.setData( SystemUtil.getData(is, (int)length) ); // download image from server
-            Events.CLIENT_RESOURCE.publish( uid , cr, this);
+            chooser.gotImg(request.url, SystemUtil.getData(is, (int)length) );
         }
         else if (request.id == MAP_REQUEST_ID) {
 
