@@ -166,20 +166,22 @@ System.out.println("Make Request: "+request);
             return urls.contains(url);
         }
 
-        private void gotRes(String url, InputStream is) {
-            
+        private void gotResponse(String url) {
             urls.removeElement(url);
-            
+            if (urls.isEmpty()) {
+                downloads.removeElement(this);
+                chooser.downloadFinished(mapUID);
+            }
+        }
+        
+        private void gotRes(String url, InputStream is) {
             String fileName = url.substring(mapContext.length());
 
             OutputStream out = null;
             try {
                 out = RiskUtil.streamOpener.saveMapFile(fileName);
-
                 saveFile(is, out);
-
                 if (fileName.endsWith(".map")) {
-
                     Hashtable info = RiskUtil.loadInfo(fileName, false);
 
                     // {prv=ameroki.jpg, pic=ameroki_pic.png, name=Ameroki Map, crd=ameroki.cards, map=ameroki_map.gif, comment=map: ameroki.map blah... }
@@ -196,16 +198,7 @@ System.out.println("Make Request: "+request);
                     if (prv!=null) {
                         downloadFile( "preview/"+prv );
                     }
-
                 }
-
-                if (urls.isEmpty()) {
-                    
-                    downloads.removeElement(this);
-
-                    chooser.downloadFinished(mapUID);
-                }
-
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -215,17 +208,17 @@ System.out.println("Make Request: "+request);
             finally {
                 FileUtil.close(is);
                 FileUtil.close(out);
+                
+                gotResponse(url);
             }
-            
-            
+
         }
 
         private boolean ignoreErrorInDownload(String url) {
-
-            urls.removeElement(url);
-            
             String fileName = url.substring(mapContext.length());
-            
+
+            gotResponse(url);
+
             // we got a error, but we already have this file, so ignore the error
             return MapChooser.fileExists(fileName);
             
