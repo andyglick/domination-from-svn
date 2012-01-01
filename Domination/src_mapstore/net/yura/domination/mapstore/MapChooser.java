@@ -3,6 +3,8 @@ package net.yura.domination.mapstore;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -282,6 +284,15 @@ public class MapChooser implements ActionListener,MapServerListener {
                 riskmaps.add( map );
             }
 
+            // we want to sort by name for the local map list
+            Collections.sort(riskmaps, new Comparator() {
+                public int compare(Object t1, Object t2) {
+                    Map m1 = (Map)t1;
+                    Map m2 = (Map)t2;
+                    return String.CASE_INSENSITIVE_ORDER.compare(m1.getName(), m2.getName());
+                }
+            });
+            
             setListData( null, riskmaps );
 
         }
