@@ -24,11 +24,21 @@ public class MapServerClient extends HTTPClient {
     public static final Object IMG_REQUEST_ID = new Object();
 
     MapServerListener chooser;
+    boolean killAfterLastDownload;
 
     public MapServerClient(MapServerListener aThis) {
         chooser = aThis;
     }
 
+    public void kill() {
+        if (downloads.isEmpty()) {
+            super.kill();
+        }
+        else {
+            killAfterLastDownload = true;
+        }
+    }
+    
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
         if (request.id == MAP_REQUEST_ID && getMapDownload(request.url).ignoreErrorInDownload(request.url)) {
@@ -170,7 +180,13 @@ System.out.println("Make Request: "+request);
             urls.removeElement(url);
             if (urls.isEmpty()) {
                 downloads.removeElement(this);
-                chooser.downloadFinished(mapUID);
+                
+                if (killAfterLastDownload) {
+                    kill();
+                }
+                else {
+                    chooser.downloadFinished(mapUID);
+                }
             }
         }
         
