@@ -3,6 +3,7 @@ package net.yura.domination.engine;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Vector;
 import javax.swing.JDialog;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -21,6 +22,22 @@ public class MapChooserSwingWrapper implements ActionListener {
 
     public MapChooserSwingWrapper(Vector files) {
 
+       // TMP TMP TMP
+       try {
+           // clean up crap left by old version
+            File rms = new File(".rms");
+            if (rms.exists()) {
+                File[] files1 = rms.listFiles();
+                for (int c=0;c<files1.length;c++) {
+                    files1[c].delete();
+                }
+                rms.delete();
+            }
+        }
+        catch (Throwable th) { }
+        // TMP TMP TMP
+        
+        
         wrapper = new ME4SEPanel();
 
         wrapper.getApplicationManager().applet = RiskUIUtil.applet;
