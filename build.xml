@@ -527,5 +527,54 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
     </target>
 
 
+    <target name="run" depends="game" description="override default run action of netbeans">
+        <java dir="${dir.build.game}" jar="${dir.build.game}/${game.name}.jar"/>
+    </target>
+
+
+
+
+
+
+
+
+
+
+
+<!-- <import file="${sdk.dir}/tools/ant/build.xml"/> -->
+
+<!--
+some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
+1. at the top it says name="", delete this to leave <project default="debug">
+2. comment out the line: <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
+-->
+
+    <target name="android">
+        
+        <loadproperties srcFile="local.properties" />
+        <property file="ant.properties" />
+        <loadproperties srcFile="project.properties" />
+        
+        <path id="src">
+          <pathelement location="src"/>
+          <pathelement location="src_android"/>
+          <pathelement location="src_mapstore"/>
+          <pathelement location="res_android"/>
+          <pathelement location="res_mapchooser"/>
+        </path>
+        <pathconvert property="source.absolute.dir" refid="src"/>
+        
+        <fail
+            message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
+            unless="sdk.dir"
+        />
+
+        <ant antfile="${sdk.dir}/tools/ant/build.xml">
+            <target name="clean"/>
+            <target name="debug"/>
+            <target name="install"/>
+        </ant>
+
+    </target>
 
 </project>
