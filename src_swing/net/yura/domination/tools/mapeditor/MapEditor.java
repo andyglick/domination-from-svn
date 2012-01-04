@@ -584,41 +584,37 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         // add extra info
                         map2.setMapWidth( String.valueOf( fullimg.getWidth() ) );
                         map2.setMapHeight( String.valueOf( fullimg.getHeight() ) );
-                        
-                        final String PREVIEW = "preview";
-                        
+
                         // check if we already have a preview
-                        if (map2.getPreviewUrl()==null || !map2.getPreviewUrl().startsWith(PREVIEW+"/")) {
+                        if (map2.getPreviewUrl()==null || !map2.getPreviewUrl().startsWith(MapsTools.PREVIEW+"/")) {
 
-                            final String jpg = "jpg";
+                            BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
+                            Graphics g = prvimg.getGraphics();
+                            g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
+                            g.dispose();
                             
-                            // we do NOT have a preview, we need to generate one
-                            String prv = MapsTools.makePreviewName(fileName)+"."+jpg;
+                            File mapsDir = RiskUIUtil.getSaveMapDir();
+
+                            File previewDir = new File(mapsDir,MapsTools.PREVIEW);
+                            if (!previewDir.isDirectory() && !previewDir.mkdirs()) { // if it does not exist and i cant make it
+                                throw new RuntimeException("can not create dir "+previewDir);
+                            }
                             
+                            String previewFileName;
                             try {
-
-                                File mapsDir = RiskUIUtil.getSaveMapDir();
-
-                                BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
-                                Graphics g = prvimg.getGraphics();
-                                g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
-                                g.dispose();
-
-                                File previewDir = new File(mapsDir,PREVIEW);
-                                if (!previewDir.isDirectory() && !previewDir.mkdirs()) { // if it does not exist and i cant make it
-                                    throw new RuntimeException("can not create dir "+previewDir);
+                                previewFileName = MapsTools.makePreview(fileName,prvimg,previewDir,"jpg");
+                            }
+                            catch (Exception ex) {
+                                try {
+                                    previewFileName = MapsTools.makePreview(fileName,prvimg,previewDir,"png");
                                 }
-                                
-                                boolean done = ImageIO.write( prvimg , jpg , new File(previewDir,prv) );
-                                
-                                if (!done) throw new RuntimeException("not done");
-
-                                map2.setPreviewUrl(PREVIEW+"/"+prv);
-                            }
-                            catch(Exception ex) {
-                                throw new RuntimeException(ex);
+                                catch (Exception ex2) {
+                                    ex.printStackTrace();
+                                    throw new RuntimeException(ex2);
+                                }
                             }
 
+                            map2.setPreviewUrl(previewFileName);
                         }
                         
                         // save back to big XML file
@@ -1103,7 +1099,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
             String mapName = mapFile.getName();
 
-	    String name = mapName.substring(0, mapName.lastIndexOf('.') );
+	    String name = MapsTools.getSafeMapID(mapName);
 
 	    String cardsName = name + "." + RiskFileFilter.RISK_CARDS_FILES;
 	    String imageMapName = name+"_map."+IMAGE_MAP_EXTENSION;
