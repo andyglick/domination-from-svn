@@ -47,7 +47,7 @@ public class MapServerClient extends HTTPClient {
 
         // print error to console
         Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n"+headers );
-        if (ex!=null) { Logger.warn(ex); }
+        if (ex!=null) { Logger.warn(ex); } else { Logger.dumpStack(); }
 
         // show error dialog to the user
         chooser.onError("error: "+responseCode+(ex!=null?" "+ex:"") );

@@ -1,9 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.yura.domination.tools.mapeditor;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.imageio.ImageIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.Map;
@@ -115,16 +113,36 @@ public class MapsTools {
         return null;
     }
 
-    static String makePreviewName(String file) {
-        
+    public static String getSafeMapID(String file) {
+
         if (file.toLowerCase().endsWith(".map")) {
-            return file.substring(0, file.length()-4);
-        }
-        else {
-            return file;
+            file = file.substring(0, file.length()-4);
         }
         
+        int i;
+        while ((i=file.indexOf(' '))>=0) {
+            file = file.substring(0, i)+
+            ((i<(file.length()-1) )?Character.toUpperCase(file.charAt(i+1))+file.substring(i+2):"");
+        }
+        
+        return file;
     }
+    
+    public static final String PREVIEW = "preview";
+    
+    public static String makePreview(String mapUID, BufferedImage prvimg,File previewDir, String format) throws Exception {
+
+            // we do NOT have a preview, we need to generate one
+            String prv = getSafeMapID(mapUID)+"."+format;
+
+            boolean done = ImageIO.write( prvimg , format , new File(previewDir,prv) );
+
+            if (!done) throw new Exception("not done "+format);
+
+            return PREVIEW+"/"+prv;
+
+    }
+    
     
     static String publish(Map map, String[] myCategoriesIds) {
         
@@ -132,7 +150,7 @@ public class MapsTools {
 
                 File mapsDir = RiskUIUtil.getSaveMapDir();
                 
-                File zipFile = new File(mapsDir, MapsTools.makePreviewName(map.getMapUrl())+".zip" );
+                File zipFile = new File(mapsDir, getSafeMapID(map.getMapUrl())+".zip" );
                 if (!zipFile.exists()) {
                     
                     Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
@@ -143,7 +161,7 @@ public class MapsTools {
                     files[2] = (String)info.get("pic");
                     files[3] = (String)info.get("map");
                     if (info.get("prv")!=null) {
-                        files[4] = "preview/"+(String)info.get("prv");
+                        files[4] = PREVIEW+"/"+(String)info.get("prv");
                     }
                     
                     makeZipFile(zipFile, mapsDir, files);
