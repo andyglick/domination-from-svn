@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
@@ -58,6 +59,12 @@ public class MapServerClient extends HTTPClient {
         if (request.id == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
             Task task = (Task)access.load( new UTF8InputStreamReader(is) );
+
+            // HACK!!! there is a massive bug in Android where if you dont do a extra read after reading all the data
+            // HACK!!! your next http request will fail! http://code.google.com/p/android/issues/detail?id=7786
+            if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
+                is.read();
+            }
 
 //System.out.println("Got XML "+task);
 
