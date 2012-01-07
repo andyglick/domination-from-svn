@@ -1,9 +1,12 @@
 package net.yura.domination.engine;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -457,5 +460,15 @@ return Color.white;
 
 	}
 
+        public static OutputStream getOutputStream(File dir,String fileName) throws Exception {
+            File outFile = new File(dir,fileName);
+            // as this could be dir=.../maps fileName=preview/file.jpg
+            // we need to make sure the preview dir exists, and if it does not, we must make it
+            File parent = outFile.getParentFile();
+            if (!parent.isDirectory() && !parent.mkdirs()) { // if it does not exist and i cant make it
+                throw new RuntimeException("can not create dir "+parent);
+            }
+            return new FileOutputStream( outFile );
+        }
 
 }
