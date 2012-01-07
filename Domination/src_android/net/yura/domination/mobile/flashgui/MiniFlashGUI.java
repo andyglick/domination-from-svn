@@ -13,6 +13,7 @@ import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
@@ -30,7 +31,6 @@ import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -125,22 +125,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
                 MapListener al = new MapListener();
 
-
-
-                Enumeration en = FileUtil.getDirectoryFiles("file:///android_asset/maps/");
-
-                Vector result = new Vector();
-                while (en.hasMoreElements()) {
-                    String file = (String)en.nextElement();
-                    if (file.endsWith(".map")) {
-                        result.addElement( file );
-                    }
-                }
-
-
-
-
-                MapChooser mapc = new MapChooser(al,result);
+                MapChooser mapc = new MapChooser(al, RiskMiniIO.getFileList("map") );
                 al.mapc = mapc;
 
                 Frame mapFrame = new Frame( resBundle.getProperty("newgame.choosemap") );
@@ -161,9 +146,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     class MapListener implements ActionListener {
         MapChooser mapc;
         public void actionPerformed(String arg0) {
-            mapc.getSelectedMap();
-
+            
+            String name = mapc.getSelectedMap();
+            if (name != null) {
+                    myrisk.parser("choosemap " + name );
+            }
+            
             mapc.getRoot().getWindow().setVisible(false);
+            
+            mapc.destroy();
         }
     };
 
