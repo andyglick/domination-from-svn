@@ -62,6 +62,7 @@ public class MapServerClient extends HTTPClient {
 
             // HACK!!! there is a massive bug in Android where if you dont do a extra read after reading all the data
             // HACK!!! your next http request will fail! http://code.google.com/p/android/issues/detail?id=7786
+            // HACK!!! this bug is found on Android 1.6, it seems to be fixed on Android 2.3.3
             if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
                 is.read();
             }

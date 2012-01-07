@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.io.FileUtil;
 
@@ -64,9 +65,7 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public OutputStream saveMapFile(String fileName) throws Exception {
-        File userMaps = getSaveMapDir();
-        File newFile = new File(userMaps, fileName);
-        return new FileOutputStream(newFile);
+        return RiskUtil.getOutputStream( getSaveMapDir(), fileName);
     }
 
     public void getMap(String filename, Risk risk, Exception ex) {
