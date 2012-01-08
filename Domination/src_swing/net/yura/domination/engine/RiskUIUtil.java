@@ -656,10 +656,9 @@ public class RiskUIUtil {
 
 		ResourceBundle resb = TranslationBundle.getBundle();
 
-		String netInfo,patch,home,cpu,name,info;
+		String netInfo,home,cpu,name,info;
 
 		if (checkForNoSandbox()) {
-			patch = " " + System.getProperty("sun.os.patch.level") + " (" + System.getProperty("sun.arch.data.model") + "bit)";
 			home = System.getProperty("java.home");
 			cpu = System.getProperty("sun.cpu.isalist");
 			name = System.getProperty("java.runtime.name") + " ("+ System.getProperty("java.runtime.version") +")";
@@ -674,33 +673,27 @@ public class RiskUIUtil {
 			}
 		}
 		else {
-			patch = "?";
 			home = "?";
 			cpu = "?";
 			info = "?";
 
 			if (applet!=null) {
-
 				name = "applet";
 			}
 			else if (webstart!=null) {
-
 				name = "web start ("+webstart+")";
 			}
 			else {
 				name = "?";
-
 			}
-
 
 			netInfo = "?";
 		}
 
-
 		return		" " + Risk.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
 				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + "\n" +
 				" " + netInfo + " \n" +
-				" " + System.getProperty("os.name") + " " + System.getProperty("os.version") +" "+ patch + " on " + System.getProperty("os.arch") + " \n" +
+				" " + getOSString() + " \n" +
 				" " + cpu + " \n" +
 				" " + UIManager.getLookAndFeel() + " \n" +
 				" " + System.getProperty("java.vendor") + " \n" +
@@ -713,6 +706,17 @@ public class RiskUIUtil {
 
 
 	}
+        
+        public static String getOSString() {
+            String patch;
+            if (checkForNoSandbox()) {
+                patch = System.getProperty("sun.os.patch.level") + " (" + System.getProperty("sun.arch.data.model") + "bit)";
+            }
+            else {
+                patch="?";
+            }
+            return System.getProperty("os.name") + " " + System.getProperty("os.version") +" "+ patch + " on " + System.getProperty("os.arch");
+        }
 
 
 	public static void openAbout(Frame frame,String product,String version) {
