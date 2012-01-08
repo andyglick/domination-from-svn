@@ -1141,7 +1141,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    cardsBuffer.append(n);
 
 	    cardsBuffer.append("; Made with yura.net ");
-            cardsBuffer.append( RiskUtil.getGameName() );
+            cardsBuffer.append( RiskUtil.GAME_NAME );
             cardsBuffer.append(" ");
 	    cardsBuffer.append( Risk.RISK_VERSION );
 	    cardsBuffer.append(n);
@@ -1230,7 +1230,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    buffer.append(n);
 
 	    buffer.append("; Made with yura.net ");
-            buffer.append( RiskUtil.getGameName() );
+            buffer.append( RiskUtil.GAME_NAME );
             buffer.append(" ");
 	    buffer.append( Risk.RISK_VERSION );
 	    buffer.append(n);

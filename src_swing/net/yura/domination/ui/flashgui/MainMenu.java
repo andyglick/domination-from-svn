@@ -43,7 +43,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 	static {
 
-		product = "Flash GUI for " + RiskUtil.getGameName();
+		product = "Flash GUI for " + RiskUtil.GAME_NAME;
 
 	}
 
