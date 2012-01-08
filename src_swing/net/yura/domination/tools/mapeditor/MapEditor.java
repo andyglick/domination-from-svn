@@ -544,6 +544,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         
                         map2.setDateAdded( String.valueOf( System.currentTimeMillis() ) ); // todays date
                         
+                        try {
+                            map2.setAuthorName( System.getProperty("user.name") );
+                        }
+                        catch (Throwable th) { }
+                        
                         maps.add(map2);
                     }
 
@@ -1134,10 +1139,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    cardsBuffer.append("; cards: ");
 	    cardsBuffer.append(cardsName);
 	    cardsBuffer.append(n);
-	    cardsBuffer.append("; cards made with the map maker");
-	    cardsBuffer.append(n);
-	    cardsBuffer.append("; yura.net Risk ");
+
+	    cardsBuffer.append("; Made with yura.net ");
+            cardsBuffer.append( RiskUtil.getGameName() );
+            cardsBuffer.append(" ");
 	    cardsBuffer.append( Risk.RISK_VERSION );
+	    cardsBuffer.append(n);
+            
+            cardsBuffer.append("; OS: ");
+            cardsBuffer.append( RiskUIUtil.getOSString() );
 	    cardsBuffer.append(n);
 
 	    cardsBuffer.append(n);
@@ -1218,10 +1228,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    buffer.append("; map: ");
 	    buffer.append(mapName);
 	    buffer.append(n);
-	    buffer.append("; map made with the map maker");
-	    buffer.append(n);
-	    buffer.append("; yura.net Risk ");
+
+	    buffer.append("; Made with yura.net ");
+            buffer.append( RiskUtil.getGameName() );
+            buffer.append(" ");
 	    buffer.append( Risk.RISK_VERSION );
+	    buffer.append(n);
+            
+            buffer.append("; OS: ");
+            buffer.append( RiskUIUtil.getOSString() );
 	    buffer.append(n);
 
 	    buffer.append(n);
