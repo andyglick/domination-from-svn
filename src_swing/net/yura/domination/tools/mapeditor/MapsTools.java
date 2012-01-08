@@ -151,22 +151,22 @@ public class MapsTools {
                 File mapsDir = RiskUIUtil.getSaveMapDir();
                 
                 File zipFile = new File(mapsDir, getSafeMapID(map.getMapUrl())+".zip" );
-                if (!zipFile.exists()) {
-                    
-                    Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
-                    
-                    String[] files = new String[ info.get("prv")==null?4:5 ];
-                    files[0] = map.getMapUrl();
-                    files[1] = (String)info.get("crd");
-                    files[2] = (String)info.get("pic");
-                    files[3] = (String)info.get("map");
-                    if (info.get("prv")!=null) {
-                        files[4] = PREVIEW+"/"+(String)info.get("prv");
-                    }
-                    
-                    makeZipFile(zipFile, mapsDir, files);
-                    
+                if (zipFile.exists() && !zipFile.delete()) {
+                    throw new RuntimeException("can not del "+zipFile);
                 }
+                    
+                Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
+
+                String[] files = new String[ info.get("prv")==null?4:5 ];
+                files[0] = map.getMapUrl();
+                files[1] = (String)info.get("crd");
+                files[2] = (String)info.get("pic");
+                files[3] = (String)info.get("map");
+                if (info.get("prv")!=null) {
+                    files[4] = PREVIEW+"/"+(String)info.get("prv");
+                }
+
+                makeZipFile(zipFile, mapsDir, files);
                 
                 // create the multipart request and add the parts to it
                 MultipartEntity requestContent = new MultipartEntity();
