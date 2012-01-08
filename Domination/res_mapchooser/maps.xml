@@ -29,6 +29,8 @@
     </panel>
     <panel scrollable="true" weighty="1">
         <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
+        <label text="mapchooser.no-matches" i18n="true" name="NoMatches" alignment="center" property="valign=center" weightx="1" weighty="1" visible="false"/>
+        <label text="mapchooser.loading" i18n="true" name="Loading" alignment="center" property="valign=center" weightx="1" weighty="1" visible="false"/>
     </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
         <button action="cancel" mnemonic="112" text="mapchooser.cancel" i18n="true" type="cancel" weightx="1"/>

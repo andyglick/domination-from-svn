@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.5
+	Risk Game:	1.1.0.6
 	 * Save:	7
 	 * Network:	8
 
@@ -12,7 +12,13 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.5
+1.1.0.6
+
+	fixed xml not working sometimes when there are unicode chars
+	fixed, show loading screens when loading data in MapStore
+	fixed on windows 7, preview map image does not download correctly
+
+1.1.0.5 (04.01.2012)
 
 	got rid of Abba dependence, now just uses SwingME
 	fix for maps that link to existing cards files, such as france.map

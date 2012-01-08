@@ -48,6 +48,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     MapServerClient client;
 
     Vector mapfiles;
+    List list;
 
     // Nathans server
     //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
@@ -137,7 +138,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             }
         }
 
-        List list = (List)loader.find("ResultList");
+        list = (List)loader.find("ResultList");
         list.setDoubleClick(true);
         list.setCellRenderer( new MapRenderer(this) );
         list.setFixedCellHeight(100);
@@ -213,7 +214,6 @@ public class MapChooser implements ActionListener,MapServerListener {
     private void gotImg(String url,InputStream in) {
         try {
             if (client!=null) { // if we have shut down, dont need to do anything
-                List list = (List)loader.find("ResultList");
                 MapRenderer ren = (MapRenderer)list.getCellRenderer();
                 Image img = Image.createImage(in);
                 ren.gotImg(url, img);
@@ -315,7 +315,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("update".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            // TODO
+            setListData(null, null); // TODO what should go here?
         }
         else if ("TOP_NEW".equals(actionCommand)) {
             clearList();
@@ -330,7 +330,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             makeRequestForMap("sort","TOP_DOWNLOADS" );
         }
         else if ("listSelect".equals(actionCommand)) {
-            List list = (List)loader.find("ResultList");
+
             Object value = list.getSelectedValue();
             if (value instanceof Category) {
                 Category cat = (Category)value;
@@ -412,6 +412,9 @@ public class MapChooser implements ActionListener,MapServerListener {
             if (text != null && !"".equals(text)) {
                 makeRequestForMap("search", text );
             }
+            else {
+                setListData(null, null);
+            }
         }
         else {
             System.out.println("Unknown command "+actionCommand);
@@ -465,7 +468,13 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     void clearList() {
-        setListData( null, new Vector(0) ); // todo, use a constant?
+        
+        Component loading = loader.find("Loading");
+        Component noMatches = loader.find("NoMatches");
+        
+        list.setVisible(false);
+        noMatches.setVisible(false);
+        loading.setVisible(true);
 
         getRoot().revalidate();
         getRoot().repaint();
@@ -533,18 +542,26 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
     
     private void setListData(String url,Vector items) {
-        
+
         String context = getContext(url);
-        
-        List list = (List)loader.find("ResultList");
-        
         ((MapRenderer)list.getCellRenderer()).setContext(context);
-        
-        list.setListData( items );
+        list.setListData( items==null?new Vector(0):items );
+        if (list.getSize()>0) {
+            list.setSelectedIndex(-1);
+            list.ensureIndexIsVisible(0);
+        }
+
+        Component loading = loader.find("Loading");
+        Component noMatches = loader.find("NoMatches");
+
+        loading.setVisible(false);
+        boolean showNoMatch = items!=null && items.isEmpty();
+        list.setVisible( !showNoMatch );
+        noMatches.setVisible( showNoMatch );
         
         getRoot().revalidate();
         getRoot().repaint();
-        
+
     }
 
     private void activateGroup(String string) {
