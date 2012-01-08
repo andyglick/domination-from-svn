@@ -65,7 +65,7 @@ public class BugsPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		if (a.getActionCommand().equals("send")) {
 
-                    SwingGUIPanel.submitBug(this,text.getText(), from.getText(), "Suggestion");
+                    SwingGUIPanel.submitBug(this,text.getText(), from.getText(), "Suggestion",null);
 
 		}
 

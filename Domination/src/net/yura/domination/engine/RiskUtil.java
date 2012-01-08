@@ -55,9 +55,6 @@ public class RiskUtil {
 		RiskGame.setDefaultMapAndCards( dmap , dcards );
 
 	}
-	public static String getGameName() {
-		return GAME_NAME;
-	}
 
 	public static InputStream openMapStream(String a) throws IOException {
             return streamOpener.openMapStream(a);

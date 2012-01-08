@@ -40,10 +40,10 @@ public class ClientGameRisk extends TurnBasedAdapter {
 	private final static String version = "0.2";
 
 	static {
-                final String RISK_PATH = RiskUtil.getGameName() + "/";
+                final String RISK_PATH = RiskUtil.GAME_NAME + "/";
                 final String MAP_PATH = "maps/";
 
-		product = RiskUtil.getGameName() + " Lobby Client";
+		product = RiskUtil.GAME_NAME + " Lobby Client";
 
                 RiskUtil.streamOpener = new RiskIO() {
                     public InputStream openStream(String name) throws IOException {
@@ -104,7 +104,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 			dialog = new JDialog(parent,"Game Options",true);
 
-			gsp = new GameSetupPanel(dialog,myname+"'s "+RiskUtil.getGameName()+" Game");
+			gsp = new GameSetupPanel(dialog,myname+"'s "+RiskUtil.GAME_NAME+" Game");
 
 			// @todo:
 			// do noting on close

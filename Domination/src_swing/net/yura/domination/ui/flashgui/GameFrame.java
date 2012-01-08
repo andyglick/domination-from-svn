@@ -172,7 +172,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		resb = TranslationBundle.getBundle();
 
 		// set title
-		setTitle("yura.net " + RiskUtil.getGameName() ); // resb.getString("game.title")
+		setTitle("yura.net " + RiskUtil.GAME_NAME ); // resb.getString("game.title")
 
 		//JLayeredPane layeredPane = new JLayeredPane();
 		//layeredPane.setPreferredSize(d);

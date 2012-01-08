@@ -792,19 +792,15 @@ public class RiskUIUtil {
 					URL url = new URL(RiskUtil.RISK_VERSION_URL);
 
 					BufferedReader bufferin=new BufferedReader( new InputStreamReader(url.openStream()) );
-
-					StringBuffer buffer = new StringBuffer();
-
+					Vector buffer = new Vector();
 					String input = bufferin.readLine();
 
 					while(input != null) {
-
-						buffer.append(input+"\n");
-
+						buffer.add(input);
 						input = bufferin.readLine(); // get next line
 					}
 
-					String[] newversion = buffer.toString().split("\\n");
+					String[] newversion = (String[])buffer.toArray( new String[buffer.size()] );
 
 					if (newversion[0].startsWith("RISKOK ")) {
 
@@ -813,9 +809,7 @@ public class RiskUIUtil {
 						if (!v.equals(Risk.RISK_VERSION)) {
 
 							for (int c=1;c<newversion.length;c++) {
-
 								v = v+"\n"+newversion[c];
-
 							}
 
                                                         ResourceBundle resb = TranslationBundle.getBundle();
@@ -1076,7 +1070,7 @@ public class RiskUIUtil {
         // oh crap, we have hit Win Vista/7 UAC
 
         File userHome = new File( System.getProperty("user.home") );
-        File userMaps = new File(userHome, RiskUtil.getGameName()+" Saves");
+        File userMaps = new File(userHome, RiskUtil.GAME_NAME+" Saves");
         if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
             throw new RuntimeException("can not create dir "+userMaps);
         }
@@ -1107,7 +1101,7 @@ public class RiskUIUtil {
         // oh crap, we have hit Win Vista/7 UAC
 
         File userHome = new File( System.getProperty("user.home") );
-        File userMaps = new File(userHome, RiskUtil.getGameName()+" Maps");
+        File userMaps = new File(userHome, RiskUtil.GAME_NAME+" Maps");
         if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
             throw new RuntimeException("can not create dir "+userMaps);
         }

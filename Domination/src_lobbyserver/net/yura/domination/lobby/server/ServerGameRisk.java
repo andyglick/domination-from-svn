@@ -33,7 +33,7 @@ public class ServerGameRisk extends TurnBasedGame {
         static {
             final URL mapsdir;
             try {
-                mapsdir = new java.io.File( RiskUtil.getGameName() + "/maps").toURI().toURL();
+                mapsdir = new java.io.File( RiskUtil.GAME_NAME + "/maps").toURI().toURL();
             }
             catch(Exception ex) {
                 throw new RuntimeException(ex);

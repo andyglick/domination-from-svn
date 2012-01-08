@@ -90,7 +90,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 	static {
 
-		product = "Swing GUI for " + RiskUtil.getGameName();
+		product = "Swing GUI for " + RiskUtil.GAME_NAME;
 
 	}
 
@@ -819,7 +819,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		// cant use this as it goes even worse in xp
 		//lobby.setContentAreaFilled(false);
 
-		JLabel pixlogo = new JLabel("yura.net "+product+", "+RiskUtil.getGameName()+" IDE", new javax.swing.ImageIcon(  this.getClass().getResource("about.jpg") ) , JLabel.CENTER );
+		JLabel pixlogo = new JLabel("yura.net "+product+", "+RiskUtil.GAME_NAME+" IDE", new javax.swing.ImageIcon(  this.getClass().getResource("about.jpg") ) , JLabel.CENTER );
 		pixlogo.setHorizontalTextPosition( JLabel.CENTER );
 		pixlogo.setVerticalTextPosition( JLabel.TOP );
 
@@ -1419,12 +1419,12 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 }
 
-    public static void submitBug(Component parent, String text,String from,String subjectIn) {
+    public static void submitBug(Component parent, String text,String from,String subjectIn,String cause) {
 
             String subject = RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
         
             try {
-                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, subject,
+                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, subject, cause,
                             RiskUtil.GAME_NAME,
                                 Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
                                 , TranslationBundle.getBundle().getLocale().toString()
@@ -1455,6 +1455,8 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 	private JToolBar toolbarDebug;
 	private JMenu mDebug;
+        
+        String cause;
 
 	public JToolBar getToolBar() {
 
@@ -1641,7 +1643,8 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                         public void flush() { }
                         public void close() { }
                     }, new net.yura.grasshopper.SimplePrintStream() {
-                        public void action() {
+                        public void action(String thecause) {
+                                cause = thecause;
                                 int nom = tabbedpane.indexOfComponent(DebugTab.this);
 
                                 if (tabbedpane.getIconAt(nom)==null) {
@@ -1699,7 +1702,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                         if (email == null) { email ="none"; }
 
-                        submitBug( this, debugText.getText() + errText.getText(), email, "Bug" );
+                        submitBug( this, debugText.getText() + errText.getText(), email, "Bug",cause );
 
 		}
                 else if (a.getActionCommand().equals("clear error")) {
