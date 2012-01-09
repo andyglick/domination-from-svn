@@ -359,8 +359,10 @@ public class RiskUIUtil {
                 // get list of maps
                 File file = getSaveMapDir();
                 File [] mapsList = file.listFiles( filter );
-                for (int c=0;c<mapsList.length;c++) {
-                    namesvector.addElement( mapsList[c].getName() );
+                if (mapsList!=null) { // there is no reason at all this should ever be null, but sometimes it is?!
+                    for (int c=0;c<mapsList.length;c++) {
+                        namesvector.addElement( mapsList[c].getName() );
+                    }
                 }
 
                 
