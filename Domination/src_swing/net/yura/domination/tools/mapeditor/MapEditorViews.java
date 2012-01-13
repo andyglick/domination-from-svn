@@ -1026,9 +1026,14 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	}
 
 	public String[] getLines() {
-
-		return getText().split("\\n");
-
+            String[] strings = getText().split("\\n");
+            Vector goodStrings = new Vector();
+            for (int c=0;c<strings.length;c++) {
+                if (!"".equals(strings[c])) {
+                    goodStrings.add( strings[c] );
+                }
+            }
+            return (String[]) goodStrings.toArray( new String[goodStrings.size()] );
 	}
 
     }
