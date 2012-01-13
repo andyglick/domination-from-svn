@@ -1,6 +1,5 @@
 package net.yura.domination.tools.mapeditor;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -47,7 +47,7 @@ public class MapsTools {
 
                 XMLMapAccess access = new XMLMapAccess();
                 
-                Task task = (Task)access.load( new FileReader(xml) ); // TODO should we need to say its UTF-8 ???
+                Task task = (Task)access.load( new InputStreamReader(new FileInputStream(xml), "UTF-8") );
                 
                 // load big XML file
                 Vector maps = (Vector)task.getObject();
@@ -157,28 +157,34 @@ public class MapsTools {
                     
                 Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
 
-                String[] files = new String[ info.get("prv")==null?4:5 ];
-                files[0] = map.getMapUrl();
-                files[1] = (String)info.get("crd");
-                files[2] = (String)info.get("pic");
-                files[3] = (String)info.get("map");
-                if (info.get("prv")!=null) {
-                    files[4] = PREVIEW+"/"+(String)info.get("prv");
+                Vector files = new Vector();
+                files.add( map.getMapUrl() );
+                files.add( info.get("pic") );
+                files.add( info.get("map") );
+
+                String cardsFile = (String)info.get("crd");
+                if (!"risk.cards".equals(cardsFile) && !"nomission.cards".equals(cardsFile)) { // these 2 files come with ALL installs
+                    files.add( cardsFile );
                 }
 
-                makeZipFile(zipFile, mapsDir, files);
+                String preview = (String)info.get("prv");
+                if (preview!=null) {
+                    files.add( PREVIEW+"/"+preview );
+                }
+
+                makeZipFile(zipFile, mapsDir, (String[])files.toArray( new String[files.size()] ));
                 
                 // create the multipart request and add the parts to it
                 MultipartEntity requestContent = new MultipartEntity();
                 
-                requestContent.addPart("first_name", new StringBody( map.getAuthorName() ));
-                requestContent.addPart("email", new StringBody( map.getAuthorId() ));
+                requestContent.addPart("first_name", makeStringBody( map.getAuthorName() ));
+                requestContent.addPart("email", makeStringBody( map.getAuthorId() ));
                 
-                requestContent.addPart("name", new StringBody( map.getName() ));
-                requestContent.addPart("description", new StringBody( map.getDescription() ));
+                requestContent.addPart("name", makeStringBody( map.getName() ));
+                requestContent.addPart("description", makeStringBody( map.getDescription() ));
                 
                 for (int c=0;c<myCategoriesIds.length;c++) {
-                    requestContent.addPart("categories", new StringBody( myCategoriesIds[c] ) );
+                    requestContent.addPart("categories", makeStringBody( myCategoriesIds[c] ) );
                 }
                 
                 requestContent.addPart("mapZipFile", new FileBody(zipFile));
@@ -189,6 +195,15 @@ public class MapsTools {
             catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
+    }
+    
+    static StringBody makeStringBody(String string) {
+        try {
+            return new StringBody(string, Charset.forName("UTF-8"));
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
     public static void makeZipFile(File zipFile,File root, String[] files) {
