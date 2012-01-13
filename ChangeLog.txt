@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.6
+	Risk Game:	1.1.0.7
 	 * Save:	7
 	 * Network:	8
 
@@ -11,6 +11,10 @@ CURRENT VERSION:
 	Increment1GUI:	1.1.1.1
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
+
+1.1.0.7
+
+	UTF-8 support for publishing new maps
 
 1.1.0.6
 
