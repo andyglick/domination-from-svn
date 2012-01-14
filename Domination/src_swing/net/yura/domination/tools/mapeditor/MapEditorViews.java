@@ -354,10 +354,10 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			int result = openOptionDialog(message,"Edit country");
 
 			if (result == JOptionPane.OK_OPTION ) {
+                            String name = ((JTextField)message[1]).getText();
+                            if (!"".equals(name)) {
 
 				Continent newContinent = (Continent)((JComboBox)message[3]).getSelectedItem();
-
-				String name = ((JTextField)message[1]).getText();
 
 				country.setIdString( name.replace(' ','_') );
 				country.setName( name );
@@ -369,6 +369,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				fireContentsChanged(this,sel, sel );
 
 				editPanel.repaint();
+                            }
 			}
 
 		}
@@ -524,8 +525,8 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			int result = openOptionDialog(message,"Edit continent");
 
 			if (result == JOptionPane.OK_OPTION ) {
-
-				String name = ((JTextField)message[1]).getText();
+                            String name = ((JTextField)message[1]).getText();
+                            if (!"".equals(name)) { 
 
 				continent.setIdString( name.replace(' ','_') );
 				continent.setName(name);
@@ -535,6 +536,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				fireContentsChanged(this,sel, sel );
 
 				editPanel.repaint();
+                            }
 			}
 
 		}
