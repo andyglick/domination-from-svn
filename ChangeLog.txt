@@ -15,6 +15,7 @@ CURRENT VERSION:
 1.1.0.7
 
 	UTF-8 support for publishing new maps
+        fixed nullpointer when you close the MapStore right after fetching a new XML file
 
 1.1.0.6
 
