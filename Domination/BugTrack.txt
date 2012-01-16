@@ -1,5 +1,33 @@
 Risk - Yura Mamyrin (yura@yura.net)
 
+TODO Android
+
+    HOME SCREEN:
+	# design home screen
+	home screen About button does nothing
+        remove frame decoration
+        move About and Help into menu
+        load game does not work
+
+    GAME SETUP SCREEN:
+	# design game setup screen
+        game setup screen, "custom player" button does nothing
+        remove frame decoration
+
+    INGAME SCREEN:
+	# design in game screen
+	in game screen the drop shadow does not always go around the map
+        when you close a game, the main menu looses its border
+        remove frame decoration
+        move closegame button into menu
+        add saveGame button into menu
+        remove stats button while it does not work
+        dice roll screen does not work
+        move armies screen does not work
+
+
+
+
 Still needs to be done:
 
 

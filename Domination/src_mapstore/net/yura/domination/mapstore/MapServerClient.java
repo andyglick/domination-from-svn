@@ -25,23 +25,22 @@ public class MapServerClient extends HTTPClient {
     public static final Object IMG_REQUEST_ID = new Object();
 
     MapServerListener chooser;
-    boolean killAfterLastDownload;
 
     public MapServerClient(MapServerListener aThis) {
         chooser = aThis;
     }
 
     public void kill() {
+        chooser = null;
         if (downloads.isEmpty()) {
             super.kill();
-        }
-        else {
-            killAfterLastDownload = true;
         }
     }
     
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
+        MapServerListener ch = this.chooser;
+        
         if (request.id == MAP_REQUEST_ID && getMapDownload(request.url).ignoreErrorInDownload(request.url)) {
             return;
         }
@@ -51,10 +50,14 @@ public class MapServerClient extends HTTPClient {
         if (ex!=null) { Logger.warn(ex); } else { Logger.dumpStack(); }
 
         // show error dialog to the user
-        chooser.onError("error: "+responseCode+(ex!=null?" "+ex:"") );
+        if (ch!=null) {
+            ch.onError("error: "+responseCode+(ex!=null?" "+ex:"") );
+        }
     }
 
     protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {
+
+        MapServerListener ch = this.chooser;
 
         if (request.id == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
@@ -69,12 +72,15 @@ public class MapServerClient extends HTTPClient {
 
 //System.out.println("Got XML "+task);
 
-            chooser.gotResultXML(request.url,task);
-
+            if (ch!=null) {
+                ch.gotResultXML(request.url,task);
+            }
         }
         else if (request.id == IMG_REQUEST_ID) {
             
-            chooser.gotImg(request.url, SystemUtil.getData(is, (int)length) );
+            if (ch!=null) {
+                ch.gotImg(request.url, SystemUtil.getData(is, (int)length) );
+            }
         }
         else if (request.id == MAP_REQUEST_ID) {
 
@@ -189,11 +195,13 @@ System.out.println("Make Request: "+request);
             if (urls.isEmpty()) {
                 downloads.removeElement(this);
                 
-                if (killAfterLastDownload) {
-                    kill();
+                MapServerListener ch = chooser;
+                
+                if (ch!=null) {
+                    ch.downloadFinished(mapUID);
                 }
                 else {
-                    chooser.downloadFinished(mapUID);
+                    kill();
                 }
             }
         }
