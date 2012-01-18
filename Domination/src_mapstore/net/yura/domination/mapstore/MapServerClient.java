@@ -3,6 +3,7 @@ package net.yura.domination.mapstore;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.Vector;
 import net.yura.domination.engine.RiskUtil;
@@ -179,7 +180,17 @@ System.out.println("Make Request: "+request);
         
         final void downloadFile(String fileName) {
             
-            String url = mapContext + fileName;
+            // this does not support spaces in file names
+            //String url = mapContext + fileName;
+            
+            String url;
+            // as we downloading a file, we need to have the correct encoding!
+            try {
+                url = new URI(mapContext).resolve( new URI(null, null, fileName, null) ).toASCIIString();
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             
             urls.addElement(url);
 
