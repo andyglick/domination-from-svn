@@ -164,6 +164,7 @@ System.out.println("Make Request: "+request);
         String mapUID;
         String mapContext;
         Vector urls = new Vector();
+        boolean error = false;
         
         MapDownload(String url) {
             
@@ -179,19 +180,11 @@ System.out.println("Make Request: "+request);
         }
         
         final void downloadFile(String fileName) {
-            
             // this does not support spaces in file names
             //String url = mapContext + fileName;
             
-            String url;
-            // as we downloading a file, we need to have the correct encoding!
-            try {
-                url = new URI(mapContext).resolve( new URI(null, null, fileName, null) ).toASCIIString();
-            }
-            catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            
+            String url = getURL(mapContext, fileName);
+
             urls.addElement(url);
 
             makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
@@ -209,7 +202,9 @@ System.out.println("Make Request: "+request);
                 MapServerListener ch = chooser;
                 
                 if (ch!=null) {
-                    ch.downloadFinished(mapUID);
+                    if (!error) {
+                        ch.downloadFinished(mapUID);
+                    }
                 }
                 else {
                     kill();
@@ -218,8 +213,11 @@ System.out.println("Make Request: "+request);
         }
         
         private void gotRes(String url, InputStream is) {
-            String fileName = url.substring(mapContext.length());
-
+            // this does not support spaces in file names
+            //String fileName = url.substring(mapContext.length());
+            
+            String fileName = getPath(mapContext, url);
+            
             OutputStream out = null;
             try {
                 out = RiskUtil.streamOpener.saveMapFile(fileName);
@@ -258,13 +256,44 @@ System.out.println("Make Request: "+request);
         }
 
         private boolean ignoreErrorInDownload(String url) {
-            String fileName = url.substring(mapContext.length());
+            //String fileName = url.substring(mapContext.length());
 
+            String fileName = getPath(mapContext, url);
+            
+            boolean fileExists = MapChooser.fileExists(fileName);
+            
+            if (!fileExists) {
+                error = true;
+            }
+            
             gotResponse(url);
 
             // we got a error, but we already have this file, so ignore the error
-            return MapChooser.fileExists(fileName);
+            return fileExists;
             
+        }
+    }
+    
+    
+    
+    
+    public static String getURL(String context, String path) {
+        // as we downloading a file, we need to have the correct encoding! (Hello World -> Hello%20World)
+        try {
+            return new URI(context).resolve( new URI(null, null, path, null) ).toASCIIString();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static String getPath(String context, String url) {
+        // we need to convert this url back into a normal path (Hello%20world -> Hello World)
+        try {
+            return new URI(context).relativize( new URI(url) ).getPath();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
     
