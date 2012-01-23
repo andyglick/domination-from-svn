@@ -2377,8 +2377,8 @@ e.printStackTrace();
 
             controller.showCardsFile( game.getCardsFile() , yesmissions );
             //New map file selected: "{0}" (cards have been reset to the default for this map)
-            String output=resb.getString( "core.choosemap.mapselected").replaceAll( "\\{0\\}", filename);
-            
+            String output= RiskUtil.replaceAll( resb.getString( "core.choosemap.mapselected"), "{0}", filename);
+
             controller.sendMessage(output, false , true);
         }
         public void getMapError(String exception) {
