@@ -138,7 +138,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String ImagePic;
 	private String ImageMap;
 	private String previewPic;
+        
 	private String mapName;
+        private int ver;
 
 	private Vector replayCommands;
 	private int maxDefendDice;
@@ -270,7 +272,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 				//try {
 
-					loadMap(mapfile);
+					loadMap();
 
 				//}
 				//catch (Exception e) {
@@ -280,7 +282,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 				try {
 
-					loadCards(cardsfile);
+					loadCards();
 
 				}
 				catch (Exception e) {
@@ -1460,18 +1462,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param filename The map filename
 	 * @throws Exception There was a error
 	 */
-	public void loadMap(String filename) throws Exception {
+	public void loadMap() throws Exception {
 
 		StringTokenizer st=null;
-
-		runmaptest = false;
 
 		Vector Countries = new Vector();
 		Vector Continents = new Vector();
 
 		//System.out.print("Starting Load Map...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(filename)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(mapfile)));
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1581,22 +1581,23 @@ transient - A keyword in the Java programming language that indicates that a fie
 					}
 
 				}
-				else {
-
-					if (input.equals("test")) {
-
-						runmaptest = true;
-
-					}
-					else if (input.startsWith("name")) {
-
-					}
-					else {
-
-						throw new Exception("unknown item found in map file: "+input);
-
-					}
-				}
+//				else {
+//
+//					if (input.equals("test")) {
+//
+//					}
+//					else if (input.startsWith("name ")) {
+//
+//					}
+//                                      else if (input.startsWith("ver ")) {
+//
+//					}
+//					else {
+//
+//						throw new Exception("unknown item found in map file: "+input);
+//
+//					}
+//				}
 
 
 			}
@@ -1644,8 +1645,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 		BufferedReader bufferin = new BufferedReader(filein);
 */
 
+		runmaptest = false;
 		previewPic = null;
 		mapName = null;
+                ver=1; // if there is no version then version is 1
 
 		String input = bufferin.readLine();
 		String mode = null;
@@ -1686,11 +1689,22 @@ transient - A keyword in the Java programming language that indicates that a fie
 				}
 				else if (mode == null) {
 
-					if (input.startsWith("name ")) {
+                                        if (input.equals("test")) {
+
+						runmaptest = true;
+
+					}
+                                        else if (input.startsWith("name ")) {
 
 						mapName = input.substring(5,input.length());
 
 					}
+                                        else if (input.startsWith("ver ")) {
+                                            
+                                                ver = Integer.parseInt( input.substring(4,input.length()) );
+                                            
+                                        }
+                                        // else unknown section
 
 				}
 
@@ -1733,6 +1747,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Cards = new Vector();
 		Missions = new Vector();
 
+                ver=1;
+                mapName = null;
+                
+                runmaptest = false;
+                previewPic=null;
+                
 		setMemoryLoad();
 
 	}
@@ -1753,7 +1773,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param filename The cards filename
 	 * @throws Exception There was a error
 	 */
-	public void loadCards(String filename) throws Exception {
+	public void loadCards() throws Exception {
 
 		StringTokenizer st=null;
 
@@ -1762,7 +1782,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("Starting load cards and missions...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(filename)));
+		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(cardsfile)));
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -2211,6 +2231,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public String getMapName() {
 		return mapName;
 	}
+        public int getVersion() {
+            return ver;
+        }
+        public void setVersion(int newVersion) {
+            ver = newVersion;
+        }
 
 	/**
 	 * Gets the ImageMap

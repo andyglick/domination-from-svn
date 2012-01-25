@@ -257,6 +257,8 @@ public class MapChooser implements ActionListener,MapServerListener {
                 }
                 map.setPreviewUrl( prv );
         
+                map.setVersion( (String)info.get("ver") );
+                
                 return map;
         
     }
