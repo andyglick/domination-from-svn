@@ -448,9 +448,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			if (name!=null) {
 
 				RiskGame map = makeNewMap();
-				map.setMapfile(name); // this is here just to update the cards option
-				map.loadMap(name);
-				map.loadCards( map.getCardsFile() );
+				map.setMapfile(name); // this is here just to update the cards option, also set the name and version
+				map.loadMap();
+				map.loadCards();
 
 				BufferedImage ipic = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImagePic()) ) );
 				BufferedImage imap = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImageMap()) ) );
@@ -589,6 +589,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         // add extra info
                         map2.setMapWidth( String.valueOf( fullimg.getWidth() ) );
                         map2.setMapHeight( String.valueOf( fullimg.getHeight() ) );
+                        
+                        map2.setVersion( String.valueOf( myMap.getVersion() ) );
 
                         // check if we already have a preview
                         if (map2.getPreviewUrl()==null || !map2.getPreviewUrl().startsWith(MapsTools.PREVIEW+"/")) {
@@ -621,7 +623,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                             map2.setPreviewUrl(previewFileName);
                         }
-                        
+
                         // save back to big XML file
                         MapsTools.saveMaps(maps);
 
@@ -1104,11 +1106,25 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
             String mapName = mapFile.getName();
 
-	    String name = MapsTools.getSafeMapID(mapName);
+            net.yura.domination.mapstore.Map map2 = MapsTools.findMap( MapsTools.loadMaps() ,mapName);
 
-	    String cardsName = name + "." + RiskFileFilter.RISK_CARDS_FILES;
-	    String imageMapName = name+"_map."+IMAGE_MAP_EXTENSION;
-	    String imagePicName = name+"_pic."+IMAGE_PIC_EXTENSION;
+            if (map2!=null) { // this means it has been published at least once
+                String version = map2.getVersion();
+                int newVersion;
+                if (version==null || "".equals(version)) {
+                    newVersion = 2;
+                }
+                else {
+                    newVersion = Integer.parseInt(version) + 1;
+                }
+                myMap.setVersion( newVersion );
+            }
+            
+	    String safeName = MapsTools.getSafeMapID(mapName);
+
+	    String cardsName = safeName + "." + RiskFileFilter.RISK_CARDS_FILES;
+	    String imageMapName = safeName+"_map."+IMAGE_MAP_EXTENSION;
+	    String imagePicName = safeName+"_pic."+IMAGE_PIC_EXTENSION;
 
 	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
 	    File imageMapFile = new File( mapFile.getParentFile(),imageMapName );
@@ -1238,8 +1254,24 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             buffer.append("; OS: ");
             buffer.append( RiskUIUtil.getOSString() );
 	    buffer.append(n);
+            buffer.append(n); // empty line
 
-	    buffer.append(n);
+            String name = myMap.getMapName();
+            if (name!=null) {
+                buffer.append("name ");
+                buffer.append(name);
+                buffer.append(n);
+            }
+            int version = myMap.getVersion();
+            if (version!=1) { // 1 is the default, we do not need to save that
+                buffer.append("ver ");
+                buffer.append(version);
+                buffer.append(n);
+            }
+            if (name!=null || version!=1) {
+                buffer.append(n); // in case we put a name or a version, add a extra empty line
+            }
+
 	    buffer.append("[files]");
 	    buffer.append(n);
 
@@ -1252,6 +1284,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    buffer.append("crd ");
 	    buffer.append(cardsName);
 	    buffer.append(n);
+            
+            String prv = myMap.getPreviewPic();
+            if (prv!=null) {
+                buffer.append("prv ");
+                buffer.append(prv);
+                buffer.append(n);
+            }
 
 	    buffer.append(n);
 	    buffer.append("[continents]");
