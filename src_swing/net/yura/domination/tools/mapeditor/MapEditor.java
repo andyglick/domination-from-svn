@@ -15,7 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
@@ -1368,7 +1369,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    Writer output = null;
 	    try {
 
-		output = new BufferedWriter( new FileWriter(mapFile) );
+		output = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(mapFile),"UTF-8") );
 		output.write( buffer.toString() );
 
 	    }
@@ -1379,7 +1380,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	    try {
 
-		output = new BufferedWriter( new FileWriter(cardsFile) );
+		output = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(cardsFile),"UTF-8") );
 		output.write( cardsBuffer.toString() );
 
 	    }
