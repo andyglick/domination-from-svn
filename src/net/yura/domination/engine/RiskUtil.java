@@ -340,7 +340,7 @@ return Color.white;
 
                 try {
 
-                        bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(fileName) ));
+                        bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(fileName),"UTF-8" ));
                         Vector misss=null;
 
                         if (cards) {
