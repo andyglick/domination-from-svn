@@ -564,9 +564,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                     JList list = new JList(categories);
                     
+                    String version = String.valueOf( myMap.getVersion() );
+                    
                     int result = showInputDialog(
-                            new String[] {"Author Name:","Email:","Map Name:","Description:","Categories:"},
-                            new JComponent[] {authorName,authorEmail,mapName,description,list},
+                            new String[] {"Author Name:","Email:","Map Name:","Description:","Categories:","version:"},
+                            new JComponent[] {authorName,authorEmail,mapName,description,list, new JLabel( version )},
                             "edit info"
                     );
                     
@@ -591,7 +593,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         map2.setMapWidth( String.valueOf( fullimg.getWidth() ) );
                         map2.setMapHeight( String.valueOf( fullimg.getHeight() ) );
                         
-                        map2.setVersion( String.valueOf( myMap.getVersion() ) );
+                        map2.setVersion( version );
 
                         // check if we already have a preview
                         if (map2.getPreviewUrl()==null || !map2.getPreviewUrl().startsWith(MapsTools.PREVIEW+"/")) {
