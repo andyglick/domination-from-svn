@@ -90,6 +90,8 @@ Known Bugs:
 
 Possible Additions: (and yuras comments)
 
+	After a game is over over, I always wanted to see a time lapsed replay of the game... like a .gif made from still shots after each move so you could see how the game progressed.
+
 	maybe you can add a notify sound for when its the player's turn?
 	Music - http://en.wikipedia.org/wiki/The_Planets#Media
 
