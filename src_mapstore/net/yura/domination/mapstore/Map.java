@@ -152,11 +152,11 @@ public class Map {
     public String toString() {
 
         // print out full info with XML
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try { new XMLMapAccess().save(out, this); } catch (IOException ex) { ex.printStackTrace(); }
-        return out.toString();
+        //ByteArrayOutputStream out = new ByteArrayOutputStream();
+        //try { new XMLMapAccess().save(out, this); } catch (IOException ex) { ex.printStackTrace(); }
+        //return out.toString();
 
-        //return id+" "+name;
+        return name; // this is used in the list for the keyboard quick jump
     }
 
 }
