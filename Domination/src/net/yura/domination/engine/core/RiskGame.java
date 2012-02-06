@@ -1471,7 +1471,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("Starting Load Map...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(mapfile),"UTF-8"));
+		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(mapfile) );
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1627,7 +1627,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			f = defaultMap;
 		}
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(f),"UTF-8"));
+		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(f) );
 
 
 /*
@@ -1782,7 +1782,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		//System.out.print("Starting load cards and missions...\n");
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(cardsfile),"UTF-8"));
+		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(cardsfile) );
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1944,7 +1944,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			f = defaultCards;
 		}
 
-		BufferedReader bufferin=new BufferedReader(new InputStreamReader(RiskUtil.openMapStream(f),"UTF-8"));
+		BufferedReader bufferin=RiskUtil.readMap(RiskUtil.openMapStream(f) );
 
 
 /*

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -323,7 +324,26 @@ return Color.white;
             }
         }
 
+        public static BufferedReader readMap(InputStream in) throws IOException {
 
+            PushbackInputStream pushback = new PushbackInputStream(in,3);
+
+            int first = pushback.read();
+            if (first == 0xEF) {
+                int second = pushback.read();
+                if (second == 0xBB) {
+                    int third = pushback.read();
+                    if (third == 0xBF) {
+                        return new BufferedReader(new InputStreamReader( pushback, "UTF-8" ) );
+                    }
+                    pushback.unread(third);
+                }
+                pushback.unread(second);
+            }
+            pushback.unread(first);
+
+            return new BufferedReader(new InputStreamReader( pushback, "ISO-8859-1" ) );
+        }
 
         /**
          * gets the info for a map or cards file
@@ -340,7 +360,7 @@ return Color.white;
 
                 try {
 
-                        bufferin=new BufferedReader(new InputStreamReader( RiskUtil.openMapStream(fileName),"UTF-8" ));
+                        bufferin= RiskUtil.readMap(RiskUtil.openMapStream(fileName));
                         Vector misss=null;
 
                         if (cards) {
