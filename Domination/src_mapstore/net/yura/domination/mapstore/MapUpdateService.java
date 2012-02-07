@@ -12,6 +12,8 @@ public class MapUpdateService implements MapServerListener {
     static MapUpdateService updateService;
     
     Vector maps;
+    int results;
+    
     Vector mapsToUpdate = new Vector();
     MapServerClient client;
     
@@ -21,6 +23,9 @@ public class MapUpdateService implements MapServerListener {
             updateService = new MapUpdateService(mapList);
         }
         
+    }
+    public static MapUpdateService getInstance() {
+        return updateService;
     }
     
     public MapUpdateService(Vector mapsUIDs) {
@@ -36,15 +41,18 @@ public class MapUpdateService implements MapServerListener {
     }
 
     public void gotResultXML(String url, Task task) {
+        Vector mymaps = maps;
+        response();
+        
         Hashtable map = (Hashtable)task.getObject();
-        Vector maps = (Vector)map.get("maps");
-        if (maps.size()==1) {
-            Map themap = (Map)maps.elementAt(0);
+        Vector gotMaps = (Vector)map.get("maps");
+        if (gotMaps.size()==1) {
+            Map themap = (Map)gotMaps.elementAt(0);
             String ver = themap.getVersion();
             if (ver!=null && !"".equals(ver) && !"1".equals(ver)) {
                 String mapUID = MapChooser.getFileUID( themap.getMapUrl() );
-                for (int c=0;c<maps.size();c++) {
-                    Map localMap = (Map)maps.elementAt(c);
+                for (int c=0;c<mymaps.size();c++) {
+                    Map localMap = (Map)mymaps.elementAt(c);
                     if (mapUID.equals( localMap.getMapUrl() )) { // we found the map
                         if (!ver.equals( localMap.getVersion() )) { // versions do not match
                             mapsToUpdate.add(themap);
@@ -58,8 +66,30 @@ public class MapUpdateService implements MapServerListener {
         // else do nothing
     }
 
-    public void downloadFinished(String mapUID) { }
-    public void onError(String string) { }
+    void response() {
+        results++;
+        if (results==maps.size()) {
+            client.kill();
+            client=null;
+            maps = null;
+        }
+    }
+    
+    public void downloadFinished(String mapUID) {
+    
+        for (int c=0;c<mapsToUpdate.size();c++) {
+            Map map = (Map)mapsToUpdate.elementAt(c);
+            String amapUID = MapChooser.getFileUID( map.getMapUrl() );
+            if (mapUID.equals(amapUID)) {
+                mapsToUpdate.removeElementAt(c);
+                return;
+            }
+        }
+    
+    }
+    public void onError(String string) {
+        response();
+    }
     public void gotImg(String url, byte[] data) { }
 
 }

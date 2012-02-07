@@ -189,7 +189,7 @@ public class MapsTools {
                 
                 requestContent.addPart("mapZipFile", new FileBody(zipFile));
 
-                return doPost( "http://maps.yura.net/upload-unauthorised", requestContent );
+                return doPost( MapChooser.SERVER_URL+"upload-unauthorised", requestContent );
 
             }
             catch (Exception ex) {
