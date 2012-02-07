@@ -41,9 +41,7 @@ public class MapUpdateService implements MapServerListener {
     }
 
     public void gotResultXML(String url, Task task) {
-        Vector mymaps = maps;
-        response();
-        
+
         Hashtable map = (Hashtable)task.getObject();
         Vector gotMaps = (Vector)map.get("maps");
         if (gotMaps.size()==1) {
@@ -51,19 +49,21 @@ public class MapUpdateService implements MapServerListener {
             String ver = themap.getVersion();
             if (ver!=null && !"".equals(ver) && !"1".equals(ver)) {
                 String mapUID = MapChooser.getFileUID( themap.getMapUrl() );
-                for (int c=0;c<mymaps.size();c++) {
-                    Map localMap = (Map)mymaps.elementAt(c);
+                for (int c=0;c<maps.size();c++) {
+                    Map localMap = (Map)maps.elementAt(c);
                     if (mapUID.equals( localMap.getMapUrl() )) { // we found the map
                         if (!ver.equals( localMap.getVersion() )) { // versions do not match
                             mapsToUpdate.add(themap);
                             //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
                         }
-                        return;
+                        break;
                     }
                 }
             }
         }
         // else do nothing
+        
+        response();
     }
 
     void response() {
