@@ -47,6 +47,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.BadgeButton;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -240,7 +241,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		int w=93;
 		int h=32;
 
-		chooseMap = new JButton(resb.getString("newgame.choosemap"));
+		chooseMap = new BadgeButton(resb.getString("newgame.choosemap"));
 		sortOutButton( chooseMap , newgame.getSubimage(54, 191, w, h) , newgame.getSubimage(700, 105, w, h) , newgame.getSubimage(700, 137, w, h) );
 		chooseMap.addActionListener( this );
 		chooseMap.setBounds(54, 192, w , h );

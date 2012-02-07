@@ -71,6 +71,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.BadgeButton;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
@@ -2985,7 +2986,7 @@ public void setNODDefender(int n) {}
 			mapOptions.setLayout(new java.awt.GridBagLayout());
 			mapOptions.setBorder(javax.swing.BorderFactory.createTitledBorder( resbundle.getString("newgame.label.map") ));
 
-			JButton chooseMap = new JButton(resbundle.getString("newgame.choosemap"));
+			JButton chooseMap = new BadgeButton(resbundle.getString("newgame.choosemap"));
 
 			chooseMap.addActionListener(
 					new ActionListener() {
