@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URI;
@@ -1377,29 +1379,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	    }
 
-
-	    Writer output = null;
-	    try {
-
-		output = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(mapFile),"UTF-8") );
-		output.write( buffer.toString() );
-
-	    }
-	    finally {
-
-		if (output != null) output.close();
-	    }
-
-	    try {
-
-		output = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(cardsFile),"UTF-8") );
-		output.write( cardsBuffer.toString() );
-
-	    }
-	    finally {
-
-		if (output != null) output.close();
-	    }
+            saveMap( buffer.toString() ,new FileOutputStream(mapFile));
+            saveMap( cardsBuffer.toString() ,new FileOutputStream(cardsFile));
 
 	    if (
 
@@ -1417,5 +1398,37 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             return true;
             
 	}
+
+    private void saveMap(String text, OutputStream outputStream) throws IOException {
+            Writer output = null;
+	    try {
+
+                boolean utf8 = false;
+                for (int c=0,l=text.length();c<l;c++) {
+                    char ch = text.charAt(c);
+                    if (ch >= 256) {
+                        utf8 = true;
+                        break;
+                    }
+                }
+
+                if (utf8) {
+                    outputStream.write(0xEF);
+                    outputStream.write(0xBB);
+                    outputStream.write(0xBF);
+                    output = new BufferedWriter( new OutputStreamWriter(outputStream,"UTF-8") );
+                    output.write("; 1.1.0.7+ (UTF-8)");
+                    output.write( System.getProperty("line.separator") );
+                }
+                else {
+                    output = new BufferedWriter( new OutputStreamWriter(outputStream,"ISO-8859-1") );
+                }
+
+		output.write( text );
+            }
+	    finally {
+		if (output != null) output.close();
+	    }
+    }
 
 }
