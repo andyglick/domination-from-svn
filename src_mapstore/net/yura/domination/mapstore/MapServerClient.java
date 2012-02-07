@@ -198,6 +198,8 @@ System.out.println("Make Request: "+request);
             urls.removeElement(url);
             if (urls.isEmpty()) {
                 downloads.removeElement(this);
+
+                MapUpdateService.getInstance().downloadFinished(mapUID);
                 
                 MapServerListener ch = chooser;
                 

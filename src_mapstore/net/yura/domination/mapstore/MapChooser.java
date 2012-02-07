@@ -317,7 +317,22 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("update".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            setListData(null, null); // TODO what should go here?
+            Vector mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            
+            if (mapsToUpdate.isEmpty()) {
+                setListData(null, null);
+            }
+            else {
+                setListData( MAP_PAGE , mapsToUpdate);
+            }
+        }
+        else if ("updateall".equals(actionCommand)) {
+            Vector mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            synchronized(mapsToUpdate) {
+                for (int c=0;c<mapsToUpdate.size();c++) {
+                    click( (Map)mapsToUpdate.elementAt(c) );
+                }
+            }
         }
         else if ("TOP_NEW".equals(actionCommand)) {
             clearList();
@@ -341,60 +356,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             }
             else if (value instanceof Map) {
                 Map map = (Map)value;
-
-                String fileUID = getFileUID( map.mapUrl );
-
-                String context = ((MapRenderer)list.getCellRenderer()).getContext();
-                
-                if (context!=null) { // we have a context, this means this is a remote map
-
-                    if (client.isDownloading(fileUID)) { // we may be doing a update
-                        
-                        OptionPane.showMessageDialog(null, "already downloading", "message", 0);
-                    }
-                    else if ( mapfiles.contains(fileUID) ) {
-
-                        Hashtable info = RiskUtil.loadInfo(fileUID, false);
-
-                        String ver = (String)info.get("ver");
-                        
-                        if (map.getVersion()!=null && !"".equals(map.getVersion()) && !"1".equals(map.getVersion()) && !map.getVersion().equals( ver ) ) {
-                            // update needed!!!
-                            
-                            client.downloadMap( getURL(context, map.mapUrl ) );
-                            list.repaint();
-                            return;
-                        }
-                        
-                        String pic = (String)info.get("pic");
-                        String crd = (String)info.get("crd");
-                        String imap = (String)info.get("map");
-                        String prv = (String)info.get("prv");
-                        
-                        if ( !fileExists(pic) || !fileExists(crd) || !fileExists(imap) || (prv!=null && !fileExists("preview/"+prv)) ) {
-                            // we are missing a file, need to re-download this map
-                        
-                            client.downloadMap( getURL(context, map.mapUrl ) );
-                            list.repaint();
-                            return;
-                            
-                        }
-                        
-                        // so we already have this map, just fire event to load it
-                        chosenMap(fileUID);
-                        
-                    }
-                    else {
-
-                        client.downloadMap( getURL(context, map.mapUrl ) );
-                        list.repaint();
-                    }
-                }
-                else { // this is a local map, we will fire the event right away that we got it
-                    
-                    chosenMap(fileUID);
-
-                }
+                click(map);
             }
             //else value is null coz the list is empty
         }
@@ -421,6 +383,63 @@ public class MapChooser implements ActionListener,MapServerListener {
         else {
             System.out.println("Unknown command "+actionCommand);
         }
+    }
+    
+    public void click(Map map) {
+        String fileUID = getFileUID( map.mapUrl );
+
+        String context = ((MapRenderer)list.getCellRenderer()).getContext();
+
+        if (context!=null) { // we have a context, this means this is a remote map
+
+            if (client.isDownloading(fileUID)) { // we may be doing a update
+
+                OptionPane.showMessageDialog(null, "already downloading", "message", 0);
+            }
+            else if ( mapfiles.contains(fileUID) ) {
+
+                Hashtable info = RiskUtil.loadInfo(fileUID, false);
+
+                String ver = (String)info.get("ver");
+
+                if (map.getVersion()!=null && !"".equals(map.getVersion()) && !"1".equals(map.getVersion()) && !map.getVersion().equals( ver ) ) {
+                    // update needed!!!
+
+                    client.downloadMap( getURL(context, map.mapUrl ) );
+                    list.repaint();
+                    return;
+                }
+
+                String pic = (String)info.get("pic");
+                String crd = (String)info.get("crd");
+                String imap = (String)info.get("map");
+                String prv = (String)info.get("prv");
+
+                if ( !fileExists(pic) || !fileExists(crd) || !fileExists(imap) || (prv!=null && !fileExists("preview/"+prv)) ) {
+                    // we are missing a file, need to re-download this map
+
+                    client.downloadMap( getURL(context, map.mapUrl ) );
+                    list.repaint();
+                    return;
+
+                }
+
+                // so we already have this map, just fire event to load it
+                chosenMap(fileUID);
+
+            }
+            else {
+
+                client.downloadMap( getURL(context, map.mapUrl ) );
+                list.repaint();
+            }
+        }
+        else { // this is a local map, we will fire the event right away that we got it
+
+            chosenMap(fileUID);
+
+        }
+
     }
     
     public static boolean fileExists(String fileUID) {
