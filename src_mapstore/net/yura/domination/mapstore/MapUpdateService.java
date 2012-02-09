@@ -1,13 +1,14 @@
 package net.yura.domination.mapstore;
 
 import java.util.Hashtable;
+import java.util.Observable;
 import java.util.Vector;
 import net.yura.mobile.io.ServiceLink.Task;
 
 /**
  * @author Yura
  */
-public class MapUpdateService implements MapServerListener {
+public class MapUpdateService extends Observable implements MapServerListener {
 
     static MapUpdateService updateService;
     
@@ -16,19 +17,21 @@ public class MapUpdateService implements MapServerListener {
     
     Vector mapsToUpdate = new Vector();
     MapServerClient client;
-    
-    public static void init(Vector mapList) {
-        
-        if (updateService==null) {
-            updateService = new MapUpdateService(mapList);
-        }
-        
-    }
+
+    private MapUpdateService() { }
     public static MapUpdateService getInstance() {
+        if (updateService==null) {
+            updateService = new MapUpdateService();
+        }
         return updateService;
     }
-    
-    public MapUpdateService(Vector mapsUIDs) {
+
+    void notifyListeners() {
+        setChanged();
+        notifyObservers( Integer.valueOf( mapsToUpdate.size() ) );
+    }
+
+    public void init(Vector mapsUIDs) {
         maps = new Vector();
         client = new MapServerClient(this);
         client.start();
@@ -54,6 +57,7 @@ public class MapUpdateService implements MapServerListener {
                     if (mapUID.equals( localMap.getMapUrl() )) { // we found the map
                         if (!ver.equals( localMap.getVersion() )) { // versions do not match
                             mapsToUpdate.add(themap);
+                            notifyListeners();
                             //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
                         }
                         break;
@@ -82,6 +86,7 @@ public class MapUpdateService implements MapServerListener {
             String amapUID = MapChooser.getFileUID( map.getMapUrl() );
             if (mapUID.equals(amapUID)) {
                 mapsToUpdate.removeElementAt(c);
+                notifyListeners();
                 return;
             }
         }

@@ -839,7 +839,7 @@ public class RiskUIUtil {
 
 
                                 //check for map updates
-                                MapUpdateService.init( getFileList("map") );
+                                MapUpdateService.getInstance().init( getFileList("map") );
 
 			}
 
