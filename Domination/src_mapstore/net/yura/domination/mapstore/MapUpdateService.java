@@ -2,7 +2,11 @@ package net.yura.domination.mapstore;
 
 import java.util.Hashtable;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
+import net.yura.mobile.gui.Font;
+import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.border.MatteBorder;
 import net.yura.mobile.io.ServiceLink.Task;
 
 /**
@@ -29,6 +33,11 @@ public class MapUpdateService extends Observable implements MapServerListener {
     void notifyListeners() {
         setChanged();
         notifyObservers( Integer.valueOf( mapsToUpdate.size() ) );
+    }
+
+    public synchronized void addObserver(Observer o) {
+        super.addObserver(o);
+        o.update(this, Integer.valueOf( mapsToUpdate.size() ) );
     }
 
     public void init(Vector mapsUIDs) {
@@ -97,4 +106,57 @@ public class MapUpdateService extends Observable implements MapServerListener {
     }
     public void gotImg(String url, byte[] data) { }
 
+    
+    
+
+    /**
+     * TODO not sure where this method should be, but prob not here!!
+     */
+    public static void paintBadge(Graphics2D g,String badge,MatteBorder border) {
+        
+        if (!"0".equals(badge)) {
+        
+            Font font = g.getFont();
+            
+            int tw = font.getWidth(badge.length()==1?" "+badge:badge); // make sure its not too thin
+            int th = font.getHeight();
+
+            int l,r,t,b;
+            if (border==null) {
+                l=r=t=b=3;
+            }
+            else {
+                l=border.getLeft();
+                r=border.getRight();
+                t=border.getTop();
+                b=border.getBottom();
+            }
+
+            int x,y,w,h;
+
+            w = l+r+tw;
+            h = t+b+th;
+            x = - w;
+            y = 0;
+
+            int[] clip = g.getClip();
+            g.setClip(x, y, w, h);
+
+            if (border==null) {
+                g.setColor(0xFFFF0000);
+                g.fillOval(x, y, w, h);
+            }
+            else {
+                g.translate( x+border.getLeft() , y+border.getTop());
+                border.paintBorder(null, g, w-border.getLeft()-border.getRight(), h-border.getTop()-border.getBottom());
+                g.translate( -x-border.getLeft() , -y-border.getTop());
+            }
+
+            g.setColor(0xFFFFFFFF);
+            g.drawString(badge, 1+ x + (w-font.getWidth(badge))/2, 1+ y + (h-font.getHeight())/2);
+            
+            g.setClip(clip);
+        }
+
+    }
 }

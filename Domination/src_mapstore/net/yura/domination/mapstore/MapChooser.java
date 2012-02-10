@@ -547,9 +547,10 @@ public class MapChooser implements ActionListener,MapServerListener {
         if ( !this.mapfiles.contains( download ) ) {
             this.mapfiles.addElement( download );
         }
-        else {
-            OptionPane.showMessageDialog(null, "got map, but we already have it "+download, "error", 0);
-        }
+        //else {
+            // this must have been a update or re-download, no need to show message
+            //OptionPane.showMessageDialog(null, "got map, but we already have it "+download, "error", 0);
+        //}
     }
 
     public static String getContext(String url) {
