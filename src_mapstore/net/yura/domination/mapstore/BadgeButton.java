@@ -1,25 +1,22 @@
-package net.yura.domination.engine.guishared;
+package net.yura.domination.mapstore;
 
-import java.awt.Container;
-import java.awt.Graphics;
 import java.util.Observable;
 import java.util.Observer;
 import javax.microedition.lcdui.Image;
-import javax.swing.JButton;
-import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.border.MatteBorder;
+import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.components.RadioButton;
 
 /**
  * @author Yura
  */
-public class BadgeButton extends JButton implements Observer {
+public class BadgeButton extends RadioButton implements Observer {
 
     MatteBorder border;
     String badge="0"; // default is 0, and it will not draw anything when set to 0
     
-    public BadgeButton(String string) {
-        super(string);
+    public BadgeButton() {
         
         try {
             border = MatteBorder.load9png( Image.createImage("/ic_notification_overlay.9.png") );
@@ -30,23 +27,20 @@ public class BadgeButton extends JButton implements Observer {
 
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics2D g) {
         super.paint(g);
         
-        int overlap = 5;
-        
         int w = getWidth();
-        g.translate(w+overlap, -overlap);
-        MapUpdateService.paintBadge(new Graphics2D( new javax.microedition.lcdui.Graphics(g) ),badge,border );
-        g.translate(-w-overlap, +overlap);
+        g.translate(w, 0);
+        MapUpdateService.paintBadge(g,badge,border );
+        g.translate(-w, 0);
     }
 
     public void update(Observable o, Object arg) {
         badge = String.valueOf(arg);
-        Container parent = getParent();
+        Component parent = getParent();
         if (parent!=null) {
             parent.repaint();
         }
     }
-
 }
