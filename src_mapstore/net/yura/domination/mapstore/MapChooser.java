@@ -313,10 +313,13 @@ public class MapChooser implements ActionListener,MapServerListener {
 
             Vector mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
             
+            Component updateAll = loader.find("updateAll");
             if (mapsToUpdate.isEmpty()) {
-                setListData(null, null);
+                updateAll.setVisible(false);
+                show("AllUpToDate");
             }
             else {
+                updateAll.setVisible(true);
                 setListData( MAP_PAGE , mapsToUpdate);
             }
         }
@@ -353,6 +356,18 @@ public class MapChooser implements ActionListener,MapServerListener {
                 click(map);
             }
             //else value is null coz the list is empty
+        }
+        else if ("sameAuthor".equals(actionCommand)) {
+            Object value = list.getSelectedValue();
+            // TODO
+            // TODO its too hard to get to the right click menu, as you need to hold and wait
+            // TODO does not work for locale maps, as no author id,
+            // TODO does not make sense for categories
+            // TODO
+            if (value instanceof Map) {
+                Map map = (Map)value;
+                makeRequestForMap("author", map.getAuthorId() );
+            }
         }
         else if ("defaultMap".equals(actionCommand)) {
 
@@ -483,16 +498,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     void clearList() {
-        
-        Component loading = loader.find("Loading");
-        Component noMatches = loader.find("NoMatches");
-        
-        list.setVisible(false);
-        noMatches.setVisible(false);
-        loading.setVisible(true);
-
-        getRoot().revalidate();
-        getRoot().repaint();
+        show("Loading");
     }
 
     public Panel getRoot() {
@@ -567,17 +573,25 @@ public class MapChooser implements ActionListener,MapServerListener {
             list.ensureIndexIsVisible(0);
         }
 
+        boolean showNoMatch = items!=null && items.isEmpty();
+        
+        show( showNoMatch?"NoMatches":"ResultList" );
+
+    }
+    
+    private void show(String name) {
+
         Component loading = loader.find("Loading");
         Component noMatches = loader.find("NoMatches");
+        Component allUpToDate = loader.find("AllUpToDate");
 
-        loading.setVisible(false);
-        boolean showNoMatch = items!=null && items.isEmpty();
-        list.setVisible( !showNoMatch );
-        noMatches.setVisible( showNoMatch );
-        
+        list.setVisible( "ResultList".equals(name) );
+        noMatches.setVisible( "NoMatches".equals(name) );
+        allUpToDate.setVisible( "AllUpToDate".equals(name) );
+        loading.setVisible( "Loading".equals(name) );
+
         getRoot().revalidate();
         getRoot().repaint();
-
     }
 
     private void activateGroup(String string) {
