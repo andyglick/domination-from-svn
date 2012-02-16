@@ -38,10 +38,12 @@ public class MapChooserSwingWrapper implements ActionListener {
         // TMP TMP TMP
         
         
-        wrapper = new ME4SEPanel();
+        wrapper = new ME4SEPanel(); // this sets the theme to NimbusLookAndFeel
 
         wrapper.getApplicationManager().applet = RiskUIUtil.applet;
 
+        MapChooser.loadThemeExtension(); // loads extra things needed for map chooser
+        
         chooser = new MapChooser(this,files);
 
         wrapper.add( chooser.getRoot() );

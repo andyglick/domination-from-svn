@@ -11,4 +11,11 @@
     </style>
     <bind style="tabbar" key="TabBar"/>
 
+    <style id="badge">
+	   <state>
+	      <imagePainter path="/ic_notification_overlay.9.png"/>
+	   </state>
+    </style>
+    <bind style="badge" key="Badge"/>
+
 </synth>

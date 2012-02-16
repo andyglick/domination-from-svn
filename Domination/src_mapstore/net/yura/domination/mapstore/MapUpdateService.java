@@ -6,6 +6,7 @@ import java.util.Observer;
 import java.util.Vector;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.border.MatteBorder;
 import net.yura.mobile.io.ServiceLink.Task;
 
@@ -112,7 +113,7 @@ public class MapUpdateService extends Observable implements MapServerListener {
     /**
      * TODO not sure where this method should be, but prob not here!!
      */
-    public static void paintBadge(Graphics2D g,String badge,MatteBorder border) {
+    public static void paintBadge(Graphics2D g,String badge,Border border) {
         
         if (!"0".equals(badge)) {
         
