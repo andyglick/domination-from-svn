@@ -65,21 +65,11 @@ public class MapChooser implements ActionListener,MapServerListener {
     public static final String MAP_PAGE=SERVER_URL+"maps?format=xml";
     public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml";
 
-    public MapChooser(ActionListener al,Vector mapfiles) {
-        this.al = al;
-        this.mapfiles = mapfiles;
-
-
-        // TODO,
-        // TODO
-        // TODO in android mode we should do this ONLY once!!!
-        // TODO but on me4se it should happen each time!
-        // TODO
-        // TODO
+    public static void loadThemeExtension() {
         try {
             LookAndFeel laf = DesktopPane.getDesktopPane().getLookAndFeel();
             if (laf instanceof SynthLookAndFeel) {
-                ((SynthLookAndFeel)laf).load( getClass().getResourceAsStream("/tabbar.xml") );
+                ((SynthLookAndFeel)laf).load( MapChooser.class.getResourceAsStream("/tabbar.xml") );
             }
             else {
                 System.err.println("LookAndFeel not SynthLookAndFeel "+laf);
@@ -89,11 +79,11 @@ public class MapChooser implements ActionListener,MapServerListener {
             // this is a none faital error, we will go on
             ex.printStackTrace();
         }
-
-
-
-
-
+    }
+    
+    public MapChooser(ActionListener al,Vector mapfiles) {
+        this.al = al;
+        this.mapfiles = mapfiles;
 
         try {
             loader = XULLoader.load( getClass().getResourceAsStream("/maps.xml") , this, resBundle);
@@ -156,9 +146,13 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         activateGroup("MapView");
 
+        MapUpdateService.getInstance().addObserver( (BadgeButton)loader.find("updateButton") );
+        
     }
 
     public void destroy() {
+        
+        MapUpdateService.getInstance().deleteObserver( (BadgeButton)loader.find("updateButton") );
         
         client.kill();
         client=null;

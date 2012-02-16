@@ -6,7 +6,7 @@
         <checkbox action="catagories" group="MapView" text="mapchooser.categories" i18n="true" weightx="1" width="1" property="plafname=TabBar"/>
         <checkbox action="top25" group="MapView" text="mapchooser.top25" i18n="true" weightx="1" width="1" property="plafname=TabBar"/>
         <checkbox action="search" group="MapView" text="mapchooser.search" i18n="true" weightx="1" width="1" property="plafname=TabBar"/>
-        <checkbox action="update" group="MapView" text="mapchooser.updates" i18n="true" weightx="1" width="1" property="plafname=TabBar;class=net.yura.domination.mapstore.BadgeButton"/>
+        <checkbox action="update" group="MapView" text="mapchooser.updates" i18n="true" weightx="1" width="1" property="plafname=TabBar;class=net.yura.domination.mapstore.BadgeButton" name="updateButton"/>
     </panel>
     <panel bottom="5" gap="5" left="5" name="localBar" right="5" top="5">
         <label alignment="center" text="mapchooser.local" i18n="true" weightx="1"/>

@@ -579,7 +579,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     String version = String.valueOf( myMap.getVersion() );
                     
                     int result = showInputDialog(
-                            new String[] {"Author Name:","Email:","Map Name:","Description:","Categories:","version:"},
+                            new String[] {"Author's Full Name:","Email:","Map Name:","Description:","Categories:","version:"},
                             new JComponent[] {authorName,authorEmail,mapName,description,list, new JLabel( version )},
                             "edit info"
                     );

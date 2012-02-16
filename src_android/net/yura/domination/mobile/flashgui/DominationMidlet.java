@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
@@ -24,7 +25,7 @@ public class DominationMidlet extends Midlet {
         }
         rootpane.setLookAndFeel( synth );
 
-
+        MapChooser.loadThemeExtension(); // this has theme elements used inside AND outside of the MapChooser
 
 
 
