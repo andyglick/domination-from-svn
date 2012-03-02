@@ -70,7 +70,12 @@ public class RiskUIUtil {
                         return new FileInputStream( new File(mapsDir,name) );
                     }
                     catch (Throwable th) {
-                        return new URL(mapsdir,name).openStream();
+                        try {
+                            return new URL(mapsdir,name).openStream();
+                        }
+                        catch (Throwable ex) { // dont really care about this one, it just means the file is not found here
+                            throw new IOException(th);
+                        }
                     }
                 }
                 public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
