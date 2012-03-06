@@ -244,7 +244,7 @@ System.out.println("Make Request: "+request);
                 }
             }
             catch (Exception ex) {
-                ex.printStackTrace();
+                RiskUtil.printStackTrace(ex);
                 // TODO what to do here?
                 // TODO what if disk is full??
             }

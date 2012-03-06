@@ -74,7 +74,9 @@ public class RiskUIUtil {
                             return new URL(mapsdir,name).openStream();
                         }
                         catch (Throwable ex) { // dont really care about this one, it just means the file is not found here
-                            throw new IOException(th);
+                            IOException exception = new IOException( ex.toString() );
+                            exception.initCause(th); // in java 1.4 
+                            throw exception;
                         }
                     }
                 }
@@ -418,7 +420,7 @@ public class RiskUIUtil {
                 }
             }
             catch (Throwable th) {
-                th.printStackTrace();
+                RiskUtil.printStackTrace(th);
             }
             
             // can not have the map store, fall back to normal map chooser
@@ -958,7 +960,7 @@ public class RiskUIUtil {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+                        RiskUtil.printStackTrace(e);
 		}
 
 		// only do this check if there is NO sandbox
@@ -978,7 +980,7 @@ public class RiskUIUtil {
 					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 				}
 				catch (Exception e) {
-					e.printStackTrace();
+					RiskUtil.printStackTrace(e);
 				}
 
 			}
@@ -998,7 +1000,7 @@ public class RiskUIUtil {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			RiskUtil.printStackTrace(e);
 		}
 */
 	}

@@ -8,6 +8,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.awt.Graphics;
 import java.awt.print.PrinterException;
+import net.yura.domination.engine.RiskUtil;
 
 /**
  * <p> Print Dialog </p>
@@ -31,7 +32,7 @@ public class PrintDialog {
                 pJob.print();
             }
             catch (PrinterException ex) {
-                ex.printStackTrace();
+                RiskUtil.printStackTrace(ex);
             }
         }
     }

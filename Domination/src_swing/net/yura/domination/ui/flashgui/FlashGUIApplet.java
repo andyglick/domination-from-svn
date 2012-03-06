@@ -33,7 +33,7 @@ public class FlashGUIApplet extends JApplet {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			RiskUtil.printStackTrace(e);
 		}
 */
 

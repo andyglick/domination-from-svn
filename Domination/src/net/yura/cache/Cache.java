@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.logging.Level; // as this class is only used on j2se and android, we should use proper logging
+import java.util.logging.Logger;
 
 /**
  * @author Yura Mamyrin
@@ -64,8 +66,7 @@ public class Cache {
                 if (file.exists()) {
                     file.delete();
                 }
-                ex.printStackTrace();
-                System.err.println("[yura.net Cache] failed to save data to file: "+key);
+                Logger.getLogger(Cache.class.getName()).log(Level.WARNING, "failed to save data to file: "+key , ex);
             }
         }
         

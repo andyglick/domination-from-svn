@@ -332,7 +332,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
             }
             catch(Exception e) { // an excpetion here really does not matter
-                e.printStackTrace();
+                RiskUtil.printStackTrace(e);
             }
 
         }

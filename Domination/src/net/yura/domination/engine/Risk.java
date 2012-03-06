@@ -325,7 +325,7 @@ public class Risk extends Thread {
 								output=resb.getString( "core.newgame.created");
 							}
 							catch (Exception e) {
-e.printStackTrace();
+RiskUtil.printStackTrace(e);
 								output=resb.getString( "core.newgame.error") + " " + e.toString();
 							}
 						//}
@@ -378,7 +378,7 @@ e.printStackTrace();
 
 							}
 							catch (Exception ex) {
-                                                                ex.printStackTrace();
+                                                                RiskUtil.printStackTrace(ex);
 								output=resb.getString( "core.loadgame.error.load")+" "+ex;
 								showMessageDialog(output);
 							}
@@ -601,7 +601,7 @@ e.printStackTrace();
 
 			System.err.println("FAITAL ERROR IN RISK");
 
-			ex.printStackTrace();
+			RiskUtil.printStackTrace(ex);
 			run();
 		}
 
@@ -626,7 +626,7 @@ e.printStackTrace();
 				}
 				catch (Throwable e) {
 					System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-					e.printStackTrace();
+					RiskUtil.printStackTrace(e);
 				}
 			}
 	}
@@ -1359,7 +1359,7 @@ e.printStackTrace();
                                                             }
                                                             catch (Exception e) {
 
-                                                                    e.printStackTrace();
+                                                                    RiskUtil.printStackTrace(e);
 
                                                             }
 
@@ -1523,7 +1523,7 @@ e.printStackTrace();
 								}
 								catch(Exception error) {
 
-								    error.printStackTrace();
+                                                                    RiskUtil.printStackTrace(error);
 
 								}
 
@@ -1583,7 +1583,7 @@ e.printStackTrace();
 					}
 					catch (Exception e) {
 						System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-						e.printStackTrace();
+						RiskUtil.printStackTrace(e);
 					}
 				    }
 				    else {
@@ -1631,7 +1631,7 @@ e.printStackTrace();
 					}
 					catch (Exception e) {
 						System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-						e.printStackTrace();
+						RiskUtil.printStackTrace(e);
 					}
 				    }
 				    else {
@@ -1669,7 +1669,7 @@ e.printStackTrace();
                                                 output=resb.getString( "core.save.saved");
                                             }
                                             catch (Exception ex) {
-                                                ex.printStackTrace();
+                                                RiskUtil.printStackTrace(ex);
                                                 output=resb.getString( "core.save.error.unable")+" "+ex;
                                                 showMessageDialog(output);
                                             }
@@ -2990,7 +2990,7 @@ e.printStackTrace();
                 }
                 catch (Exception e) {
                         // should never happen
-                        //e.printStackTrace();
+                        //RiskUtil.printStackTrace(e);
                         throw new RuntimeException(e);
                 }
 

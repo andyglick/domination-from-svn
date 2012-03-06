@@ -103,7 +103,7 @@ public class ChatArea extends Thread {
 	catch (IOException e) {
                    //System.err.println("IOException in Server: " +
                    //e.getMessage());
-                   //e.printStackTrace();
+                   //RiskUtil.printStackTrace(e);
                    //System.exit(-1);
 
 	}

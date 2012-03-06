@@ -24,7 +24,7 @@ public class DominationMidlet extends Midlet {
                 //}
         }
         catch (Throwable ex) {
-                ex.printStackTrace();
+                RiskUtil.printStackTrace(ex);
         }
         if (lookandfeel==null) {
                 lookandfeel = new net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel(16);
@@ -52,7 +52,7 @@ public class DominationMidlet extends Midlet {
         }
         catch (InterruptedException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            RiskUtil.printStackTrace(e);
         }
 
         risk.parser("newgame");

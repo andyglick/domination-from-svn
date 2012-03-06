@@ -66,7 +66,7 @@ public class ServerGameRisk extends TurnBasedGame {
                     throw new UnsupportedOperationException("can not add maps to server");
                 }
                 public void getMap(String filename, Risk risk,Exception ex) {
-                    ex.printStackTrace();
+                    RiskUtil.printStackTrace(ex);
                     risk.getMapError(ex.toString());
                 }
             };

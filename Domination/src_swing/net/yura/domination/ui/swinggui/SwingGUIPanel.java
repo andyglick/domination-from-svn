@@ -215,7 +215,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                     addTab(debugTab);
                 }
                 catch (Throwable th) {
-                    th.printStackTrace(); // Grasshopper.jar could be missing
+                    RiskUtil.printStackTrace(th); // Grasshopper.jar could be missing
                 }
 		addTab( new TestPanel(myrisk,pp) );
 		addTab(editorTab);
@@ -223,7 +223,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                     addTab( new TranslationToolPanel() );
                 }
                 catch (Throwable th) {
-                    th.printStackTrace(); // TranslationTool.jar could be missing
+                    RiskUtil.printStackTrace(th); // TranslationTool.jar could be missing
                 }
 		addTab(new BugsPanel());
 
@@ -2199,7 +2199,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 					pp.load();
 				}
 				catch(IOException e) {
-					e.printStackTrace();
+                                        RiskUtil.printStackTrace(e);
 				}
 			}
 

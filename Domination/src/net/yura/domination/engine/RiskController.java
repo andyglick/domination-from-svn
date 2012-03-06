@@ -64,7 +64,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).sendMessage(output,redrawNeeded,repaintNeeded);
 	}
 	catch(Exception ex) {
-	    ex.printStackTrace();
+	    RiskUtil.printStackTrace(ex);
 	}
     }
 
@@ -81,7 +81,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).needInput(s);
         }
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -98,7 +98,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).noInput();
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -115,7 +115,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).setGameStatus(state);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -132,7 +132,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).newGame(t);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -149,7 +149,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).startGame(s);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -166,7 +166,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).closeGame();
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -183,7 +183,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).setSlider(min,c1num,c2num);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -200,7 +200,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).armiesLeft(l,s);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -217,7 +217,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).showDice(n,w);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -234,7 +234,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).showMapPic(p);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -251,7 +251,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).showCardsFile(c, m);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -268,7 +268,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).serverState(s);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -285,7 +285,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).openBattle(c1num,c2num);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -302,7 +302,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).closeBattle();
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -319,7 +319,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).addPlayer(type, name, color, ip);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -336,7 +336,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).delPlayer(name);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -353,7 +353,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).showDiceResults(att,def);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -370,7 +370,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).setNODAttacker(n);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -387,7 +387,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).setNODDefender(n);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -404,7 +404,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).sendDebug(a);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
@@ -421,7 +421,7 @@ public class RiskController {
                 ((RiskListener)arrLocal[i]).showMessageDialog(a);
 	}
         catch(Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
 
