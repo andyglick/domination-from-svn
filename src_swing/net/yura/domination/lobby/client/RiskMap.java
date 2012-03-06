@@ -91,7 +91,7 @@ public class RiskMap {
                         iconBig = new ImageIcon(mapimageO.getScaledInstance(203,127, Image.SCALE_SMOOTH));
                     }
                     catch (Exception ex) {
-                        ex.printStackTrace();
+                        RiskUtil.printStackTrace(ex);
                     }
                 }
             }

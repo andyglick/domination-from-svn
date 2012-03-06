@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.microedition.lcdui.Image;
 import javax.swing.JButton;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.border.MatteBorder;
@@ -22,9 +23,10 @@ public class BadgeButton extends JButton implements Observer {
         super(string);
         
         try {
-            border = MatteBorder.load9png( Image.createImage("/ic_notification_overlay.9.png") );
+            // TODO breaks java 1.4?!?!?!?
+            //border = MatteBorder.load9png( Image.createImage("/ic_notification_overlay.9.png") );
         }
-        catch (Exception ex) { }
+        catch (Throwable ex) { }
 
         MapUpdateService.getInstance().addObserver(this);
 
@@ -33,12 +35,17 @@ public class BadgeButton extends JButton implements Observer {
     public void paint(Graphics g) {
         super.paint(g);
         
-        int overlap = 5;
-        
-        int w = getWidth();
-        g.translate(w+overlap, -overlap);
-        MapUpdateService.paintBadge(new Graphics2D( new javax.microedition.lcdui.Graphics(g) ),badge,border );
-        g.translate(-w-overlap, +overlap);
+        try {
+            int overlap = 5;
+
+            int w = getWidth();
+            g.translate(w+overlap, -overlap);
+            MapUpdateService.paintBadge(new Graphics2D( new javax.microedition.lcdui.Graphics(g) ),badge,border );
+            g.translate(-w-overlap, +overlap);
+        }
+        catch (Throwable th) {
+            RiskUtil.printStackTrace(th);
+        }
     }
 
     public void update(Observable o, Object arg) {

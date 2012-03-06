@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.awt.image.*;
 import javax.swing.JPanel;
+import net.yura.domination.engine.RiskUtil;
 
 //////////////////////////////////////////////////////////////
 //
@@ -302,7 +303,7 @@ public void settext(Image img){
 		pg.grabPixels(); 
 	}catch(Exception e){
 
-		e.printStackTrace();
+		RiskUtil.printStackTrace(e);
 
 	}		    
 	prepareImage(textproj, null);		

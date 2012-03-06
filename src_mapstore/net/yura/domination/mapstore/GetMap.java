@@ -3,6 +3,7 @@ package net.yura.domination.mapstore;
 import java.util.Hashtable;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 
 /**
@@ -40,7 +41,7 @@ public class GetMap implements MapServerListener {
         else {
             System.err.println( "wrong number of maps on server: "+maps.size()+" for map: "+filename );
 
-            problem.printStackTrace();
+            RiskUtil.printStackTrace(problem);
             onError(problem.toString());
         }
     }
@@ -51,7 +52,7 @@ public class GetMap implements MapServerListener {
             client.kill();
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
             onError(ex.toString());
         }
     }

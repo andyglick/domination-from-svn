@@ -71,7 +71,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                     public void getMap(String filename, Risk risk,Exception ex) {
-                        ex.printStackTrace();
+                        RiskUtil.printStackTrace(ex);
                         risk.getMapError(ex.toString());
                     }
             };
@@ -328,7 +328,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 					pp.load();
 				}
 				catch (Exception e) {
-					e.printStackTrace();
+					RiskUtil.printStackTrace(e);
 				}
 
 				gameFrame.setup(s);

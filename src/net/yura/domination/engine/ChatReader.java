@@ -40,7 +40,7 @@ public class ChatReader extends Thread{
 
 		//System.out.println("ChatReader IOException: "+
 		//    e.getMessage());
-		//e.printStackTrace();
+		//RiskUtil.printStackTrace(e);
 
 	}
 	//System.out.println("ChatReader Terminating: " + myIndex);

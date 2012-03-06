@@ -77,7 +77,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
         catch(Exception ex) {
             // this is a none faital error, we will go on
-            ex.printStackTrace();
+            RiskUtil.printStackTrace(ex);
         }
     }
     

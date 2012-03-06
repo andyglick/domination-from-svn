@@ -31,7 +31,7 @@ public class SwingGUIApplet extends JApplet {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			RiskUtil.printStackTrace(e);
 		}
 */
 

@@ -631,7 +631,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                     previewFileName = MapsTools.makePreview(fileName,prvimg,previewDir,"png");
                                 }
                                 catch (Exception ex2) {
-                                    ex.printStackTrace();
+                                    RiskUtil.printStackTrace(ex);
                                     throw new RuntimeException(ex2);
                                 }
                             }
@@ -656,7 +656,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                         + "It will appear in the MapStore once it has been approved by one of the moderators.",scroll} );
                             }
                             catch (Exception ex) {
-                                ex.printStackTrace();
+                                RiskUtil.printStackTrace(ex);
                                 JOptionPane.showMessageDialog(this, "something went wrong! did you enter a valid email?\n" + ex.toString() );
                             }
                         }
@@ -856,7 +856,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		catch(Throwable ex) {
 
-			ex.printStackTrace();
+			RiskUtil.printStackTrace(ex);
 			showError(ex);
 
 		}
@@ -933,7 +933,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	public void showError(Throwable ex) {
 
 		JOptionPane.showMessageDialog(this, "Error: "+ex.toString(), "ERROR!", JOptionPane.ERROR_MESSAGE);
-		ex.printStackTrace();
+		RiskUtil.printStackTrace(ex);
 
 	}
 

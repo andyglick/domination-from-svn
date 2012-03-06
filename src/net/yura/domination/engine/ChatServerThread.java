@@ -106,7 +106,7 @@ public class ChatServerThread extends Thread {
 		catch (IOException e) {
                        //System.out.println("ChatServerThread IOException: "+
                        //e.getMessage());
-                       //e.printStackTrace();
+                       //RiskUtil.printStackTrace(e);
 		}
 		//@todo does not get here if player presses leave, only goes here when they close the app
 		//System.out.println("ChatServerThread Terminating: " + myIndex);

@@ -42,7 +42,7 @@ public class ChatDisplayThread extends Thread {
 
 	    //System.out.println("inChat received an IOException: "+
 	    //e.getMessage());
-	    //e.printStackTrace();
+	    //RiskUtil.printStackTrace(e);
 
 	    if ("Stream closed".equals( e.getMessage() ) ) { badexit=false; }
 

@@ -161,7 +161,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			setCardsfile("default");
 		//}
 		//catch (Exception e) {
-		//	e.printStackTrace();
+		//	RiskUtil.printStackTrace(e);
 		//}
 
 		setup=0; // when setup reaches the number of players it goes into normal mode
@@ -276,7 +276,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 				//}
 				//catch (Exception e) {
-				//	e.printStackTrace();
+				//	RiskUtil.printStackTrace(e);
 				//	return;
 				//}
 
@@ -290,7 +290,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					if (runmaptest) {
 
 						//System.out.println("LOAD FILE ERROR: " + e.getMessage() + "\n(This normally means you have selected the wrong set of cards for this map)"); // testing
-						//e.printStackTrace();
+						//RiskUtil.printStackTrace(e);
 						throw new Exception("LOAD FILE ERROR: " + e.getMessage() + "\n(This normally means you have selected the wrong set of cards for this map)",e);
 
 					}
@@ -305,7 +305,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 						testMap(); // testing maps
 					//}
 					//catch (Exception e) {
-					//	e.printStackTrace();
+					//	RiskUtil.printStackTrace(e);
 					//	return;
 					//}
 				}

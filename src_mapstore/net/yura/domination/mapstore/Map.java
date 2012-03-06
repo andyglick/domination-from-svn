@@ -153,7 +153,7 @@ public class Map {
 
         // print out full info with XML
         //ByteArrayOutputStream out = new ByteArrayOutputStream();
-        //try { new XMLMapAccess().save(out, this); } catch (IOException ex) { ex.printStackTrace(); }
+        //try { new XMLMapAccess().save(out, this); } catch (IOException ex) { RiskUtil.printStackTrace(ex); }
         //return out.toString();
 
         return name; // this is used in the list for the keyboard quick jump

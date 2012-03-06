@@ -83,6 +83,9 @@ public class RiskUtil {
             return streamOpener.loadGameFile(file);
         }
 
+        public static void printStackTrace(Throwable ex) {
+            java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
+        }
 
         // instead of using java.awt.Color
         public static final int BLACK = 0xFF000000;
@@ -318,7 +321,7 @@ return Color.white;
                     prefs.flush();
                 }
                 catch(Exception ex) {
-                    ex.printStackTrace();
+                    RiskUtil.printStackTrace(ex);
                 }
 
             }
@@ -458,7 +461,7 @@ return Color.white;
                 }
                 catch(IOException ex) {
                         System.out.println("Error trying to load: "+fileName);
-                        ex.printStackTrace();
+                        RiskUtil.printStackTrace(ex);
                         if (c < 5) { // retry
                                 try { Thread.sleep(1000); } catch(Exception ex2) { }
                         }

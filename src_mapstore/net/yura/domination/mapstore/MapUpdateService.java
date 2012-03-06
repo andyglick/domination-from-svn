@@ -34,12 +34,12 @@ public class MapUpdateService extends Observable {
 
     void notifyListeners() {
         setChanged();
-        notifyObservers( Integer.valueOf( mapsToUpdate.size() ) );
+        notifyObservers( new Integer( mapsToUpdate.size() ) );
     }
 
     public synchronized void addObserver(Observer o) {
         super.addObserver(o);
-        o.update(this, Integer.valueOf( mapsToUpdate.size() ) );
+        o.update(this, new Integer( mapsToUpdate.size() ) );
     }
 
     public void init(Vector mapsUIDs) {
@@ -70,7 +70,7 @@ public class MapUpdateService extends Observable {
         Hashtable map = (Hashtable)task.getObject();
         Vector gotMaps = (Vector)map.get("maps");
 
-        //try { new net.yura.domination.mapstore.gen.XMLMapAccess().save(System.out, map); } catch (Exception ex) { ex.printStackTrace(); }
+        //try { new net.yura.domination.mapstore.gen.XMLMapAccess().save(System.out, map); } catch (Exception ex) { RiskUtil.printStackTrace(ex); }
         
         for (int c=0;c<maps.size();c++) {
             Map localMap = (Map)maps.elementAt(c);
