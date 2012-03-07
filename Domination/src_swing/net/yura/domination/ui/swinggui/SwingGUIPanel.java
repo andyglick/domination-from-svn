@@ -1637,7 +1637,11 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                 if (RiskUIUtil.checkForNoSandbox()) {
 
-                    net.yura.swingme.core.J2SELogger.init();
+                    try {
+                        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
+                    }
+                    catch (Throwable th) { }
+
                     net.yura.grasshopper.SimplePrintStream.interceptAndAlert(new Writer() {
                         public void write(char[] cbuf, int off, int len) {
                             errText.append(String.valueOf(cbuf, off, len));
