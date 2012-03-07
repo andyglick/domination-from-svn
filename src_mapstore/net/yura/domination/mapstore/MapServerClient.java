@@ -109,7 +109,7 @@ public class MapServerClient extends HTTPClient {
             request.params = params;
             request.id = type;
 
-System.out.println("Make Request: "+request);
+Logger.info("Make Request: "+request);
 
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby

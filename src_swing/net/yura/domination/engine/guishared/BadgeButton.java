@@ -23,8 +23,7 @@ public class BadgeButton extends JButton implements Observer {
         super(string);
         
         try {
-            // TODO breaks java 1.4?!?!?!?
-            //border = MatteBorder.load9png( Image.createImage("/ic_notification_overlay.9.png") );
+            border = MatteBorder.load9png( Image.createImage("/ic_notification_overlay.9.png") );
         }
         catch (Throwable ex) { }
 
