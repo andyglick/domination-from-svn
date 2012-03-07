@@ -7,11 +7,7 @@ import java.util.logging.Logger;
  * @author Yura Mamyrin
  */
 public class J2SELogger extends net.yura.mobile.logging.Logger {
-    
-    public static void init() {
-        net.yura.mobile.logging.Logger.setLogger( new J2SELogger() );
-    }
-    
+
     protected synchronized void log(String message, int level) {
         Logger.getLogger(J2SELogger.class.getName()).log( getLevel(level),message);
     }

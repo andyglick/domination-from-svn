@@ -70,10 +70,14 @@ public class FlashRiskAdapter implements RiskListener {
 
 
 		if (RiskUIUtil.checkForNoSandbox()) {
-			// catch everything in my PrintStream
+                    
                     try {
-
-                        net.yura.swingme.core.J2SELogger.init();
+                        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
+                    }
+                    catch (Throwable th) { }
+                    
+                    // catch everything in my PrintStream
+                    try {
                         net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,
                                 Risk.RISK_VERSION+" FlashGUI" // "(save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
                                 , TranslationBundle.getBundle().getLocale().toString());
