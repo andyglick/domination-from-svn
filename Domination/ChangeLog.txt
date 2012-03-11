@@ -17,6 +17,7 @@ CURRENT VERSION:
 	spaces in names support for publishing new maps
         fixed nullpointer when you close the MapStore right after fetching a new XML file
         mapeditor saved map version inside map file
+	update to grasshopper to not error on Logger.info and to correctly report errors in javaw mode
 
 1.1.0.6
 
