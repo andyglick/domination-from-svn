@@ -70,12 +70,7 @@ public class FlashRiskAdapter implements RiskListener {
 
 
 		if (RiskUIUtil.checkForNoSandbox()) {
-                    
-                    try {
-                        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
-                    }
-                    catch (Throwable th) { }
-                    
+
                     // catch everything in my PrintStream
                     try {
                         net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,
@@ -85,6 +80,14 @@ public class FlashRiskAdapter implements RiskListener {
                     catch(Throwable th) {
                         System.out.println("Grasshopper not loaded");
                     }
+                    
+                    try {
+                        net.yura.swingme.core.CoreUtil.setupLogging();
+                    }
+                    catch (Throwable th) {
+                        RiskUtil.printStackTrace(th);
+                    }
+
 		}
 	}
 
