@@ -67,6 +67,10 @@ public class RiskUIUtil {
                 }
                 public InputStream openMapStream(String name) throws IOException {
                     try {
+                        // TODO
+                        // TODO, do NOT even try this if we are inside a applet sandbox
+                        // TODO or it will spam the logs with lots of: this should never happen! bad file:...
+                        // TODO
                         File mapsDir = getSaveMapDir();
                         return new FileInputStream( new File(mapsDir,name) );
                     }

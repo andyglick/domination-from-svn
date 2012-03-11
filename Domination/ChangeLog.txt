@@ -12,14 +12,14 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.7
+1.1.0.7 (11.03.2012)
 
 	spaces in names support for publishing new maps
-        fixed nullpointer when you close the MapStore right after fetching a new XML file
-        mapeditor saved map version inside map file
+	fixed nullpointer when you close the MapStore right after fetching a new XML file
+	mapeditor saved map version inside map file
 	update to grasshopper to not error on Logger.info and to correctly report errors in javaw mode
 
-1.1.0.6
+1.1.0.6 (08.01.2012)
 
 	fixed xml not working sometimes when there are unicode chars
 	fixed, show loading screens when loading data in MapStore
