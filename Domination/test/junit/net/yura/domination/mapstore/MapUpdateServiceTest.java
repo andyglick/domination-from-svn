@@ -35,8 +35,6 @@ public class MapUpdateServiceTest extends TestCase {
     public void testInit() throws Exception {
         System.out.println("init");
 
-        // TODO this test only works with the QA server
-        
         RiskUIUtil.mapsdir = new File("./game/Domination/maps").toURI().toURL();
         
         Vector mapsUIDs = new Vector();
@@ -57,7 +55,7 @@ public class MapUpdateServiceTest extends TestCase {
         mapsUIDs.add("world.map");
         
         MapUpdateService instance = MapUpdateService.getInstance();
-        instance.init(mapsUIDs);
+        instance.init(mapsUIDs,"http://mapsqa.yura.net/maps?format=xml");
         
         Vector result = instance.mapsToUpdate;
         
