@@ -846,9 +846,11 @@ public class RiskUIUtil {
 				catch (Throwable e) { }
 
 
-                                //check for map updates
-                                MapUpdateService.getInstance().init( getFileList("map"), MapChooser.MAP_PAGE );
-
+                                try {
+                                    //check for map updates
+                                    MapUpdateService.getInstance().init( getFileList("map"), MapChooser.MAP_PAGE );
+                                }
+                                catch (Throwable th) { }
 			}
 
 		return canlobby;

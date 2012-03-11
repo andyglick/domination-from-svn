@@ -1637,11 +1637,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                 if (RiskUIUtil.checkForNoSandbox()) {
 
-                    try {
-                        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
-                    }
-                    catch (Throwable th) { }
-
                     net.yura.grasshopper.BugManager.interceptAndAlert(new Writer() {
                         public void write(char[] cbuf, int off, int len) {
                             errText.append(String.valueOf(cbuf, off, len));
@@ -1659,6 +1654,13 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                         }
                     });
 
+                    try {
+                        net.yura.swingme.core.CoreUtil.setupLogging();
+                    }
+                    catch (Throwable th) {
+                        RiskUtil.printStackTrace(th);
+                    }
+                    
 		}
 
         }

@@ -24,4 +24,10 @@ public class CoreUtil {
         };
     }
 
+    public static void setupLogging() {
+
+        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
+
+    }
+
 }
