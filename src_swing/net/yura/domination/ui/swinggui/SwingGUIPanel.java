@@ -1642,13 +1642,13 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                     }
                     catch (Throwable th) { }
 
-                    net.yura.grasshopper.SimplePrintStream.interceptAndAlert(new Writer() {
+                    net.yura.grasshopper.BugManager.interceptAndAlert(new Writer() {
                         public void write(char[] cbuf, int off, int len) {
                             errText.append(String.valueOf(cbuf, off, len));
                         }
                         public void flush() { }
                         public void close() { }
-                    }, new net.yura.grasshopper.SimplePrintStream() {
+                    }, new net.yura.grasshopper.BugManager() {
                         public void action(String thecause) {
                                 cause = thecause;
                                 int nom = tabbedpane.indexOfComponent(DebugTab.this);

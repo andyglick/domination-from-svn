@@ -42,10 +42,8 @@ public class MapUpdateService extends Observable {
         o.update(this, new Integer( mapsToUpdate.size() ) );
     }
 
-    public void init(Vector mapsUIDs) {
+    public void init(Vector mapsUIDs,String url) {
         Vector maps = new Vector();
-        
-        String url = MapChooser.MAP_PAGE;
         
         for (int c=0;c<mapsUIDs.size();c++) {
             String uid = (String)mapsUIDs.elementAt(c);
@@ -57,6 +55,7 @@ public class MapUpdateService extends Observable {
         }
         
         //client.makeRequestXML( url,null,null );
+        System.out.println("URL "+url);
         
         try {
             Task task = (Task)new XMLMapAccess().load( new InputStreamReader(new URL(url).openStream(),"UTF-8") );

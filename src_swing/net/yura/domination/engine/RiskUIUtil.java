@@ -46,6 +46,7 @@ import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
 
 /**
@@ -846,7 +847,7 @@ public class RiskUIUtil {
 
 
                                 //check for map updates
-                                MapUpdateService.getInstance().init( getFileList("map") );
+                                MapUpdateService.getInstance().init( getFileList("map"), MapChooser.MAP_PAGE );
 
 			}
 
