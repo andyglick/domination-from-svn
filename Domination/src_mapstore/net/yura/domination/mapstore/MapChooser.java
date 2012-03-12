@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -32,6 +33,7 @@ import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.ImageUtil;
 import net.yura.mobile.util.Properties;
+import net.yura.mobile.util.Url;
 import net.yura.swingme.core.CoreUtil;
 
 /**
@@ -62,8 +64,8 @@ public class MapChooser implements ActionListener,MapServerListener {
     
     // theos server
     public static final String SERVER_URL="http://maps.yura.net/";
-    public static final String MAP_PAGE=SERVER_URL+"maps?format=xml";
-    public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml";
+    public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( Risk.RISK_VERSION );
+    public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml&version="+Url.encode( Risk.RISK_VERSION );
 
     public static void loadThemeExtension() {
         try {
