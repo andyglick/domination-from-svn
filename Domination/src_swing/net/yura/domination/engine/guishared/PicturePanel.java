@@ -2,7 +2,6 @@
 
 package net.yura.domination.engine.guishared;
 
-import collisionphysics.Ball;
 import collisionphysics.BallWorld;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -54,7 +53,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	private BufferedImage original;
 	private BufferedImage img;
 	private BufferedImage tempimg;
-	private int[][] map;
+	private byte[][] map;
 	private int c1,c2,cc;
 
 	private String strCountry;
@@ -92,10 +91,14 @@ public class PicturePanel extends JPanel implements MapPanel {
 		setMinimumSize(size);
 		setMaximumSize(size);
 
+                // clear out old values
+                img = null;
+                tempimg = null;
+                map = null;
+                
 		img = new BufferedImage(x,y, java.awt.image.BufferedImage.TYPE_INT_RGB );
 		tempimg = new BufferedImage(x,y, java.awt.image.BufferedImage.TYPE_INT_RGB );
-
-		map = new int[x][y];
+		map = new byte[x][y];
 	    }
 
 	}
@@ -107,58 +110,62 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		RiskGame game = myrisk.getGame();
 
-		BufferedImage m = ImageIO.read(RiskUtil.openMapStream(game.getImageMap()) );
-		BufferedImage O = ImageIO.read(RiskUtil.openMapStream(game.getImagePic()) );
-
-		memoryLoad(m,O);
+                // clean up before we load new images
+                original = null;
+                CountryImages = null;
+                
+                //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
+                
+		memoryLoad(
+                        ImageIO.read(RiskUtil.openMapStream(game.getImageMap()) ),
+                        ImageIO.read(RiskUtil.openMapStream(game.getImagePic()) )
+                        );
 
 	}
 
 	public void memoryLoad(BufferedImage m, BufferedImage O) {
 
+                int mWidth = m.getWidth();
+                int mHeight = m.getHeight();
+
+
+
 		RiskGame game = myrisk.getGame();
-
 		original = O;
-
 		cc=NO_COUNTRY;
-
 		c1=NO_COUNTRY;
 		c2=NO_COUNTRY;
-
-
-		setupSize(m.getWidth(),m.getHeight());
-
-
-		//System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
-
-		int noc = game.getCountries().length;
+                int noc = game.getCountries().length;
 
 
 
+                int[] pixels = m.getRGB(0,0,mWidth,mHeight,null,0,mWidth );
+                m=null;
+
+
+
+		setupSize(mWidth,mHeight); // creates a 2D byte array and double paint buffer
 		{ Graphics zg = img.getGraphics(); zg.drawImage(original, 0, 0, this); zg.dispose(); }
 
-		//int[] pix = new int[ m.getWidth() ];
+
 
 		CountryImages = new countryImage[noc];
-
 		for (int c=0; c < noc; c++) {
 			CountryImages[c] = new countryImage();
 		}
 
+
 		countryImage cci;
-
-		int[] pixels = m.getRGB(0,0,m.getWidth(),m.getHeight(),null,0,m.getWidth());
-
 		// create a very big 2d array with all the data from the image map
-		for(int x=0; x < m.getWidth(); x++) {
+		for(int x=0; x < mWidth; x++) {
 
-			for(int y=0; y < m.getHeight(); y++) {
+			for(int y=0; y < mHeight; y++) {
 
-				int num = pixels[ (m.getWidth()*y) + x ] & 0xff; // (m.getRGB(x,y))&0xff;
+				int num = pixels[ (mWidth*y) + x ] & 0xff; // (m.getRGB(x,y))&0xff;
 
 				// if ( num > noc && num !=NO_COUNTRY ) System.out.print("map error: "+x+" "+y+"\n"); // testing map
 
-				map[x][y]=num;
+				map[x][y]= (byte) (num - 128); // as byte is signed we have to use this
 
 				if ( num != NO_COUNTRY ) {
 
@@ -174,6 +181,8 @@ public class PicturePanel extends JPanel implements MapPanel {
 			}
 		}
 
+                pixels = null;
+                
 		//ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 		//ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
@@ -749,7 +758,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 			for(int y=y1; y <= y2; y++) {
 				for(int x=0; x < w; x++) {
-					if (map[x+x1][y] != (c+1) ) {
+					if (map[x+x1][y] + 128 != (c+1) ) {
 						normalB.setRGB( x, (y-y1), 0); // clear the un-needed area!
 						highlightB.setRGB( x, (y-y1), 0); // clear the un-needed area!
 					}
@@ -788,7 +797,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			return NO_COUNTRY;
 		}
 
-		return map[x][y];
+		return map[x][y] + 128;
 	}
 
 	/**
@@ -1072,7 +1081,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		for(int y=y1; y <= y2; y++) {
 			for(int x=0; x <= w-1; x++) {
-				if (map[x+x1][y] != (i+1) ) {
+				if (map[x+x1][y] + 128 != (i+1) ) {
 					pictureB.setRGB( x, (y-y1), 0); // clear the un-needed area!
 				}
 			}

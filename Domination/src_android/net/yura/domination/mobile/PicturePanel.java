@@ -122,9 +122,13 @@ public class PicturePanel extends ImageView implements MapPanel {
                 //setMinimumSize(size);
                 //setMaximumSize(size);
 
+                // clear out old values
+                img = null;
+                tempimg = null;
+                map = null;
+                
                 img = Image.createImage(x, y);
                 tempimg = Image.createImage(x, y);
-
                 map = new byte[x][y];
             }
 
@@ -141,10 +145,12 @@ public class PicturePanel extends ImageView implements MapPanel {
                 original = null;
                 CountryImages = null;
 
-                Image m = Image.createImage(RiskUtil.openMapStream(game.getImageMap()) );
-                Image O = Image.createImage(RiskUtil.openMapStream(game.getImagePic()) );
-
-                memoryLoad(m,O);
+                //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
+                
+                memoryLoad(
+                        Image.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
+                        Image.createImage(RiskUtil.openMapStream(game.getImagePic()) )
+                        );
 
         }
 
@@ -157,43 +163,36 @@ public class PicturePanel extends ImageView implements MapPanel {
         
         public void memoryLoad(Image m, Image O) {
 
+                // ImageView vars
                 imgW = O.getWidth();
                 imgH = O.getHeight();
 
 
+
                 RiskGame game = myrisk.getGame();
-
                 original = O;
-
                 cc=NO_COUNTRY;
-
                 c1=NO_COUNTRY;
                 c2=NO_COUNTRY;
-
-
-                setupSize(m.getWidth(),m.getHeight());
-
-
-                //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
-
                 int noc = game.getCountries().length;
 
 
 
+                setupSize(m.getWidth(),m.getHeight()); // creates a 2D byte array and double paint buffer
                 { Graphics zg = img.getGraphics(); zg.drawImage(original, 0, 0, 0); }
 
-                //int[] pix = new int[ m.getWidth() ];
+
 
                 CountryImages = new countryImage[noc];
-
                 for (int c=0; c < noc; c++) {
                         CountryImages[c] = new countryImage();
                 }
 
-                countryImage cci;
+ 
 
                 int[] pixels = new int[m.getWidth()];
 
+                countryImage cci;
                 // create a very big 2d array with all the data from the image map
                 for(int y=0; y < m.getHeight(); y++) {
 
@@ -222,6 +221,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                 }
 
+                pixels = null;
+                m=null;
+                
                 //ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
                 //ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
