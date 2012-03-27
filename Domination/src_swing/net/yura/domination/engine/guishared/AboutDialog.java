@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -63,7 +64,10 @@ public class AboutDialog extends JDialog {
 		String version=resb.getString("about.version")+" " + v;
 		String author = " Yura Mamyrin (yura@yura.net)";
 		String title		= resb.getString("about.title");
-		String copyright	= resb.getString("about.copyright").replaceAll("\\{0\\}","2008");
+                
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                
+		String copyright	= resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
 		String comments	= " " + resb.getString("about.comments");
 
 		// setSize(280,250); // (214,180)
