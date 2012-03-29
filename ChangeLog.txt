@@ -17,6 +17,7 @@ CURRENT VERSION:
 	Fixed crash in AIHardCapital.java for map CRO.map and capital italianlike game
 	copyright date fixed in About box
 	memory usage smaller for PicturePanel, Castle in the Sky.map OutOfMemoryError
+	can click to toggle animation at the end of the game
 
 1.1.0.7 (11.03.2012)
 

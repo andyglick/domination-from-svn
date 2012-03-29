@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
@@ -311,6 +312,8 @@ public class PicturePanel extends JPanel implements MapPanel {
             return map[0].length;
         }
 
+        public static final int BALL_SIZE=10;
+        
 	/**
 	 * Paints the army components
 	 * @param g2 a 2D Graphics object.
@@ -321,9 +324,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		Country[] v = game.getCountries();
 
-		int r=10;
+                int state = game.getState();
 
-		if (game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_BATTLE_WON || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+		if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
 			int a=game.getAttacker().getColor();
 			int b=game.getDefender().getColor();
@@ -338,19 +341,19 @@ public class PicturePanel extends JPanel implements MapPanel {
 			if ( Math.abs( game.getAttacker().getX() - game.getDefender().getX() ) > (map.length / 2) ) {
 
 				if ( ((Country)game.getAttacker()).getX() > (map.length / 2) ) { // ie the attacker is on the right
-					g2.fillPolygon( makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()+map.length, ((Country)game.getDefender()).getY(), r ));
-					g2.fillPolygon( makeArrow( game.getAttacker().getX()-map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r ));
+					g2.fillPolygon( makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()+map.length, ((Country)game.getDefender()).getY(), BALL_SIZE ));
+					g2.fillPolygon( makeArrow( game.getAttacker().getX()-map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), BALL_SIZE ));
 
 				}
 				else { // the attacker is on the left
-					g2.fillPolygon( makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()-map.length, ((Country)game.getDefender()).getY(), r ));
-					g2.fillPolygon( makeArrow( game.getAttacker().getX()+map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r ));
+					g2.fillPolygon( makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()-map.length, ((Country)game.getDefender()).getY(), BALL_SIZE ));
+					g2.fillPolygon( makeArrow( game.getAttacker().getX()+map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), BALL_SIZE ));
 				}
 
 			}
 			else {
 
-				g2.fillPolygon( makeArrow( ((Country)game.getAttacker()).getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r ));
+				g2.fillPolygon( makeArrow( ((Country)game.getAttacker()).getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), BALL_SIZE ));
 
 			}
 
@@ -358,14 +361,14 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		}
 
-
-                if (game.getState() == RiskGame.STATE_GAME_OVER) {
-                    if (ballWorld==null) {
-                        ballWorld = new BallWorld(myrisk, this, r); // start the ball world!!
+                if (oldState != state) { // if the state has changed!!!
+                    oldState = state;
+                    if (state == RiskGame.STATE_GAME_OVER) {
+                        startAni();
                     }
-                }
-                else {
-                    stopAni();
+                    else {
+                        stopAni();
+                    }
                 }
 
                 Country t;
@@ -388,7 +391,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                                 g2.setColor( new Color( t.getOwner().getColor() ) );
 
                                 Ellipse2D ellipse = new Ellipse2D.Double();
-                                ellipse.setFrame( x-r , y-r , (r*2), (r*2) );
+                                ellipse.setFrame( x-BALL_SIZE , y-BALL_SIZE , (BALL_SIZE*2), (BALL_SIZE*2) );
                                 g2.fill(ellipse);
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
@@ -410,7 +413,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 }
 
-		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL ) {
+		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
 
 			g2.setStroke(new BasicStroke(2));
 			Vector players = game.getPlayers();
@@ -454,6 +457,13 @@ public class PicturePanel extends JPanel implements MapPanel {
 	}
         
         BallWorld ballWorld;
+        int oldState;
+
+        public void startAni() {
+            if (ballWorld==null) {
+                ballWorld = new BallWorld(myrisk, this, BALL_SIZE); // start the ball world!!
+            }
+        }
         /**
          * stop all animations
          */
@@ -461,9 +471,23 @@ public class PicturePanel extends JPanel implements MapPanel {
             if (ballWorld!=null) {
                 ballWorld.stop();
                 ballWorld = null;
+                repaint();
             }
         }
-        
+
+        protected void processMouseEvent(MouseEvent e) {
+            super.processMouseEvent(e);
+            if (e.getID() == MouseEvent.MOUSE_CLICKED && myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER ) {
+                // toggle the animation
+                if (ballWorld==null) {
+                    startAni();
+                }
+                else {
+                    stopAni();
+                }
+            }
+        }
+
 	/**
 	 * Paints the arrows for the game, ie - when attacking
 	 * @param x1i x point of the attacker's co-ordinates.
