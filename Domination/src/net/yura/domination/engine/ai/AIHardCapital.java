@@ -68,13 +68,15 @@ public class AIHardCapital extends AIHard {
 				if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
 				    name=((Country)ct.elementAt(j)).getColor()+"";
 
-				    Vector v = ((Country)ct.elementAt(j)).getNeighbours();
-				    for (int k=0; k<ct.size(); k++) {
-					if (((Country)v.elementAt(k)).getOwner() != player) {
-					    name=((Country)ct.elementAt(j)).getColor()+"";
-					    break;
-					}
-				    }
+// YURA: no idea what this block does but it crashes with:
+// choosemap CRO.map, startgame capital italianlike
+//				    Vector v = ((Country)ct.elementAt(j)).getNeighbours();
+//				    for (int k=0; k<ct.size(); k++) {
+//					if (((Country)v.elementAt(k)).getOwner() != player) {
+//					    name=((Country)ct.elementAt(j)).getColor()+"";
+//					    break;
+//					}
+//				    }
 				}
 			    }
 			}
