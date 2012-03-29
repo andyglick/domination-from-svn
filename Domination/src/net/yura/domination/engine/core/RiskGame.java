@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.MapTranslator;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * <p> Risk Game Main Class </p>
@@ -1864,7 +1865,18 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					}
 
-					if (p !=null) description = description.replaceAll( "PLAYER"+s1, p.getName() );
+					if (p !=null) {
+                                            
+                                            String name = p.getName();
+                                            
+                                            String color = "color."+RiskUtil.getStringForColor( p.getColor() );
+                                            java.util.ResourceBundle trans = TranslationBundle.getBundle();
+                                            if (trans.containsKey(color)) {
+                                                name = trans.getString(color)+" "+name;
+                                            }
+                                            
+                                            description = RiskUtil.replaceAll(description, "PLAYER"+s1, name );
+                                        }
 
 					if ( s1 <= Players.size() ) { // || Players.size()==0 null but there for the map editor
 
