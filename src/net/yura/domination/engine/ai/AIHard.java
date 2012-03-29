@@ -114,13 +114,14 @@ public class AIHard extends AIEasy {
                              if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
                                 name=((Country)ct.elementAt(j)).getColor()+"";
 
-                                Vector v = ((Country)ct.elementAt(j)).getNeighbours();
-                                for (int k=0; k<v.size(); k++) { // YURA: was ct.size()
-                                   if (((Country)v.elementAt(k)).getOwner() != player && ((Country)ct.elementAt(j)).isNeighbours((Country)v.elementAt(k))) {
-                                      name=((Country)ct.elementAt(j)).getColor()+"";
-                                      break;
-                                   }
-                                }
+// YURA: not sure what this does??? does it do anything???
+//                                Vector v = ((Country)ct.elementAt(j)).getNeighbours();
+//                                for (int k=0; k<v.size(); k++) { // YURA: was ct.size()
+//                                   if (((Country)v.elementAt(k)).getOwner() != player && ((Country)ct.elementAt(j)).isNeighbours((Country)v.elementAt(k))) {
+//                                      name=((Country)ct.elementAt(j)).getColor()+"";
+//                                      break;
+//                                   }
+//                                }
                              }
                           }
                        }
