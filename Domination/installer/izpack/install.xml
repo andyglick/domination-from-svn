@@ -83,14 +83,16 @@
 		<pack name="Game base files" required="yes" id="package.base">
 			<description>Contains all the files and maps required to run the game</description>
 
-			<fileset dir="." targetdir="$INSTALL_PATH" excludes="help/**,src.zip,*.cmd,*.sh"/>
+			<fileset dir="." targetdir="$INSTALL_PATH" excludes="help/**,src.zip,*.cmd,*.sh,*.app/**"/>
 			<fileset dir="." targetdir="$INSTALL_PATH" os="windows" includes="*.cmd"/>
 			<fileset dir="." targetdir="$INSTALL_PATH" os="unix" includes="*.sh" excludes="mac.sh"/>
-			<fileset dir="." targetdir="$INSTALL_PATH" os="mac" includes="mac.sh,**/._*" defaultexcludes="no"/>
+			<fileset dir="." targetdir="$INSTALL_PATH" os="mac" includes="mac.sh,*.app/**,**/._*" defaultexcludes="no"/>
 
 			<!-- set the executable flag on unix -->
 
 			<executable stage="postinstall" targetfile="$INSTALL_PATH/mac.sh" os="mac"/>
+			<executable stage="never" targetfile="$INSTALL_PATH/Domination.app/Contents/MacOS/JavaApplicationStub" os="mac"/>
+			<executable stage="never" targetfile="$INSTALL_PATH/Map Editor.app/Contents/MacOS/JavaApplicationStub" os="mac"/>
 
 			<executable stage="never" targetfile="$INSTALL_PATH/run.sh" os="unix"/>
 			<executable stage="never" targetfile="$INSTALL_PATH/CommandLine.sh" os="unix"/>
