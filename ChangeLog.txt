@@ -19,6 +19,7 @@ CURRENT VERSION:
 	memory usage smaller for PicturePanel, Castle in the Sky.map OutOfMemoryError
 	can click to toggle animation at the end of the game
 	mission to destroy a player show the players color as well as the name
+	on Mac OS X the .sh files run correctly and have nice icons
 
 1.1.0.7 (11.03.2012)
 
