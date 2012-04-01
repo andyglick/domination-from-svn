@@ -169,7 +169,7 @@
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="*.sh,*.cmd,**/._*"/>
+			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="*.sh,*.cmd,._*,lib/._*"/>
 			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
