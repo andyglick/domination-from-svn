@@ -169,11 +169,12 @@
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="*.sh,*.cmd,._*,lib/._*"/>
+			<fileset dir="${basedir}/res_swing/scripts" includes="*.sh,*.cmd,*.app/**"/>
+			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*,lib/._*"/>
 			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
-		<chmod file="${dir.build.game}/*.sh" perm="ugo+x" />
+		<chmod dir="${dir.build.game}" includes="*.sh,**/JavaApplicationStub" perm="ugo+x" />
 
                 <!-- for the map chooser -->
                 <copy todir="${dir.build.game}/lib">
@@ -197,9 +198,9 @@
 		<copy file="${file.src}" todir="${dir.build.game}"/>
 
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
- 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh"/>
+ 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh,**/JavaApplicationStub"/>
 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="**/._*" defaultexcludes="no"/>
-			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh" excludes="mac.sh" filemode="755"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh,**/JavaApplicationStub" excludes="mac.sh" filemode="755"/>
 		</zip>
 	</target>
 
