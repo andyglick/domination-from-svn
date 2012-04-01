@@ -199,7 +199,7 @@
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
  			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh"/>
 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="._*" defaultexcludes="no"/>
-			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh" filemode="755"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh" excludes="mac.sh" filemode="755"/>
 		</zip>
 	</target>
 
