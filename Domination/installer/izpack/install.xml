@@ -86,7 +86,7 @@
 			<fileset dir="." targetdir="$INSTALL_PATH" excludes="help/**,src.zip,*.cmd,*.sh"/>
 			<fileset dir="." targetdir="$INSTALL_PATH" os="windows" includes="*.cmd"/>
 			<fileset dir="." targetdir="$INSTALL_PATH" os="unix" includes="*.sh" excludes="mac.sh"/>
-			<fileset dir="." targetdir="$INSTALL_PATH" os="mac" includes="mac.sh,._*" defaultexcludes="no"/>
+			<fileset dir="." targetdir="$INSTALL_PATH" os="mac" includes="mac.sh,**/._*" defaultexcludes="no"/>
 
 			<!-- set the executable flag on unix -->
 
