@@ -169,7 +169,7 @@
 
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/res_swing/scripts"/>
+			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="*.sh,*.cmd,._*"/>
 			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
@@ -197,7 +197,9 @@
 		<copy file="${file.src}" todir="${dir.build.game}"/>
 
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
- 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" />
+ 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="._*" defaultexcludes="no"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh" filemode="755"/>
 		</zip>
 	</target>
 
