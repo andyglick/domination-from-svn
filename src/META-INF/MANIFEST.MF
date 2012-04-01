@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Yura Mamyrin (yura@yura.net)
-Main-Class: net.yura.domination.ui.flashgui.MainMenu
-Class-Path: TranslationTool.jar Grasshopper.jar SwingME.jar midletrunner.jar m3gbasic.jar httpmime-4.1.2.jar httpcore-4.1.2.jar
