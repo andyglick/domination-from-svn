@@ -163,16 +163,18 @@
 
 		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
 
-                <!-- we put this inside the jar file instead
-                <copy file="lib/TranslationTool.jar" todir="${dir.build.game}"/>
-                -->
-
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
-			<fileset dir="${basedir}/res_swing/scripts" includes="*.sh,*.cmd,*.app/**"/>
-			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*"/>
+			<fileset dir="${basedir}/res_swing/scripts" includes="*.sh,*.cmd"/>
 			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
+
+		<copy todir="${dir.build.game}">
+			<!-- Apple OS X Launcher files, these are binary files and can not be filtered -->
+			<fileset dir="${basedir}/res_swing/scripts" includes="*.app/**"/>
+			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*"/>
+		</copy>
+
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
 		<chmod dir="${dir.build.game}" includes="*.sh,**/JavaApplicationStub" perm="ugo+x" />
 
