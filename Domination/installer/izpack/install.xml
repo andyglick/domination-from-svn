@@ -67,7 +67,7 @@
 	<panels>
 		<panel classname="HelloPanel"/>
 		<!--<panel classname="InfoPanel"/>-->
-		<!--<panel classname="LicencePanel"/> DOES NOT WORK IN JAVA 1.4 -->
+		<panel classname="LicencePanel"/><!-- DOES NOT WORK IN JAVA 1.4 -->
 		<panel classname="TargetPanel"/><!-- installation path -->
 		<panel classname="PacksPanel"/>
 		<panel classname="InstallPanel"/>
