@@ -14,4 +14,15 @@
 <!--		<createForPack name="@game.name@ base files" />-->
 	</shortcut>
 
+	<shortcut
+		name="@game.name@ Map Editor"
+		programGroup="yes"
+		target="$INSTALL_PATH/SwingGUI.sh"
+		iconFile="$INSTALL_PATH/resources/icon.png"
+		workingDirectory="$INSTALL_PATH"
+		type="Application"
+		encoding="UTF-8"
+		description="Starts the @game.name@ Map Editor">
+	</shortcut>
+
 </shortcuts>
