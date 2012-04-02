@@ -14,7 +14,7 @@
 	    <!-- this is needed for running the junit test in netbeans -->
         <import file="nbproject/build-impl.xml"/>
 
-	<property name="game.version" value="1.1.0.7"/>
+	<property name="game.version" value="1.1.0.8"/>
 
 
         <!-- -->
@@ -170,7 +170,7 @@
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
 			<fileset dir="${basedir}/res_swing/scripts" includes="*.sh,*.cmd,*.app/**"/>
-			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*,lib/._*"/>
+			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*"/>
 			<fileset dir="${basedir}/res_swing/html"/>
 		</copy>
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
@@ -199,7 +199,7 @@
 
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
  			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh,**/JavaApplicationStub"/>
-			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="**/._*" defaultexcludes="no"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="._*" defaultexcludes="no"/>
 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh,**/JavaApplicationStub" excludes="mac.sh" filemode="755"/>
 		</zip>
 	</target>
