@@ -29,6 +29,7 @@ public class SwingGUIFrame {
 		JFrame gui = new JFrame();
 
 		gui.setContentPane( sg );
+                gui.setJMenuBar( sg.getJMenuBar() );
 
 		gui.setTitle( SwingGUIPanel.product );
 		gui.setIconImage(Toolkit.getDefaultToolkit().getImage( AboutDialog.class.getResource("icon.gif") ));

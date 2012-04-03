@@ -42,7 +42,11 @@ public class SwingGUIApplet extends JApplet {
 			TranslationBundle.parseArgs( new String[] {"--lang="+lang } );
 		}
 
-        	setContentPane( new SwingGUIPanel( new Risk() ) );
+                SwingGUIPanel sp = new SwingGUIPanel( new Risk() );
+                
+        	setContentPane( sp );
+                
+                setJMenuBar( sp.getJMenuBar() );
 	}
 
 }
