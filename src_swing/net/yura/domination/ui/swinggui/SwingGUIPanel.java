@@ -227,27 +227,23 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                 }
 		addTab(new BugsPanel());
 
-		final JPanel oddpanelbug = new JPanel();
-		oddpanelbug.setLayout(new java.awt.BorderLayout());
-		oddpanelbug.add(tabbedpane, java.awt.BorderLayout.CENTER );
-		add(oddpanelbug,java.awt.BorderLayout.CENTER);
 
+		add(tabbedpane, java.awt.BorderLayout.CENTER );
 
 
 		ChangeListener changeMenu = new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 
-
 				SwingGUITab sgt = (SwingGUITab)tabbedpane.getSelectedComponent();
 
-				if (currentToolbar!=null) { oddpanelbug.remove(currentToolbar); }
+				if (currentToolbar!=null) { remove(currentToolbar); }
 				currentToolbar = sgt.getToolBar();
 
 				currentToolbar.setOrientation( javax.swing.JToolBar.HORIZONTAL );
-				oddpanelbug.add( currentToolbar, java.awt.BorderLayout.NORTH );
+				add( currentToolbar, java.awt.BorderLayout.NORTH );
 
+                                revalidate();
 				repaint();
-
 			}
 		};
 
@@ -293,7 +289,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 
 
-		add(gMenuBar, java.awt.BorderLayout.NORTH );
+		//add(gMenuBar, java.awt.BorderLayout.NORTH );
 		// sets menu bar
 		//setJMenuBar(gMenuBar);
 		//setBounds(new java.awt.Rectangle(0,0,905,629));
@@ -306,6 +302,10 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                     debugTab.start();
                 }
 	}
+
+        public JMenuBar getJMenuBar() {
+            return gMenuBar;
+        }
 
 	public void setupLobbyButton() {
 
