@@ -1871,9 +1871,10 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             
                                             String color = "color."+RiskUtil.getStringForColor( p.getColor() );
                                             java.util.ResourceBundle trans = TranslationBundle.getBundle();
-                                            if (trans.containsKey(color)) {
+                                            try { // in Java 1.4 no if (trans.containsKey(color))
                                                 name = trans.getString(color)+" "+name;
                                             }
+                                            catch (Exception ex) { }
                                             
                                             description = RiskUtil.replaceAll(description, "PLAYER"+s1, name );
                                         }
