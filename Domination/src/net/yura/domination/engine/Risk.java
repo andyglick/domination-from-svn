@@ -607,28 +607,30 @@ RiskUtil.printStackTrace(e);
 
 	}
 
+        private static boolean skipUndo; // sometimes on some JVMs this just does not work
 	private void saveGameToUndoObject() {
 
+            if (skipUndo) return;
 
-			if ( unlimitedLocalMode ) {
+            if ( unlimitedLocalMode ) {
 
-				// the game is saved
-				try {
-					//Undo = new SealedObject( game, nullCipher );
+                // the game is saved
+                try {
+                    //Undo = new SealedObject( game, nullCipher );
 
+                    Undo.reset();
+                    ObjectOutputStream out = new ObjectOutputStream(Undo);
+                    out.writeObject(game);
+                    out.flush();
+                    out.close();
 
-					Undo.reset();
-					ObjectOutputStream out = new ObjectOutputStream(Undo);
-					out.writeObject(game);
-					out.flush();
-					out.close();
-
-				}
-				catch (Throwable e) {
-					System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-					RiskUtil.printStackTrace(e);
-				}
-			}
+                }
+                catch (Throwable e) {
+                    skipUndo = true;
+                    System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
+                    RiskUtil.printStackTrace(e);
+                }
+            }
 	}
 
 	/**
