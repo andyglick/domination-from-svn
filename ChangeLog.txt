@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.8
+	Risk Game:	1.1.0.9
 	 * Save:	7
 	 * Network:	8
 
@@ -12,7 +12,11 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.8
+1.1.0.9
+
+	if UNDO fails once, do not try and do undo any more
+
+1.1.0.8 (02.04.2012)
 
 	Fixed crash in AIHardCapital.java for map CRO.map and capital italianlike game
 	copyright date fixed in About box
