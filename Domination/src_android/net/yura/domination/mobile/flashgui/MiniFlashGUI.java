@@ -1,6 +1,5 @@
 package net.yura.domination.mobile.flashgui;
 
-import java.util.Enumeration;
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.Risk;

@@ -175,6 +175,12 @@
 			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*"/>
 		</copy>
 
+		<!-- sadly this is lost when the files are added to the zip file, so is useless
+		<attrib hidden="true">
+			<fileset dir="${dir.build.game}" defaultexcludes="no" includes="._*"/>
+		</attrib>
+		-->
+
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
 		<chmod dir="${dir.build.game}" includes="*.sh,**/JavaApplicationStub" perm="ugo+x" />
 
@@ -477,7 +483,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <mkdir dir="${dir.build}/swingme"/>
         <mkdir dir="dist"/>
 
-        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="lib/midletrunner.jar:lib/SwingME.jar"/>
+        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="lib/midletrunner.jar:lib/SwingME.jar:lib/Grasshopper.jar"/>
 
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*"/>
