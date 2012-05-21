@@ -1307,6 +1307,10 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 	public void newGame() {
 
+            // if we do not use this here we get ClassCastException in java 1.7
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+            
 			gNewGame.setEnabled(false);
 			gLoadGame.setEnabled(false);
 			//gSaveGame.setEnabled(true);
@@ -1331,6 +1335,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			add(guiSetup, java.awt.BorderLayout.CENTER );
 
 			SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+                }
+            } );
+
 	}
 
 	public void closeGame() {
