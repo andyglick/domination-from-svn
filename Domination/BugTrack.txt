@@ -170,6 +170,8 @@ NOT GOING TO DO OR NOT UNDER MY CONTROLL:
 
 
 
+[checkbox] only make 3 attacks per turn
+
 
 
 Some ideas for Domination:

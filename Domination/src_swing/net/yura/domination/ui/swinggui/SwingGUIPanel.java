@@ -64,6 +64,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.SwingUtilities;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
@@ -1373,6 +1374,10 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 	public void startGame() {
 
+            // if we do not use this here we get ClassCastException in java 1.7 when we load a saved game
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+            
 			gNewGame.setEnabled(false);
 			gLoadGame.setEnabled(false);
 			//gSaveGame.setEnabled(true);
@@ -1394,8 +1399,10 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 			add(guiGame, java.awt.BorderLayout.CENTER );
 
-		// this is so close is not selected
-		mapViewComboBox.grabFocus();
+                        // this is so close is not selected
+                        mapViewComboBox.grabFocus();
+                }
+            } );
 
 	}
 
