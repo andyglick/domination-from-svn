@@ -22,8 +22,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
         if (mainFrame==null) {
             mainFrame = new MiniFlashGUI(myRisk);
         }
+
         mainFrame.openMainMenu();
-        mainFrame.setVisible(true);
+
+        if (!mainFrame.isVisible()) {
+            mainFrame.setVisible(true);
+        }
     }
     
     @Override

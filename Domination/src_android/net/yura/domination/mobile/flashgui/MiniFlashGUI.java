@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
@@ -31,6 +32,7 @@ import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.gui.plaf.Style;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -158,6 +160,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
     public MiniFlashGUI(Risk risk) {
         myrisk = risk;
         setMaximum(true);
+        
+        try {
+            setBorder( new BackgroundBorder( Image.createImage("/marble.jpg") ) );
+            setBackground( 0x00FFFFFF );
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        
     }
 
     private XULLoader getPanel(String xmlfile) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <synth>
-
+<!--
     <style id="backingStyle">
 	   <state>
 	       <font name="Dialog" size="14"/>
@@ -10,8 +10,6 @@
     </style>
     <bind style="backingStyle" type="region" key=".*"/>
 
-
-
     <style id="contentPane">
 	   <insets top="6" left="6" bottom="6" right="6"/>
 	   <opaque value="false"/>
@@ -20,37 +18,6 @@
 	   </state>
     </style>
     <bind style="contentPane" type="region" key="Frame"/>
-
-
-    <style id="view">
-	   <insets top="15" left="15" bottom="15" right="15"/>
-	   <opaque value="false"/>
-	   <state>
-	      <imagePainter path="/shadow.png" sourceInsets="25 25 25 25" paintCenter="false"/>
-	   </state>
-    </style>
-    <bind style="view" type="region" key="PicturePanel"/>
-
-
-    <style id="panel">
-        <opaque value="false"/>
-    </style>
-    <bind style="panel" type="region" key="Panel"/>
-    <bind style="panel" type="region" key="ScrollPane"/>
-    <bind style="panel" type="region" key="Label"/>
-    <bind style="panel" type="region" key="PicturePanel"/>
-    <bind style="panel" type="region" key="TransparentDialog"/>
-
-
-
-    <style id="scrollBarThumbStyle">
-        <insets top="4" left="4" bottom="5" right="5"/>
-        <state>
-            <imagePainter method="scrollBarThumbBackground" path="/thumb.png" sourceInsets="4 4 5 5" />
-        </state>
-    </style>
-    <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb" />
-
 
     <style id="textfield">
 	<insets top="4" left="6" bottom="4" right="6"/>
@@ -62,7 +29,6 @@
 	</state>
     </style>
     <bind style="textfield" type="region" key="TextField"/>
-
 
     <style id="button">
 	<insets top="5" left="10" bottom="5" right="10"/>
@@ -78,14 +44,13 @@
 	    <imagePainter path="/button_over.png" sourceInsets="12 15 12 15" />
 	    <color type="BORDERFILL" value="#F37529"/>
 	</state>
-	<!-- not supported yet
+	<!- - not supported yet
         <state value="PRESSED"> 
 	    <imagePainter path="/button_press.png" sourceInsets="12 15 12 15" />
 	</state>
-        -->
+        - ->
     </style>
     <bind style="button" type="region" key="Button"/>
-
 
     <style id="checkbox">
 	<imageIcon id="check_off" path="/checkbox_off.png"/>
@@ -98,7 +63,6 @@
 	</state>
     </style>
     <bind style="checkbox" type="region" key="CheckBox"/>
-
 
     <style id="frameTitlePane">
       <state>
@@ -113,5 +77,32 @@
       </state>
     </style>
     <bind style="window" type="region" key="Window"/>
+
+    <style id="scrollBarThumbStyle">
+        <insets top="4" left="4" bottom="5" right="5"/>
+        <state>
+            <imagePainter method="scrollBarThumbBackground" path="/thumb.png" sourceInsets="4 4 5 5" />
+        </state>
+    </style>
+    <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb" />
+-->
+
+    <style id="panel">
+        <opaque value="false"/>
+    </style>
+    <bind style="panel" type="region" key="Panel"/>
+    <bind style="panel" type="region" key="ScrollPane"/>
+    <bind style="panel" type="region" key="Label"/>
+    <bind style="panel" type="region" key="PicturePanel"/>
+    <bind style="panel" type="region" key="TransparentDialog"/>
+
+    <style id="view">
+	   <insets top="15" left="15" bottom="15" right="15"/>
+	   <opaque value="false"/>
+	   <state>
+	      <imagePainter path="/shadow.png" sourceInsets="25 25 25 25" paintCenter="false"/>
+	   </state>
+    </style>
+    <bind style="view" type="region" key="PicturePanel"/>
 
 </synth>
