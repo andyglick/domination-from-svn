@@ -27,6 +27,7 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Slider;
 import net.yura.mobile.gui.components.Spinner;
+import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
@@ -429,7 +430,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         // ============================================ add to window
 
         Panel mainWindow = new Panel( new BorderLayout() );
-        ScrollPane sp = new ScrollPane(pp);
+        ScrollPane sp = new ScrollPane(pp) {
+            // a little hack as we set setClip to false
+            public void repaint() {
+                Window w = getWindow();
+                if (w!=null) {
+                    w.repaint();
+                }
+            }
+        };
 
 
         //sp.setMode( ScrollPane.MODE_FLOATING_SCROLLBARS );

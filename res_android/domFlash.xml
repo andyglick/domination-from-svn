@@ -108,9 +108,8 @@
     <bind style="frameTitlePane" type="region" key="TitleBar"/>
 
     <style id="window">
-      <imageIcon id="dimImage" path="/dim.png"/>
       <state>
-        <property key="dim" value="dimImage"/>
+        <property key="dim" type="integer" value="#AA000000"/>
       </state>
     </style>
     <bind style="window" type="region" key="Window"/>

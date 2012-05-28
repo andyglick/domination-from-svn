@@ -21,6 +21,7 @@ import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.components.ImageView;
 import net.yura.mobile.gui.plaf.Style;
 
@@ -268,6 +269,24 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
+        protected void paintBorder(Graphics2D g) {
+
+                Border b = getBorder();
+                if (b != null) {
+                    
+                    double s = getScale();
+                    int x = getImgX(s);
+                    int y = getImgY(s);
+
+                    int w = (int) (img.getWidth() * s);
+                    int h = (int) (img.getHeight() * s);
+                    
+                    g.translate(x,y);
+                    b.paintBorder(this, g,w,h);
+                    g.translate(-x,-y);
+                }
+        }
+        
         /**
          * Paints the components
          * @param g a Graphics object.
