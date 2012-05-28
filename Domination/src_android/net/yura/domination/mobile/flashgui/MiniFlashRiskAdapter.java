@@ -1,5 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.mobile.gui.components.OptionPane;
@@ -7,12 +8,24 @@ import net.yura.mobile.logging.Logger;
 
 public class MiniFlashRiskAdapter implements RiskListener {
 
+    private Risk myRisk;
     private MiniFlashGUI mainFrame;
+    private GameActivity gameFrame;
 
-    public MiniFlashRiskAdapter(MiniFlashGUI mainFrame) {
-        this.mainFrame = mainFrame;
+    public MiniFlashRiskAdapter(Risk risk) {
+        myRisk = risk;
+        risk.addRiskListener( this );
     }
 
+    
+    public void openMainMenu() {
+        if (mainFrame==null) {
+            mainFrame = new MiniFlashGUI(myRisk);
+        }
+        mainFrame.openMainMenu();
+        mainFrame.setVisible(true);
+    }
+    
     @Override
     public void newGame(boolean t) {
         mainFrame.openNewGame(t);
@@ -20,13 +33,19 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void closeGame() {
-        mainFrame.openMainMneu();
+        if (gameFrame!=null) {
+            gameFrame.setVisible(false);
+            gameFrame = null;
+        }
+        openMainMenu();
     }
 
     @Override
     public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
         Logger.debug("Game: "+output);
-        mainFrame.mapRedrawRepaint(redrawNeeded,repaintNeeded);
+        if (gameFrame!=null) {
+            gameFrame.mapRedrawRepaint(redrawNeeded,repaintNeeded);
+        }
     }
 
     // ======================= game setup =============================
@@ -50,10 +69,15 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void showCardsFile(String c, boolean m) {
         // TODO Auto-generated method stub
     }
-
+    
     @Override
     public void startGame(boolean s) {
-        mainFrame.startGame(s);
+        if (mainFrame!=null) {
+            mainFrame.setVisible(false);
+            mainFrame = null;
+        }
+        gameFrame = new GameActivity(myRisk);
+        gameFrame.startGame();
     }
 
     // ========================= in game ==============================
@@ -74,8 +98,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
         }
         //else { // this will update the state in the gameframe
 
-                mainFrame.needInput(s);
-
+            if (gameFrame!=null) {
+                    gameFrame.needInput(s);
+            }
         //}
 
     }
@@ -95,7 +120,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openBattle(int c1num, int c2num) {
 
         if (battle == null) {
-            battle = new BattleDialog(mainFrame);
+            battle = new BattleDialog(gameFrame);
             battle.setMaximum(true);
         }
 
@@ -124,7 +149,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void setGameStatus(String state) {
-        mainFrame.setGameStatus(state);
+        if (gameFrame!=null) {
+            gameFrame.setGameStatus(state);
+        }
     }
 
     /**
@@ -149,7 +176,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void setSlider(int min, int c1num, int c2num) {
-        mainFrame.setupMove(min, c1num, c2num, false);
+        gameFrame.setupMove(min, c1num, c2num, false);
     }
 
     @Override

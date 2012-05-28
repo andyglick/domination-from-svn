@@ -560,7 +560,7 @@ some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
 2. comment out the line: <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
 -->
 
-    <target name="android">
+    <target name="android" description="build and run on android">
         
         <loadproperties srcFile="local.properties" />
         <property file="ant.properties" />

@@ -19,13 +19,13 @@ import net.yura.mobile.util.Properties;
  */
 public class BattleDialog extends Frame {
 
-    MiniFlashGUI mainFrame;
+    GameActivity mainFrame;
     Sprite red_dice,blue_dice;
     Properties resBundle;
     Random r = new Random();
     Button rollButton;
 
-    public BattleDialog(MiniFlashGUI a) {
+    public BattleDialog(GameActivity a) {
         mainFrame = a;
         resBundle = mainFrame.resBundle;
 

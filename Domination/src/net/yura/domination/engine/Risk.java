@@ -607,7 +607,7 @@ RiskUtil.printStackTrace(e);
 
 	}
 
-        private static boolean skipUndo; // sometimes on some JVMs this just does not work
+        public static boolean skipUndo; // sometimes on some JVMs this just does not work
 	private void saveGameToUndoObject() {
 
             if (skipUndo) return;

@@ -1,5 +1,9 @@
 package net.yura.domination.mobile.flashgui;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -8,8 +12,8 @@ import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.grasshopper.SimpleBug;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
-import net.yura.mobile.logging.Logger;
 import net.yura.swingme.core.CoreUtil;
 
 public class DominationMidlet extends Midlet {
@@ -26,6 +30,19 @@ public class DominationMidlet extends Midlet {
 
             CoreUtil.setupLogging();
 
+            Logger.getLogger("").addHandler( new Handler() {
+
+                @Override
+                public void publish(LogRecord record) {
+                    if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
+                        OptionPane.showMessageDialog(null, record.getMessage()+" "+record.getThrown(), "WARN", OptionPane.WARNING_MESSAGE);
+                    }
+                }
+
+                @Override public void flush() { }
+                @Override public void close() { }
+            } );
+            
             // if we want to see DEBUG, default is INFO
             //java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
 
@@ -48,16 +65,15 @@ public class DominationMidlet extends Midlet {
 
 
 
-
-
+// temp hack untill i find a way for undo to work
+Risk.skipUndo = true;
 
 
         Risk risk = new Risk("luca.map","risk.cards");
+        MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter(risk);
 
-        MiniFlashGUI gui = new MiniFlashGUI(risk);
+        adapter.openMainMenu();
 
-        gui.setMaximum(true);
-        gui.setVisible(true);
 
         //risk.parser("newgame");
         //risk.parser("newplayer ai hard blue bob");
