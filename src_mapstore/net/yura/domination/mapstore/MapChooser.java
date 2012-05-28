@@ -19,6 +19,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.List;
@@ -131,7 +132,9 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
 
         list = (List)loader.find("ResultList");
-        list.setDoubleClick(true);
+        if (Midlet.getPlatform() == Midlet.PLATFORM_ME4SE) {
+            list.setDoubleClick(true);
+        }
         list.setCellRenderer( new MapRenderer(this) );
         list.setFixedCellHeight(100);
         list.setFixedCellWidth(10); // will streach
