@@ -109,7 +109,7 @@ public class GameActivity extends Frame {
         setContentPane(contentPane);
 
         setUndecorated(true);
-        setName("GameFrame");
+        //setName("GameFrame");
         setBackground(0xFF666666);
 
         setVisible(true);

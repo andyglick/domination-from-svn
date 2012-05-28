@@ -14,6 +14,7 @@ import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
+import net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel;
 import net.yura.swingme.core.CoreUtil;
 
 public class DominationMidlet extends Midlet {
@@ -31,11 +32,14 @@ public class DominationMidlet extends Midlet {
             CoreUtil.setupLogging();
 
             Logger.getLogger("").addHandler( new Handler() {
-
+                boolean open;
                 @Override
                 public void publish(LogRecord record) {
                     if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
-                        OptionPane.showMessageDialog(null, record.getMessage()+" "+record.getThrown(), "WARN", OptionPane.WARNING_MESSAGE);
+                        if (!open) {
+                            open = true;
+                            OptionPane.showMessageDialog(null, record.getMessage()+" "+record.getThrown(), "WARN", OptionPane.WARNING_MESSAGE);
+                        }
                     }
                 }
 
@@ -52,7 +56,15 @@ public class DominationMidlet extends Midlet {
             th.printStackTrace();
         }
 
-        SynthLookAndFeel synth = new SynthLookAndFeel();
+        SynthLookAndFeel synth;
+        
+        try {
+            synth = (SynthLookAndFeel)Class.forName("net.yura.android.plaf.AndroidLookAndFeel").newInstance();
+        }
+        catch (Exception ex) {
+            synth = new NimbusLookAndFeel();
+        }
+        
         try {
             synth.load( getClass().getResourceAsStream("/domFlash.xml") );
         }
