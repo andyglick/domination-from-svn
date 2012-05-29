@@ -22,7 +22,7 @@ public interface RiskListener {
     public void armiesLeft(int l, boolean s);
     public void showDice(int n, boolean w);
     public void showMapPic(RiskGame p);
-    public void showCardsFile(String c, boolean m);
+    public void showCardsFile(String c, boolean hasMission);
     public void serverState(boolean s);
     public void openBattle(int c1num, int c2num);
     public void closeBattle();

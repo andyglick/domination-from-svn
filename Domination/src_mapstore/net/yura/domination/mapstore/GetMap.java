@@ -57,7 +57,7 @@ public class GetMap implements MapServerListener {
         }
     }
 
-    public void gotImg(String url, byte[] data) {
+    public void gotImgFromServer(String url, byte[] data) {
         throw new UnsupportedOperationException("Not supported");
     }
     

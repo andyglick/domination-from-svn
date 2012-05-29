@@ -66,12 +66,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showMapPic(RiskGame p) {
-        // TODO Auto-generated method stub
+        mainFrame.showMapPic(p);
     }
 
     @Override
     public void showCardsFile(String c, boolean m) {
-        // TODO Auto-generated method stub
+        mainFrame.showCardsFile(c,m);
     }
     
     @Override

@@ -47,7 +47,16 @@ public class MapChooser implements ActionListener,MapServerListener {
     XULLoader loader;
     ActionListener al;
 
-    Cache repo;
+    static Cache repo;
+    static {
+        try {
+            repo = new Cache();
+        }
+        catch (Throwable ex) {
+            System.err.println("[MapChooser] no cache: "+ex);
+        }
+    }
+
     MapServerClient client;
 
     Vector mapfiles;
@@ -142,13 +151,6 @@ public class MapChooser implements ActionListener,MapServerListener {
         client = new MapServerClient(this);
         client.start();
 
-        try {
-            repo = new Cache();
-        }
-        catch (Throwable ex) {
-            System.err.println("[MapChooser] no cache: "+ex);
-        }
-
         activateGroup("MapView");
 
         MapUpdateService.getInstance().addObserver( (BadgeButton)loader.find("updateButton") );
@@ -165,52 +167,30 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     public void loadImg(String url) {
-            boolean locale = url.indexOf(':')<0;
-            if (!locale || !url.startsWith("preview/") ) {
-                InputStream in = repo!=null?repo.get(url):null;
-                if (in!=null) {
-                    gotImg(url, in);
-                }
-                else {
-                    if (locale) {
-                        try {
-                            System.out.println("[MapChooser] ### Going to re-encode img: "+url);
-                            InputStream min = RiskUtil.openMapStream(url);
-                            Image img = Image.createImage(min);                    
-                            img = ImageUtil.scaleImage(img, 150, 94);
-                            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                            ImageUtil.saveImage(img, bytes);
-                            img = null; // drop the small image as soon as we can
-                            gotImg(url, bytes.toByteArray() );
-                        }
-                        catch (Exception ex) {
-                            Logger.warn(ex);
-                        }
-                    }
-                    else {
-                        client.makeRequest( url,null,MapServerClient.IMG_REQUEST_ID );
-                    }
-                }
+        // if this is a remote file
+        if ( url.indexOf(':')>0 ) {
+            InputStream in = repo!=null?repo.get(url):null;
+            if (in!=null) {
+                publishImg(url, in);
             }
             else {
-                try {
-                    InputStream in = RiskUtil.openMapStream(url);
-                    gotImg(url, in);
-                }
-                catch (Exception ex) {
-                    Logger.warn(ex);
-                }
+                client.makeRequest( url,null,MapServerClient.IMG_REQUEST_ID );
             }
-    }
-    
-    public void gotImg(String url,byte[] data) {
-        if (repo!=null && !repo.containsKey( url ) ) {
-            repo.put( url , data );
         }
-        gotImg(url, new ByteArrayInputStream(data));
+        // if this is a locale file
+        else {
+            InputStream in = getLocalePreviewImg(url);
+            if (in!=null) {
+                publishImg(url, in);
+            }
+        }
     }
 
-    private void gotImg(String url,InputStream in) {
+    public void gotImgFromServer(String url,byte[] data) {
+        publishImg(url, cache(url, data) );
+    }
+
+    private void publishImg(String url,InputStream in) {
         try {
             if (client!=null) { // if we have shut down, dont need to do anything
                 MapRenderer ren = (MapRenderer)list.getCellRenderer();
@@ -222,6 +202,47 @@ public class MapChooser implements ActionListener,MapServerListener {
         catch (Exception ex) {
             throw new RuntimeException("failed to decode img "+url, ex);
         }
+    }
+
+    public static InputStream getLocalePreviewImg(String url) {
+            if ( url.startsWith("preview/") ) {
+                try {
+                    return RiskUtil.openMapStream(url);
+                }
+                catch (Exception ex) {
+                    Logger.warn(ex);
+                }
+            }
+            else {
+                InputStream in = repo!=null?repo.get(url):null;
+                if (in!=null) {
+                    return in;
+                }
+                else {
+                    try {
+                        System.out.println("[MapChooser] ### Going to re-encode img: "+url);
+                        InputStream min = RiskUtil.openMapStream(url);
+                        Image img = Image.createImage(min);                    
+                        img = ImageUtil.scaleImage(img, 150, 94);
+                        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                        ImageUtil.saveImage(img, bytes);
+                        img = null; // drop the small image as soon as we can
+                        return cache(url, bytes.toByteArray() );
+                    }
+                    catch (Exception ex) {
+                        Logger.warn(ex);
+                    }
+                }
+            }
+            
+            return null;
+    }
+    
+    private static InputStream cache(String url,byte[] data) {
+        if (repo!=null && !repo.containsKey( url ) ) {
+            repo.put( url , data );
+        }
+        return new ByteArrayInputStream(data);
     }
 
     public static Map createMap(String file) {

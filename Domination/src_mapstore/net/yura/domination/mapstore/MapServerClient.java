@@ -80,7 +80,7 @@ public class MapServerClient extends HTTPClient {
         else if (request.id == IMG_REQUEST_ID) {
             
             if (ch!=null) {
-                ch.gotImg(request.url, SystemUtil.getData(is, (int)length) );
+                ch.gotImgFromServer(request.url, SystemUtil.getData(is, (int)length) );
             }
         }
         else if (request.id == MAP_REQUEST_ID) {
