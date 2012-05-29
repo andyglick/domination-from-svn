@@ -1,23 +1,20 @@
 package net.yura.domination.mobile.flashgui;
 
+import java.io.InputStream;
 import java.util.Vector;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
-import net.yura.domination.mobile.MouseListener;
-import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.RiskMiniIO;
-import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
+import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.FileChooser;
@@ -26,13 +23,10 @@ import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
-import net.yura.mobile.gui.components.Slider;
 import net.yura.mobile.gui.components.Spinner;
-import net.yura.mobile.gui.components.Window;
-import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.gui.plaf.Style;
+import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -376,4 +370,37 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     }
 
+    
+
+    public void showMapPic(RiskGame p) {
+
+        InputStream in=null;
+        
+        String prv = p.getPreviewPic();
+        if (prv!=null) {
+            in = MapChooser.getLocalePreviewImg("preview/"+prv);
+        }
+        if (in==null) {
+            in = MapChooser.getLocalePreviewImg( p.getImagePic() );
+        }
+
+        Image img=null;
+        if (in!=null) {
+            try {
+                img = Image.createImage(in);
+            }
+            catch (Exception ex) {
+                Logger.warn(ex);
+            }
+        }
+        
+        Label label = (Label)newgame.find("MapImg");
+        label.setIcon( img!=null ? new Icon(img) : null );
+    }
+
+    public void showCardsFile(String c, boolean hasMission) {
+        //cardsFile.setText(c);
+        //if ( !hasMission && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
+        //mission.setEnabled(m);
+    }
 }

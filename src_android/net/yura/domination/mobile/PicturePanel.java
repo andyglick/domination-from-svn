@@ -1187,9 +1187,6 @@ public class PicturePanel extends ImageView implements MapPanel {
                 }
         }
 */
-        public Image getImage() {
-                return img;
-        }
 
 }
 
