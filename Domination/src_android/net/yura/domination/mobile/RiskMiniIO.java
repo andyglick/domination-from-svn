@@ -50,7 +50,7 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public void openDocs(String doc) throws Exception {
-        Midlet.openURL(doc.toString());
+        Midlet.openURL("file:///android_asset/" + doc );
     }
 
     public InputStream loadGameFile(String file) throws Exception {

@@ -59,7 +59,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             }
             else if ("manual".equals(actionCommand)) {
                 try {
-                    RiskUtil.openDocs("help/index_commands.htm");
+                    RiskUtil.openDocs("help/index.htm");
                 }
                 catch(Exception e) {
                     OptionPane.showMessageDialog(null,"Unable to open manual: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
