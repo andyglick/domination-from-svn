@@ -362,17 +362,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     }
 
-    public void openDialog() {
-
-        // going to create transparent dialog for battles and moving armies
-
-        // we have to open on top as there is not enough space under the map
-
-
-    }
-
-    
-
     public void showMapPic(RiskGame p) {
 
         InputStream in=null;
