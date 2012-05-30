@@ -77,9 +77,6 @@ public class DominationMidlet extends Midlet {
 
 
 
-// temp hack untill i find a way for undo to work
-Risk.skipUndo = true;
-
 
         Risk risk = new Risk("luca.map","risk.cards");
         MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter(risk);

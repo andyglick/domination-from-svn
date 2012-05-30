@@ -47,6 +47,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             else if ("load game".equals(actionCommand)) {
 
                 chooser = new FileChooser();
+                chooser.setCurrentDirectory( RiskMiniIO.getSaveGameDirURL() );
                 chooser.showDialog(this, "doLoad", resBundle.getProperty("mainmenu.loadgame.loadbutton") , resBundle.getProperty("mainmenu.loadgame.loadbutton") );
 
             }
