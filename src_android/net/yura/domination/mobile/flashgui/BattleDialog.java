@@ -27,7 +27,7 @@ public class BattleDialog extends Frame {
 
     public BattleDialog(GameActivity a) {
         mainFrame = a;
-        resBundle = mainFrame.resBundle;
+        resBundle = mainFrame.resb;
 
         try {
             Image red_img = Image.createImage("/red_dice.png");

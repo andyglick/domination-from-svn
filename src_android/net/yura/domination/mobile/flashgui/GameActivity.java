@@ -13,9 +13,11 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
+import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Slider;
+import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.util.Properties;
@@ -26,7 +28,7 @@ import net.yura.swingme.core.CoreUtil;
  */
 public class GameActivity extends Frame implements ActionListener {
  
-    public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
+    public Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
     
     Risk myrisk;
     PicturePanel pp;
@@ -124,13 +126,20 @@ public class GameActivity extends Frame implements ActionListener {
         }
         else if ("save".equals(actionCommand)) {
             
-            String name = RiskMiniIO.getSaveGameDirURL() + "auto.save";
+            final TextField saveText = new TextField();
+            saveText.setText("mygame");
+            
+            OptionPane.showOptionDialog(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    if ("ok".equals(actionCommand)) {
+                        String name = RiskMiniIO.getSaveGameDirURL() + saveText.getText() +".save";
+                        if (name!=null) {
+                            go("savegame " + name );
+                        }                        
+                    }
+                }
+            }, saveText, resb.getProperty("game.menu.save") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
 
-            if (name!=null) {
-
-                    go("savegame " + name );
-
-            }
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
@@ -150,34 +159,34 @@ public class GameActivity extends Frame implements ActionListener {
                             // after wiping out someone if you go into trade mode
                             pp.setC1(255);
                             pp.setC2(255);
-                            goButtonText = resBundle.getProperty("game.button.go.endtrade");
+                            goButtonText = resb.getProperty("game.button.go.endtrade");
                             break;
                     }
                     case RiskGame.STATE_PLACE_ARMIES: {
 //                            if (setupDone==false) {
-                                    goButtonText = resBundle.getProperty("game.button.go.autoplace");
+                                    goButtonText = resb.getProperty("game.button.go.autoplace");
 //                            }
                             break;
                     }
                     case RiskGame.STATE_ATTACKING: {
                             pp.setC1(255);
                             pp.setC2(255);
-                            note = resBundle.getProperty("game.note.selectattacker");
-                            goButtonText = resBundle.getProperty("game.button.go.endattack");
+                            note = resb.getProperty("game.note.selectattacker");
+                            goButtonText = resb.getProperty("game.button.go.endattack");
                             break;
                     }
                     case RiskGame.STATE_FORTIFYING: {
-                            note = resBundle.getProperty("game.note.selectsource");
-                            goButtonText = resBundle.getProperty("game.button.go.nomove");
+                            note = resb.getProperty("game.note.selectsource");
+                            goButtonText = resb.getProperty("game.button.go.nomove");
                             break;
                     }
                     case RiskGame.STATE_END_TURN: {
-                            goButtonText = resBundle.getProperty("game.button.go.endgo");
+                            goButtonText = resb.getProperty("game.button.go.endgo");
                             break;
                     }
                     case RiskGame.STATE_GAME_OVER: {
 //                            if (localGame) {
-                                    goButtonText = resBundle.getProperty("game.button.go.closegame");
+                                    goButtonText = resb.getProperty("game.button.go.closegame");
 //                            }
 //                            else {
 //                                    goButtonText = resBundle.getProperty("game.button.go.leavegame");
@@ -186,8 +195,8 @@ public class GameActivity extends Frame implements ActionListener {
 
                     }
                     case RiskGame.STATE_SELECT_CAPITAL: {
-                            note = resBundle.getProperty("game.note.happyok");
-                            goButtonText = resBundle.getProperty("game.button.go.ok");
+                            note = resb.getProperty("game.note.happyok");
+                            goButtonText = resb.getProperty("game.button.go.ok");
                             break;
                     }
                     case RiskGame.STATE_BATTLE_WON: {
@@ -290,23 +299,23 @@ public class GameActivity extends Frame implements ActionListener {
         else if (gameState == RiskGame.STATE_ATTACKING) {
 
             if (countries.length==0) {
-                note=resBundle.getProperty("game.note.selectattacker");
+                note=resb.getProperty("game.note.selectattacker");
             }
             else if (countries.length == 1) {
-                note=resBundle.getProperty("game.note.selectdefender");
+                note=resb.getProperty("game.note.selectdefender");
             }
             else {
                 go("attack " + countries[0] + " " + countries[1]);
-                note=resBundle.getProperty("game.note.selectattacker");
+                note=resb.getProperty("game.note.selectattacker");
             }
 
         }
         else if (gameState == RiskGame.STATE_FORTIFYING) {
             if (countries.length==0) {
-                note=resBundle.getProperty("game.note.selectsource");
+                note=resb.getProperty("game.note.selectsource");
             }
             else if (countries.length==1) {
-                note=resBundle.getProperty("game.note.selectdestination");
+                note=resb.getProperty("game.note.selectdestination");
             }
             else {
                 note="";
@@ -350,11 +359,11 @@ public class GameActivity extends Frame implements ActionListener {
             move = new Frame();
             slider = new Slider();
             move.add(slider);
-            cancelMove = new Button(resBundle.getProperty("move.cancel"));
+            cancelMove = new Button(resb.getProperty("move.cancel"));
             cancelMove.setActionCommand("cancel");
-            Button moveall = new Button(resBundle.getProperty("move.moveall"));
+            Button moveall = new Button(resb.getProperty("move.moveall"));
             moveall.setActionCommand("all");
-            Button moveb = new Button(resBundle.getProperty("move.move"));
+            Button moveb = new Button(resb.getProperty("move.move"));
             moveb.setActionCommand("move");
 
             Panel moveControl = new Panel();
@@ -403,11 +412,11 @@ public class GameActivity extends Frame implements ActionListener {
 
 
         if (tacmove) {
-                move.setTitle(resBundle.getProperty("move.title.tactical"));
+                move.setTitle(resb.getProperty("move.title.tactical"));
                 cancelMove.setVisible(true);
         }
         else {
-                move.setTitle(resBundle.getProperty("move.title.captured"));
+                move.setTitle(resb.getProperty("move.title.captured"));
                 cancelMove.setVisible(false);
         }
 
