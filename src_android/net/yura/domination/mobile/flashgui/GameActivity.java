@@ -7,6 +7,7 @@ import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
+import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.components.Button;
@@ -23,7 +24,7 @@ import net.yura.swingme.core.CoreUtil;
 /**
  * @author Yura
  */
-public class GameActivity extends Frame {
+public class GameActivity extends Frame implements ActionListener {
  
     public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
     
@@ -59,16 +60,17 @@ public class GameActivity extends Frame {
         );
 
         gobutton = new Button();
-        gobutton.addActionListener( new ActionListener() {
-            public void actionPerformed(String string) {
-                goOn();
-            }
-        } );
+        gobutton.addActionListener(this);
         gobutton.setActionCommand("go");
 
+        Button saveButton = new Button("Save");
+        saveButton.addActionListener(this);
+        saveButton.setActionCommand("save");
+        
         Panel gamepanel2 = new Panel();
-        gamepanel2.add( new Button("Stats") );
-        gamepanel2.add( new Button("Cards") );
+        // stats
+        // cards
+        gamepanel2.add( saveButton );
         gamepanel2.add( gobutton );
 
         status = new Label();
@@ -116,6 +118,24 @@ public class GameActivity extends Frame {
 
     }
     
+    public void actionPerformed(String actionCommand) {
+        if ("go".equals(actionCommand)) {
+            goOn();
+        }
+        else if ("save".equals(actionCommand)) {
+            
+            String name = RiskMiniIO.getSaveGameDirURL() + "auto.save";
+
+            if (name!=null) {
+
+                    go("savegame " + name );
+
+            }
+        }
+        else {
+            throw new IllegalArgumentException("unknown command "+actionCommand);
+        }
+    }
  
     void setGameStatus(String state) {
         status.setText(state);

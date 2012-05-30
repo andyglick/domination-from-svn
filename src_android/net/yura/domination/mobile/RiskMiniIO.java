@@ -53,12 +53,12 @@ public class RiskMiniIO implements RiskIO {
         Midlet.openURL("file:///android_asset/" + doc );
     }
 
-    public InputStream loadGameFile(String file) throws Exception {
-        return FileUtil.getInputStreamFromFileConnector(file);
+    public InputStream loadGameFile(String fileUrl) throws Exception {
+        return FileUtil.getInputStreamFromFileConnector(fileUrl);
     }
 
-    public void saveGameFile(String name, Object obj) throws Exception {
-        FileOutputStream fileout = new FileOutputStream(name);
+    public void saveGameFile(String fileUrl, Object obj) throws Exception {
+        OutputStream fileout = FileUtil.getWriteFileConnection(fileUrl).openOutputStream();
         ObjectOutputStream objectout = new ObjectOutputStream(fileout);
         objectout.writeObject(obj);
         objectout.close();
@@ -112,6 +112,27 @@ public class RiskMiniIO implements RiskIO {
 
         mapsDir = userMaps;
         return userMaps;
+    }
+    
+    private static File savesDir;
+    public static File getSaveGameDir() {
+
+        if (savesDir!=null) {
+            return savesDir;
+        }
+
+        File userHome = new File( System.getProperty("user.home") );
+        File userMaps = new File(userHome, "saves");
+        if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
+            throw new RuntimeException("can not create dir "+userMaps);
+        }
+
+        savesDir = userMaps;
+        return userMaps;
+    }
+
+    public static String getSaveGameDirURL() {
+        return FileUtil.ROOT_PREX + getSaveGameDir().toString() +"/";
     }
     
 }

@@ -80,7 +80,10 @@ public class Risk extends Thread {
         public static final String[] colors = new String[] { "green","blue","red","cyan","magenta","yellow"};
 
 	public Risk() {
-		super(RiskUtil.GAME_NAME+"-GAME-THREAD");
+                // default Android value does not work
+                // 10000 gives StackOverflowError on android on default map
+                // 100000 gives StackOverflowError on android on the map "The Keep"
+		super(null,null,RiskUtil.GAME_NAME+"-GAME-THREAD", 1000000 );
 
 		resb = TranslationBundle.getBundle();
 
