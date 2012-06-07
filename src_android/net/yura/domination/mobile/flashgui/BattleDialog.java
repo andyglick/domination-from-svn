@@ -13,19 +13,20 @@ import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.util.Properties;
 
 /**
  * @author Yura Mamyrin
  */
-public class BattleDialog extends Frame {
+public class BattleDialog extends Frame implements ActionListener {
 
     Properties resb = GameActivity.resb;
     
     Risk myrisk;
     Sprite red_dice,blue_dice;
     Random r = new Random();
-    Button rollButton;
+    Button rollButton,retreat;
 
     public BattleDialog(Risk a) {
         myrisk = a;
@@ -43,19 +44,33 @@ public class BattleDialog extends Frame {
 
         setName("TransparentDialog");
         setForeground(0xFF000000);
+        setBackground(0xAA000000);
 
         rollButton = new Button(resb.getProperty("battle.roll"));
-        getContentPane().add(rollButton,Graphics.TOP);
+        retreat = new Button( resb.getProperty("battle.retreat") );
+        
+        Panel controls = new Panel();
+        controls.add(rollButton);
+        controls.add(retreat);
+        
+        getContentPane().add(controls,Graphics.BOTTOM);
 
-        ActionListener al = new ActionListener() {
-            public void actionPerformed(String actionCommand) {
-                go("roll "+nod);
-            }
-        };
-        rollButton.addActionListener(al);
+        rollButton.addActionListener(this);
+        rollButton.setActionCommand("fight");
 
+        retreat.addActionListener(this);
+        retreat.setActionCommand("retreat");
     }
 
+    public void actionPerformed(String actionCommand) {
+        if ("fight".equals( actionCommand )) {
+            go("roll "+nod);
+        }
+        else if ("retreat".equals( actionCommand )) {
+            go("retreat");
+        }
+    }
+    
     int[] att,def; // these are the dice results
     int noda,nodd; // these are the number of spinning dice
     int c1num,c2num;
@@ -125,7 +140,7 @@ public class BattleDialog extends Frame {
         def=null;
 
         if (canRetreat) {
-//                retreat.setVisible(true);
+                retreat.setVisible(true);
                 setTitle(resb.getProperty("battle.select.attack"));
         }
         else {
@@ -163,7 +178,7 @@ public class BattleDialog extends Frame {
     
     public void reset() {
         rollButton.setFocusable(false);
-//        retreat.setVisible(false);
+        retreat.setVisible(false);
         canRetreat=false;
         max=0;
         setTitle(resb.getProperty("battle.title"));
