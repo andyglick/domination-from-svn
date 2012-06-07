@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -19,15 +20,15 @@ import net.yura.mobile.util.Properties;
  */
 public class BattleDialog extends Frame {
 
-    GameActivity mainFrame;
+    Properties resb = GameActivity.resb;
+    
+    Risk myrisk;
     Sprite red_dice,blue_dice;
-    Properties resBundle;
     Random r = new Random();
     Button rollButton;
 
-    public BattleDialog(GameActivity a) {
-        mainFrame = a;
-        resBundle = mainFrame.resb;
+    public BattleDialog(Risk a) {
+        myrisk = a;
 
         try {
             Image red_img = Image.createImage("/red_dice.png");
@@ -41,13 +42,14 @@ public class BattleDialog extends Frame {
         }
 
         setName("TransparentDialog");
+        setForeground(0xFF000000);
 
-        rollButton = new Button(resBundle.getProperty("battle.roll"));
+        rollButton = new Button(resb.getProperty("battle.roll"));
         getContentPane().add(rollButton,Graphics.TOP);
 
         ActionListener al = new ActionListener() {
             public void actionPerformed(String actionCommand) {
-                mainFrame.go("roll "+nod);
+                go("roll "+nod);
             }
         };
         rollButton.addActionListener(al);
@@ -124,10 +126,10 @@ public class BattleDialog extends Frame {
 
         if (canRetreat) {
 //                retreat.setVisible(true);
-                setTitle(resBundle.getProperty("battle.select.attack"));
+                setTitle(resb.getProperty("battle.select.attack"));
         }
         else {
-                setTitle(resBundle.getProperty("battle.select.defend"));
+                setTitle(resb.getProperty("battle.select.defend"));
         }
 
         repaint();
@@ -140,12 +142,31 @@ public class BattleDialog extends Frame {
         reset();
     }
 
+    private void blockInput() {
+        
+        int gameState = myrisk.getGame().getState();
+        
+        if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
+
+                //this does not close it, just resets its params
+                reset();
+        }
+    }
+    
+    private void go(String input) {
+        
+        blockInput();
+        
+        myrisk.parser(input);
+        
+    }
+    
     public void reset() {
         rollButton.setFocusable(false);
 //        retreat.setVisible(false);
         canRetreat=false;
         max=0;
-        setTitle(resBundle.getProperty("battle.title"));
+        setTitle(resb.getProperty("battle.title"));
     }
 
     private static final int DICE_NORMAL = 0;
@@ -234,8 +255,6 @@ public class BattleDialog extends Frame {
 */
         // #####################################################
         // ################## drawing DICE!!!!! ################
-
-        Risk myrisk = mainFrame.myrisk;
 
         // this is the max defend dice allowed for this battle
         int deadDice = myrisk.hasArmiesInt(c2num);

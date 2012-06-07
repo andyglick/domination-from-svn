@@ -28,7 +28,7 @@ import net.yura.swingme.core.CoreUtil;
  */
 public class GameActivity extends Frame implements ActionListener {
  
-    public Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
+    public static Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
     
     Risk myrisk;
     PicturePanel pp;
@@ -36,6 +36,7 @@ public class GameActivity extends Frame implements ActionListener {
     Button gobutton;
     Label status;
     int gameState;
+    String note;
 
     public GameActivity(Risk risk) {
         myrisk = risk;
@@ -127,7 +128,7 @@ public class GameActivity extends Frame implements ActionListener {
         else if ("save".equals(actionCommand)) {
             
             final TextField saveText = new TextField();
-            saveText.setText("mygame");
+            saveText.setText( RiskMiniIO.getSaveGameName(myrisk.getGame()) );
             
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
@@ -199,10 +200,6 @@ public class GameActivity extends Frame implements ActionListener {
                             goButtonText = resb.getProperty("game.button.go.ok");
                             break;
                     }
-                    case RiskGame.STATE_BATTLE_WON: {
-                            move.setVisible(true);
-                            break;
-                    }
                     // for gameState 4 look in FlashRiskAdapter.java
                     // for gameState 10 look in FlashRiskAdapter.java
                     default: break;
@@ -269,20 +266,39 @@ public class GameActivity extends Frame implements ActionListener {
             }
     }//private void goOn()
 
-    public void go(String input) {
+    private void go(String input) {
 
-        //pp.setHighLight(PicturePanel.NO_COUNTRY);
-        // Testing.append("Submitted: \""+input+"\"\n");
-
-        //if (gameState!=2 || !myrisk.getGame().getSetup() ) { blockInput(); }
+        blockInput();
 
         myrisk.parser(input);
 
-        // Console.setCaretPosition(Console.getDocument().getLength());
+    }
+    
+    private void blockInput() {
+
+            pp.setHighLight(255);
+
+            if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetup() ) { noInput(); }
 
     }
 
-    String note;
+    public void noInput() {
+
+            //cardsbutton.setEnabled(false);
+            //missionbutton.setEnabled(false);
+            //undobutton.setEnabled(false);
+            //savebutton.setEnabled(false);
+            //AutoEndGo.setEnabled(false);
+            //AutoDefend.setEnabled(false);
+
+            gobutton.setText("");
+            gobutton.setFocusable(false);
+
+            note="";
+            gameState=0;
+
+    }
+
     public void mapClick(int[] countries) {
 
         if (gameState == RiskGame.STATE_PLACE_ARMIES) {
@@ -320,13 +336,22 @@ public class GameActivity extends Frame implements ActionListener {
             else {
                 note="";
 
-                setupMove(1,countries[0] , countries[1], true);
+                MoveDialog move = new MoveDialog(myrisk) {
+                    @Override
+                    public void setVisible(boolean b) { // catch closing of the dialog
+                        super.setVisible(b);
+                        if (!b) {
+                            // clean up
+                            pp.setC1(255);
+                            pp.setC2(255);
+                            note=resb.getProperty("game.note.selectsource");                            
+                        }
+                    }
+                };
+                
+                move.setupMove(1,countries[0] , countries[1], true);
                 move.setVisible(true);
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-                // TODO: clean up
-                //pp.setC1(255);
-                //pp.setC2(255);
-                //note=resb.getString("game.note.selectsource");
+
             }
         }
         else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
@@ -346,97 +371,4 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
 
-
-    // #############################################################
-    // moving!!!!
-    // #############################################################
-
-    Frame move;
-    Slider slider;
-    Button cancelMove;
-    public void setupMove(int min, int c1num, int c2num, boolean tacmove) {
-        if (move==null) {
-            move = new Frame();
-            slider = new Slider();
-            move.add(slider);
-            cancelMove = new Button(resb.getProperty("move.cancel"));
-            cancelMove.setActionCommand("cancel");
-            Button moveall = new Button(resb.getProperty("move.moveall"));
-            moveall.setActionCommand("all");
-            Button moveb = new Button(resb.getProperty("move.move"));
-            moveb.setActionCommand("move");
-
-            Panel moveControl = new Panel();
-            moveControl.add(moveall);
-            moveControl.add(moveb);
-            moveControl.add(cancelMove);
-
-            ActionListener moveAl = new ActionListener() {
-                public void actionPerformed(String actionCommand) {
-
-                    boolean tacmove = myrisk.getGame().getState()==RiskGame.STATE_FORTIFYING;
-                    int c1num = pp.getC1();
-                    int c2num = pp.getC2();
-
-                    if (actionCommand.equals("cancel")) {
-                        move.setVisible(false);
-                    }
-                    else if (actionCommand.equals("all")) {
-                        int src = myrisk.hasArmiesInt( c1num );
-                        if (tacmove) {
-                                go("movearmies " +myrisk.getGame().getCountryInt(c1num).getColor()+ " " +myrisk.getGame().getCountryInt(c2num).getColor()+ " " + (src-1) );
-                        }
-                        else {
-                                go("move " + (src-1) );
-                        }
-                    }
-                    else if (actionCommand.equals("move")) {
-                        int move = ((Integer)slider.getValue());
-                        if (tacmove) {
-                                go("movearmies " +myrisk.getGame().getCountryInt(c1num).getColor()+ " " +myrisk.getGame().getCountryInt(c2num).getColor()+ " " + move );
-                        }
-                        else {
-                                go("move " + move);
-                        }
-                    }
-                }
-            };
-
-            cancelMove.addActionListener(moveAl);
-            moveall.addActionListener(moveAl);
-            moveb.addActionListener(moveAl);
-
-            move.getContentPane().add(moveControl,Graphics.BOTTOM);
-            move.setMaximum(true);
-        }
-
-
-        if (tacmove) {
-                move.setTitle(resb.getProperty("move.title.tactical"));
-                cancelMove.setVisible(true);
-        }
-        else {
-                move.setTitle(resb.getProperty("move.title.captured"));
-                cancelMove.setVisible(false);
-        }
-
-        int src = myrisk.hasArmiesInt( c1num );
-
-        slider.setMinimum(min);
-        slider.setMaximum( src-1 );
-        slider.setValue(min);
-
-        int spacig = Math.round( (src-1)/10f );
-/* TODO
-        if (spacig==0) {
-                slider.setMajorTickSpacing(1);
-        }
-        else {
-                slider.setMajorTickSpacing( spacig );
-                slider.setMinorTickSpacing(1);
-        }
-*/
-
-    }
-    
 }

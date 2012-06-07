@@ -15,6 +15,7 @@ import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.io.FileUtil;
 
@@ -24,6 +25,14 @@ import net.yura.mobile.io.FileUtil;
 public class RiskMiniIO implements RiskIO {
 
     public static String mapsdir = "file:///android_asset/maps/";
+
+    public static String getSaveGameName(RiskGame game) {
+        String file = game.getMapFile();
+        if (file.endsWith(".map")) {
+            file = file.substring(0, file.length() - 4);
+        }
+        return file;
+    }
     
     public InputStream openStream(String name) throws IOException {
         // TODO, this is useless as should load a file outside the jar

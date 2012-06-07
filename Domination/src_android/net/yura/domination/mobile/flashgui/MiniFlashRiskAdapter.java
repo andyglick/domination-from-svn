@@ -90,15 +90,16 @@ public class MiniFlashRiskAdapter implements RiskListener {
     @Override
     public void needInput(int s) {
 
-        if (s == RiskGame.STATE_ROLLING) {
-
+        switch(s) {
+            case RiskGame.STATE_ROLLING:
                 battle.needInput(nod, true);
-
-        }
-        else if (s == RiskGame.STATE_DEFEND_YOURSELF) {
-
+                break;
+            case RiskGame.STATE_DEFEND_YOURSELF:
                 battle.needInput(nod, false);
-
+                break;
+            case RiskGame.STATE_BATTLE_WON:
+                move.setVisible(true);
+                break;
         }
         //else { // this will update the state in the gameframe
 
@@ -111,7 +112,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void noInput() {
-        // TODO Auto-generated method stub
+        if (gameFrame!=null) {
+            gameFrame.noInput();
+        }
     }
 
     @Override
@@ -124,7 +127,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openBattle(int c1num, int c2num) {
 
         if (battle == null) {
-            battle = new BattleDialog(gameFrame);
+            battle = new BattleDialog(myRisk);
             battle.setMaximum(true);
         }
 
@@ -178,9 +181,21 @@ public class MiniFlashRiskAdapter implements RiskListener {
             }
     }
 
+    MoveDialog move;
     @Override
     public void setSlider(int min, int c1num, int c2num) {
-        gameFrame.setupMove(min, c1num, c2num, false);
+        if (move==null) {
+            move = new MoveDialog(myRisk) {
+                @Override
+                public void setVisible(boolean b) {
+                    super.setVisible(b);
+                    if (!b) {
+                        move=null;
+                    }
+                }
+            };
+        }
+        move.setupMove(min, c1num, c2num, false);
     }
 
     @Override
