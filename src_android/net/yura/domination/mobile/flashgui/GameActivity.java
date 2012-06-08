@@ -10,13 +10,13 @@ import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
-import net.yura.mobile.gui.components.Slider;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
@@ -32,8 +32,8 @@ public class GameActivity extends Frame implements ActionListener {
     
     Risk myrisk;
     PicturePanel pp;
-    GamePanel gamecontrol;
-    Button gobutton;
+    MapViewChooser mapViewControl;
+    Button gobutton,closebutton;
     Label status;
     int gameState;
     String note;
@@ -41,14 +41,8 @@ public class GameActivity extends Frame implements ActionListener {
     public GameActivity(Risk risk) {
         myrisk = risk;
         setMaximum(true);
-    }
-    
-    public void startGame() {
-
-        // ============================================ create UI
 
         pp = new PicturePanel(myrisk);
-        gamecontrol = new GamePanel(myrisk,pp);
 
         final MapMouseListener mml = new MapMouseListener(myrisk, pp);
         pp.addMouseListener(
@@ -70,29 +64,35 @@ public class GameActivity extends Frame implements ActionListener {
         saveButton.addActionListener(this);
         saveButton.setActionCommand("save");
         
+        
+        Panel gamecontrol = new Panel( new BorderLayout() );
+        gamecontrol.setName("TransPanel");
+        
+        
+        mapViewControl = new MapViewChooser(pp);
+        gamecontrol.add(mapViewControl);
+        
+        closebutton = new Button();
+        closebutton.setMnemonic( KeyEvent.KEY_END );
+        closebutton.setActionCommand("close");
+        closebutton.addActionListener(this);
+        gamecontrol.add(closebutton,Graphics.LEFT);
+        
         Panel gamepanel2 = new Panel();
+        gamepanel2.setName("TransPanel");
         // stats
         // cards
         gamepanel2.add( saveButton );
         gamepanel2.add( gobutton );
 
         status = new Label();
-
-        // ============================================ setup UI
-
-        try {
-            pp.load();
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        gamecontrol.resetMapView();
-
-        // ============================================ add to window
-
+        
+        
+        
         Panel mainWindow = new Panel( new BorderLayout() );
         ScrollPane sp = new ScrollPane(pp) {
             // a little hack as we set setClip to false
+            @Override
             public void repaint() {
                 Window w = getWindow();
                 if (w!=null) {
@@ -112,10 +112,33 @@ public class GameActivity extends Frame implements ActionListener {
         contentPane.add( mainWindow );
         contentPane.add(status,Graphics.BOTTOM);
         setContentPane(contentPane);
-
+        
+        
         setUndecorated(true);
         //setName("GameFrame");
         setBackground(0xFF666666);
+    }
+    
+    boolean localGame;
+    /**
+     * @see net.yura.domination.ui.flashgui.GameFrame#setup(boolean) 
+     */
+    public void startGame(boolean localGame) {
+        this.localGame = localGame;
+
+        closebutton.setText( getLeaveCloseText() );
+        
+        // ============================================ setup UI
+
+        try {
+            pp.load();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        mapViewControl.resetMapView();
+
+        // ============================================ show
 
         setVisible(true);
 
@@ -136,17 +159,32 @@ public class GameActivity extends Frame implements ActionListener {
                         String name = RiskMiniIO.getSaveGameDirURL() + saveText.getText() +".save";
                         if (name!=null) {
                             go("savegame " + name );
-                        }                        
+                        }
                     }
                 }
             }, saveText, resb.getProperty("game.menu.save") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+
+        }
+        else if ("close".equals(actionCommand)) {
+
+                OptionPane.showOptionDialog(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    if ("ok".equals(actionCommand)) {
+                        go("closegame");
+                    }
+                }
+            }, "TEXT: are you sure you want to quit this game?", getLeaveCloseText() , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
 
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
         }
     }
- 
+
+    String getLeaveCloseText() {
+        return resb.getProperty( localGame ? "game.menu.close" : "game.menu.leave");
+    }
+    
     void setGameStatus(String state) {
         status.setText(state);
     }
@@ -363,7 +401,7 @@ public class GameActivity extends Frame implements ActionListener {
     public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
         if (pp!=null) {
             if(redrawNeeded) {
-                pp.repaintCountries( gamecontrol.getMapView() );
+                pp.repaintCountries( mapViewControl.getMapView() );
             }
             if (repaintNeeded) {
                 pp.repaint();
