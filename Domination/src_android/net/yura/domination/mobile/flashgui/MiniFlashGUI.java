@@ -28,11 +28,10 @@ import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
-import net.yura.swingme.core.CoreUtil;
 
 public class MiniFlashGUI extends Frame implements ChangeListener {
 
-    public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
+    Properties resb = GameActivity.resb;
     public Risk myrisk;
 
     ActionListener al = new ActionListener() {
@@ -48,7 +47,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
                 chooser = new FileChooser();
                 chooser.setCurrentDirectory( RiskMiniIO.getSaveGameDirURL() );
-                chooser.showDialog(this, "doLoad", resBundle.getProperty("mainmenu.loadgame.loadbutton") , resBundle.getProperty("mainmenu.loadgame.loadbutton") );
+                chooser.showDialog(this, "doLoad", resb.getProperty("mainmenu.loadgame.loadbutton") , resb.getProperty("mainmenu.loadgame.loadbutton") );
 
             }
             else if ("doLoad".equals(actionCommand)) {
@@ -106,7 +105,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                 }
                 else {
 
-                        OptionPane.showMessageDialog(null, resBundle.getProperty("newgame.error.numberofplayers") , resBundle.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
+                        OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
 
                 }
 
@@ -125,7 +124,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                 MapChooser mapc = new MapChooser(al, RiskMiniIO.getFileList("map") );
                 al.mapc = mapc;
 
-                Frame mapFrame = new Frame( resBundle.getProperty("newgame.choosemap") );
+                Frame mapFrame = new Frame( resb.getProperty("newgame.choosemap") );
                 mapFrame.setContentPane( mapc.getRoot() );
                 mapFrame.setMaximum(true);
                 mapFrame.setVisible(true);
@@ -170,7 +169,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
         XULLoader loader;
         try {
-            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , al, resBundle);
+            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , al, resb);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);
@@ -181,7 +180,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
     public void openMainMenu() {
 
-        setTitle( resBundle.getProperty("mainmenu.title") );
+        setTitle( resb.getProperty("mainmenu.title") );
 
         XULLoader loader = getPanel("/mainmenu.xml");
 
@@ -203,11 +202,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
         this.localgame = localgame;
 
         if (localgame) {
-            setTitle(resBundle.getProperty("newgame.title.local"));
+            setTitle(resb.getProperty("newgame.title.local"));
             //resetplayers.setVisible(true);
         }
         else {
-            setTitle(resBundle.getProperty("newgame.title.network"));
+            setTitle(resb.getProperty("newgame.title.network"));
             //resetplayers.setVisible(false);
         }
 

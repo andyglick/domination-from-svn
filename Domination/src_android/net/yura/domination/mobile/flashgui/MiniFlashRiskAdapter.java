@@ -81,7 +81,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
             mainFrame = null;
         }
         gameFrame = new GameActivity(myRisk);
-        gameFrame.startGame();
+        gameFrame.startGame(s);
     }
 
     // ========================= in game ==============================

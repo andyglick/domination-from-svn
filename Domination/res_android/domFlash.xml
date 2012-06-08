@@ -105,4 +105,11 @@
     </style>
     <bind style="view" type="region" key="PicturePanel"/>
 
+    <style id="transPanel">
+	   <state>
+	      <color value="#AA000000" type="BACKGROUND"/>  
+	   </state>
+    </style>
+    <bind style="transPanel" type="region" key="TransPanel"/>
+
 </synth>
