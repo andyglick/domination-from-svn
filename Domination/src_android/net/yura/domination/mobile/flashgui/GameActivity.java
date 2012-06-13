@@ -89,6 +89,7 @@ public class GameActivity extends Frame implements ActionListener {
         
         
         Menu menu = new Menu();
+        menu.setMnemonic(KeyEvent.KEY_SOFTKEY1);
         menu.setActionCommand("menu");
         menu.addActionListener(this);
         menu.setName("ActionbarMenuButton");
@@ -211,9 +212,7 @@ public class GameActivity extends Frame implements ActionListener {
                 public void actionPerformed(String actionCommand) {
                     if ("ok".equals(actionCommand)) {
                         String name = MiniUtil.getSaveGameDirURL() + saveText.getText() +".save";
-                        if (name!=null) {
-                            go("savegame " + name );
-                        }
+                        go("savegame " + name );
                     }
                 }
             }, saveText, resb.getProperty("game.menu.save") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
@@ -245,7 +244,7 @@ public class GameActivity extends Frame implements ActionListener {
                         go("closegame");
                     }
                 }
-            }, "TEXT: are you sure you want to quit this game?", getLeaveCloseText() , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+            }, resb.getProperty("game.areyousurequit"), getLeaveCloseText() , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
 
         }
         else {

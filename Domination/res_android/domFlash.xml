@@ -107,9 +107,19 @@
 
     <style id="transPanel">
 	   <state>
-	      <color value="#AA000000" type="BACKGROUND"/>  
+	      <color value="#AA000000" type="BACKGROUND"/>
 	   </state>
     </style>
     <bind style="transPanel" type="region" key="TransPanel"/>
+
+    <style id="actionbarMenuButton">
+	   <state>
+	      <imagePainter method="buttonBackground" path="/menu_button.9.png" />
+	   </state>
+           <state value="FOCUSED">
+              <imagePainter method="buttonBackground" path="/menu_button_pressed.9.png" />
+           </state>
+    </style>
+    <bind style="actionbarMenuButton" type="region" key="ActionbarMenuButton"/>
 
 </synth>
