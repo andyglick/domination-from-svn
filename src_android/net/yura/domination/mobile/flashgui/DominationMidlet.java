@@ -38,7 +38,10 @@ public class DominationMidlet extends Midlet {
                     if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
                         if (!open) {
                             open = true;
-                            OptionPane.showMessageDialog(null, record.getMessage()+" "+record.getThrown(), "WARN", OptionPane.WARNING_MESSAGE);
+                            try {
+                                OptionPane.showMessageDialog(null, record.getMessage()+" "+record.getThrown(), "WARN", OptionPane.WARNING_MESSAGE);
+                            }
+                            catch(Exception ex) { ex.printStackTrace(); }
                         }
                     }
                 }

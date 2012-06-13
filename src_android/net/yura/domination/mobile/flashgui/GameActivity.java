@@ -5,15 +5,18 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mobile.RiskMiniIO;
-import net.yura.domination.mobile.simplegui.GamePanel;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
+import net.yura.mobile.gui.components.CheckBox;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
+import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
@@ -33,10 +36,12 @@ public class GameActivity extends Frame implements ActionListener {
     Risk myrisk;
     PicturePanel pp;
     MapViewChooser mapViewControl;
-    Button gobutton,closebutton;
-    Label status;
+    Button gobutton,closebutton,savebutton,undobutton;
+    String status,note;
     int gameState;
-    String note;
+
+    private CheckBox AutoEndGo,AutoDefend;
+    private Button cardsbutton,missionbutton;
 
     public GameActivity(Risk risk) {
         myrisk = risk;
@@ -55,19 +60,60 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }
         );
+        
+        // MWMWMWMWMWMWM MENU MWMWMWMWMWMWMW
+        
+        savebutton = new Button( resb.getProperty("game.menu.save") );
+        savebutton.addActionListener(this);
+        savebutton.setActionCommand("save");
+        
+        Button graphbutton = new Button( resb.getProperty("game.button.statistics") );
+        graphbutton.addActionListener(this);
+        graphbutton.setActionCommand("graph");
+        
+        undobutton = new Button( resb.getProperty("game.button.undo") );
+        undobutton.addActionListener(this);
+        undobutton.setActionCommand("undo");
+
+        AutoEndGo = new CheckBox( resb.getProperty("game.menu.autoendgo") );
+        AutoEndGo.setActionCommand("autoendgo");
+        AutoEndGo.addActionListener(this);
+
+        AutoDefend = new CheckBox( resb.getProperty("game.menu.autodefend") );
+        AutoDefend.setActionCommand("autodefend");
+        AutoDefend.addActionListener(this);
+
+        Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
+        helpbutton.addActionListener(this);
+        helpbutton.setActionCommand("help");
+        
+        
+        Menu menu = new Menu();
+        menu.setActionCommand("menu");
+        menu.addActionListener(this);
+        menu.setName("ActionbarMenuButton");
+        menu.setIcon( new Icon("/menu.png") );
+        menu.add( savebutton );
+        menu.add( graphbutton );
+        menu.add( undobutton );
+        menu.add( AutoEndGo );
+        menu.add( AutoDefend );
+        menu.add( helpbutton );
+        
+        // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
         gobutton = new Button();
         gobutton.addActionListener(this);
         gobutton.setActionCommand("go");
 
-        Button saveButton = new Button("Save");
-        saveButton.addActionListener(this);
-        saveButton.setActionCommand("save");
+        cardsbutton = new Button();
+        cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
         
+        missionbutton = new Button();
+        missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
         
         Panel gamecontrol = new Panel( new BorderLayout() );
         gamecontrol.setName("TransPanel");
-        
         
         mapViewControl = new MapViewChooser(pp);
         gamecontrol.add(mapViewControl);
@@ -78,14 +124,13 @@ public class GameActivity extends Frame implements ActionListener {
         closebutton.addActionListener(this);
         gamecontrol.add(closebutton,Graphics.LEFT);
         
+        gamecontrol.add(menu,Graphics.RIGHT);
+        
         Panel gamepanel2 = new Panel();
         gamepanel2.setName("TransPanel");
-        // stats
-        // cards
-        gamepanel2.add( saveButton );
+        gamepanel2.add( cardsbutton );
+        gamepanel2.add( missionbutton );
         gamepanel2.add( gobutton );
-
-        status = new Label();
         
         
         
@@ -110,7 +155,6 @@ public class GameActivity extends Frame implements ActionListener {
 
         Panel contentPane = new Panel( new BorderLayout() );
         contentPane.add( mainWindow );
-        contentPane.add(status,Graphics.BOTTOM);
         setContentPane(contentPane);
         
         
@@ -148,15 +192,25 @@ public class GameActivity extends Frame implements ActionListener {
         if ("go".equals(actionCommand)) {
             goOn();
         }
+        else if ("menu".equals(actionCommand)) {
+            
+            	if (myrisk.getGame().getCurrentPlayer()!=null) {
+
+			AutoEndGo.setSelected( myrisk.getAutoEndGo() );
+			AutoDefend.setSelected( myrisk.getAutoDefend() );
+
+		}
+            
+        }
         else if ("save".equals(actionCommand)) {
             
             final TextField saveText = new TextField();
-            saveText.setText( RiskMiniIO.getSaveGameName(myrisk.getGame()) );
+            saveText.setText( MiniUtil.getSaveGameName(myrisk.getGame()) );
             
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     if ("ok".equals(actionCommand)) {
-                        String name = RiskMiniIO.getSaveGameDirURL() + saveText.getText() +".save";
+                        String name = MiniUtil.getSaveGameDirURL() + saveText.getText() +".save";
                         if (name!=null) {
                             go("savegame " + name );
                         }
@@ -164,6 +218,24 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }, saveText, resb.getProperty("game.menu.save") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
 
+        }
+        else if ("graph".equals(actionCommand)) {
+            
+            
+        }
+        else if ("undo".equals(actionCommand)) {
+            pp.setC1(PicturePanel.NO_COUNTRY);
+            pp.setC2(PicturePanel.NO_COUNTRY);
+            go("undo");
+        }
+        else if ("autoendgo".equals(actionCommand)) {
+            go("autoendgo "+(AutoEndGo.isSelected()?"on":"off"));
+        }
+        else if ("autodefend".equals(actionCommand)) {
+            go("autodefend "+(AutoDefend.isSelected()?"on":"off"));
+        }
+        else if ("help".equals(actionCommand)) {
+            MiniUtil.openHelp();
         }
         else if ("close".equals(actionCommand)) {
 
@@ -186,7 +258,7 @@ public class GameActivity extends Frame implements ActionListener {
     }
     
     void setGameStatus(String state) {
-        status.setText(state);
+        status = state;
     }
     
 
@@ -253,24 +325,24 @@ public class GameActivity extends Frame implements ActionListener {
                         gobutton.setText("");
                 }
             }
-//
-//            if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
-//                    cardsbutton.setEnabled(true);
-//                    missionbutton.setEnabled(true);
-//
-//                    if (localGame) {
-//                        undobutton.setEnabled(true);
-//                        savebutton.setEnabled(true);
-//                    }
-//
-//                    AutoEndGo.setEnabled(true);
-//                    AutoEndGo.setBackground( Color.white );
-//                    AutoEndGo.setSelected( myrisk.getAutoEndGo() );
-//
-//                    AutoDefend.setEnabled(true);
-//                    AutoDefend.setBackground( Color.white );
-//                    AutoDefend.setSelected( myrisk.getAutoDefend() );
-//            }
+
+            if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+                    cardsbutton.setFocusable(true);
+                    missionbutton.setFocusable(true);
+
+                    if (localGame) {
+                        undobutton.setFocusable(true);
+                        savebutton.setFocusable(true);
+                    }
+
+                    AutoEndGo.setFocusable(true);
+                    //AutoEndGo.setBackground( Color.white );
+                    AutoEndGo.setSelected( myrisk.getAutoEndGo() );
+
+                    AutoDefend.setFocusable(true);
+                    //AutoDefend.setBackground( Color.white );
+                    AutoDefend.setSelected( myrisk.getAutoDefend() );
+            }
 
             repaint(); // SwingGUI has this here, if here then not needed in set status
     }
@@ -322,12 +394,12 @@ public class GameActivity extends Frame implements ActionListener {
 
     public void noInput() {
 
-            //cardsbutton.setEnabled(false);
-            //missionbutton.setEnabled(false);
-            //undobutton.setEnabled(false);
-            //savebutton.setEnabled(false);
-            //AutoEndGo.setEnabled(false);
-            //AutoDefend.setEnabled(false);
+            cardsbutton.setFocusable(false);
+            missionbutton.setFocusable(false);
+            undobutton.setFocusable(false);
+            savebutton.setFocusable(false);
+            AutoEndGo.setFocusable(false);
+            AutoDefend.setFocusable(false);
 
             gobutton.setText("");
             gobutton.setFocusable(false);
