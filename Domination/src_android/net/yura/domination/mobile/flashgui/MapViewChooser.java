@@ -111,11 +111,11 @@ public class MapViewChooser extends Panel implements ActionListener {
         
     }
 
-    int getMapView() {
+    public int getMapView() {
         return Integer.parseInt( getMapViewOption().getKey() );
     }
     
-    void resetMapView() {
+    public void resetMapView() {
         Vector components = getComponents();
         if (components.isEmpty()) {
             // do nothing

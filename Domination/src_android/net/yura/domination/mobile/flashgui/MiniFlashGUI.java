@@ -7,7 +7,6 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.RiskMiniIO;
@@ -46,7 +45,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
             else if ("load game".equals(actionCommand)) {
 
                 chooser = new FileChooser();
-                chooser.setCurrentDirectory( RiskMiniIO.getSaveGameDirURL() );
+                chooser.setCurrentDirectory( MiniUtil.getSaveGameDirURL() );
                 chooser.showDialog(this, "doLoad", resb.getProperty("mainmenu.loadgame.loadbutton") , resb.getProperty("mainmenu.loadgame.loadbutton") );
 
             }
@@ -58,12 +57,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
             }
             else if ("manual".equals(actionCommand)) {
-                try {
-                    RiskUtil.openDocs("help/index.htm");
-                }
-                catch(Exception e) {
-                    OptionPane.showMessageDialog(null,"Unable to open manual: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
-                }
+                MiniUtil.openHelp();
             }
             else if ("about".equals(actionCommand)) {
                 MiniUtil.showAbout();
@@ -121,7 +115,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
                 MapListener al = new MapListener();
 
-                MapChooser mapc = new MapChooser(al, RiskMiniIO.getFileList("map") );
+                MapChooser mapc = new MapChooser(al, MiniUtil.getFileList("map") );
                 al.mapc = mapc;
 
                 Frame mapFrame = new Frame( resb.getProperty("newgame.choosemap") );
