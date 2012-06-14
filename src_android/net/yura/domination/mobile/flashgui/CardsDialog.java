@@ -1,6 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
-import java.util.Vector;
+import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
@@ -13,7 +13,6 @@ import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
-import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.Panel;
@@ -30,11 +29,8 @@ public class CardsDialog extends Frame implements ActionListener {
 	private Risk myrisk;
 	private PicturePanel pp;
 
-
-        //private Vector cards;
 	private Panel myCardsPanel;
 	private Panel TradePanel;
-
 
 	private Image Infantry;
 	private Image Cavalry;
@@ -88,8 +84,8 @@ public class CardsDialog extends Frame implements ActionListener {
 		setTitle(resb.getProperty("cards.title"));
 		setMaximum(true);
 
-                
-                // labels
+                // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+                // TODO should update after trade!!!
                 ((Label)loader.find("NumArmies")).setText( getNumArmies() );
 
 
@@ -113,11 +109,11 @@ public class CardsDialog extends Frame implements ActionListener {
         }
         else if ("trade".equals(actionCommand)) {
             
-            Vector<CardPanel> cards2 = TradePanel.getComponents();
+            List<CardPanel> cards2 = TradePanel.getComponents();
 
             if (cards2.size()==3) {
 
-                myrisk.parser("trade "+((CardPanel)cards2.elementAt(0)).getCardName() + " " + ((CardPanel)cards2.elementAt(1)).getCardName() + " " + ((CardPanel)cards2.elementAt(2)).getCardName() );
+                myrisk.parser("trade "+((CardPanel)cards2.get(0)).getCardName() + " " + ((CardPanel)cards2.get(1)).getCardName() + " " + ((CardPanel)cards2.get(2)).getCardName() );
 
                 TradePanel.removeAll();
 
@@ -144,9 +140,9 @@ public class CardsDialog extends Frame implements ActionListener {
 
 		TradePanel.removeAll();
 
-		Vector cards = myrisk.getCurrentCards();
+		List<Card> cards = myrisk.getCurrentCards();
 		for (int c=0; c < cards.size(); c++) {
-			Panel cp = new CardPanel( (Card)cards.elementAt(c) );
+			Panel cp = new CardPanel( (Card)cards.get(c) );
 			myCardsPanel.add(cp);
 		}
 
@@ -195,7 +191,6 @@ public class CardsDialog extends Frame implements ActionListener {
                 @Override
 		public void paintComponent(Graphics2D g2) {
 
-
                         g2.setColor( 0xAA000000 );
 			g2.fillRoundRect(0, 0, getWidth(), getHeight() ,5,5);
                         g2.setColor( 0xFF000000 );
@@ -215,23 +210,28 @@ public class CardsDialog extends Frame implements ActionListener {
                                 
 				g2.drawImage( i , 25+ (25-(i.getWidth()/2)) ,35+ (25-(i.getHeight()/2)) );
 
-				if (card.getName().equals("Infantry")) {
-					g2.drawImage( Infantry ,25 ,90  );
-				}
-				else if (card.getName().equals("Cavalry")) {
-					g2.drawImage( Cavalry ,25 ,90  );
-				}
-				else if (card.getName().equals("Cannon")) {
-					g2.drawImage( Artillery ,15 ,105  );
-				}
+			}
 
-			}
-			else {
-				g2.drawImage( Wildcard ,25 ,10 );
-			}
+                        Image img = getCardImage();
+			g2.drawImage( img , (getWidth()-img.getWidth())/2 , (getHeight()-img.getHeight())/2  );
+
 
 		}
 
+                Image getCardImage() {
+                        String name = card.getName();
+                        if (Card.INFANTRY.equals(name)) {
+                                return Infantry;
+                        }
+                        if (Card.CAVALRY.equals(name)) {
+                                return Cavalry;
+                        }
+                        if (Card.CANNON.equals(name)) {
+                                return Artillery;
+                        }
+                        return Wildcard;
+                }
+                
 		/**
 		 * Gets the card name
 		 * @return String The card name
@@ -241,7 +241,7 @@ public class CardsDialog extends Frame implements ActionListener {
                             return card.getName();
                         }
                         else {
-                            return ((Country)card.getCountry()).getColor()+"";
+                            return String.valueOf( card.getCountry().getColor() );
 			}
 		}
 
@@ -254,17 +254,18 @@ public class CardsDialog extends Frame implements ActionListener {
 		 * @param e A mouse event
 		 */
                 
+            @Override
             public void processMouseEvent(int type, int x, int y, KeyEvent keys) {
 
                 if (type == DesktopPane.RELEASED) {
 
-                            Vector<CardPanel> trades = TradePanel.getComponents();
+                            List<CardPanel> trades = TradePanel.getComponents();
                     
                             if ( this.getParent() == myCardsPanel ) {
                                     if (TradePanel.getComponentCount() < 3) {
                                         myCardsPanel.remove(this); TradePanel.add(this);
                                     }
-                                    if (TradePanel.getComponentCount() == 3 && canTrade && myrisk.canTrade( ((CardPanel)trades.elementAt(0)).getCardName() , ((CardPanel)trades.elementAt(1)).getCardName(), ((CardPanel)trades.elementAt(2)).getCardName() ) ) {
+                                    if (TradePanel.getComponentCount() == 3 && canTrade && myrisk.canTrade( ((CardPanel)trades.get(0)).getCardName() , ((CardPanel)trades.get(1)).getCardName(), ((CardPanel)trades.get(2)).getCardName() ) ) {
                                         tradeButton.setFocusable(true);
                                     }
                             }
