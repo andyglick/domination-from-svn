@@ -262,7 +262,9 @@ public class GameActivity extends Frame implements ActionListener {
         }
         else if ("cards".equals(actionCommand)) {
             
-            
+            CardsDialog cardsDialog = new CardsDialog( myrisk, pp);
+            cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
+            cardsDialog.setVisible(true);
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
