@@ -28,12 +28,11 @@ import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
 
-public class MiniFlashGUI extends Frame implements ChangeListener {
+public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
     Properties resb = GameActivity.resb;
     public Risk myrisk;
 
-    ActionListener al = new ActionListener() {
 
         FileChooser chooser;
 
@@ -128,7 +127,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
                 System.out.println("Unknown command: "+actionCommand);
             }
         }
-    };
 
     class MapListener implements ActionListener {
         MapChooser mapc;
@@ -163,7 +161,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener {
 
         XULLoader loader;
         try {
-            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , al, resb);
+            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , this, resb);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);
