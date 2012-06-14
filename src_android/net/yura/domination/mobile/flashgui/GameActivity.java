@@ -109,9 +109,13 @@ public class GameActivity extends Frame implements ActionListener {
 
         cardsbutton = new Button();
         cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
+        cardsbutton.setActionCommand("cards");
+        cardsbutton.addActionListener(this);
         
         missionbutton = new Button();
         missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
+        missionbutton.setActionCommand("mission");
+        missionbutton.addActionListener(this);
         
         Panel gamecontrol = new Panel( new BorderLayout() );
         gamecontrol.setName("TransPanel");
@@ -246,6 +250,19 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }, resb.getProperty("game.areyousurequit"), getLeaveCloseText() , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
 
+        }
+        else if ("mission".equals(actionCommand)) {
+            
+            String missionTitle = resb.getProperty("core.showmission.mission");
+            String mission=myrisk.getCurrentMission();
+            
+            String html = "<html><p>" + status + "</p><p><b>" +missionTitle + "</b><br/>"+ mission + "</p></html>";
+            
+            OptionPane.showMessageDialog(null, html, resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
+        }
+        else if ("cards".equals(actionCommand)) {
+            
+            
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
