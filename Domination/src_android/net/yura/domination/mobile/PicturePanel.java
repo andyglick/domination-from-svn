@@ -56,8 +56,17 @@ public class PicturePanel extends ImageView implements MapPanel {
         private String strCountry;
 
         // TODO: do not have this class, need to think of something else
-        private ColorMatrix HighLight;
-
+        private static final ColorMatrix HighLight;
+        public static final ColorMatrix gray;
+        static {
+            
+                float scale = 1.5f;
+                float offset = 1.0f;
+                HighLight = RescaleOp(scale, offset); // 1.5f, 1.0f, null
+            
+                gray = new ColorMatrix();
+                gray.setSaturation(0);
+        }
 
         /**
          * Creates an Picture Panel
@@ -75,10 +84,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 // YURA YURA YURA MAYBE CHANGE 1.0F SO THAT FLAT COLORS HIGHLIGHT TOO
                                          // 0-2  0-255
-                float scale = 1.5f;
-                float offset = 1.0f;
-                HighLight = RescaleOp(scale, offset); // 1.5f, 1.0f, null
-
+                
                 setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
                 setName("PicturePanel");
@@ -224,11 +230,6 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 pixels = null;
                 m=null;
-                
-                //ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-                //ColorConvertOp Gray = new ColorConvertOp( cs , null);
-
-                Icon original1 = new Icon(original);
 
                 // create the bufferd image for each country
                 for (int c=0; c < CountryImages.length ; c++) {
@@ -238,31 +239,23 @@ public class PicturePanel extends ImageView implements MapPanel {
                         int x1=cci.getX1();
 //                      int x2=cci.getX2();
                         int y1=cci.getY1();
-//                      int y2=cci.getY2();
+                        int y2=cci.getY2();
                         int w=cci.getWidth();
                         int h=cci.getHeight();
 
-                        // System.out.print( "Country: "+ (c+1) +" X1: "+ x1 +" Y1: "+y1 +" Width: "+ w +" Height: "+ h +"\n");
-
-                        Icon source = original1.getSubimage(x1, y1, w, h);
-
-                        ColorMatrix cm = new ColorMatrix();
-                        cm.setSaturation(0);
-
-                        Image gray = Image.createImage(w, h);
-
-                        Image.filter(source.getImage(),gray,cm);
-                        //Gray.filter(source , gray);
-                        //{ Graphics zg = gray.getGraphics(); zg.drawImage(source, 0, 0, 0); }
-
-                        cci.setSourceImage( source );
-                        cci.setGrayImage(gray);
-
-                        cci.setNormalImage( Image.createImage(w, h) );
-                        cci.setHighLightImage( Image.createImage(w, h) );
-
-                        cci.setTemp1( Image.createImage(w, h) );
-                        cci.setTemp2( Image.createImage(w, h) );
+                        Image cimg = Image.createImage(w, h);
+                        Graphics g = cimg.getGraphics();
+                        g.drawRegion(original, x1, y1, w, h, 0, 0, 0, 0);
+                        cci.setSourceImage( cimg );
+                        
+                        for(int y=y1; y <= y2; y++) {
+                                for(int x=0; x < w; x++) {
+                                        if (map[x+x1][y] + 128 != (c+1) ) {
+                                                cimg.setRGB( x, (y-y1), 0); // clear the un-needed area!
+                                        }
+                                }
+                        }
+                        
                 }
 
 
@@ -319,15 +312,15 @@ public class PicturePanel extends ImageView implements MapPanel {
                         g.drawImage(img,0,0);
 
                         if (c1 != NO_COUNTRY) {
-                                g.drawImage( CountryImages[c1-1].getHighLightImage() ,CountryImages[c1-1].getX1() ,CountryImages[c1-1].getY1());
+                                drawHighLightImage(g, CountryImages[c1-1]);
                         }
 
                         if (c2 != NO_COUNTRY) {
-                                g.drawImage(CountryImages[c2-1].getHighLightImage() ,CountryImages[c2-1].getX1() ,CountryImages[c2-1].getY1());
+                                drawHighLightImage(g,CountryImages[c2-1]);
                         }
 
                         if (cc != NO_COUNTRY) {
-                                g.drawImage( CountryImages[cc-1].getHighLightImage() ,CountryImages[cc-1].getX1() ,CountryImages[cc-1].getY1());
+                                drawHighLightImage(g,CountryImages[cc-1]);
                         }
 
                         drawArmies(g);
@@ -384,8 +377,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                         int a=game.getAttacker().getColor();
                         int b=game.getDefender().getColor();
 
-                        g2.drawImage(CountryImages[a-1].getHighLightImage() ,CountryImages[a-1].getX1() ,CountryImages[a-1].getY1() );
-                        g2.drawImage(CountryImages[b-1].getHighLightImage() ,CountryImages[b-1].getX1() ,CountryImages[b-1].getY1() );
+                        drawHighLightImage(g2,CountryImages[a-1]);
+                        drawHighLightImage(g2,CountryImages[b-1]);
 
                         int ac = game.getAttacker().getOwner().getColor();
 
@@ -481,6 +474,27 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
+        
+        private void drawHighLightImage(Graphics2D g, countryImage countryImage) {
+            
+            int val = countryImage.color;
+            Graphics g2 = g.getGraphics();
+            ColorMatrix m;
+            
+            if (val == 0) {
+                m = HighLight;
+            }
+            else {
+                m = new ColorMatrix();
+                m.setConcat(getMatrix(val),gray);
+                m.postConcat( HighLight );
+            }
+            
+            g2.setColorMarix(m);
+            g.drawImage(countryImage.getSourceImage(), countryImage.getX1(), countryImage.getY1());
+            g2.setColorMarix(null);
+        }
+        
         /**
          * Paints the arrows for the game, ie - when attacking
          * @param x1i x point of the attacker's co-ordinates.
@@ -589,7 +603,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 RiskGame game = myrisk.getGame();
 
-                { Graphics zg = tempimg.getGraphics(); zg.drawImage(original ,0 ,0, 0 ); }
+                Graphics zg = tempimg.getGraphics();
+                zg.drawImage(original ,0 ,0, 0 );
 
                 Vector b=null;
 
@@ -738,53 +753,17 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                     int x1=ci.getX1();
                     int y1=ci.getY1();
-                    Image normalB = ci.getNormalImage(); // new BufferedImage( w ,h, java.awt.image.BufferedImage.TYPE_INT_ARGB );
 
-                    if ( ci.checkChange(val) ) {
+                    ci.checkChange(val); // TODO used as a setter
+                    
+                    if (view != VIEW_CONTINENTS) {
 
-                        int y2=ci.getY2();
-                        int w=ci.getWidth();
-                        int h=ci.getHeight();
+                        ColorMatrix m = new ColorMatrix();
+                        m.setConcat(getMatrix(val),gray);
 
-                        Image normalA = ci.getTemp1(); // new BufferedImage( w ,h, java.awt.image.BufferedImage.TYPE_INT_RGB );
-                        Image highlightA = ci.getTemp2(); // new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_RGB );
-                        Image highlightB = ci.getHighLightImage(); // new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB );
-
-                        Graphics tempg = normalA.getGraphics();
-
-                        if (view == VIEW_CONTINENTS) {
-
-                                //tempg.drawImage( ci.getSourceImage() ,0,0,0 );
-                                ci.getSourceImage().paintIcon(this, new Graphics2D(tempg), 0, 0);
-
-                        }
-                        else {
-
-                                tempg.drawImage( ci.getGrayImage(), 0, 0, 0);
-                                DirectUtils.getDirectGraphics(tempg).setARGBColor( val );
-                                tempg.fillRect(0,0,w,h);
-
-                        }
-
-                        Image.filter(normalA, highlightA, HighLight);
-                        //HighLight.filter( normalA , highlightA );
-
-                        if (view != VIEW_CONTINENTS) { Graphics zg = normalB.getGraphics(); zg.drawImage(normalA,0,0,0); }
-
-                        { Graphics zg = highlightB.getGraphics(); zg.drawImage(highlightA,0,0,0); }
-
-                        for(int y=y1; y <= y2; y++) {
-                                for(int x=0; x < w; x++) {
-                                        if (map[x+x1][y] + 128 != (c+1) ) {
-                                                normalB.setRGB( x, (y-y1), 0); // clear the un-needed area!
-                                                highlightB.setRGB( x, (y-y1), 0); // clear the un-needed area!
-                                        }
-                                }
-                        }
-
+                        zg.setColorMarix(m);
+                        zg.drawImage(ci.getSourceImage() ,x1 ,y1 ,0);
                     }
-
-                    if (view != VIEW_CONTINENTS) { Graphics zg = tempimg.getGraphics(); zg.drawImage(normalB ,x1 ,y1 ,0); }
 
                 }
 
@@ -861,6 +840,63 @@ public class PicturePanel extends ImageView implements MapPanel {
                 return c2;
         }
 
+        public static ColorMatrix RescaleOp(float a,float b) {
+            ColorMatrix cm = new ColorMatrix();
+            cm.set(new float[] {
+                    a,0,0,0,b,
+                    0,a,0,0,b,
+                    0,0,a,0,b,
+                    0,0,0,1,0,
+                });
+            return cm;
+        }
+        
+        public static ColorMatrix getMatrix(int color) {
+            
+            float r = RiskUtil.getRed(color);
+            float g = RiskUtil.getGreen(color);
+            float b = RiskUtil.getBlue(color);
+            
+            float alpha = ((float)RiskUtil.getAlpha(color))/255f;
+            float alpha2 = 1 - alpha;
+            
+            ColorMatrix cm = new ColorMatrix();
+            cm.set(new float[] {
+                    alpha2,0,0,0,r*alpha,
+                    0,alpha2,0,0,g*alpha,
+                    0,0,alpha2,0,b*alpha,
+                    0,0,0,1,0,
+                });
+            return cm;
+        }
+
+        /**
+         * Gets the image of a country
+         * @param num the index of a country
+         * @param incolor whether the image of a country is in colour or greyscale
+         * @return BufferedImage Image buffered of a country
+         */
+        public Image getCountryImage(int num, boolean incolor) {
+                countryImage ci = CountryImages[num-1];
+                return ci.getSourceImage();
+        }
+
+        public final static int GRAY      = newColor(128, 128, 128);
+        public final static int DARK_GRAY  = newColor(64, 64, 64);
+        public final static int LIGHT_GRAY = newColor(192, 192, 192);
+        public final static int BLUE  = newColor(0, 0, 255);
+
+        public static int colorWithAlpha(int color, int alpha) {
+            return ((alpha & 0xFF) << 24) | (color & 0xFFFFFF);
+        }
+        private static int newColor(int r,int g,int b) {
+            return ((255 & 0xFF) << 24) |
+            ((r & 0xFF) << 16) |
+            ((g & 0xFF) << 8)  |
+            ((b & 0xFF) << 0);
+        }
+        
+        
         // Subclass countryImage - holds all the image information
 
         class countryImage {
@@ -869,26 +905,13 @@ public class PicturePanel extends ImageView implements MapPanel {
                 private int y1;
                 private int x2;
                 private int y2;
-                private Icon SourceImage;
-                private Image GrayImage;
-                private Image normalImage;
-                private Image HighLightImage;
-
-                private Image temp1;
-                private Image temp2;
+                private Image SourceImage;
 
                 private int  color;
 
                 public countryImage() {
                         x1=map.length;
                         y1=map[0].length;
-                        x2=0;
-                        y2=0;
-                        SourceImage=null;
-                        GrayImage=null;
-                        HighLightImage=null;
-                        normalImage=null;
-
                 }
 
                 public boolean checkChange(int b) {
@@ -903,45 +926,12 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 }
 
-                public void setTemp1(Image a) {
-                        temp1=a;
-                }
-                public void setTemp2(Image a) {
-                        temp2=a;
-                }
-                public Image getTemp1() {
-                        return temp1;
-                }
-                public Image getTemp2() {
-                        return temp2;
-                }
-
                 /**
                  * Sets the source image
                  * @param a Image buffered
                  */
-                public void setSourceImage(Icon a) {
+                public void setSourceImage(Image a) {
                         SourceImage=a;
-                }
-
-                /**
-                 * Sets the gray image
-                 * @param a Image buffered
-                 */
-                public void setGrayImage(Image a) {
-                        GrayImage=a;
-                }
-
-                /**
-                 * Sets the hilighted image
-                 * @param a Image buffered
-                 */
-                public void setHighLightImage(Image a) {
-                        HighLightImage=a;
-                }
-
-                public void setNormalImage(Image a) {
-                        normalImage=a;
                 }
 
                 /**
@@ -980,28 +970,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                  * Gets the source image
                  * @return BufferedImage Returns the source image
                  */
-                public Icon getSourceImage() {
+                public Image getSourceImage() {
                         return SourceImage;
-                }
-
-                /**
-                 * Gets the gray image
-                 * @return BufferedImage Returns the gray image
-                 */
-                public Image getGrayImage() {
-                        return GrayImage;
-                }
-
-                /**
-                 * Gets the hilighted image
-                 * @return BufferedImage Returns the hilighted image
-                 */
-                public Image getHighLightImage() {
-                        return HighLightImage;
-                }
-
-                public Image getNormalImage() {
-                        return normalImage;
                 }
 
                 /**
@@ -1054,85 +1024,9 @@ public class PicturePanel extends ImageView implements MapPanel {
 
 
         }
-
-        private ColorMatrix RescaleOp(float a,float b) {
-            ColorMatrix cm = new ColorMatrix();
-            cm.set(new float[] {
-                    a,0,0,0,b,
-                    0,a,0,0,b,
-                    0,0,a,0,b,
-                    0,0,0,1,0,
-                });
-            return cm;
-        }
-
-        /**
-         * Gets the image of a country
-         * @param num the index of a country
-         * @param incolor whether the image of a country is in colour or greyscale
-         * @return BufferedImage Image buffered of a country
-         */
-        public Image getCountryImage(int num, boolean incolor) {
-
-                int i = num-1;
-
-                countryImage ci = CountryImages[i];
-
-                int x1=ci.getX1();
-//              int x2=ci.getX2();
-                int y1=ci.getY1();
-                int y2=ci.getY2();
-                int w=ci.getWidth();
-                int h=ci.getHeight();
-
-                Image pictureA = Image.createImage(w, h);
-
-                ColorMatrix HighLight = RescaleOp( 0.5f, -1.0f);
-                //HighLight.filter( ci.getGrayImage() , pictureA );
-                Image.filter( ci.getGrayImage() ,pictureA, HighLight );
-
-                Image pictureB = Image.createImage(w, h);
-
-                Graphics g = pictureB.getGraphics();
-
-                g.drawImage( pictureA ,0 ,0 ,0);
-
-                if (incolor) {
-
-                        int ownerColor = ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor();
-
-                        DirectUtils.getDirectGraphics(g).setARGBColor( colorWithAlpha(ownerColor, 100) );
-                        g.fillRect(0,0,w,h);
-
-                }
-
-                for(int y=y1; y <= y2; y++) {
-                        for(int x=0; x <= w-1; x++) {
-                                if (map[x+x1][y] + 128 != (i+1) ) {
-                                        pictureB.setRGB( x, (y-y1), 0); // clear the un-needed area!
-                                }
-                        }
-                }
-
-                return pictureB;
-
-        }
-
-        public final static int GRAY      = newColor(128, 128, 128);
-        public final static int DARK_GRAY  = newColor(64, 64, 64);
-        public final static int LIGHT_GRAY = newColor(192, 192, 192);
-        public final static int BLUE  = newColor(0, 0, 255);
-
-        private static int colorWithAlpha(int color, int alpha) {
-            return ((alpha & 0xFF) << 24) | (color & 0xFFFFFF);
-        }
-        private static int newColor(int r,int g,int b) {
-            return ((255 & 0xFF) << 24) |
-            ((r & 0xFF) << 16) |
-            ((g & 0xFF) << 8)  |
-            ((b & 0xFF) << 0);
-        }
-
+        
+        
+        
         class Polygon {
 
             public int[] xpoints;

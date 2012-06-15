@@ -1,11 +1,13 @@
 package net.yura.domination.mobile.flashgui;
 
+import android.graphics.ColorMatrix;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
@@ -204,12 +206,15 @@ public class CardsDialog extends Frame implements ActionListener {
 
 				Image i = pp.getCountryImage(a, false);
                                 
+                                ColorMatrix m = new ColorMatrix();
+                                m.setConcat( PicturePanel.RescaleOp( 0.5f, -1.0f) ,PicturePanel.gray);
                                 if ( myrisk.isOwnedCurrentPlayerInt( a ) ) {
-                                    // TODO apply color filter to make it the color of the player
+                                    int ownerColor = ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( a )) .getOwner()).getColor();
+                                    m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
-                                
+                                g2.getGraphics().setColorMarix(m);
 				g2.drawImage( i , 25+ (25-(i.getWidth()/2)) ,35+ (25-(i.getHeight()/2)) );
-
+                                g2.getGraphics().setColorMarix(null);
 			}
 
                         Image img = getCardImage();
