@@ -369,23 +369,26 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 if (game.getState()==4 || game.getState()==5 || game.getState()==10) {
 
-                        int a=game.getAttacker().getColor();
-                        int b=game.getDefender().getColor();
+                        Country attacker = game.getAttacker();
+                        Country defender = game.getDefender();
+                    
+                        int a=attacker.getColor();
+                        int b=defender.getColor();
 
                         drawHighLightImage(g2,CountryImages[a-1]);
                         drawHighLightImage(g2,CountryImages[b-1]);
 
-                        int ac = game.getAttacker().getOwner().getColor();
+                        int ac = attacker.getOwner().getColor();
 
                         int argb = colorWithAlpha( ac, 150 );
                         //g2.setStroke(new BasicStroke(3));
 
-                        if ( Math.abs( game.getAttacker().getX() - game.getDefender().getX() ) > (map.length / 2) ) {
+                        if ( Math.abs( attacker.getX() - defender.getX() ) > (map.length / 2) ) {
 
-                                if ( ((Country)game.getAttacker()).getX() > (map.length / 2) ) { // ie the attacker is on the right
+                                if ( attacker.getX() > (map.length / 2) ) { // ie the attacker is on the right
 
-                                    Polygon pol1 = makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()+map.length, ((Country)game.getDefender()).getY(), r );
-                                    Polygon pol2 = makeArrow( game.getAttacker().getX()-map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
+                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), r );
+                                    Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), r );
 
                                     g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                     g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
@@ -393,8 +396,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 }
                                 else { // the attacker is on the left
 
-                                    Polygon pol1 = makeArrow( game.getAttacker().getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX()-map.length, ((Country)game.getDefender()).getY(), r );
-                                    Polygon pol2 = makeArrow( game.getAttacker().getX()+map.length, ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
+                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), r );
+                                    Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), r );
 
                                     g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                     g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
@@ -403,7 +406,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                         else {
 
-                            Polygon pol1 = makeArrow( ((Country)game.getAttacker()).getX(), ((Country)game.getAttacker()).getY(), ((Country)game.getDefender()).getX(), ((Country)game.getDefender()).getY(), r );
+                            Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), r );
 
                             g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
 

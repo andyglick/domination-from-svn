@@ -84,7 +84,8 @@ public class Risk extends Thread {
                 // 10000 gives StackOverflowError on android on default map
                 // 100000 gives StackOverflowError on android on the map "The Keep"
                 // 1,000,000 gives StackOverflowError on android on the map "The Keep" if you place all the troops
-		super(null,null,RiskUtil.GAME_NAME+"-GAME-THREAD", 10000000 );
+                // 10,000,000 very rarly gives crash
+		super(null,null,RiskUtil.GAME_NAME+"-GAME-THREAD", 100000000 );
 
 		resb = TranslationBundle.getBundle();
 
