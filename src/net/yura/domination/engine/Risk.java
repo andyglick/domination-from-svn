@@ -81,10 +81,15 @@ public class Risk extends Thread {
 
 	public Risk() {
                 // default Android value does not work
-                // 10000 gives StackOverflowError on android on default map
-                // 100000 gives StackOverflowError on android on the map "The Keep"
+                // 10,000 gives StackOverflowError on android on default map
+                // 100,000 gives StackOverflowError on android on the map "The Keep"
                 // 1,000,000 gives StackOverflowError on android on the map "The Keep" if you place all the troops
                 // 10,000,000 very rarly gives crash
+                // 100,000,000 crashes on "Castle in the Sky" map on Android (CURRENT VALUE)
+                // 1,000,000,000 still crashes on "Castle in the Sky" (also crashes 32bit java SE)
+                // 10,000,000,000 still crashes on "Castle in the Sky" (also crashes 32bit java SE)
+                // 100,000,000,000 still crashes on "Castle in the Sky" (also crashes 32bit java SE)
+                // 1,000,000,000,000 crashes the whole Android JVM, FUCK FUCK FUCK
 		super(null,null,RiskUtil.GAME_NAME+"-GAME-THREAD", 100000000 );
 
 		resb = TranslationBundle.getBundle();
