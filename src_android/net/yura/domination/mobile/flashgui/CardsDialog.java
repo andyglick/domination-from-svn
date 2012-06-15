@@ -204,7 +204,7 @@ public class CardsDialog extends Frame implements ActionListener {
 
                                 int a = card.getCountry().getColor();
 
-				Image i = pp.getCountryImage(a, false);
+				Image i = pp.getCountryImage(a);
                                 
                                 ColorMatrix m = new ColorMatrix();
                                 m.setConcat( PicturePanel.RescaleOp( 0.5f, -1.0f) ,PicturePanel.gray);

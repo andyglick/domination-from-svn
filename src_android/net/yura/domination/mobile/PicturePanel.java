@@ -2,7 +2,6 @@ package net.yura.domination.mobile;
 
 import java.io.IOException;
 import java.util.Vector;
-
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import android.graphics.ColorMatrix;
@@ -19,7 +18,6 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
-import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.components.ImageView;
@@ -44,22 +42,23 @@ public class PicturePanel extends ImageView implements MapPanel {
         public final static int VIEW_TROOP_STRENGTH   = 4;
         public final static int VIEW_CONNECTED_EMPIRE = 5;
 
-        private countryImage[] CountryImages;
         private Risk myrisk;
-        private Image original;
+
         private Image img;
         private Image tempimg;
         private byte[][] map;
+        private countryImage[] CountryImages;
         private int c1,c2,cc;
 
         private Font font;
         private String strCountry;
 
-        // TODO: do not have this class, need to think of something else
         private static final ColorMatrix HighLight;
         public static final ColorMatrix gray;
         static {
-            
+
+                // YURA YURA YURA MAYBE CHANGE 1.0F SO THAT FLAT COLORS HIGHLIGHT TOO
+                                // 0-2  0-255
                 float scale = 1.5f;
                 float offset = 1.0f;
                 HighLight = RescaleOp(scale, offset); // 1.5f, 1.0f, null
@@ -81,9 +80,6 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 img = null;
                 map = null;
-
-                // YURA YURA YURA MAYBE CHANGE 1.0F SO THAT FLAT COLORS HIGHLIGHT TOO
-                                         // 0-2  0-255
                 
                 setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
@@ -149,7 +145,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
 
                 // clean up before we load new images
-                original = null;
+                //original = null;
                 CountryImages = null;
 
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
@@ -168,16 +164,15 @@ public class PicturePanel extends ImageView implements MapPanel {
             return map[0].length;
         }
         
-        public void memoryLoad(Image m, Image O) {
+        public void memoryLoad(Image m, Image original) {
 
                 // ImageView vars
-                imgW = O.getWidth();
-                imgH = O.getHeight();
+                imgW = original.getWidth();
+                imgH = original.getHeight();
 
 
 
                 RiskGame game = myrisk.getGame();
-                original = O;
                 cc=NO_COUNTRY;
                 c1=NO_COUNTRY;
                 c2=NO_COUNTRY;
@@ -604,7 +599,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
 
                 Graphics zg = tempimg.getGraphics();
-                zg.drawImage(original ,0 ,0, 0 );
+                zg.drawImage(img ,0 ,0, 0 );
 
                 Vector b=null;
 
@@ -754,17 +749,14 @@ public class PicturePanel extends ImageView implements MapPanel {
                     int x1=ci.getX1();
                     int y1=ci.getY1();
 
-                    ci.checkChange(val); // TODO used as a setter
-                    
-                    if (view != VIEW_CONTINENTS) {
-
-                        ColorMatrix m = new ColorMatrix();
-                        m.setConcat(getMatrix(val),gray);
-
-                        zg.setColorMarix(m);
+                    if (ci.checkChange(val)) {
+                        if (view != VIEW_CONTINENTS) {
+                            ColorMatrix m = new ColorMatrix();
+                            m.setConcat(getMatrix(val),gray);
+                            zg.setColorMarix(m);
+                        }
                         zg.drawImage(ci.getSourceImage() ,x1 ,y1 ,0);
                     }
-
                 }
 
                 Image newback = img;
@@ -872,11 +864,10 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         /**
          * Gets the image of a country
-         * @param num the index of a country
-         * @param incolor whether the image of a country is in colour or greyscale
+         * @param num the color of a country
          * @return BufferedImage Image buffered of a country
          */
-        public Image getCountryImage(int num, boolean incolor) {
+        public Image getCountryImage(int num) {
                 countryImage ci = CountryImages[num-1];
                 return ci.getSourceImage();
         }
