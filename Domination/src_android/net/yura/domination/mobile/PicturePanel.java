@@ -483,8 +483,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 m = HighLight;
             }
             else {
-                m = new ColorMatrix();
-                m.setConcat(getMatrix(val),gray);
+                m = getMatrix(val);
+                m.preConcat(gray);
                 m.postConcat( HighLight );
             }
             
@@ -754,8 +754,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                     if (ci.checkChange(val)) {
                         if (view != VIEW_CONTINENTS) {
-                            ColorMatrix m = new ColorMatrix();
-                            m.setConcat(getMatrix(val),gray);
+                            ColorMatrix m = getMatrix(val);
+                            m.preConcat(gray);
                             zg.setColorMarix(m);
                         }
                         zg.drawImage(ci.getSourceImage() ,x1 ,y1 ,0);
