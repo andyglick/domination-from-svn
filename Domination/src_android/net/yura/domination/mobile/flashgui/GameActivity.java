@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -37,7 +38,9 @@ public class GameActivity extends Frame implements ActionListener {
     PicturePanel pp;
     MapViewChooser mapViewControl;
     Button gobutton,closebutton,savebutton,undobutton;
-    String status,note;
+    Label note;
+    
+    String status;
     int gameState;
 
     private CheckBox AutoEndGo,AutoDefend;
@@ -107,12 +110,16 @@ public class GameActivity extends Frame implements ActionListener {
         gobutton.addActionListener(this);
         gobutton.setActionCommand("go");
 
+        note = new Label();
+        
         cardsbutton = new Button();
+        cardsbutton.setIcon( new Icon("/cards_button.png") );
         cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
         cardsbutton.setActionCommand("cards");
         cardsbutton.addActionListener(this);
         
         missionbutton = new Button();
+        missionbutton.setIcon( new Icon("/mission_button.png") );
         missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
         missionbutton.setActionCommand("mission");
         missionbutton.addActionListener(this);
@@ -136,6 +143,7 @@ public class GameActivity extends Frame implements ActionListener {
         gamepanel2.add( cardsbutton );
         gamepanel2.add( missionbutton );
         gamepanel2.add( gobutton );
+        gamepanel2.add( note );
         
         
         
@@ -283,6 +291,7 @@ public class GameActivity extends Frame implements ActionListener {
     public void needInput(int s) {
             gameState=s;
             String goButtonText=null;
+            String noteText=null;
             switch (gameState) {
                     case RiskGame.STATE_TRADE_CARDS: {
                             // after wiping out someone if you go into trade mode
@@ -292,20 +301,20 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_PLACE_ARMIES: {
-//                            if (setupDone==false) {
+                            if ( !myrisk.getGame().NoEmptyCountries() ) {
                                     goButtonText = resb.getProperty("game.button.go.autoplace");
-//                            }
+                            }
                             break;
                     }
                     case RiskGame.STATE_ATTACKING: {
                             pp.setC1(255);
                             pp.setC2(255);
-                            note = resb.getProperty("game.note.selectattacker");
+                            noteText = resb.getProperty("game.note.selectattacker");
                             goButtonText = resb.getProperty("game.button.go.endattack");
                             break;
                     }
                     case RiskGame.STATE_FORTIFYING: {
-                            note = resb.getProperty("game.note.selectsource");
+                            noteText = resb.getProperty("game.note.selectsource");
                             goButtonText = resb.getProperty("game.button.go.nomove");
                             break;
                     }
@@ -324,7 +333,7 @@ public class GameActivity extends Frame implements ActionListener {
 
                     }
                     case RiskGame.STATE_SELECT_CAPITAL: {
-                            note = resb.getProperty("game.note.happyok");
+                            noteText = resb.getProperty("game.note.happyok");
                             goButtonText = resb.getProperty("game.button.go.ok");
                             break;
                     }
@@ -342,6 +351,10 @@ public class GameActivity extends Frame implements ActionListener {
                         gobutton.setFocusable(false);
                         gobutton.setText("");
                 }
+            }
+            
+            if (noteText!=null) {
+                note.setText(noteText);
             }
 
             if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
@@ -363,6 +376,13 @@ public class GameActivity extends Frame implements ActionListener {
             }
 
             repaint(); // SwingGUI has this here, if here then not needed in set status
+    }
+    
+   /**
+    * @see MiniFlashRiskAdapter#armiesLeft(int, boolean)
+    */
+    public void armiesLeft(int l) {
+            note.setText( RiskUtil.replaceAll( resb.getString("game.note.armiesleft"),"{0}", String.valueOf(l)) );
     }
 
     private void goOn() {
@@ -422,7 +442,7 @@ public class GameActivity extends Frame implements ActionListener {
             gobutton.setText("");
             gobutton.setFocusable(false);
 
-            note="";
+            note.setText("");
             gameState=0;
 
     }
@@ -443,26 +463,26 @@ public class GameActivity extends Frame implements ActionListener {
         else if (gameState == RiskGame.STATE_ATTACKING) {
 
             if (countries.length==0) {
-                note=resb.getProperty("game.note.selectattacker");
+                note.setText( resb.getProperty("game.note.selectattacker") );
             }
             else if (countries.length == 1) {
-                note=resb.getProperty("game.note.selectdefender");
+                note.setText( resb.getProperty("game.note.selectdefender") );
             }
             else {
                 go("attack " + countries[0] + " " + countries[1]);
-                note=resb.getProperty("game.note.selectattacker");
+                note.setText( resb.getProperty("game.note.selectattacker") );
             }
 
         }
         else if (gameState == RiskGame.STATE_FORTIFYING) {
             if (countries.length==0) {
-                note=resb.getProperty("game.note.selectsource");
+                note.setText( resb.getProperty("game.note.selectsource") );
             }
             else if (countries.length==1) {
-                note=resb.getProperty("game.note.selectdestination");
+                note.setText( resb.getProperty("game.note.selectdestination") );
             }
             else {
-                note="";
+                note.setText("");
 
                 MoveDialog move = new MoveDialog(myrisk) {
                     @Override
@@ -472,7 +492,7 @@ public class GameActivity extends Frame implements ActionListener {
                             // clean up
                             pp.setC1(255);
                             pp.setC2(255);
-                            note=resb.getProperty("game.note.selectsource");                            
+                            note.setText( resb.getProperty("game.note.selectsource") );
                         }
                     }
                 };

@@ -119,7 +119,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void armiesLeft(int l, boolean s) {
-        // TODO Auto-generated method stub
+        gameFrame.armiesLeft(l);
     }
 
     BattleDialog battle;
