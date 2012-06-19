@@ -277,8 +277,12 @@ public class BattleDialog extends Frame implements ActionListener {
             deadDice = myrisk.getGame().getMaxDefendDice();
         }
 
-        int ax = 116;
-        int dx = 335;
+        int w = getWidth();
+        int diceWidth = red_dice.getWidth();
+        int gap = 200;
+        
+        int ax = w/2 - gap/2 - diceWidth;
+        int dx = w/2 + gap/2;
 
         int y1 = 176;
         int y2 = 207;
@@ -406,65 +410,39 @@ public class BattleDialog extends Frame implements ActionListener {
         }
 
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
-
+        
         if (atti != null && defi != null ) {
-
-
-                if (defi[0] >= atti[0]) {
-
-                        int xCoords[] = {339, 339, 140};
-                        int yCoords[] = {180, 200, 190};
-
-                        g2.fillPolygon(xCoords, 0,yCoords,0, xCoords.length, COLOR_BLUE);
-
-                }
-                else {
-
-                        int xCoords[] = {140, 140, 339};
-                        int yCoords[] = {180, 200, 190};
-
-                        g2.fillPolygon(xCoords, 0, yCoords,0, xCoords.length, COLOR_RED);
-
-                }
-
-                if (atti.length > 1 && defi.length > 1) {
-
-                        if (defi[1] >= atti[1]) {
-
-                                int xCoords[] = {339, 339, 140};
-                                int yCoords[] = {211, 231, 221};
-
-                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
-
+                {
+                        int yCoords[] = {y1+4, y1+24, y1+14};
+                        if (defi[0] >= atti[0]) {
+                                int xCoords[] = {dx+4, dx+4, ax+24};
+                                g2.fillPolygon(xCoords, 0,yCoords,0, xCoords.length, COLOR_BLUE);
                         }
                         else {
-                                int xCoords[] = {140, 140, 339};
-                                int yCoords[] = {211, 231, 221};
-
-                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_RED);
-
+                                int xCoords[] = {ax+24, ax+24, dx+4};
+                                g2.fillPolygon(xCoords, 0, yCoords,0, xCoords.length, COLOR_RED);
                         }
                 }
-
+                if (atti.length > 1 && defi.length > 1) {
+                        int yCoords[] = {y2+4, y2+24, y2+14};
+                        if (defi[1] >= atti[1]) {
+                                int xCoords[] = {dx+4, dx+4, ax+24};
+                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
+                        }
+                        else {
+                                int xCoords[] = {ax+24, ax+24, dx+4};
+                                g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_RED);
+                        }
+                }
                 if (atti.length > 2 && defi.length > 2) {
-
+                    int yCoords[] = {y3+4, y3+24, y3+14};
                     if (defi[2] >= atti[2]) {
-
-
-                            int xCoords[] = {339, 339, 140};
-                            int yCoords[] = {242, 262, 252};
-
+                            int xCoords[] = {dx+4, dx+4, ax+24};
                             g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
-
                     }
                     else {
-
-
-                            int xCoords[] = {140, 140, 339};
-                            int yCoords[] = {242, 262, 252};
-
+                            int xCoords[] = {ax+24, ax+24, dx+4};
                             g2.fillPolygon(xCoords,0, yCoords, 0,xCoords.length,COLOR_RED);
-
                     }
                 }
 
