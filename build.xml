@@ -98,7 +98,8 @@
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.classes}" filtering="true">
-			<fileset dir="${dir.properties}" includes="**/*.*" excludes="**/*.java"/>
+			<fileset dir="${dir.properties}" includes="**/*.properties"/>
+                        <fileset dir="src_swing" includes="**/*.ini"/>
 		</copy>
 
 		<!-- copy images -->
@@ -388,7 +389,8 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.client.classes}" filtering="true">
-			<fileset dir="${dir.properties}" includes="**/*.*" excludes="**/*.java,**/Increment1GUI/*.*"/>
+			<fileset dir="${dir.properties}" includes="**/*.properties"/>
+                        <fileset dir="src_swing" includes="**/*.ini"/>
 		</copy>
 
 		<!-- copy images -->
@@ -409,7 +411,8 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
-			<fileset dir="${dir.properties}" includes="**/*.properties,**/*.ini"/>
+			<fileset dir="${dir.properties}" includes="**/*.properties"/>
+                        <fileset dir="src_swing" includes="**/*.ini"/>
 		</copy>
 
 	</target>
@@ -495,7 +498,8 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 
         <copy todir="${dir.build}/swingme" filtering="true">
-                <fileset dir="${dir.properties}" includes="**/*.properties,**/*.ini"/>
+                <fileset dir="${dir.properties}" includes="**/*.properties"/>
+                <fileset dir="src_android" includes="**/*.ini"/>
         </copy>
         
         <!-- copy maps into assets -->

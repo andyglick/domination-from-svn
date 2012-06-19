@@ -90,7 +90,7 @@ public class Risk extends Thread {
                 // 10,000,000,000 still crashes on "Castle in the Sky" (also crashes 32bit java SE)
                 // 100,000,000,000 still crashes on "Castle in the Sky" (also crashes 32bit java SE)
                 // 1,000,000,000,000 crashes the whole Android JVM, FUCK FUCK FUCK
-		super(null,null,RiskUtil.GAME_NAME+"-GAME-THREAD", 100000000 );
+		super(null,null,"DOMINATION-GAME-THREAD", 100000000 );
 
 		resb = TranslationBundle.getBundle();
 
