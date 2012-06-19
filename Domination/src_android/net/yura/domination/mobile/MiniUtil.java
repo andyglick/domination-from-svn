@@ -3,8 +3,10 @@ package net.yura.domination.mobile;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Vector;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mobile.flashgui.GameActivity;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.io.FileUtil;
 
@@ -12,6 +14,8 @@ public class MiniUtil {
 
     public static void showAbout() {
 
+        OptionPane.showMessageDialog(null,RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION,GameActivity.resb.getProperty("about.title"), OptionPane.INFORMATION_MESSAGE);
+        
     }
 
     public static Vector getFileList(String string) {

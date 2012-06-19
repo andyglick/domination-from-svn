@@ -25,6 +25,10 @@ public class DominationMidlet extends Midlet {
         // IO depends on this, so we need to do this first
         RiskUtil.streamOpener = new RiskMiniIO();
 
+        // get version from AndroidManifest.xml
+        String versionName = System.getProperty("versionName");
+        Risk.RISK_VERSION = versionName!=null ? versionName : "?me4se?";
+        
         try {
 
             SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" MiniFlashGUI" , TranslationBundle.getBundle().getLocale().toString() );
@@ -81,7 +85,7 @@ public class DominationMidlet extends Midlet {
 
 
 
-        Risk risk = new Risk("luca.map","risk.cards");
+        Risk risk = new Risk();
         MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter(risk);
 
         adapter.openMainMenu();

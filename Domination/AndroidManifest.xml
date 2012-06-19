@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.yura.domination"
       android:versionCode="1"
-      android:versionName="1.0">
+      android:versionName="1.1.0.9">
     <application android:name="net.yura.android.AndroidMeApp" android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/android:Theme.Light.NoTitleBar" android:debuggable="true" android:hardwareAccelerated="true">
         <activity android:name="net.yura.android.AndroidMeActivity"
             	  android:launchMode="singleTask"
@@ -16,9 +16,12 @@
         </activity>
 
         <activity android:name="net.yura.android.OptionPaneActivity" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/android:Theme.Translucent"/>
+        <activity android:name="net.yura.android.WebViewActivity" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" />
 
     </application>
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4" />
+    <!-- android:targetSdkVersion needs to be 11 to hide the legacy menu button -->
+    <!-- this also has a side effect of hiding the legacy resize button -->
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     
