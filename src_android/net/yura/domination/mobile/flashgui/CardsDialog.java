@@ -206,8 +206,8 @@ public class CardsDialog extends Frame implements ActionListener {
 
 				Image i = pp.getCountryImage(a);
                                 
-                                ColorMatrix m = new ColorMatrix();
-                                m.setConcat( PicturePanel.RescaleOp( 0.5f, -1.0f) ,PicturePanel.gray);
+                                ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
+                                m.preConcat(PicturePanel.gray);
                                 if ( myrisk.isOwnedCurrentPlayerInt( a ) ) {
                                     int ownerColor = ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( a )) .getOwner()).getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
