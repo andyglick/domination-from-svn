@@ -7,6 +7,6 @@
         <textarea editable="false" i18n="true" text="cards.note" wrap="true"/>
         <label name="NumArmies"/>
         <button action="trade" i18n="true" name="tradeButton" text="cards.trade"/>
-        <button action="done" i18n="true" text="cards.done"/>
+        <button action="done" i18n="true" mnemonic="113" text="cards.done"/>
     </panel>
 </panel>
