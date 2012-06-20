@@ -12,7 +12,7 @@
         <checkbox i18n="true" name="autoplaceall" selected="true" text="newgame.autoplace" weightx="1" width="10"/>
         <checkbox i18n="true" name="recycle" text="newgame.recycle" width="10"/>
     </panel>
-    <panel columns="2" rowspan="2">
+    <panel columns="2" rowspan="2" width="30">
         <label i18n="true" text="newgame.player.type.easyai" weightx="1" width="10"/>
         <spinbox end="1" maximum="5" minimum="0" name="easyAI" start="1" text="2"/>
         <label i18n="true" text="newgame.player.type.hardai" width="10"/>
