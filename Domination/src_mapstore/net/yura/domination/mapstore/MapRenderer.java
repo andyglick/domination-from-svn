@@ -37,6 +37,7 @@ public class MapRenderer extends DefaultListCellRenderer {
     public MapRenderer(MapChooser chooser) {
         
         this.chooser = chooser;
+        setName("ListRendererCollapsed"); // get rid of any padding
         
         try {
             Image img = Image.createImage("/strip.png");
