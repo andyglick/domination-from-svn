@@ -835,15 +835,11 @@ RiskUtil.printStackTrace(e);
 			if ( StringT.hasMoreTokens() ) {
 
 				// get the cards
-				Vector cards = game.getCards();
+				//Vector cards = game.getCards();
 				String name = GetNext();
-				Card card = game.findCard( name );
+				Card card = game.findCardAndRemoveIt( name );
 
 				((Player)game.getCurrentPlayer()).giveCard( card );
-
-				// find the card and remove it
-				cards.remove( card );
-				cards.trimToSize();
 
 				if ( showHumanPlayerThereInfo( game.getCurrentPlayer() ) ) {
 
