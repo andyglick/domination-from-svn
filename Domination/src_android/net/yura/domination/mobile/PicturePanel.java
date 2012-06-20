@@ -424,9 +424,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 g.setARGBColor( ((Player)t.getOwner()).getColor() );
 
-                                g2.fillArc( t.getX()-r , t.getY()-r , (r*2), (r*2) , 0, 360);
-
-                                //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
+                                g2.fillOval( t.getX()-r , t.getY()-r , (r*2), (r*2) );
 
                                 g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 

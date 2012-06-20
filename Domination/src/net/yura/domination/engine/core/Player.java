@@ -220,6 +220,8 @@ public class Player implements Serializable {
         return c;
     }
 
+    public static final int noaFORcard = 2;
+    
     /**
      * Trading in the cards, adds 2 extra armies to the first country that it owns on the cards and removing the cards from the player
      * @param card1 First card
@@ -227,8 +229,6 @@ public class Player implements Serializable {
      * @param card3 Third card
      */
     public void tradeInCards(Card card1, Card card2, Card card3) {
-
-	int noaFORcard = 2;
 
 	// check if you should get extra armies on the territoriesOwned
 	if (territoriesOwned.contains( card1.getCountry() ) ) {
