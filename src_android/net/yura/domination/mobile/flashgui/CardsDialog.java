@@ -1,22 +1,23 @@
 package net.yura.domination.mobile.flashgui;
 
 import android.graphics.ColorMatrix;
+import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
-import net.yura.mobile.gui.DesktopPane;
+import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
-import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
+import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
-import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.layout.BoxLayout;
@@ -32,7 +33,8 @@ public class CardsDialog extends Frame implements ActionListener {
 	private PicturePanel pp;
 
 	private Panel myCardsPanel;
-	private Panel TradePanel;
+	private CardPanel extraArmiesCard;
+        private Component NumArmies;
 
 	private Image Infantry;
 	private Image Cavalry;
@@ -86,24 +88,44 @@ public class CardsDialog extends Frame implements ActionListener {
 		setTitle(resb.getProperty("cards.title"));
 		setMaximum(true);
 
-                // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-                // TODO should update after trade!!!
-                ((Label)loader.find("NumArmies")).setText( getNumArmies() );
-
+                NumArmies = ((Component)loader.find("NumArmies"));
 
 		myCardsPanel = (Panel) ((ScrollPane)loader.find("myCardsPanel")).getView();
 		myCardsPanel.setLayout( new BoxLayout( Graphics.HCENTER ) );
 
 
-
-		TradePanel = (Panel) ((ScrollPane)loader.find("TradePanel")).getView();
-		TradePanel.setLayout( new BoxLayout( Graphics.HCENTER ) );
-
 		tradeButton = (Button)loader.find("tradeButton");
 
-
-
 	}
+        
+        public void setupNumArmies() {
+            
+            String text;
+            
+            // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
+            if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
+		 text= resb.getString("cards.fixed");
+            }
+            else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+		 text= resb.getString("cards.italianlike");
+            }
+            else {
+		 text= RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf( myrisk.getNewCardState() ) );
+            }
+            
+            NumArmies.setValue( text );
+	}
+        
+        List<CardPanel> getSelectedCards() {
+            List<CardPanel> selected = new ArrayList();
+            List<CardPanel> all = myCardsPanel.getComponents();
+            for (CardPanel cp :all) {
+                if (cp.isSelected()) {
+                    selected.add(cp);
+                }
+            }
+            return selected;
+        }
 
     public void actionPerformed(String actionCommand) {
         if ("done".equals(actionCommand)) {
@@ -111,18 +133,28 @@ public class CardsDialog extends Frame implements ActionListener {
         }
         else if ("trade".equals(actionCommand)) {
             
-            List<CardPanel> cards2 = TradePanel.getComponents();
+            List<CardPanel> cards2 = getSelectedCards();
 
             if (cards2.size()==3) {
 
-                myrisk.parser("trade "+((CardPanel)cards2.get(0)).getCardName() + " " + ((CardPanel)cards2.get(1)).getCardName() + " " + ((CardPanel)cards2.get(2)).getCardName() );
+                // if we have a extra armies card, put it at the start
+                if (extraArmiesCard!=null) {
+                    cards2.remove(extraArmiesCard);
+                    cards2.add(0, extraArmiesCard);
+                }
+                
+                myrisk.parser("trade "+cards2.get(0).getCardName() + " " + cards2.get(1).getCardName() + " " + cards2.get(2).getCardName() );
 
-                TradePanel.removeAll();
-
-                TradePanel.validate();
+                for (CardPanel cp:cards2) {
+                    myCardsPanel.remove(cp);
+                }
+                extraArmiesCard = null;
+                myCardsPanel.revalidate();
 
                 tradeButton.setFocusable(false);
 
+                setupNumArmies();
+                
                 repaint();
 
             }
@@ -140,32 +172,25 @@ public class CardsDialog extends Frame implements ActionListener {
 
 		myCardsPanel.removeAll();
 
-		TradePanel.removeAll();
+		extraArmiesCard = null;
 
 		List<Card> cards = myrisk.getCurrentCards();
 		for (int c=0; c < cards.size(); c++) {
-			Panel cp = new CardPanel( (Card)cards.get(c) );
+			Component cp = new CardPanel( (Card)cards.get(c) );
 			myCardsPanel.add(cp);
 		}
 
                 tradeButton.setFocusable(false);
+                
+                setupNumArmies();
 
 	}
 
-	public String getNumArmies() {
-            // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
-            if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
-		 return resb.getString("cards.fixed");
-            }
-            else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-		 return resb.getString("cards.italianlike");
-            }
-            else {
-		 return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + myrisk.getNewCardState());
-            }
-	}
-
-	class CardPanel extends Panel {
+        boolean isOwnedCurrentPlayer(CardPanel cp) {
+            return cp.card.getCountry()!=null && myrisk.isOwnedCurrentPlayerInt( cp.card.getCountry().getColor() );
+        }
+        
+	class CardPanel extends Button {
 
 		private Card card;
 
@@ -176,14 +201,10 @@ public class CardsDialog extends Frame implements ActionListener {
 		public CardPanel (Card c) {
 			card=c;
 
+			int cardWidth=60;
+			int cardHeight=100;
 
-			int cardWidth=100;
-			int cardHeight=170;
-
-
-			this.setPreferredSize( cardWidth, cardHeight );
-
-
+			setPreferredSize( cardWidth, cardHeight );
 		}
 
 		/**
@@ -191,34 +212,50 @@ public class CardsDialog extends Frame implements ActionListener {
 		 * @param g The graphics
 		 */
                 @Override
-		public void paintComponent(Graphics2D g2) {
+		public void paintComponent(Graphics2D g) {
 
-                        g2.setColor( 0xAA000000 );
-			g2.fillRoundRect(0, 0, getWidth(), getHeight() ,5,5);
-                        g2.setColor( 0xFF000000 );
-                        g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
+                        //g2.setColor( 0xAA000000 );
+			//g2.fillRoundRect(0, 0, getWidth(), getHeight() ,5,5);
+                        //g2.setColor( 0xFF000000 );
+                        //g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
+                    
+                        int imgSize = 50;
                         
 			if (!(card.getName().equals(Card.WILDCARD))) {
 
-				String text = ((Country)card.getCountry()).getName(); // Display
+				//String text = card.getCountry().getName(); // Display
 
-                                int a = card.getCountry().getColor();
-
-				Image i = pp.getCountryImage(a);
+				Image i = pp.getCountryImage( card.getCountry().getColor() );
+                                
+                                int ownerColor=0;
                                 
                                 ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
                                 m.preConcat(PicturePanel.gray);
-                                if ( myrisk.isOwnedCurrentPlayerInt( a ) ) {
-                                    int ownerColor = ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( a )) .getOwner()).getColor();
+                                if ( isOwnedCurrentPlayer( this ) ) {
+                                    ownerColor = card.getCountry().getOwner().getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
-                                g2.getGraphics().setColorMarix(m);
-				g2.drawImage( i , 25+ (25-(i.getWidth()/2)) ,35+ (25-(i.getHeight()/2)) );
-                                g2.getGraphics().setColorMarix(null);
+                                g.getGraphics().setColorMarix(m);
+                                g.drawScaledImage(i, (getWidth()-imgSize)/2, getHeight()/2 - imgSize, imgSize, imgSize);
+                                g.getGraphics().setColorMarix(null);
+                                
+                                if (this == extraArmiesCard) {
+                                    
+                                    g.setColor(ownerColor);
+                                    
+                                    Font f = g.getFont();
+                                    int w = f.getHeight();
+                                    int x = (getWidth()-w)/2;
+                                    int y = getHeight()/2 - imgSize/2 - w/2;
+                                    g.fillOval(x, y, w, w);
+                                    g.setColor( RiskUtil.getTextColorFor(ownerColor) );
+                                    g.drawString("+"+Player.noaFORcard, x, y);
+                                }
+                                
 			}
 
                         Image img = getCardImage();
-			g2.drawImage( img , (getWidth()-img.getWidth())/2 , (getHeight()-img.getHeight())/2  );
+			g.drawImage( img , (getWidth()-img.getWidth())/2 , (getHeight()-img.getHeight())/2  );
 
 
 		}
@@ -250,44 +287,39 @@ public class CardsDialog extends Frame implements ActionListener {
 			}
 		}
 
-		//**********************************************************************
-		//                     MouseListener Interface
-		//**********************************************************************
-
-		/**
-		 * Works out what has been clicked
-		 * @param e A mouse event
-		 */
-                
-            @Override
-            public void processMouseEvent(int type, int x, int y, KeyEvent keys) {
-
-                if (type == DesktopPane.RELEASED) {
-
-                            List<CardPanel> trades = TradePanel.getComponents();
-                    
-                            if ( this.getParent() == myCardsPanel ) {
-                                    if (TradePanel.getComponentCount() < 3) {
-                                        myCardsPanel.remove(this); TradePanel.add(this);
-                                    }
-                                    if (TradePanel.getComponentCount() == 3 && canTrade && myrisk.canTrade( ((CardPanel)trades.get(0)).getCardName() , ((CardPanel)trades.get(1)).getCardName(), ((CardPanel)trades.get(2)).getCardName() ) ) {
-                                        tradeButton.setFocusable(true);
-                                    }
-                            }
-                            else if ( this.getParent() == TradePanel ) {
-                                    TradePanel.remove(this);
-                                    myCardsPanel.add(this);
-                                    tradeButton.setFocusable(false);
-                            }
-
-                            myCardsPanel.getParent().revalidate();
-                            TradePanel.revalidate();
-
-                            myCardsPanel.getParent().repaint();
-                            TradePanel.repaint();
-
+                @Override
+                protected void toggleSelection() {
+                    setSelected(!isSelected());
                 }
-            }
+
+                @Override
+                public void fireActionPerformed() {
+                    super.fireActionPerformed();
+
+                    List<CardPanel> trades = getSelectedCards();
+
+                    if (trades.size() == 3 && canTrade && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) ) {
+                        tradeButton.setFocusable(true);
+                    }
+                    else {
+                        tradeButton.setFocusable(false);
+                    }
+
+                    if (!isSelected() && extraArmiesCard==this) {
+                        CardPanel newSelected=null;
+                        for (CardPanel cp:trades) {
+                            if ( isOwnedCurrentPlayer(cp) ) {
+                                newSelected = cp;
+                                break;
+                            }
+                        }
+                        extraArmiesCard = newSelected;
+                    }
+                    else if (isSelected() && extraArmiesCard==null && isOwnedCurrentPlayer(this) ) {
+                        extraArmiesCard = this;
+                    }
+
+                    tradeButton.repaint();
+                }
         }
-    
 }
