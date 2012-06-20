@@ -7,6 +7,8 @@
     <button action="manual" i18n="true" mnemonic="72" text="mainmenu.help"/>
     <button action="about" i18n="true" mnemonic="65" text="mainmenu.about"/>
     <button action="quit" i18n="true" mnemonic="27" text="mainmenu.quit"/>
+    <!--
     <button action="join game" i18n="true" mnemonic="74" text="mainmenu.joingame"/>
     <button action="start server" i18n="true" mnemonic="83" text="mainmenu.startserver"/>
+    -->
 </panel>

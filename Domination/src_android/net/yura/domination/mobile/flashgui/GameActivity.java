@@ -123,7 +123,7 @@ public class GameActivity extends Frame implements ActionListener {
         menu.add( undobutton );
         menu.add( AutoEndGo );
         menu.add( AutoDefend );
-        menu.add( helpbutton );
+        //menu.add( helpbutton );
         
         // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
