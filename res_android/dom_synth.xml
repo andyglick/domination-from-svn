@@ -122,4 +122,23 @@
     </style>
     <bind style="actionbarMenuButton" type="region" key="ActionbarMenuButton"/>
 
+
+
+    <style id="spinner">
+      <insets top="5" left="25" bottom="5" right="25"/>
+      <imageIcon id="icon_left_normal" path="/spinner.png" x="0" y="0" width="25" height="25"/>
+      <imageIcon id="icon_right_normal" path="/spinner.png" x="0" y="25" width="25" height="25"/>
+      <imageIcon id="icon_left_highlight" path="/spinner.png" x="0" y="50" width="25" height="25"/>
+      <imageIcon id="icon_right_highlight" path="/spinner.png" x="0" y="75" width="25" height="25"/>
+      <state>
+        <property key="iconLeft" value="icon_left_normal"/>
+        <property key="iconRight" value="icon_right_normal"/>
+      </state>
+      <state value="SELECTED">
+        <property key="iconLeft" value="icon_left_highlight"/>
+        <property key="iconRight" value="icon_right_highlight"/>
+      </state>
+    </style>
+    <bind style="spinner" key="Spinner"/>
+
 </synth>
