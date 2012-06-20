@@ -9,8 +9,8 @@
         <checkbox action="mission" group="GameType" i18n="true" name="mission" text="newgame.mode.mission" width="10"/>
     </panel>
     <panel columns="1" weightx="1">
-        <checkbox i18n="true" name="autoplaceall" selected="true" text="newgame.autoplace" weightx="1" width="10"/>
-        <checkbox i18n="true" name="recycle" text="newgame.recycle" width="10"/>
+        <checkbox i18n="true" name="autoplaceall" text="newgame.autoplace" weightx="1" width="10"/>
+        <checkbox i18n="true" name="recycle" selected="true" text="newgame.recycle" width="10"/>
     </panel>
     <panel columns="2" rowspan="2" width="30">
         <label i18n="true" text="newgame.player.type.easyai" weightx="1" width="10"/>
