@@ -1,6 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -11,10 +12,13 @@ import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.CheckBox;
+import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.Menu;
@@ -24,6 +28,7 @@ import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
+import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
 
@@ -32,7 +37,16 @@ import net.yura.swingme.core.CoreUtil;
  */
 public class GameActivity extends Frame implements ActionListener {
  
-    public static Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
+    public static final Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
+    public static final Border marble;
+    static {
+        try {
+            marble = new BackgroundBorder( Image.createImage("/marble.jpg") );
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
     
     Risk myrisk;
     PicturePanel pp;
@@ -50,6 +64,13 @@ public class GameActivity extends Frame implements ActionListener {
         myrisk = risk;
         setMaximum(true);
 
+        setUndecorated(true);
+        
+        setBorder(marble);
+        setBackground( 0x00FFFFFF );
+        
+        
+        
         pp = new PicturePanel(myrisk);
 
         final MapMouseListener mml = new MapMouseListener(myrisk, pp);
@@ -98,7 +119,7 @@ public class GameActivity extends Frame implements ActionListener {
         menu.setName("ActionbarMenuButton");
         menu.setIcon( new Icon("/menu.png") );
         menu.add( savebutton );
-        menu.add( graphbutton );
+        //menu.add( graphbutton );
         menu.add( undobutton );
         menu.add( AutoEndGo );
         menu.add( AutoDefend );
@@ -138,12 +159,7 @@ public class GameActivity extends Frame implements ActionListener {
         
         gamecontrol.add(menu,Graphics.RIGHT);
         
-        Panel gamepanel2 = new Panel();
-        gamepanel2.setName("TransPanel");
-        gamepanel2.add( cardsbutton );
-        gamepanel2.add( missionbutton );
-        gamepanel2.add( gobutton );
-        gamepanel2.add( note );
+
         
         
         
@@ -164,16 +180,56 @@ public class GameActivity extends Frame implements ActionListener {
         sp.setClip(false);
         mainWindow.add( sp );
         mainWindow.add(gamecontrol,Graphics.TOP);
-        mainWindow.add(gamepanel2,Graphics.BOTTOM);
+        mainWindow.add( makeBottomPanel() ,Graphics.BOTTOM);
 
         Panel contentPane = new Panel( new BorderLayout() );
         contentPane.add( mainWindow );
         setContentPane(contentPane);
+
+    }
+    
+    Panel makeBottomPanel() {
         
+        Panel bottom = new Panel(new BorderLayout());
         
-        setUndecorated(true);
-        //setName("GameFrame");
-        setBackground(0xFF666666);
+        Panel gamepanel2 = new Panel();
+        gamepanel2.setName("TransPanel");
+        gamepanel2.add( cardsbutton );
+        gamepanel2.add( missionbutton );
+        gamepanel2.add( gobutton );
+        gamepanel2.add( note );
+        
+        bottom.add( new PlayersPanel(), Graphics.TOP );
+        bottom.add(gamepanel2);
+        
+        return bottom;
+    }
+    
+    class PlayersPanel extends Component {
+        @Override
+        protected String getDefaultName() {
+            return "PlayersPanel";
+        }
+        @Override
+        public void paintComponent(Graphics2D g) {
+            int[] colors = myrisk.getPlayerColors();
+            
+            int w = XULLoader.adjustSizeToDensity(20);
+            
+            int x=0;
+            for (int c=0; c < colors.length ; c++) {
+                    g.setColor( PicturePanel.colorWithAlpha(colors[c],100) );
+                    int ww = c==0?width-(w*(colors.length-1)):w;
+                    g.fillRect( x , 0 , ww , height);
+                    x = x + ww;
+            }
+
+        }
+        @Override
+        protected void workoutMinimumSize() {
+            width = 10;
+            height = XULLoader.adjustSizeToDensity(2);
+        }
     }
     
     boolean localGame;

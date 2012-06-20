@@ -147,13 +147,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         myrisk = risk;
         setMaximum(true);
         
-        try {
-            setBorder( new BackgroundBorder( Image.createImage("/marble.jpg") ) );
-            setBackground( 0x00FFFFFF );
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        setBorder(GameActivity.marble);
+        setBackground( 0x00FFFFFF );
         
     }
 
