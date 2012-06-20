@@ -4,7 +4,7 @@ CURRENT VERSION:
 
 	Risk Game:	1.1.0.9
 	 * Save:	7
-	 * Network:	8
+	 * Network:	9
 
 	CommandLine:	1.0.4.1
 	Flash GUI:	1.0.3.5
@@ -15,6 +15,8 @@ CURRENT VERSION:
 1.1.0.9
 
 	if UNDO fails once, do not try and do undo any more
+	recycle cards works more like it would in real life
+	game can be played on Android 
 
 1.1.0.8 (02.04.2012)
 

@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -46,7 +48,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 	private AbstractTableModel countriesModel;
 	private AbstractTableModel continentsModel;
-	private AbstractTableModel cardsModel;
+	private AbstractTableModel cardsModel,cardsModel2;
 	private AbstractTableModel playersModel;
 
 	private PicturePanel pp;
@@ -194,53 +196,25 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		};
 
 
-		cardsModel = new AbstractTableModel() {
+		cardsModel = new CardsTableModel() {
+                    List getCards() {
+                        RiskGame game = myrisk.getGame();
+                        if (game!=null) {
+                            return game.getCards();
+                        }
+                        return Collections.EMPTY_LIST;
+                    }
+                };
 
-			private final String[] columnNames = { "No.", "Type", "Country" };
-
-			public int getColumnCount() {
-				return columnNames.length;
-			}
-
-			public int getRowCount() {
-
-				RiskGame game = myrisk.getGame();
-
-				if (game != null) {
-
-					Vector cards = game.getCards();
-
-					if (cards != null) {
-
-						return cards.size();
-					}
-				}
-
-				return 0;
-  			}
-
-			public String getColumnName(int col) {
-				return columnNames[col];
-			}
-
-			public Object getValueAt(int row, int col) {
-
-				Card card = (Card)myrisk.getGame().getCards().elementAt(row);
-
-				switch(col) {
-
-					case 0: return new Integer( row+1 );
-					case 1: return card.getName();
-					case 2: return card.getCountry();
-					default: throw new RuntimeException();
-
-				}
-
-			}
-
-		};
-
-
+                cardsModel2 = new CardsTableModel() {
+                    List getCards() {
+                        RiskGame game = myrisk.getGame();
+                        if (game!=null) {
+                            return game.getUsedCards();
+                        }
+                        return Collections.EMPTY_LIST;
+                    }
+                };
 
 		playersModel = new AbstractTableModel() {
 
@@ -310,12 +284,48 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		views.add( "Countries" , new JScrollPane(new JTable(countriesModel)) );
 		views.add( "Continents" , new JScrollPane(new JTable(continentsModel)) );
 		views.add( "Cards" , new JScrollPane(new JTable(cardsModel)) );
+                views.add( "Spent Cards" , new JScrollPane(new JTable(cardsModel2)) );
 		views.add( "Players" , new JScrollPane(new JTable(playersModel)) );
 
 		setLayout( new BorderLayout() );
 		add( views );
 
 	}
+
+        abstract class CardsTableModel extends AbstractTableModel {
+
+                private final String[] columnNames = { "No.", "Type", "Country" };
+
+                abstract List getCards();
+                
+                public int getColumnCount() {
+                        return columnNames.length;
+                }
+
+                public int getRowCount() {
+                        return getCards().size();
+                }
+
+                public String getColumnName(int col) {
+                        return columnNames[col];
+                }
+
+                public Object getValueAt(int row, int col) {
+
+                        Card card = (Card)getCards().get(row);
+
+                        switch(col) {
+
+                                case 0: return new Integer( row+1 );
+                                case 1: return card.getName();
+                                case 2: return card.getCountry();
+                                default: throw new RuntimeException();
+
+                        }
+
+                }
+
+        }
 
 	public void actionPerformed(ActionEvent a) {
 
@@ -324,6 +334,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			countriesModel.fireTableDataChanged();
 			continentsModel.fireTableDataChanged();
 			cardsModel.fireTableDataChanged();
+                        cardsModel2.fireTableDataChanged();
 			playersModel.fireTableDataChanged();
 
 			repaint();

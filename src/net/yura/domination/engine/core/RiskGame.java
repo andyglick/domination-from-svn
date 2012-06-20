@@ -27,7 +27,7 @@ public class RiskGame implements Serializable { // transient
 	private static final long serialVersionUID = 7L;
 
 	public final static String SAVE_VERSION = String.valueOf(serialVersionUID);
-	public final static String NETWORK_VERSION = "8";
+	public final static String NETWORK_VERSION = "9";
 
 	public final static int MAX_PLAYERS = 6;
 	public final static Continent ANY_CONTINENT = new Continent("any","any", 0, 0);
@@ -119,7 +119,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private Vector Players;
 	private Country[] Countries;
 	private Continent[] Continents;
-	private Vector Cards;
+	private Vector Cards,usedCards;
 	private Vector Missions;
 
 	private Player currentPlayer;
@@ -180,7 +180,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 		//simone=true;//false;
 
 		r = new Random();
-
 	}
 
 	public void addCommand(String a) {
@@ -530,14 +529,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 
         currentPlayer.tradeInCards(card1, card2, card3);
 
-        if (recycleCards) {
-
-            Cards.add(card1);
-            Cards.add(card2);
-            Cards.add(card3);
-            //Return the cards to the deck
-
-        }
+        //Return the cards to the deck
+        Vector used = getUsedCards();
+        used.add(card1);
+        used.add(card2);
+        used.add(card3);
 
         currentPlayer.addArmies(armies);
 
@@ -2272,6 +2268,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public Vector getCards() {
 		return Cards;
 	}
+        public Vector getUsedCards() {
+            if (usedCards==null) {
+                usedCards = new Vector();
+            }
+            return usedCards;
+	}
 
 	/**
 	 * Rolls a certain number of dice
@@ -2447,19 +2449,38 @@ System.out.print(str+"]\n");
 
 	}
 
-	public Card findCard(String name) {
+	public Card findCardAndRemoveIt(String name) {
 
+                int cardIndex = -1;
+            
 		for (int c=0; c< Cards.size() ; c++) {
+                        Card theCard = ((Card)Cards.elementAt(c));
 
-			if (name.equals(Card.WILDCARD) && name.equals( ((Card)Cards.elementAt(c)).getName() ) ) {
-				return ((Card)Cards.elementAt(c));
+                        // if we are looking for a wildcard, and this card is also a wildcard
+                        if (name.equals(Card.WILDCARD) && name.equals( theCard.getName() ) ) {
+				cardIndex = c;
+                                break;
 			}
-			else if ( (Country)((Card)Cards.elementAt(c)).getCountry() != null && name.equals( ((Country)((Card)Cards.elementAt(c)).getCountry()).getColor()+"" ) ) {
-				return ((Card)Cards.elementAt(c));
+                        // if we are not looking for a wildcard and the card matches the country
+                        else if (theCard.getCountry() != null && name.equals( String.valueOf( theCard.getCountry().getColor() ) ) ) {
+				cardIndex = c;
+                                break;
 			}
-
+                        
 		}
-		return null;
+                
+                // find the card and remove it
+                Card theCard = (Card)Cards.remove(cardIndex);
+                Cards.trimToSize(); // not sure if this is needed
+
+                // if we have removed the last card, and we want to reuse our cards, then we add all the used ones into the current cards vector
+                if (Cards.isEmpty() && recycleCards) {
+                    Vector used = getUsedCards();
+                    Cards.addAll(used);
+                    used.clear();
+                }
+                
+		return theCard;
 
 	}
 
