@@ -123,6 +123,18 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 mapFrame.setVisible(true);
 
             }
+            else if ("mission".equals(actionCommand)) {
+                    autoplaceall.setFocusable(false);
+            }
+            else if ("domination".equals(actionCommand)) {
+                    autoplaceall.setFocusable(true);
+            }
+            else if ("capital".equals(actionCommand)) {
+                    autoplaceall.setFocusable(true);
+            }
+            else if ("customPlayers".equals(actionCommand)) {
+                // TODO
+            }
             else {
                 System.out.println("Unknown command: "+actionCommand);
             }
@@ -180,6 +192,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     // ================================================ GAME SETUP
 
     XULLoader newgame;
+    Button autoplaceall;
     private boolean localgame;
     private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
     private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
@@ -199,6 +212,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         newgame = getPanel("/newgame.xml");
 
+        autoplaceall = (Button)newgame.find("autoplaceall");
+        
         // kind of a hack
         Component startButton = newgame.find("startButton");
         Component cancelButton = newgame.find("cancelButton");
@@ -372,11 +387,21 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         
         Label label = (Label)newgame.find("MapImg");
         label.setIcon( img!=null ? new Icon(img) : null );
+
+        newgame.getRoot().revalidate();
+        newgame.getRoot().repaint();
     }
 
     public void showCardsFile(String c, boolean hasMission) {
         //cardsFile.setText(c);
-        //if ( !hasMission && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
-        //mission.setEnabled(m);
+        
+        Button mission = (Button)newgame.find("mission");
+        Button domination = (Button)newgame.find("domination");
+        
+        if ( !hasMission && mission.isSelected() ) {
+            domination.setSelected(true);
+            autoplaceall.setFocusable(true);
+        }
+        mission.setFocusable(hasMission);
     }
 }
