@@ -8,7 +8,6 @@ import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
-import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
@@ -201,10 +200,11 @@ public class CardsDialog extends Frame implements ActionListener {
 		public CardPanel (Card c) {
 			card=c;
 
-			int cardWidth=60;
-			int cardHeight=100;
+			int cardWidth=XULLoader.adjustSizeToDensity(40);
+			//int cardHeight=100;
 
-			setPreferredSize( cardWidth, cardHeight );
+                        // height will be set by the scrollarea height in the XML file
+			setPreferredSize( cardWidth, -1 );
 		}
 
 		/**

@@ -10,7 +10,6 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
-import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
@@ -28,6 +27,8 @@ import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
+import net.yura.mobile.gui.layout.GridBagConstraints;
+import net.yura.mobile.gui.layout.GridBagLayout;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 import net.yura.swingme.core.CoreUtil;
@@ -127,11 +128,13 @@ public class GameActivity extends Frame implements ActionListener {
         
         // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
-        gobutton = new Button();
+        gobutton = new Button(" ");
         gobutton.addActionListener(this);
         gobutton.setActionCommand("go");
+        gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWW"), -1);
 
-        note = new Label();
+        note = new Label(" ");
+        note.setHorizontalAlignment(Graphics.HCENTER);
         
         cardsbutton = new Button();
         cardsbutton.setIcon( new Icon("/cards_button.png") );
@@ -188,16 +191,30 @@ public class GameActivity extends Frame implements ActionListener {
 
     }
     
-    Panel makeBottomPanel() {
+    private Panel makeBottomPanel() {
         
         Panel bottom = new Panel(new BorderLayout());
         
-        Panel gamepanel2 = new Panel();
+        int g = XULLoader.adjustSizeToDensity(1);
+        Panel gamepanel2 = new Panel( new GridBagLayout(3, g, g, 0, g, g) );
         gamepanel2.setName("TransPanel");
-        gamepanel2.add( cardsbutton );
-        gamepanel2.add( missionbutton );
-        gamepanel2.add( gobutton );
-        gamepanel2.add( note );
+
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.rowSpan = 2;
+
+        gamepanel2.add( cardsbutton, gc );
+        
+        GridBagConstraints gc1 = new GridBagConstraints();
+        gc1.rowSpan = 2;
+        gc1.halign = "left";
+        gc1.weightx = 1;
+        
+        gamepanel2.add( missionbutton, gc1 );
+
+        GridBagConstraints gc2 = new GridBagConstraints();
+
+        gamepanel2.add( note,gc2 );
+        gamepanel2.add( gobutton,gc2 );
         
         bottom.add( new PlayersPanel(), Graphics.TOP );
         bottom.add(gamepanel2);
@@ -405,7 +422,7 @@ public class GameActivity extends Frame implements ActionListener {
                 }
                 else {
                         gobutton.setFocusable(false);
-                        gobutton.setText("");
+                        gobutton.setText(" ");
                 }
             }
             
@@ -495,10 +512,10 @@ public class GameActivity extends Frame implements ActionListener {
             AutoEndGo.setFocusable(false);
             AutoDefend.setFocusable(false);
 
-            gobutton.setText("");
+            gobutton.setText(" ");
             gobutton.setFocusable(false);
 
-            note.setText("");
+            note.setText(" ");
             gameState=0;
 
     }
@@ -538,7 +555,7 @@ public class GameActivity extends Frame implements ActionListener {
                 note.setText( resb.getProperty("game.note.selectdestination") );
             }
             else {
-                note.setText("");
+                note.setText(" ");
 
                 MoveDialog move = new MoveDialog(myrisk) {
                     @Override
