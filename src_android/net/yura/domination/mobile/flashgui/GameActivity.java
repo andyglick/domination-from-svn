@@ -360,7 +360,9 @@ public class GameActivity extends Frame implements ActionListener {
         status = state;
     }
     
-
+    /**
+     * @see net.yura.domination.ui.flashgui.GameFrame#needInput(int)
+     */
     public void needInput(int s) {
             gameState=s;
             String goButtonText=null;
@@ -371,12 +373,14 @@ public class GameActivity extends Frame implements ActionListener {
                             pp.setC1(255);
                             pp.setC2(255);
                             goButtonText = resb.getProperty("game.button.go.endtrade");
+                            noteText = getArmiesLeftText();
                             break;
                     }
                     case RiskGame.STATE_PLACE_ARMIES: {
                             if ( !myrisk.getGame().NoEmptyCountries() ) {
                                     goButtonText = resb.getProperty("game.button.go.autoplace");
                             }
+                            noteText = getArmiesLeftText();
                             break;
                     }
                     case RiskGame.STATE_ATTACKING: {
@@ -392,10 +396,12 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_END_TURN: {
+                            noteText = " ";
                             goButtonText = resb.getProperty("game.button.go.endgo");
                             break;
                     }
                     case RiskGame.STATE_GAME_OVER: {
+                            noteText = " ";
 //                            if (localGame) {
                                     goButtonText = resb.getProperty("game.button.go.closegame");
 //                            }
@@ -452,10 +458,13 @@ public class GameActivity extends Frame implements ActionListener {
     }
     
    /**
+    * the armiesLeft method call from the core is not really needed as it is not
+    * a event and the same data can be got by using these getters
     * @see MiniFlashRiskAdapter#armiesLeft(int, boolean)
     */
-    public void armiesLeft(int l) {
-            note.setText( RiskUtil.replaceAll( resb.getString("game.note.armiesleft"),"{0}", String.valueOf(l)) );
+    public String getArmiesLeftText() {
+            int l = myrisk.getGame().getCurrentPlayer().getExtraArmies();
+            return RiskUtil.replaceAll( resb.getString("game.note.armiesleft"),"{0}", String.valueOf(l));
     }
 
     private void goOn() {
@@ -515,7 +524,7 @@ public class GameActivity extends Frame implements ActionListener {
             gobutton.setText(" ");
             gobutton.setFocusable(false);
 
-            note.setText(" ");
+            note.setText( resb.getString("game.pleasewait") );
             gameState=0;
 
     }
@@ -543,7 +552,7 @@ public class GameActivity extends Frame implements ActionListener {
             }
             else {
                 go("attack " + countries[0] + " " + countries[1]);
-                note.setText( resb.getProperty("game.note.selectattacker") );
+                note.setText(" "); // HACK: go sets the note to "please wait" so now we want to clear it
             }
 
         }

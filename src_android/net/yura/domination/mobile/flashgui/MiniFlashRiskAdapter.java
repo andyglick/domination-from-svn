@@ -118,8 +118,8 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void armiesLeft(int l, boolean s) {
-        gameFrame.armiesLeft(l);
+    public void armiesLeft(int extraArmies, boolean noEmptyCountries) {
+        // not used, we use getters now to get this info
     }
 
     BattleDialog battle;
