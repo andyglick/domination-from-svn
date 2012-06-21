@@ -108,6 +108,7 @@
     <style id="transPanel">
 	   <state>
 	      <color value="#AA000000" type="BACKGROUND"/>
+              <color value="#FFFFFF" type="FOREGROUND"/>
 	   </state>
     </style>
     <bind style="transPanel" type="region" key="TransPanel"/>
