@@ -566,7 +566,7 @@ public class GameActivity extends Frame implements ActionListener {
             else {
                 note.setText(" ");
 
-                MoveDialog move = new MoveDialog(myrisk) {
+                MoveDialog move = new MoveDialog(myrisk,pp) {
                     @Override
                     public void setVisible(boolean b) { // catch closing of the dialog
                         super.setVisible(b);
