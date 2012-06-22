@@ -11,6 +11,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
@@ -141,6 +142,7 @@ public class BattleDialog extends Frame implements ActionListener {
 
         if (canRetreat) {
                 retreat.setVisible(true);
+                retreat.setMnemonic( KeyEvent.KEY_SOFTKEY2 );
                 setTitle(resb.getProperty("battle.select.attack"));
         }
         else {
@@ -179,6 +181,7 @@ public class BattleDialog extends Frame implements ActionListener {
     public void reset() {
         rollButton.setFocusable(false);
         retreat.setVisible(false);
+        retreat.setMnemonic( 0 );
         canRetreat=false;
         max=0;
         setTitle(resb.getProperty("battle.title"));

@@ -185,7 +185,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     @Override
     public void setSlider(int min, int c1num, int c2num) {
         if (move==null) {
-            move = new MoveDialog(myRisk) {
+            move = new MoveDialog(myRisk,gameFrame.pp) {
                 @Override
                 public void setVisible(boolean b) {
                     super.setVisible(b);
