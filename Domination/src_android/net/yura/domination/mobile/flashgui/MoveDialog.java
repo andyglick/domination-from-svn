@@ -3,6 +3,7 @@ package net.yura.domination.mobile.flashgui;
 import android.graphics.ColorMatrix;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
+import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
@@ -10,20 +11,27 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.ChangeListener;
+import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
+import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.Slider;
+import net.yura.mobile.gui.layout.Layout;
+import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.gui.plaf.Style;
 import net.yura.mobile.util.Properties;
 
 /**
  * @author Yura
  */
-public class MoveDialog extends Frame implements ActionListener {
+public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
     PicturePanel pp;
+    Font font;
     
     Properties resb = GameActivity.resb;
     
@@ -38,18 +46,18 @@ public class MoveDialog extends Frame implements ActionListener {
         pp = p;
 
         slider = new Slider();
-        
+        slider.addChangeListener(this);
 
         cancelMove = new Button(resb.getProperty("move.cancel"));
         cancelMove.setActionCommand("cancel");
 
-        Button moveall = new Button(resb.getProperty("move.moveall"));
+        final Button moveall = new Button(resb.getProperty("move.moveall"));
         moveall.setActionCommand("all");
-        Button moveb = new Button(resb.getProperty("move.move"));
+        final Button moveb = new Button(resb.getProperty("move.move"));
         moveb.setActionCommand("move");
 
-        Panel moveControl = new Panel();
-        moveControl.add(slider);
+        final Panel moveControl = new Panel();
+
         moveControl.add(moveall);
         moveControl.add(moveb);
         moveControl.add(cancelMove);
@@ -58,13 +66,65 @@ public class MoveDialog extends Frame implements ActionListener {
         moveall.addActionListener(this);
         moveb.addActionListener(this);
 
-        getContentPane().add(moveControl,Graphics.BOTTOM);
+        Panel contentPane = getContentPane();
+        
+        contentPane.setLayout(new Layout() {
+            public void layoutPanel(Panel panel) {
+                
+                int imageAreaHeight = font.getHeight() * 4;
+                
+                int heightOfComponents = getHeightOfComponents(imageAreaHeight);
+                
+                int yOffset = (panel.getHeight()-heightOfComponents)/2 + imageAreaHeight + gap;
+                int width = panel.getWidth();
+                for (Component c: (List<Component>)panel.getComponents() ) {
+                    if (c.isVisible()) {
+                        int w = c.getWidthWithBorder();
+                        if (w < heightOfComponents) {
+                            w = heightOfComponents; // strech the slider to at least heightOfComponents
+                        }
+                        int h = c.getHeightWithBorder();
+                        c.setBoundsWithBorder(
+                                (width-w)/2, 
+                                yOffset, 
+                                w, 
+                                h);
+                        yOffset = yOffset + h + gap;
+                    }
+                }
+                
+            }
+
+            public int getPreferredHeight(Panel panel) {
+                return 10; //  dont care
+            }
+
+            public int getPreferredWidth(Panel panel) {
+                return 10; //  dont care
+            }
+        });
+        contentPane.add(slider);
+        contentPane.add(moveControl);
         setMaximum(true);
 
 
         setName("TransparentDialog");
         setForeground(0xFF000000);
         setBackground(0xAA000000);
+    }
+    
+    int gap = XULLoader.adjustSizeToDensity(5);
+    int getHeightOfComponents(int imageAreaHeight) {
+        Panel panel = getContentPane();
+        
+        int heightOfComponents = imageAreaHeight + gap*panel.getComponentCount();
+        List<Component> comps = panel.getComponents();
+        for (Component c:comps) {
+            if (c.isVisible()) {
+                heightOfComponents = heightOfComponents + c.getHeightWithBorder();
+            }
+        }
+        return heightOfComponents;
     }
     
     public void setupMove(int min, int c1num, int c2num, boolean tacmove) {
@@ -99,83 +159,93 @@ public class MoveDialog extends Frame implements ActionListener {
                 slider.setMinorTickSpacing(1);
         }
 */
+        revalidate();
 
     }
 
 
-                @Override
-		public void paintComponent(Graphics2D g) {
+    @Override
+    public void paintComponent(Graphics2D g) {
 
-                    Image c1img = pp.getCountryImage(c1num);
-                    Image c2img = pp.getCountryImage(c2num);
-                    int csrc = myrisk.hasArmiesInt( c1num );
-                    int cdes = myrisk.hasArmiesInt( c2num );
-                    int move = (Integer)slider.getValue();
-                    int color = myrisk.getCurrentPlayerColor();
-                    
-                    
-                        ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
-                        m.preConcat(PicturePanel.gray);
-                        m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(color, 100) ) );
-                        g.getGraphics().setColorMarix(m);
-                    
-			g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2));
-			g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2));
-                        
-                        g.getGraphics().setColorMarix(null);
+        Image c1img = pp.getCountryImage(c1num);
+        Image c2img = pp.getCountryImage(c2num);
+        int csrc = myrisk.hasArmiesInt( c1num );
+        int cdes = myrisk.hasArmiesInt( c2num );
+        int move = (Integer)slider.getValue();
+        int color = myrisk.getCurrentPlayerColor();
 
-			g.setColor( 0xFF000000 );
+        g.setFont(font);
+        int fh = font.getHeight();
 
-			//tl = new TextLayout( country1.getName() , font, frc); // Display
-			//tl.draw( g, (float) (130-(tl.getBounds().getWidth()/2)), (float)40 );
+        
+        int imageAreaHeight = font.getHeight() * 4;
+        int heightOfComponents = getHeightOfComponents(imageAreaHeight);
+        // this is the MIDDLE of the images area
+        int xOffset = getContentPane().getWidth() / 2;
+        int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/2 + getContentPane().getY();
 
-			//tl = new TextLayout( country2.getName() , font, frc); // Display
-			//tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
+        
+        ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
+        m.preConcat(PicturePanel.gray);
+        m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(color, 100) ) );
+        g.getGraphics().setColorMarix(m);
 
-			g.setColor( color );
+        g.drawImage(c1img, xOffset-110-(c1img.getWidth()/2), yOffset-(c1img.getHeight()/2));
+        g.drawImage(c2img, xOffset+110-(c2img.getWidth()/2), yOffset-(c2img.getHeight()/2));
 
-			g.fillOval(120 , 90 , 20, 20);
-			g.fillOval( 340 , 90 , 20, 20 );
+        g.getGraphics().setColorMarix(null);
 
+        g.setColor( 0xFF000000 );
 
-                        int x=110;
-                        int y=40;
-                        int xCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
-                        int yCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
-                        DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
-                        g2.fillPolygon(xCoords, 0, yCoords, 0, xCoords.length, PicturePanel.colorWithAlpha(color, 150) );
+        //tl = new TextLayout( country1.getName() , font, frc); // Display
+        //tl.draw( g, (float) (130-(tl.getBounds().getWidth()/2)), (float)40 );
 
-			g.setColor( RiskUtil.getTextColorFor(color) );
+        //tl = new TextLayout( country2.getName() , font, frc); // Display
+        //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
 
-			int noa;
+        g.setColor( color );
 
-			noa = csrc-move;
+        g.fillOval( xOffset-110 -(fh/2) , yOffset-(fh/2) , fh, fh);
+        g.fillOval( xOffset+110 -(fh/2) , yOffset-(fh/2) , fh, fh );
 
-			if (noa < 10) {
-				g.drawString( String.valueOf( noa ) , 126, 105 );
-			}
-			else if (noa < 100) {
-				g.drawString( String.valueOf( noa ) , 123, 105 );
-			}
-			else {
-				g.drawString( String.valueOf( noa ) , 120, 105 );
-			}
+        int xCoords[] = {xOffset-70, xOffset, xOffset, xOffset+70, xOffset, xOffset, xOffset-70};
+        int yCoords[] = {yOffset-20,  yOffset-20,  yOffset-40, yOffset, yOffset+40,  yOffset+20, yOffset+20};
+        DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
+        g2.fillPolygon(xCoords, 0, yCoords, 0, xCoords.length, PicturePanel.colorWithAlpha(color, 150) );
 
-			noa = cdes+move;
+        g.setColor( RiskUtil.getTextColorFor(color) );
 
-			if (noa < 10) {
-				g.drawString( String.valueOf( noa ) , 346, 105 );
-			}
-			else if (noa < 100) {
-				g.drawString( String.valueOf( noa ) , 343, 105 );
-			}
-			else {
-				g.drawString( String.valueOf( noa ) , 340, 105 );
-			}
+        int noa;
 
-			g.drawString( Integer.toString(move) , 240, 104);
+        noa = csrc-move;
 
-		}
+        int textY = yOffset-(fh/2);
+        
+        if (noa < 10) {
+                g.drawString( String.valueOf( noa ) , xOffset-110 -4, textY );
+        }
+        else if (noa < 100) {
+                g.drawString( String.valueOf( noa ) , xOffset-110 -7, textY );
+        }
+        else {
+                g.drawString( String.valueOf( noa ) , xOffset-110 -10, textY );
+        }
+
+        noa = cdes+move;
+
+        if (noa < 10) {
+                g.drawString( String.valueOf( noa ) , xOffset+110 -4, textY );
+        }
+        else if (noa < 100) {
+                g.drawString( String.valueOf( noa ) , xOffset+110 -7, textY );
+        }
+        else {
+                g.drawString( String.valueOf( noa ) , xOffset+110 -10, textY );
+        }
+
+        g.drawString( Integer.toString(move) , xOffset -7, textY );
+
+    }
     
     
     public void actionPerformed(String actionCommand) {
@@ -205,6 +275,11 @@ public class MoveDialog extends Frame implements ActionListener {
         }
     }
     
+    // events from slider
+    public void changeEvent(Component source, int num) {
+        repaint();
+    }
+    
     private void go(String input) {
 
         blockInput();
@@ -223,6 +298,11 @@ public class MoveDialog extends Frame implements ActionListener {
                     setVisible(false);
             }
     }
-    
-    
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        font = theme.getFont(Style.ALL);
+    }
+
 }
