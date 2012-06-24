@@ -139,6 +139,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	// these are needed here as they need to be changed to display different amount of buttons
 	private JPanel defend;
 	private JPanel roll;
+        private winnerPanel winner;
 
 	private JSlider slider;
 	private JSlider moveNumber;
@@ -2162,6 +2163,9 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "endgo");
 			}
 			else if (gameState == RiskGame.STATE_GAME_OVER) {
+                            
+                                winner.continueButton.setVisible( myrisk.getGame().canContinue() );
+                            
 				inGameCards.show(inGameInput, "winner");
 			}
 			else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
@@ -2538,7 +2542,7 @@ public void setNODDefender(int n) {}
 			tradeCards.setMinimumSize(d);
 			tradeCards.setMaximumSize(d);
 
-			JPanel winner = new winnerPanel();
+			winner = new winnerPanel();
 			winner.setPreferredSize(d);
 			winner.setMinimumSize(d);
 			winner.setMaximumSize(d);
@@ -3855,22 +3859,21 @@ public void setNODDefender(int n) {}
 
 	class winnerPanel extends JPanel {
 
+                JButton continueButton;
+            
 		public winnerPanel() {
 
-			this.setLayout(new java.awt.GridBagLayout());
-
-			GridBagConstraints c = new GridBagConstraints();
-			c.insets = new java.awt.Insets(3, 3, 3, 3);
-			c.fill = GridBagConstraints.BOTH;
-
-			JLabel label = new JLabel(resbundle.getString("game.over"));
-
-			c.gridx = 0; // col
-			c.gridy = 0; // row
-			c.gridwidth = 1; // width
-			c.gridheight = 1; // height
-			this.add(label, c);
-
+                        continueButton = new JButton(resbundle.getString("game.button.go.continue"));
+			continueButton.addActionListener(
+                            new ActionListener() {
+                                public void actionPerformed(ActionEvent a) {
+                                    go("continue");
+                                }
+                            }
+			);
+                        
+                        add( new JLabel(resbundle.getString("game.over")) );
+                        add(continueButton);
 		}
 	}
 

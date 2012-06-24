@@ -580,18 +580,16 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 	};
 
-	/** Exit the Application */
-
 	public void closeleave() {
 
 		if (graphOn) { graphdialog.setVisible(false); graphOn=false; }
 
-		//if (localGame) {
-			go("closegame");
-		//}
-		//else {
-		//	go("leave");
-		//}
+                if (myrisk.getGame().canContinue()) {
+                    go("continue");
+                }
+                else {
+                    go("closegame");
+                }
 	}
 
 	public void repaintCountries() {
@@ -695,14 +693,17 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			}
 			case RiskGame.STATE_GAME_OVER: {
-
-				if (localGame) {
-					goButtonText = resb.getString("game.button.go.closegame");
-				}
-				else {
-					goButtonText = resb.getString("game.button.go.leavegame");
-				}
-
+                                if (myrisk.getGame().canContinue()) {
+                                    goButtonText = resb.getString("game.button.go.continue");
+                                }
+                                else {
+                                    if (localGame) {
+                                            goButtonText = resb.getString("game.button.go.closegame");
+                                    }
+                                    else {
+                                            goButtonText = resb.getString("game.button.go.leavegame");
+                                    }
+                                }
 				break;
 
 			}

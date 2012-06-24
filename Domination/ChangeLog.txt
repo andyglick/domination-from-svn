@@ -16,7 +16,8 @@ CURRENT VERSION:
 
 	if UNDO fails once, do not try and do undo any more
 	recycle cards works more like it would in real life
-	game can be played on Android 
+	continue add to SwingGUI and FlashGUI
+	game can be played on Android
 
 1.1.0.8 (02.04.2012)
 
