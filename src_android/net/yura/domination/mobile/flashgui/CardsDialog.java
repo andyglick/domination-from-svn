@@ -148,12 +148,12 @@ public class CardsDialog extends Frame implements ActionListener {
                     myCardsPanel.remove(cp);
                 }
                 extraArmiesCard = null;
-                myCardsPanel.revalidate();
 
                 tradeButton.setFocusable(false);
 
                 setupNumArmies();
                 
+                revalidate();
                 repaint();
 
             }
