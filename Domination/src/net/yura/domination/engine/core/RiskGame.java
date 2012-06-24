@@ -1426,20 +1426,29 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 
 	}
+        
+        public boolean canContinue() {
+            
+		if (gameState==STATE_GAME_OVER && gameMode != MODE_DOMINATION && gameMode != 1) {
+
+			int oldGameMode=gameMode;
+			gameMode=MODE_DOMINATION;
+			boolean playerWon = checkPlayerWon();
+                        gameMode=oldGameMode;
+
+                        return !playerWon; // we CAN continue if someone has NOT won
+
+                }
+                return false;
+            
+        }
 
 	public boolean continuePlay() {
 
-		if (gameState==STATE_GAME_OVER && gameMode != 0 && gameMode != 1) {
+                if (canContinue()) {
 
-			int oldGameMode=gameMode;
-
-			gameMode=0;
-
-			if ( checkPlayerWon() ) {
-				gameMode=oldGameMode;
-				return false;
-			}
-
+                        gameMode=MODE_DOMINATION;
+                    
 			if (tradeCap==true) { gameState=STATE_TRADE_CARDS; }
 			else if ( currentPlayer.getExtraArmies()==0 ) { gameState=STATE_ATTACKING; }
 			else { gameState=STATE_PLACE_ARMIES; }

@@ -402,14 +402,19 @@ public class GameActivity extends Frame implements ActionListener {
                     }
                     case RiskGame.STATE_GAME_OVER: {
                             noteText = " ";
-//                            if (localGame) {
-                                    goButtonText = resb.getProperty("game.button.go.closegame");
-//                            }
-//                            else {
-//                                    goButtonText = resBundle.getProperty("game.button.go.leavegame");
-//                            }
+                            if (myrisk.getGame().canContinue()) {
+                                goButtonText = resb.getProperty("game.button.go.continue");
+                            }
+                            else {
+                                if (localGame) {
+                                        goButtonText = resb.getProperty("game.button.go.closegame");
+                                }
+                                else {
+                                        // TODO, not sure if this is needed?
+                                        goButtonText = resb.getProperty("game.button.go.leavegame");
+                                }
+                            }
                             break;
-
                     }
                     case RiskGame.STATE_SELECT_CAPITAL: {
                             noteText = resb.getProperty("game.note.happyok");
@@ -486,8 +491,12 @@ public class GameActivity extends Frame implements ActionListener {
                     go("endgo");
             }
             else if (gameState==RiskGame.STATE_GAME_OVER) {
-                    go("continue"); // TODO check if we can first
-                    //closeleave();
+                    if (myrisk.getGame().canContinue()) {
+                        go("continue");
+                    }
+                    else {
+                        go("closegame");
+                    }
             }
             else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
                     int c1Id = pp.getC1();
