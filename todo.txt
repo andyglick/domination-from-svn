@@ -2,31 +2,28 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO Android
 
+    Get hdpi and xhdpi working
+    When bulding with ant, to extra jars for grasshopper are not included
+
     HOME SCREEN:
-	# design home screen
-	home screen About button does nothing
-        remove frame decoration
-        move About and Help into menu
-        load game does not work
+	(design home screen)
+	About screen should show copyright and other info
 
     GAME SETUP SCREEN:
-	# design game setup screen
-        game setup screen, "custom player" button does nothing
-        remove frame decoration
+	(design game setup screen)
+        (add "custom player" button and dialog)
+	in the MapStore the "top downloaded" "Top New" text is not visable in mdpi
 
     INGAME SCREEN:
-	# design in game screen
-	in game screen the drop shadow does not always go around the map
-        when you close a game, the main menu looses its border
-        remove frame decoration
-        move closegame button into menu
-        add saveGame button into menu
-        remove stats button while it does not work
-        dice roll screen does not work
-        move armies screen does not work
-
-
-
+	layout attack dialog fully
+	in capital mode, the circles around countries look wrong, maybe draw 2 or use thicker lines
+	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
+	when you are in "MUST TRADE" mode the "Go" button should not say "End Trade"
+	Text in cards dialog is not very good and does not mention "trade 3 same or 3 different cards"
+	(design in game screen)
+        (add stats button)
+	(make a theme for cards so they actually look like cards)
+	(try semi-transparent marble for top and bottom)
 
 Still needs to be done:
 
@@ -44,7 +41,6 @@ Still needs to be done:
 
 	CORE:
 
-		bug report not fully working with current server
 		add the new AI to the game from the masters project
 		**** save should be blocked in mustmove mode after a won battle, otherwise when its loaded it crashes
 		redo graph to use doubles instead of ints for scale

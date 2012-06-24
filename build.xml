@@ -136,7 +136,7 @@
 		<mkdir dir="${dir.build.game}"/>
 
 		<copy file="ChangeLog.txt" todir="${dir.build.game}"/>
-		<copy file="BugTrack.txt" todir="${dir.build.game}"/>
+		<copy file="todo.txt" todir="${dir.build.game}"/>
 		<copy file="gpl.txt" todir="${dir.build.game}"/>
 
 		<copy file="res_swing/commands.txt" todir="${dir.build.game}" filtering="true"/>
