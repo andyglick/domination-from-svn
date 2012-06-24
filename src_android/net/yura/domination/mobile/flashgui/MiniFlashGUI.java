@@ -388,8 +388,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         Label label = (Label)newgame.find("MapImg");
         label.setIcon( img!=null ? new Icon(img) : null );
 
-        newgame.getRoot().revalidate();
-        newgame.getRoot().repaint();
+        revalidate();
+        repaint();
     }
 
     public void showCardsFile(String c, boolean hasMission) {
