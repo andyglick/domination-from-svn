@@ -4,7 +4,6 @@ import android.graphics.ColorMatrix;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.List;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
@@ -38,6 +37,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
     Risk myrisk;
     Slider slider;
     Button cancelMove;
+    Button moveb;
     
     int c1num,c2num;
     
@@ -53,7 +53,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
         final Button moveall = new Button(resb.getProperty("move.moveall"));
         moveall.setActionCommand("all");
-        final Button moveb = new Button(resb.getProperty("move.move"));
+        moveb = new Button(resb.getProperty("move.move"));
         moveb.setActionCommand("move");
 
         final Panel moveControl = new Panel();
@@ -144,13 +144,17 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         }
 
         int src = myrisk.hasArmiesInt( c1num );
+        int max = src-1;
 
+        slider.setVisible( min!=max );
+        moveb.setVisible( min!=max );
+        
         slider.setMinimum(min);
-        slider.setMaximum( src-1 );
+        slider.setMaximum( max );
         slider.setValue(min);
-
-        int spacig = Math.round( (src-1)/10f );
 /* TODO
+        int spacig = Math.round( (src-1)/10f );
+
         if (spacig==0) {
                 slider.setMajorTickSpacing(1);
         }
