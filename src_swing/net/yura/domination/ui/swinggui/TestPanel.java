@@ -200,7 +200,8 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                     List getCards() {
                         RiskGame game = myrisk.getGame();
                         if (game!=null) {
-                            return game.getCards();
+                            List l = game.getCards();
+                            return l==null?Collections.EMPTY_LIST:l;
                         }
                         return Collections.EMPTY_LIST;
                     }
@@ -210,7 +211,8 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                     List getCards() {
                         RiskGame game = myrisk.getGame();
                         if (game!=null) {
-                            return game.getUsedCards();
+                            List l = game.getUsedCards();
+                            return l==null?Collections.EMPTY_LIST:l;
                         }
                         return Collections.EMPTY_LIST;
                     }
