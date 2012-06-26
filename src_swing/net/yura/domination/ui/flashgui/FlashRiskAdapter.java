@@ -71,6 +71,13 @@ public class FlashRiskAdapter implements RiskListener {
 
 		if (RiskUIUtil.checkForNoSandbox()) {
 
+                    try {
+                        // Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+                        // HACK this will print any problems loading the Preferences before we start grasshopper
+                        java.util.prefs.Preferences.userRoot(); // returns java.util.prefs.WindowsPreferences
+                    }
+                    catch (Throwable th) { }
+                    
                     // catch everything in my PrintStream
                     try {
                         net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,

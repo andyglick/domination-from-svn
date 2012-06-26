@@ -14,9 +14,11 @@ CURRENT VERSION:
 
 1.1.0.9
 
+	error now does not trigger a error box to pop up:
+	 Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
 	if UNDO fails once, do not try and do undo any more
 	recycle cards works more like it would in real life
-	continue add to SwingGUI and FlashGUI
+	continue added to SwingGUI and FlashGUI and Android
 	game can be played on Android
 
 1.1.0.8 (02.04.2012)

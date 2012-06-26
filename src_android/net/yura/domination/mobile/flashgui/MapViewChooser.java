@@ -53,6 +53,17 @@ public class MapViewChooser extends Panel implements ActionListener {
         for (int c=0;c<buttons.length;c++) {
             buttons[c] = new Button( options[c].getValue() );
             buttons[c].setActionCommand( options[c].getKey() );
+            
+            if (c==0) {
+                buttons[c].setName("SegmentedControlLeft");
+            }
+            else if (c== (buttons.length-1) ) {
+                buttons[c].setName("SegmentedControlRight");
+            }
+            else {
+                buttons[c].setName("SegmentedControlMiddle");
+            }
+            
             buttons[c].workoutPreferredSize();
             buttonsWidth = buttonsWidth + buttons[c].getWidthWithBorder();
             if (currentOption == options[c]) {
