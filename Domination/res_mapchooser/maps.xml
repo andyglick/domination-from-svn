@@ -14,10 +14,10 @@
     <panel bottom="5" gap="5" left="5" name="catagoriesBar" right="5" top="5" visible="false">
         <label alignment="center" text="mapchooser.categories" i18n="true" weightx="1"/>
     </panel>
-    <panel bottom="5" gap="5" left="5" name="top25Bar" right="5" top="5" visible="false">
-        <checkbox action="TOP_NEW" group="Top25View" selected="true" text="mapchooser.topnew" i18n="true" weightx="1"/>
-        <checkbox action="TOP_RATINGS" group="Top25View" text="mapchooser.toprated" i18n="true" weightx="1"/>
-        <checkbox action="TOP_DOWNLOADS" group="Top25View" text="mapchooser.topdownload" i18n="true" weightx="1"/>
+    <panel bottom="2" left="2" name="top25Bar" right="2" top="2" visible="false">
+        <checkbox action="TOP_NEW" group="Top25View" selected="true" text="mapchooser.topnew" i18n="true" weightx="1" alignment="center" property="plafname=SegmentedControlLeft"/>
+        <checkbox action="TOP_RATINGS" group="Top25View" text="mapchooser.toprated" i18n="true" weightx="1" alignment="center" property="plafname=SegmentedControlMiddle"/>
+        <checkbox action="TOP_DOWNLOADS" group="Top25View" text="mapchooser.topdownload" i18n="true" weightx="1" alignment="center" property="plafname=SegmentedControlRight"/>
     </panel>
     <panel bottom="5" gap="5" left="5" name="searchBar" right="5" top="5" visible="false">
         <textfield action="doMapSearch" name="mapSearchBox" weightx="1"/>

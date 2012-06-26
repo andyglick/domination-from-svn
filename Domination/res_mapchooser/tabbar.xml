@@ -18,4 +18,42 @@
     </style>
     <bind style="badge" key="Badge"/>
 
+
+    <style id="segmentedControlLeft">
+	<opaque value="false"/>
+	<state>
+	    <imagePainter path="/mdpi/segmented_control_left.9.png"/>
+	</state>
+	<state value="SELECTED">
+	    <imagePainter path="/mdpi/segmented_control_selected_left.9.png"/>
+            <color type="FOREGROUND" value="#FFFFFF"/>
+	</state>
+    </style>
+    <bind style="segmentedControlLeft" key="SegmentedControlLeft"/>
+
+    <style id="segmentedControlMiddle">
+	<opaque value="false"/>
+	<state>
+	    <imagePainter path="/mdpi/segmented_control_middle.9.png"/>
+	</state>
+	<state value="SELECTED">
+	    <imagePainter path="/mdpi/segmented_control_selected_middle.9.png"/>
+            <color type="FOREGROUND" value="#FFFFFF"/>
+	</state>
+    </style>
+    <bind style="segmentedControlMiddle" key="SegmentedControlMiddle"/>
+
+    <style id="segmentedControlRight">
+	<opaque value="false"/>
+	<state>
+	    <imagePainter path="/mdpi/segmented_control_right.9.png"/>
+	</state>
+	<state value="SELECTED">
+	    <imagePainter path="/mdpi/segmented_control_selected_right.9.png"/>
+            <color type="FOREGROUND" value="#FFFFFF"/>
+	</state>
+    </style>
+    <bind style="segmentedControlRight" key="SegmentedControlRight"/>
+
+
 </synth>

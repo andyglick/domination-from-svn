@@ -1652,6 +1652,13 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                 if (RiskUIUtil.checkForNoSandbox()) {
 
+                    try {
+                        // Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+                        // HACK this will print any problems loading the Preferences before we start grasshopper
+                        java.util.prefs.Preferences.userRoot(); // returns java.util.prefs.WindowsPreferences
+                    }
+                    catch (Throwable th) { }
+
                     net.yura.grasshopper.BugManager.interceptAndAlert(new Writer() {
                         public void write(char[] cbuf, int off, int len) {
                             errText.append(String.valueOf(cbuf, off, len));
