@@ -14,7 +14,6 @@ TODO Android
     GAME SETUP SCREEN:
 	(design game setup screen)
         (add "custom player" button and dialog)
-	in the MapStore the "top downloaded" "Top New" text is not visable in mdpi
 
     INGAME SCREEN:
 	layout attack dialog fully

@@ -19,6 +19,8 @@ CURRENT VERSION:
 	if UNDO fails once, do not try and do undo any more
 	recycle cards works more like it would in real life
 	continue added to SwingGUI and FlashGUI and Android
+	DONE - in the MapStore the "top downloaded" "Top New" text is not visable in mdpi
+	download icon in MapStore changed to blue
 	game can be played on Android
 
 1.1.0.8 (02.04.2012)
