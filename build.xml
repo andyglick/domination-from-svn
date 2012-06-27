@@ -490,12 +490,9 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*"/>
-        </copy>
-
-        <copy todir="${dir.build}/swingme">
                 <fileset dir="res_mapchooser" includes="**/*.*"/>
+                <fileset dir="res/drawable-mdpi" includes="**/*.*"/>
         </copy>
-
 
         <copy todir="${dir.build}/swingme" filtering="true">
                 <fileset dir="${dir.properties}" includes="**/*.properties"/>

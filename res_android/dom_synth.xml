@@ -97,10 +97,9 @@
     <bind style="panel" type="region" key="TransparentDialog"/>
 
     <style id="view">
-	   <insets top="15" left="15" bottom="15" right="15"/>
 	   <opaque value="false"/>
 	   <state>
-	      <imagePainter path="/shadow.png" sourceInsets="25 25 25 25" paintCenter="false"/>
+	      <imagePainter path="/shadow.9.png"/>
 	   </state>
     </style>
     <bind style="view" type="region" key="PicturePanel"/>
