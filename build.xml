@@ -114,7 +114,8 @@
 
                 <!-- for the map chooser -->
                 <copy todir="${dir.build.classes}">
-			<fileset dir="res_mapchooser"/>
+        	        <fileset dir="res_android" includes="**/ms_*.*"/>
+	                <fileset dir="res/drawable-mdpi" includes="**/ms_*.*"/>
 		</copy>
 
                 <copy file="res_swing/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
@@ -490,7 +491,6 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*"/>
-                <fileset dir="res_mapchooser" includes="**/*.*"/>
                 <fileset dir="res/drawable-mdpi" includes="**/*.*"/>
         </copy>
 
@@ -572,7 +572,6 @@ some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
           <pathelement location="src_android"/>
           <pathelement location="src_mapstore"/>
           <pathelement location="res_android"/>
-          <pathelement location="res_mapchooser"/>
         </path>
         <pathconvert property="source.absolute.dir" refid="src"/>
         

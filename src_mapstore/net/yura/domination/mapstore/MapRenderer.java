@@ -40,16 +40,16 @@ public class MapRenderer extends DefaultListCellRenderer {
         this.chooser = chooser;
         setName("ListRendererCollapsed"); // get rid of any padding
 
-        Image img = Midlet.createImage("/strip.png");
+        Image img = Midlet.createImage("/ms_strip.png");
         Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
         bar.setSprite(spin1);
         bar.workoutPreferredSize();
         //add(bar); // YURA do we need this???
         
-        play = Midlet.createImage("/play.png");
-        download = Midlet.createImage("/download.png");
+        play = Midlet.createImage("/ms_play.png");
+        download = Midlet.createImage("/ms_download.png");
         
-        loading = new Icon("/icon_loading.png");
+        loading = new Icon("/ms_icon_loading.png");
 
     }
     
