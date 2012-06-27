@@ -3,8 +3,7 @@
 
     <style id="tabbar">
 	   <state>
-	      <imagePainter path="/ms_tabbar.png" sourceInsets="30 0 0 0"/>
-              <color type="BORDERFILL" value="#000000"/>
+	      <imagePainter path="/ms_tabbar.9.png"/>
               <color type="BACKGROUND" value="#00FFFFFF"/>
               <!-- as nimbus background default is a color, we need to clear it -->
 	   </state>
