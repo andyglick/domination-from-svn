@@ -2,14 +2,11 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO Android
 
-    Get hdpi and xhdpi working
     When bulding with ant, to extra jars for grasshopper are not included
-    Get a Icon for the game,
     make images for Android Market
 
     HOME SCREEN:
 	(design home screen)
-	About screen should show copyright and other info
 
     GAME SETUP SCREEN:
 	(design game setup screen)

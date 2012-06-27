@@ -1,20 +1,68 @@
 package net.yura.domination.mobile;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.flashgui.GameActivity;
+import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.io.FileUtil;
+import net.yura.mobile.util.Properties;
 
 public class MiniUtil {
 
     public static void showAbout() {
 
-        OptionPane.showMessageDialog(null,RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION,GameActivity.resb.getProperty("about.title"), OptionPane.INFORMATION_MESSAGE);
+        Properties resb = GameActivity.resb;
+        
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        String copyright = resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
+        
+        String author = resb.getString("about.author") + " Yura Mamyrin (yura@yura.net)";
+        
+        String text = "<html>" +
+                "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
+                "<p>"+resb.getString("about.version")+" "+Risk.RISK_VERSION +"</p>"+
+                "<p>"+author+"</p>"+
+                "<p>"+copyright+"</p>"+
+               // "<p>"+ resb.getString("about.comments") +"</p>"+
+                "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
+                "</html>";
+
+        Button credits = new Button(resb.getString("about.tab.credits"));
+        credits.setActionCommand("credits");
+        Button license = new Button(resb.getString("about.tab.license"));
+        license.setActionCommand("license");
+        Button changelog = new Button(resb.getString("about.tab.changelog"));
+        changelog.setActionCommand("changelog");
+        Button ok = new Button(resb.getString("about.okbutton"));
+        ok.setMnemonic( KeyEvent.KEY_END );
+        
+        OptionPane.showOptionDialog(new ActionListener() {
+            public void actionPerformed(String actionCommand) {
+                try {
+                    if ("license".equals(actionCommand)) {
+                        RiskUtil.openDocs("gpl.txt");
+                    }
+                    else if ("changelog".equals(actionCommand)) {
+                        RiskUtil.openDocs("ChangeLog.txt");
+                    }
+                    else if ("credits".equals(actionCommand)) {
+                        RiskUtil.openDocs("help/game_credits.htm");
+                    }
+                }
+                catch(Exception e) {
+                    OptionPane.showMessageDialog(null,"Unable to open info: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
+                }
+            }
+        } ,text,resb.getProperty("about.title"), 0, OptionPane.INFORMATION_MESSAGE,
+        null, new Button[] {credits,license,changelog,ok} , ok);
         
     }
 
