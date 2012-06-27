@@ -14,6 +14,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.FileChooser;
@@ -168,7 +169,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         XULLoader loader;
         try {
-            loader = XULLoader.load( getClass().getResourceAsStream(xmlfile) , this, resb);
+            loader = XULLoader.load( Midlet.getResourceAsStream(xmlfile) , this, resb);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);

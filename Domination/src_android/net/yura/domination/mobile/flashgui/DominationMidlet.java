@@ -73,7 +73,7 @@ public class DominationMidlet extends Midlet {
         }
         
         try {
-            synth.load( getClass().getResourceAsStream("/dom_synth.xml") );
+            synth.load( Midlet.getResourceAsStream("/dom_synth.xml") );
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
