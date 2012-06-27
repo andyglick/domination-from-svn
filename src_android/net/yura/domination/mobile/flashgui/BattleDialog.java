@@ -12,6 +12,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
@@ -32,16 +33,11 @@ public class BattleDialog extends Frame implements ActionListener {
     public BattleDialog(Risk a) {
         myrisk = a;
 
-        try {
-            Image red_img = Image.createImage("/red_dice.png");
-            red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
+        Image red_img = Midlet.createImage("/red_dice.png");
+        red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
 
-            Image blue_img = Image.createImage("/blue_dice.png");
-            blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        Image blue_img = Midlet.createImage("/blue_dice.png");
+        blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
 
         setName("TransparentDialog");
         setForeground(0xFF000000);
@@ -149,6 +145,7 @@ public class BattleDialog extends Frame implements ActionListener {
                 setTitle(resb.getProperty("battle.select.defend"));
         }
 
+        revalidate();
         repaint();
 
     }
@@ -185,6 +182,9 @@ public class BattleDialog extends Frame implements ActionListener {
         canRetreat=false;
         max=0;
         setTitle(resb.getProperty("battle.title"));
+        
+        revalidate();
+        repaint();
     }
 
     private static final int DICE_NORMAL = 0;

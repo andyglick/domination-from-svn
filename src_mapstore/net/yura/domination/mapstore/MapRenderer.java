@@ -8,6 +8,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.mobile.gui.Animation;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.ProgressBar;
@@ -38,22 +39,18 @@ public class MapRenderer extends DefaultListCellRenderer {
         
         this.chooser = chooser;
         setName("ListRendererCollapsed"); // get rid of any padding
+
+        Image img = Midlet.createImage("/strip.png");
+        Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
+        bar.setSprite(spin1);
+        bar.workoutPreferredSize();
+        //add(bar); // YURA do we need this???
         
-        try {
-            Image img = Image.createImage("/strip.png");
-            Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
-            bar.setSprite(spin1);
-            bar.workoutPreferredSize();
-            //add(bar); // YURA do we need this???
-            
-            play = Image.createImage("/play.png");
-            download = Image.createImage("/download.png");
-            
-            loading = new Icon("/icon_loading.png");
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        play = Midlet.createImage("/play.png");
+        download = Midlet.createImage("/download.png");
+        
+        loading = new Icon("/icon_loading.png");
+
     }
     
     public void animate() {
