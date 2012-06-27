@@ -81,7 +81,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         try {
             LookAndFeel laf = DesktopPane.getDesktopPane().getLookAndFeel();
             if (laf instanceof SynthLookAndFeel) {
-                ((SynthLookAndFeel)laf).load( Midlet.getResourceAsStream("/tabbar.xml") );
+                ((SynthLookAndFeel)laf).load( Midlet.getResourceAsStream("/ms_tabbar.xml") );
             }
             else {
                 System.err.println("LookAndFeel not SynthLookAndFeel "+laf);
@@ -98,7 +98,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         this.mapfiles = mapfiles;
 
         try {
-            loader = XULLoader.load( Midlet.getResourceAsStream("/maps.xml") , this, resBundle);
+            loader = XULLoader.load( Midlet.getResourceAsStream("/ms_maps.xml") , this, resBundle);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);
@@ -113,8 +113,8 @@ public class MapChooser implements ActionListener,MapServerListener {
             Icon on,off;
 
             try {
-                on = new Icon("/bar_on.png");
-                off = new Icon("/bar_off.png");
+                on = new Icon("/ms_bar_on.png");
+                off = new Icon("/ms_bar_off.png");
             }
             catch (Exception ex) {
                 throw new RuntimeException(ex);

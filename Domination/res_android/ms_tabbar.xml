@@ -3,7 +3,7 @@
 
     <style id="tabbar">
 	   <state>
-	      <imagePainter path="/tabbar.png" sourceInsets="30 0 0 0"/>
+	      <imagePainter path="/ms_tabbar.png" sourceInsets="30 0 0 0"/>
               <color type="BORDERFILL" value="#000000"/>
               <color type="BACKGROUND" value="#00FFFFFF"/>
               <!-- as nimbus background default is a color, we need to clear it -->
@@ -13,7 +13,7 @@
 
     <style id="badge">
 	   <state>
-	      <imagePainter path="/ic_notification_overlay.9.png"/>
+	      <imagePainter path="/ms_ic_notification_overlay.9.png"/>
 	   </state>
     </style>
     <bind style="badge" key="Badge"/>
@@ -22,10 +22,10 @@
     <style id="segmentedControlLeft">
 	<opaque value="false"/>
 	<state>
-	    <imagePainter path="/mdpi/segmented_control_left.9.png"/>
+	    <imagePainter path="/ms_segmented_control_left.9.png"/>
 	</state>
 	<state value="SELECTED">
-	    <imagePainter path="/mdpi/segmented_control_selected_left.9.png"/>
+	    <imagePainter path="/ms_segmented_control_selected_left.9.png"/>
             <color type="FOREGROUND" value="#FFFFFF"/>
 	</state>
     </style>
@@ -34,10 +34,10 @@
     <style id="segmentedControlMiddle">
 	<opaque value="false"/>
 	<state>
-	    <imagePainter path="/mdpi/segmented_control_middle.9.png"/>
+	    <imagePainter path="/ms_segmented_control_middle.9.png"/>
 	</state>
 	<state value="SELECTED">
-	    <imagePainter path="/mdpi/segmented_control_selected_middle.9.png"/>
+	    <imagePainter path="/ms_segmented_control_selected_middle.9.png"/>
             <color type="FOREGROUND" value="#FFFFFF"/>
 	</state>
     </style>
@@ -46,10 +46,10 @@
     <style id="segmentedControlRight">
 	<opaque value="false"/>
 	<state>
-	    <imagePainter path="/mdpi/segmented_control_right.9.png"/>
+	    <imagePainter path="/ms_segmented_control_right.9.png"/>
 	</state>
 	<state value="SELECTED">
-	    <imagePainter path="/mdpi/segmented_control_selected_right.9.png"/>
+	    <imagePainter path="/ms_segmented_control_selected_right.9.png"/>
             <color type="FOREGROUND" value="#FFFFFF"/>
 	</state>
     </style>
