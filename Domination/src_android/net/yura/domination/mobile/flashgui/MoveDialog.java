@@ -71,7 +71,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         contentPane.setLayout(new Layout() {
             public void layoutPanel(Panel panel) {
                 
-                int imageAreaHeight = font.getHeight() * 4;
+                int imageAreaHeight = getImageAreaHeight();
                 
                 int heightOfComponents = getHeightOfComponents(imageAreaHeight);
                 
@@ -111,6 +111,10 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         setName("TransparentDialog");
         setForeground(0xFF000000);
         setBackground(0xAA000000);
+    }
+    
+    private int getImageAreaHeight() {
+        return font.getHeight() * 5;
     }
     
     int gap = XULLoader.adjustSizeToDensity(5);
@@ -182,7 +186,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         int fh = font.getHeight();
 
         
-        int imageAreaHeight = font.getHeight() * 4;
+        int imageAreaHeight = getImageAreaHeight();
         int heightOfComponents = getHeightOfComponents(imageAreaHeight);
         // this is the MIDDLE of the images area
         int xOffset = getContentPane().getWidth() / 2;

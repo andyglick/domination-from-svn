@@ -14,6 +14,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.CheckBox;
@@ -41,12 +42,7 @@ public class GameActivity extends Frame implements ActionListener {
     public static final Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
     public static final Border marble;
     static {
-        try {
-            marble = new BackgroundBorder( Image.createImage("/marble.jpg") );
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        marble = new BackgroundBorder( Midlet.createImage("/marble.jpg") );
     }
     
     Risk myrisk;
