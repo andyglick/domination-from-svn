@@ -71,7 +71,7 @@ public class CardsDialog extends Frame implements ActionListener {
                 
                 XULLoader loader;
                 try {
-                    loader = XULLoader.load( getClass().getResourceAsStream("/cards.xml") , this, resb);
+                    loader = XULLoader.load( Midlet.getResourceAsStream("/cards.xml") , this, resb);
                 }
                 catch(Exception ex) {
                     throw new RuntimeException(ex);
