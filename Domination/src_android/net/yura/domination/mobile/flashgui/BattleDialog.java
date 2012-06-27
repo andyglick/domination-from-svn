@@ -33,11 +33,8 @@ public class BattleDialog extends Frame implements ActionListener {
     public BattleDialog(Risk a) {
         myrisk = a;
 
-        Image red_img = Midlet.createImage("/red_dice.png");
-        red_dice = new Sprite(red_img, red_img.getWidth()/3, red_img.getHeight()/3 ); // 29x29
-
-        Image blue_img = Midlet.createImage("/blue_dice.png");
-        blue_dice = new Sprite(blue_img, blue_img.getWidth()/3, blue_img.getHeight()/3 ); // 29x29
+        red_dice = getDice("/red_dice.png");
+        blue_dice = getDice("/blue_dice.png");
 
         setName("TransparentDialog");
         setForeground(0xFF000000);
@@ -57,6 +54,19 @@ public class BattleDialog extends Frame implements ActionListener {
 
         retreat.addActionListener(this);
         retreat.setActionCommand("retreat");
+    }
+    
+    private Sprite getDice(String name) {
+        Image img = Midlet.createImage(name);
+        
+        int w = img.getWidth()/3;
+        int h = img.getHeight()/3;
+        
+        if ( img.getWidth() % w != 0 || img.getHeight() % h != 0) {
+            img = Image.createImage(img, 0, 0, w*3, h*3, 0);
+        }
+        
+        return new Sprite(img, w, h); // 29x29
     }
 
     public void actionPerformed(String actionCommand) {
