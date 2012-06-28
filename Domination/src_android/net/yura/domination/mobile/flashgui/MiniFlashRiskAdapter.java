@@ -127,8 +127,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openBattle(int c1num, int c2num) {
 
         if (battle == null) {
-            battle = new BattleDialog(myRisk);
-            battle.setMaximum(true);
+            battle = new BattleDialog(myRisk,gameFrame.pp);
         }
 
         battle.setup(c1num, c2num);
