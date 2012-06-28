@@ -571,7 +571,7 @@ public class GameActivity extends Frame implements ActionListener {
             else {
                 note.setText(" ");
 
-                MoveDialog move = new MoveDialog(myrisk,pp) {
+                MoveDialog move = new MoveDialog(myrisk) {
                     @Override
                     public void setVisible(boolean b) { // catch closing of the dialog
                         super.setVisible(b);
@@ -583,8 +583,11 @@ public class GameActivity extends Frame implements ActionListener {
                         }
                     }
                 };
-                
-                move.setupMove(1,countries[0] , countries[1], true);
+
+                Image c1img = pp.getCountryImage(countries[0]);
+                Image c2img = pp.getCountryImage(countries[1]);
+
+                move.setupMove(1,countries[0] , countries[1],c1img,c2img, true);
                 move.setVisible(true);
 
             }

@@ -29,7 +29,6 @@ import net.yura.mobile.util.Properties;
  */
 public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
-    PicturePanel pp;
     Font font;
     
     Properties resb = GameActivity.resb;
@@ -40,10 +39,10 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
     Button moveb;
     
     int c1num,c2num;
+    Image c1img,c2img;
     
-    public MoveDialog(Risk risk,PicturePanel p) {
+    public MoveDialog(Risk risk) {
         myrisk = risk;
-        pp = p;
 
         slider = new Slider();
         slider.addChangeListener(this);
@@ -83,10 +82,11 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         return font.getHeight() * 5;
     }
     
-    public void setupMove(int min, int c1num, int c2num, boolean tacmove) {
-
+    public void setupMove(int min, int c1num, int c2num, Image c1img,Image c2img,boolean tacmove) {
         this.c1num = c1num;
         this.c2num = c2num;
+        this.c1img = c1img;
+        this.c2img = c2img;
 
         if (tacmove) {
                 setTitle(resb.getProperty("move.title.tactical"));
@@ -127,8 +127,6 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
     @Override
     public void paintComponent(Graphics2D g) {
 
-        Image c1img = pp.getCountryImage(c1num);
-        Image c2img = pp.getCountryImage(c2num);
         int csrc = myrisk.hasArmiesInt( c1num );
         int cdes = myrisk.hasArmiesInt( c2num );
         int color = myrisk.getCurrentPlayerColor();
