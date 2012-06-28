@@ -9,6 +9,8 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mapstore.MapRenderer;
+import net.yura.domination.mapstore.MapRenderer.LazyIcon;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
@@ -387,10 +389,22 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         }
         
         Label label = (Label)newgame.find("MapImg");
-        label.setIcon( img!=null ? new Icon(img) : null );
+        
+        if (img!=null) {
+            LazyIcon icon = new LazyIcon();//new Icon(img);
+            icon.setImage( img, adjustSizeToDensityFromMdpi(150) , adjustSizeToDensityFromMdpi(94) ); // 150x94
+            label.setIcon( icon );
+        }
+        else {
+            label.setIcon( null );
+        }
 
         revalidate();
         repaint();
+    }
+    
+    public static int adjustSizeToDensityFromMdpi(int size) {
+        return XULLoader.adjustSizeToDensity( (int)(size * 0.75) );
     }
 
     public void showCardsFile(String c, boolean hasMission) {
