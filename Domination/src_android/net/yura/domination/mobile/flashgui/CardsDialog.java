@@ -214,7 +214,7 @@ public class CardsDialog extends Frame implements ActionListener {
                         //g2.setColor( 0xFF000000 );
                         //g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
                     
-                        int imgSize = 50;
+                        int imgSize = MiniFlashGUI.adjustSizeToDensityFromMdpi(50);
                         
 			if (!(card.getName().equals(Card.WILDCARD))) {
 
