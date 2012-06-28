@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -16,6 +17,7 @@ import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
 
 /**
@@ -29,9 +31,11 @@ public class BattleDialog extends Frame implements ActionListener {
     Sprite red_dice,blue_dice;
     Random r = new Random();
     Button rollButton,retreat;
+    PicturePanel pp;
 
-    public BattleDialog(Risk a) {
+    public BattleDialog(Risk a,PicturePanel p) {
         myrisk = a;
+        pp=p;
 
         red_dice = getDice("/red_dice.png");
         blue_dice = getDice("/blue_dice.png");
@@ -43,17 +47,32 @@ public class BattleDialog extends Frame implements ActionListener {
         rollButton = new Button(resb.getProperty("battle.roll"));
         retreat = new Button( resb.getProperty("battle.retreat") );
         
-        Panel controls = new Panel();
-        controls.add(rollButton);
-        controls.add(retreat);
-        
-        getContentPane().add(controls,Graphics.BOTTOM);
-
         rollButton.addActionListener(this);
         rollButton.setActionCommand("fight");
 
         retreat.addActionListener(this);
         retreat.setActionCommand("retreat");
+        
+        Panel controls = new Panel();
+        controls.add(rollButton);
+        controls.add(retreat);
+        
+        Panel contentPane = getContentPane();
+        contentPane.setLayout( new MoveDialog.DialogLayout( getImageAreaHeight() ) );
+        contentPane.add(controls);
+
+        setMaximum(true);
+    }
+    
+    private int getImageAreaHeight() {
+        
+        // mdpi
+        // 90 for countries
+        // 90 for dice
+        // full height 180
+        // 180 * 0.75 = 135
+        
+        return XULLoader.adjustSizeToDensity(135);
     }
     
     private Sprite getDice(String name) {
@@ -202,88 +221,36 @@ public class BattleDialog extends Frame implements ActionListener {
     private static final int COLOR_BLUE = 0xFF0000FF;
     private static final int COLOR_RED = 0xFFFF0000;
 
+    @Override
     public void paintComponent(Graphics2D g) {
 
-        // just in case in the middle of the draw the att and def get set to null
-        int[] atti=att;
-        int[] defi=def;
+        Image c1img = pp.getCountryImage(c1num);
+        Image c2img = pp.getCountryImage(c2num);
+        int csrc = myrisk.hasArmiesInt( c1num );
+        int cdes = myrisk.hasArmiesInt( c2num );
+        int color1 = myrisk.getCurrentPlayerColor();
+        int color2 = myrisk.getColorOfOwner( c2num );
 
+        int imageAreaHeight = getImageAreaHeight();
+        int heightOfComponents = ((MoveDialog.DialogLayout)getContentPane().getLayout()).getHeightOfComponents(getContentPane());
+        // this is the MIDDLE of the images area
+        int xOffset = getContentPane().getWidth() / 2;
+        int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/4 + getContentPane().getY();
 
-        // we are not drawing the countires, we will use the ones already on the map behind thid dialog
-        //g.drawSprite(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
-        //g.drawSprite(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
+        //g.setColor(0xFFFF0000);
+        //g.drawRect( (getContentPane().getWidth()-imageAreaHeight)/2 , (getContentPane().getHeight()-heightOfComponents)/2 + getContentPane().getY(), imageAreaHeight, imageAreaHeight);
+        
+        MoveDialog.paintMove(g,xOffset,yOffset,c1img,c2img,color1,color2,csrc,cdes,0);
 
-        // not supported
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        Font font = g.getFont();
-        g.setColor( getForeground() );
-
-        //tl = new TextLayout( country1.getName(), font, frc); // Display
-        //tl.draw( g, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
-
-        //tl = new TextLayout( country2.getName(), font, frc); // Display
-        //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
-
-        g.drawString("TODO", 50, 50);
-
-        //tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
-        //tl.draw( g, (float) (240-(tl.getBounds().getWidth()/2)), 320f );
-/*
-        Ellipse2D ellipse;
-
-
-        g.setColor( color1 );
-
-        ellipse = new Ellipse2D.Double();
-        ellipse.setFrame( 120 , 90 , 20, 20);
-        g.fill(ellipse);
-
-        g.setColor( color2 );
-
-        ellipse = new Ellipse2D.Double();
-        ellipse.setFrame( 340 , 90 , 20, 20);
-        g.fill(ellipse);
-
-
-        g.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
-
-
-        g.fillPolygon( arrow );
-
-        int noa;
-
-        g.setColor( RiskUIUtil.getTextColorFor(color1) );
-
-        noa = myrisk.hasArmiesInt(c1num);
-
-        if (noa < 10) {
-                g.drawString( String.valueOf( noa ) , 126, 105 );
-        }
-        else if (noa < 100) {
-                g.drawString( String.valueOf( noa ) , 123, 105 );
-        }
-        else {
-                g.drawString( String.valueOf( noa ) , 120, 105 );
-        }
-
-        g.setColor( RiskUIUtil.getTextColorFor(color2) );
-
-        noa = myrisk.hasArmiesInt(c2num);
-
-        if (noa < 10) {
-                g.drawString( String.valueOf( noa ) , 346, 105 );
-        }
-        else if (noa < 100) {
-                g.drawString( String.valueOf( noa ) , 343, 105 );
-        }
-        else {
-                g.drawString( String.valueOf( noa ) , 340, 105 );
-        }
-*/
         // #####################################################
         // ################## drawing DICE!!!!! ################
 
+        int y1 = yOffset + imageAreaHeight/4; // top of dice
+        
+        // just in case in the middle of the draw the att and def get set to null
+        int[] atti=att;
+        int[] defi=def;
+        
         // this is the max defend dice allowed for this battle
         int deadDice = myrisk.hasArmiesInt(c2num);
         if (deadDice > myrisk.getGame().getMaxDefendDice()) {
@@ -292,14 +259,12 @@ public class BattleDialog extends Frame implements ActionListener {
 
         int w = getWidth();
         int diceWidth = red_dice.getWidth();
-        int gap = 200;
         
-        int ax = w/2 - gap/2 - diceWidth;
-        int dx = w/2 + gap/2;
+        int ax = w/2 - MoveDialog.distanceFromCenter - diceWidth/2;
+        int dx = w/2 + MoveDialog.distanceFromCenter - diceWidth/2;
 
-        int y1 = 176;
-        int y2 = 207;
-        int y3 = 238;
+        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
 
         // selecting the number of attacking dice
         if (max != 0 && canRetreat) {
@@ -424,37 +389,41 @@ public class BattleDialog extends Frame implements ActionListener {
 
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
         
+        int offset = (int)( red_dice.getWidth() / (29D/4D) +0.5 );
+        int bottom = red_dice.getHeight() - offset   -1; // TODO not sure why -1??
+        int halfDice = red_dice.getHeight()/2;
+        
         if (atti != null && defi != null ) {
                 {
-                        int yCoords[] = {y1+4, y1+24, y1+14};
+                        int yCoords[] = {y1+offset, y1+bottom, y1+halfDice};
                         if (defi[0] >= atti[0]) {
-                                int xCoords[] = {dx+4, dx+4, ax+24};
+                                int xCoords[] = {dx+offset, dx+offset, ax+bottom};
                                 g2.fillPolygon(xCoords, 0,yCoords,0, xCoords.length, COLOR_BLUE);
                         }
                         else {
-                                int xCoords[] = {ax+24, ax+24, dx+4};
+                                int xCoords[] = {ax+bottom, ax+bottom, dx+offset};
                                 g2.fillPolygon(xCoords, 0, yCoords,0, xCoords.length, COLOR_RED);
                         }
                 }
                 if (atti.length > 1 && defi.length > 1) {
-                        int yCoords[] = {y2+4, y2+24, y2+14};
+                        int yCoords[] = {y2+offset, y2+bottom, y2+halfDice};
                         if (defi[1] >= atti[1]) {
-                                int xCoords[] = {dx+4, dx+4, ax+24};
+                                int xCoords[] = {dx+offset, dx+offset, ax+bottom};
                                 g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
                         }
                         else {
-                                int xCoords[] = {ax+24, ax+24, dx+4};
+                                int xCoords[] = {ax+bottom, ax+bottom, dx+offset};
                                 g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_RED);
                         }
                 }
                 if (atti.length > 2 && defi.length > 2) {
-                    int yCoords[] = {y3+4, y3+24, y3+14};
+                    int yCoords[] = {y3+offset, y3+bottom, y3+halfDice};
                     if (defi[2] >= atti[2]) {
-                            int xCoords[] = {dx+4, dx+4, ax+24};
+                            int xCoords[] = {dx+offset, dx+offset, ax+bottom};
                             g2.fillPolygon(xCoords, 0,yCoords, 0,xCoords.length,COLOR_BLUE);
                     }
                     else {
-                            int xCoords[] = {ax+24, ax+24, dx+4};
+                            int xCoords[] = {ax+bottom, ax+bottom, dx+offset};
                             g2.fillPolygon(xCoords,0, yCoords, 0,xCoords.length,COLOR_RED);
                     }
                 }
@@ -493,55 +462,47 @@ public class BattleDialog extends Frame implements ActionListener {
 			g.drawSprite(blue_dice, DICE_NORMAL , 0, 0 );
 		}
 
-		int size=3;
-                int offset=4;
+                int w = red_dice.getWidth();
+                
+		int size= (int)(w / (29D/3D) +0.5);
+                int close = (int)(w / (29D/7D) +0.5);
+                int middle = (w-size)/2;
+                int far = w-close-size;
 
-		g.setColor( 0xC8FFFFFF );
-
+                g.setColor( 0xC8FFFFFF );
+                
 		if (result==0) {
-
-			g.fillOval(offset+9, offset+9, size, size);
-
+			g.fillOval(middle, middle, size, size);
 		}
 		else if (result==1) {
-
-			g.fillOval(offset+3, offset+3, size, size);
-			g.fillOval(offset+15, offset+15, size, size);
-
+			g.fillOval(close, close, size, size);
+			g.fillOval(far, far, size, size);
 		}
 		else if (result==2) {
-
-			g.fillOval(offset+3, offset+3, size, size);
-			g.fillOval(offset+9, offset+9, size, size);
-			g.fillOval(offset+15, offset+15, size, size);
-
+			g.fillOval(close, close, size, size);
+			g.fillOval(middle, middle, size, size);
+			g.fillOval(far, far, size, size);
 		}
 		else if (result==3) {
-
-			g.fillOval(offset+3, offset+3, size, size);
-			g.fillOval(offset+15, offset+3, size, size);
-			g.fillOval(offset+15, offset+15, size, size);
-			g.fillOval(offset+3, offset+15, size, size);
-
+			g.fillOval(close, close, size, size);
+			g.fillOval(far, close, size, size);
+			g.fillOval(far, far, size, size);
+			g.fillOval(close, far, size, size);
 		}
 		else if (result==4) {
-
-			g.fillOval(offset+3, offset+3, size, size);
-			g.fillOval(offset+15, offset+3, size, size);
-			g.fillOval(offset+15, offset+15, size, size);
-			g.fillOval(offset+3, offset+15, size, size);
-			g.fillOval(offset+9, offset+9, size, size);
-
+			g.fillOval(close, close, size, size);
+			g.fillOval(far, close, size, size);
+			g.fillOval(far, far, size, size);
+			g.fillOval(close, far, size, size);
+			g.fillOval(middle, middle, size, size);
 		}
 		else if (result==5) {
-
-			g.fillOval(offset+3, offset+3, size, size);
-			g.fillOval(offset+15, offset+3, size, size);
-			g.fillOval(offset+15, offset+15, size, size);
-			g.fillOval(offset+3, offset+15, size, size);
-			g.fillOval(offset+9, offset+3, size, size);
-			g.fillOval(offset+9, offset+15, size, size);
-
+			g.fillOval(close, close, size, size);
+			g.fillOval(far, close, size, size);
+			g.fillOval(far, far, size, size);
+			g.fillOval(close, far, size, size);
+			g.fillOval(middle, close, size, size);
+			g.fillOval(middle, far, size, size);
 		}
 
 		g.translate(-dx, -dy);

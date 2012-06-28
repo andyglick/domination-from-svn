@@ -19,8 +19,7 @@ import net.yura.swingme.core.CoreUtil;
 
 public class DominationMidlet extends Midlet {
 
-    @Override
-    public void initialize(DesktopPane rootpane) {
+    public DominationMidlet() {
 
         // IO depends on this, so we need to do this first
         RiskUtil.streamOpener = new RiskMiniIO();
@@ -62,6 +61,11 @@ public class DominationMidlet extends Midlet {
             System.out.println("Grasshopper not loaded");
             th.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void initialize(DesktopPane rootpane) {
 
         SynthLookAndFeel synth;
         
