@@ -137,22 +137,22 @@ public class MapRenderer extends DefaultListCellRenderer {
     
     public void gotImg(String url,Image img) {
         LazyIcon aicon = (LazyIcon)images.get( url );
-        aicon.setImage(img);
+        aicon.setImage(img,loading.getIconWidth(),loading.getIconHeight());
     }
     
     public static class LazyIcon extends Icon {
 
         Image img;
         
-        void setImage(Image img) {
+        public void setImage(Image img,int w,int h) {
             this.img = img;
-            height = this.img.getHeight();
-            width = this.img.getWidth();
+            width = w;
+            height = h;
         }
 
         public void paintIcon(Component c, Graphics2D g, int x, int y) {
             if (img!=null) {
-                g.drawImage(img, x, y);
+                g.drawScaledImage(img, x, y, width, height);
             }
         }
 
