@@ -1,5 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
+import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.core.RiskGame;
@@ -127,10 +128,13 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openBattle(int c1num, int c2num) {
 
         if (battle == null) {
-            battle = new BattleDialog(myRisk,gameFrame.pp);
+            battle = new BattleDialog(myRisk);
         }
 
-        battle.setup(c1num, c2num);
+        Image c1img = gameFrame.pp.getCountryImage(c1num);
+        Image c2img = gameFrame.pp.getCountryImage(c2num);
+        
+        battle.setup(c1num, c2num,c1img,c2img);
 
         // TODO: move main map to centre on where battle is happening
 
@@ -184,7 +188,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     @Override
     public void setSlider(int min, int c1num, int c2num) {
         if (move==null) {
-            move = new MoveDialog(myRisk,gameFrame.pp) {
+            move = new MoveDialog(myRisk) {
                 @Override
                 public void setVisible(boolean b) {
                     super.setVisible(b);
@@ -194,7 +198,11 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 }
             };
         }
-        move.setupMove(min, c1num, c2num, false);
+        
+        Image c1img = gameFrame.pp.getCountryImage(c1num);
+        Image c2img = gameFrame.pp.getCountryImage(c2num);
+        
+        move.setupMove(min, c1num, c2num, c1img, c2img, false);
     }
 
     @Override

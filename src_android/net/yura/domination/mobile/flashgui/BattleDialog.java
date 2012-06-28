@@ -31,11 +31,9 @@ public class BattleDialog extends Frame implements ActionListener {
     Sprite red_dice,blue_dice;
     Random r = new Random();
     Button rollButton,retreat;
-    PicturePanel pp;
 
-    public BattleDialog(Risk a,PicturePanel p) {
+    public BattleDialog(Risk a) {
         myrisk = a;
-        pp=p;
 
         red_dice = getDice("/red_dice.png");
         blue_dice = getDice("/blue_dice.png");
@@ -100,6 +98,7 @@ public class BattleDialog extends Frame implements ActionListener {
     int[] att,def; // these are the dice results
     int noda,nodd; // these are the number of spinning dice
     int c1num,c2num;
+    Image c1img,c2img;
     boolean ani,canRetreat;
     int nod,max;
     //@Override
@@ -179,9 +178,11 @@ public class BattleDialog extends Frame implements ActionListener {
 
     }
 
-    void setup(int c1num, int c2num) {
+    void setup(int c1num, int c2num,Image c1img,Image c2img) {
         this.c1num = c1num;
         this.c2num = c2num;
+        this.c1img = c1img;
+        this.c2img = c2img;
         reset();
     }
 
@@ -224,8 +225,6 @@ public class BattleDialog extends Frame implements ActionListener {
     @Override
     public void paintComponent(Graphics2D g) {
 
-        Image c1img = pp.getCountryImage(c1num);
-        Image c2img = pp.getCountryImage(c2num);
         int csrc = myrisk.hasArmiesInt( c1num );
         int cdes = myrisk.hasArmiesInt( c2num );
         int color1 = myrisk.getCurrentPlayerColor();
