@@ -81,7 +81,7 @@ public class MiniUtil {
         String[] list = getSaveMapDir().list();
         for (int c=0;c<list.length;c++) {
             String file = list[c];
-            if (file.endsWith("."+string)) {
+            if (file.endsWith("."+string) && !result.contains(file)) {
                 result.addElement( file );
             }
         }        

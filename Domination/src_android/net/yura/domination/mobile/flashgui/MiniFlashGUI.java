@@ -7,15 +7,14 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mapstore.BadgeButton;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
-import net.yura.domination.mapstore.MapRenderer;
 import net.yura.domination.mapstore.MapRenderer.LazyIcon;
-import net.yura.domination.mobile.RiskMiniIO;
+import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
-import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
@@ -33,14 +32,25 @@ import net.yura.mobile.util.Properties;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
+    private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
+    private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
+
+    // shares res
     Properties resb = GameActivity.resb;
     public Risk myrisk;
 
+    // main menu res
+    FileChooser chooser;
 
-        FileChooser chooser;
+    // new game res
+    XULLoader newgame;
+    Button autoplaceall;
+    private boolean localgame;
 
-        @Override
-        public void actionPerformed(String actionCommand) {
+
+
+    @Override
+    public void actionPerformed(String actionCommand) {
             if ("new game".equals(actionCommand)) {
                 myrisk.parser("newgame");
             }
@@ -182,6 +192,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     public void openMainMenu() {
 
+        if (newgame!=null) {
+            // clean up
+            MapUpdateService.getInstance().deleteObserver( (BadgeButton)newgame.find("MapImg") );
+            newgame = null;
+            autoplaceall=null;
+        }
+        
         setTitle( resb.getProperty("mainmenu.title") );
 
         XULLoader loader = getPanel("/mainmenu.xml");
@@ -194,14 +211,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     // ================================================ GAME SETUP
 
-    XULLoader newgame;
-    Button autoplaceall;
-    private boolean localgame;
-    private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
-    private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
-
     public void openNewGame(boolean localgame) {
 
+        // clean up
+        chooser = null;
+        
         this.localgame = localgame;
 
         if (localgame) {
@@ -215,6 +229,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         newgame = getPanel("/newgame.xml");
 
+        MapUpdateService.getInstance().addObserver( (BadgeButton)newgame.find("MapImg") );
+        
         autoplaceall = (Button)newgame.find("autoplaceall");
         
         // kind of a hack
@@ -238,6 +254,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         repaint();
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        
+        if (!b && newgame!=null) {
+            MapUpdateService.getInstance().deleteObserver( (BadgeButton)newgame.find("MapImg") );
+        }
+    }
+    
     private void addChangeListener(String name) {
         Component comp = newgame.find(name);
         if (comp!=null && comp instanceof Spinner) {
