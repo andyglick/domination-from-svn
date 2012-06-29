@@ -2,6 +2,7 @@ package net.yura.domination.mapstore;
 
 import java.util.Observable;
 import java.util.Observer;
+import javax.microedition.lcdui.Graphics;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.border.Border;
@@ -11,7 +12,7 @@ import net.yura.mobile.gui.plaf.Style;
 
 /**
  * @author Yura
- */
+ */                             // needs to be RadioButton to support different icon states
 public class BadgeButton extends RadioButton implements Observer {
 
     Border border;
@@ -24,6 +25,7 @@ public class BadgeButton extends RadioButton implements Observer {
         }
         catch (Exception ex) { }
 
+        setHorizontalAlignment(Graphics.HCENTER);
     }
 
     public void paint(Graphics2D g) {
@@ -42,4 +44,20 @@ public class BadgeButton extends RadioButton implements Observer {
             parent.repaint();
         }
     }
+
+    @Override
+    public String getDefaultName() {
+        return "Button";
+    }
+
+    @Override
+    protected void toggleSelection() {
+        if (buttonGroup==null) {
+            setSelected(false); // act like normal button
+        }
+        else {
+            super.toggleSelection();
+        }
+    }
+
 }

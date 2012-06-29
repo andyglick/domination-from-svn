@@ -14,6 +14,8 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mapstore.MapUpdateService;
+import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.grasshopper.SimpleBug;
 import net.yura.mobile.gui.DesktopPane;
@@ -103,6 +105,15 @@ public class DominationMidlet extends Midlet {
         adapter.openMainMenu();
 
 
+        
+        new Thread() {
+            @Override
+            public void run() {
+                MapUpdateService.getInstance().init( MiniUtil.getFileList("map"), MapChooser.MAP_PAGE );
+            }
+        }.start();
+
+        
         //risk.parser("newgame");
         //risk.parser("newplayer ai hard blue bob");
         //risk.parser("newplayer ai hard red fred");

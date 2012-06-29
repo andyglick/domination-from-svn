@@ -134,7 +134,6 @@ public class MapChooser implements ActionListener,MapServerListener {
                 b.setToolTipText( b.getText() );
 
                 b.setText("");
-                b.setHorizontalAlignment(Graphics.HCENTER);
                 b.setMargin(0);
 
             }
