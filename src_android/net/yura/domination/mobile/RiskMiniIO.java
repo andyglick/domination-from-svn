@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.microedition.io.Connector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
@@ -23,8 +24,7 @@ public class RiskMiniIO implements RiskIO {
     public static String mapsdir = "file:///android_asset/maps/";
 
     public InputStream openStream(String name) throws IOException {
-        // TODO, this is useless as should load a file outside the jar
-        return getClass().getResourceAsStream("/"+name);
+        return Connector.openInputStream("file:///android_asset/"+name);
     }
 
     public InputStream openMapStream(String name) throws IOException {
