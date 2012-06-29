@@ -19,6 +19,8 @@ public class MiniUtil {
 
     public static void showAbout() {
 
+        String versionCode = System.getProperty("versionCode");
+        
         Properties resb = GameActivity.resb;
         
         int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -28,7 +30,8 @@ public class MiniUtil {
         
         String text = "<html>" +
                 "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
-                "<p>"+resb.getString("about.version")+" "+Risk.RISK_VERSION +"</p>"+
+                "<p>"+resb.getString("about.version")+" "+versionCode +"</p>"+
+                "<p>"+"engine: "+" "+Risk.RISK_VERSION +"</p>"+
                 "<p>"+author+"</p>"+
                 "<p>"+copyright+"</p>"+
                // "<p>"+ resb.getString("about.comments") +"</p>"+
