@@ -40,8 +40,7 @@ public class MapRenderer extends DefaultListCellRenderer {
         this.chooser = chooser;
         setName("ListRendererCollapsed"); // get rid of any padding
 
-        Image img = Midlet.createImage("/ms_strip.png");
-        Sprite spin1 = new Sprite( img , img.getHeight(), img.getHeight() );
+        Sprite spin1 = getSprite( "/ms_strip.png" , 8, 1 );
         bar.setSprite(spin1);
         bar.workoutPreferredSize();
         //add(bar); // YURA do we need this???
@@ -52,6 +51,17 @@ public class MapRenderer extends DefaultListCellRenderer {
         loading = new Icon("/ms_icon_loading.png");
 
     }
+    
+    public static Sprite getSprite(String name,int cols,int rows) {
+        Image img = Midlet.createImage(name);
+        int w = img.getWidth()/cols;
+        int h = img.getHeight()/rows;
+        if ( img.getWidth() % w != 0 || img.getHeight() % h != 0) {
+            img = Image.createImage(img, 0, 0, w*cols, h*rows, 0);
+        }
+        return new Sprite(img, w, h); // 29x29
+    }
+    
     
     public void animate() {
         bar.animate();

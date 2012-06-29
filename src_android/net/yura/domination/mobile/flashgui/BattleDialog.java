@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mapstore.MapRenderer;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
@@ -35,8 +36,8 @@ public class BattleDialog extends Frame implements ActionListener {
     public BattleDialog(Risk a) {
         myrisk = a;
 
-        red_dice = getDice("/red_dice.png");
-        blue_dice = getDice("/blue_dice.png");
+        red_dice = MapRenderer.getSprite("/red_dice.png",3,3);
+        blue_dice = MapRenderer.getSprite("/blue_dice.png",3,3);
 
         setName("TransparentDialog");
         setForeground(0xFF000000);
@@ -71,19 +72,6 @@ public class BattleDialog extends Frame implements ActionListener {
         // 180 * 0.75 = 135
         
         return XULLoader.adjustSizeToDensity(135);
-    }
-    
-    private Sprite getDice(String name) {
-        Image img = Midlet.createImage(name);
-        
-        int w = img.getWidth()/3;
-        int h = img.getHeight()/3;
-        
-        if ( img.getWidth() % w != 0 || img.getHeight() % h != 0) {
-            img = Image.createImage(img, 0, 0, w*3, h*3, 0);
-        }
-        
-        return new Sprite(img, w, h); // 29x29
     }
 
     public void actionPerformed(String actionCommand) {
