@@ -45,12 +45,10 @@ public class BadgeButton extends RadioButton implements Observer {
         }
     }
 
-    @Override
     public String getDefaultName() {
         return "Button";
     }
 
-    @Override
     protected void toggleSelection() {
         if (buttonGroup==null) {
             setSelected(false); // act like normal button
