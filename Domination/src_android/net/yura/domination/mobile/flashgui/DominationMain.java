@@ -19,8 +19,12 @@ import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.RiskMiniIO;
 import net.yura.grasshopper.SimpleBug;
 import net.yura.mobile.gui.DesktopPane;
+import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.OptionPane;
+import net.yura.mobile.gui.plaf.Style;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel;
 import net.yura.swingme.core.CoreUtil;
@@ -84,6 +88,14 @@ public class DominationMain extends Midlet {
         
         try {
             synth = (SynthLookAndFeel)Class.forName("net.yura.android.plaf.AndroidLookAndFeel").newInstance();
+
+            // small hack to center radiobutton icon
+            Style radioButtonStyle = synth.getStyle("RadioButton");
+            Icon radioButtonIcon = (Icon)radioButtonStyle.getProperty("icon", Style.ALL);
+            if (radioButtonIcon!=null) {
+                radioButtonStyle.addProperty( new CentreIcon(radioButtonIcon,radioButtonIcon.getIconWidth(),radioButtonIcon.getIconWidth()), "icon", Style.ALL);
+            }
+            
         }
         catch (Exception ex) {
             synth = new NimbusLookAndFeel();
@@ -135,6 +147,20 @@ public class DominationMain extends Midlet {
             ex.printStackTrace();
         }
 
+    }
+    
+    public static class CentreIcon extends Icon {
+        Icon wrappedIcon;
+        public CentreIcon(Icon icon,int w,int h) {
+            wrappedIcon = icon;
+            width = w;
+            height = h;
+        }
+        @Override
+        public void paintIcon(Component c, Graphics2D g, int x, int y) {
+            // paint real icon in the middle of this icon
+            wrappedIcon.paintIcon(c, g, x + (getIconWidth()-wrappedIcon.getIconWidth())/2, y + (getIconHeight()-wrappedIcon.getIconHeight())/2);
+        }
     }
 
     public static void copyFolder(File src, File dest) throws IOException{
