@@ -429,7 +429,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
     
     public static int adjustSizeToDensityFromMdpi(int size) {
-        return XULLoader.adjustSizeToDensity( (int)(size * 0.75) );
+        return XULLoader.adjustSizeToDensity( (int)(size * 0.75 +0.5) );
     }
 
     public void showCardsFile(String c, boolean hasMission) {

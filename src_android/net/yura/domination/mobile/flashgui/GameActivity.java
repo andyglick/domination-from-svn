@@ -85,6 +85,7 @@ public class GameActivity extends Frame implements ActionListener {
         // MWMWMWMWMWMWM MENU MWMWMWMWMWMWMW
         
         savebutton = new Button( resb.getProperty("game.menu.save") );
+        savebutton.setIcon( new Icon("/save.png") );
         savebutton.addActionListener(this);
         savebutton.setActionCommand("save");
         
@@ -93,6 +94,7 @@ public class GameActivity extends Frame implements ActionListener {
         graphbutton.setActionCommand("graph");
         
         undobutton = new Button( resb.getProperty("game.button.undo") );
+        undobutton.setIcon( new Icon("/undo.png") );
         undobutton.addActionListener(this);
         undobutton.setActionCommand("undo");
 
