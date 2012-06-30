@@ -2,17 +2,24 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.0.9
+	Risk Game:	1.1.1.0
 	 * Save:	7
 	 * Network:	9
 
+	Android		3
 	CommandLine:	1.0.4.1
 	Flash GUI:	1.0.3.5
 	Increment1GUI:	1.1.1.1
 	Simple GUI:	1.1.1.1
 	Swing GUI:	1.0.6.4
 
-1.1.0.9
+1.1.1.0
+
+	Android 3 FileChooser nullpointer fix
+	Android 2 MapStore sprite wrong size on ldpi fix
+	Android 1 DONE - layout attack dialog fully
+
+1.1.0.9 (26.06.2012) ### released for Android on Google Play for the first time ###
 
 	error now does not trigger a error box to pop up:
 	 Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.

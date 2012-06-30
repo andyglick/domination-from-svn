@@ -13,12 +13,16 @@ TODO Android
         (add "custom player" button and dialog)
 
     INGAME SCREEN:
-	layout attack dialog fully
+	Go> Button needs to be green and nice
+	[Cards] button needs to be nice
+	[Hint] button needs to be nice
+	attack and move screen need to take into account dpi when drawing the countries
+	PicturePanel should not use defualt font as it changes with dpi, should be a fixed size
+	on tablet the segmented control for the map views needs extra padding
 	in capital mode, the circles around countries look wrong, maybe draw 2 or use thicker lines
 	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
 	when you are in "MUST TRADE" mode the "Go" button should not say "End Trade"
 	Text in cards dialog is not very good and does not mention "trade 3 same or 3 different cards"
-	(design in game screen)
         (add stats button)
 	(make a theme for cards so they actually look like cards)
 	(try semi-transparent marble for top and bottom)
