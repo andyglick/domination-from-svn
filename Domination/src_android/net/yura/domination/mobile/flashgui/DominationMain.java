@@ -25,9 +25,12 @@ import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel;
 import net.yura.swingme.core.CoreUtil;
 
-public class DominationMidlet extends Midlet {
+public class DominationMain extends Midlet {
 
-    public DominationMidlet() {
+    public static final String product = "MiniFlashGUI";
+    public static final String version = System.getProperty("versionCode");
+    
+    public DominationMain() {
 
         // IO depends on this, so we need to do this first
         RiskUtil.streamOpener = new RiskMiniIO();
@@ -38,7 +41,7 @@ public class DominationMidlet extends Midlet {
         
         try {
 
-            SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" MiniFlashGUI" , TranslationBundle.getBundle().getLocale().toString() );
+            SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" "+product+" "+version , TranslationBundle.getBundle().getLocale().toString() );
 
             CoreUtil.setupLogging();
 

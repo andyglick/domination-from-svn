@@ -1,5 +1,5 @@
-MIDlet-1: Flash GUI,,net.yura.domination.mobile.flashgui.DominationMidlet
-MIDlet-2: Simple GUI,,net.yura.domination.mobile.simplegui.DominationMidlet
+MIDlet-1: Flash GUI,,net.yura.domination.mobile.flashgui.DominationMain
+#MIDlet-2: Simple GUI,,net.yura.domination.mobile.simplegui.DominationMidlet
 MIDlet-Jar-Size: 1094647
 MIDlet-Jar-URL: Domination.jar
 MIDlet-Name: Domination

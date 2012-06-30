@@ -7,6 +7,7 @@ import java.util.Vector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.GameActivity;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.KeyEvent;
@@ -18,8 +19,6 @@ import net.yura.mobile.util.Properties;
 public class MiniUtil {
 
     public static void showAbout() {
-
-        String versionCode = System.getProperty("versionCode");
         
         Properties resb = GameActivity.resb;
         
@@ -30,8 +29,8 @@ public class MiniUtil {
         
         String text = "<html>" +
                 "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
-                "<p>"+resb.getString("about.version")+" "+versionCode +"</p>"+
-                "<p>"+"engine: "+" "+Risk.RISK_VERSION +"</p>"+
+                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version +"</p>"+
+                "<p>"+"Game Engine: "+" "+Risk.RISK_VERSION +"</p>"+
                 "<p>"+author+"</p>"+
                 "<p>"+copyright+"</p>"+
                // "<p>"+ resb.getString("about.comments") +"</p>"+
