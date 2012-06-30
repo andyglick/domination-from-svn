@@ -50,6 +50,9 @@ public class DominationMain extends Midlet {
             CoreUtil.setupLogging();
 
             if ( "true".equals( System.getProperty("debug") ) ) {
+
+                // MWMWMWMWMWMWMWMWMWMWMWM ONLY DEBUG MWMWMMWMWMWMWMWMWMWMWMWMWM
+                
                 Logger.getLogger("").addHandler( new Handler() {
                     boolean open;
                     @Override
@@ -68,10 +71,15 @@ public class DominationMain extends Midlet {
                     @Override public void flush() { }
                     @Override public void close() { }
                 } );
+
+                // if we want to see DEBUG, default is INFO
+                java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
+
+                // so we do not need to wait for AI while testing
+                net.yura.domination.engine.ai.AIPlayer.setWait(5);
+                
+                // MWMWMWMWMWMWMWMWMWMWM END ONLY DEBUG MWMWMMWMWMWMWMWMWMWMWMWM
             }
-            
-            // if we want to see DEBUG, default is INFO
-            //java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
 
         }
         catch (Throwable th) {

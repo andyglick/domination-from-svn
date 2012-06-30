@@ -149,10 +149,12 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
             int xMiddle,int yMiddle,
             Image c1img,Image c2img,
             int color1, int color2,
-            int noa1, int noa2, int move
+            int noa1i, int noa2i, int move
             ) {
         
-        int fh = g.getFont().getHeight();
+        Font font = g.getFont();
+        
+        int fh = font.getHeight();
         
 
         g.getGraphics().setColorMarix( getMarix(color1) );
@@ -183,30 +185,15 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         g2.fillPolygon(xCoords, 0, yCoords, 0, xCoords.length, PicturePanel.colorWithAlpha(color1, 150) );
 
         
+        String noa1=String.valueOf(noa1i),noa2=String.valueOf(noa2i);
 
         int textY = yMiddle-(fh/2);
         
         g.setColor( RiskUtil.getTextColorFor(color1) );
-        if (noa1 < 10) {
-                g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -4, textY );
-        }
-        else if (noa1 < 100) {
-                g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -7, textY );
-        }
-        else {
-                g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -10, textY );
-        }
+        g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -font.getWidth(noa1)/2, textY );
 
         g.setColor( RiskUtil.getTextColorFor(color2) );
-        if (noa2 < 10) {
-                g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -4, textY );
-        }
-        else if (noa2 < 100) {
-                g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -7, textY );
-        }
-        else {
-                g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -10, textY );
-        }
+        g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -font.getWidth(noa2)/2, textY );
 
         if (move > 0) {
             g.drawString( Integer.toString(move) , xMiddle -7, textY );

@@ -437,18 +437,11 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 
-                                g2.setFont( font );
                                 int h = t.getY() -(font.getHeight()/2 -1);
-                                int noa=t.getArmies();
-                                if (noa < 10) {
-                                        g2.drawString( String.valueOf( noa ) , t.getX()-3, h );
-                                }
-                                else if (noa < 100) {
-                                        g2.drawString( String.valueOf( noa ) , t.getX()-6, h );
-                                }
-                                else {
-                                        g2.drawString( String.valueOf( noa ) , t.getX()-9, h );
-                                }
+                                String noa=String.valueOf(t.getArmies());
+
+                                g2.drawString( noa, t.getX() - (font.getWidth(noa)/2) , h );
+
                         }
 
                 }
