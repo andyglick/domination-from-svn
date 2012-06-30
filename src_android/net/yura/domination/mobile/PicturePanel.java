@@ -318,11 +318,11 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 drawHighLightImage(g,CountryImages[cc-1]);
                         }
 
+                        g.setFont(font);
+                        
                         drawArmies(g);
 
                         if (cc != NO_COUNTRY) {
-
-                                // TODO, dont just get the current font, set my own font
 
                                 String text = this.strCountry + " "+ myrisk.getCountryName( cc );
                                 int w = font.getWidth(text);
@@ -348,7 +348,16 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         public void updateUI() {
             super.updateUI();
-            font = theme.getFont(Style.ALL);
+            
+            String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
+            if (density!=null) {
+                float d = Float.parseFloat(density);
+                font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -(15/d +0.5) );
+            }
+            else {
+                font = theme.getFont(Style.ALL);
+            }
+
         }
 
 

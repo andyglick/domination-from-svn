@@ -16,6 +16,9 @@ CURRENT VERSION:
 1.1.1.0
 
 	Android 3 FileChooser nullpointer fix
+		  save and undo icons added
+		  RadioButton hack added to make startgame button more visible
+		  DONE - PicturePanel should not use defualt font as it changes with dpi, should be a fixed size
 	Android 2 MapStore sprite wrong size on ldpi fix
 	Android 1 DONE - layout attack dialog fully
 
