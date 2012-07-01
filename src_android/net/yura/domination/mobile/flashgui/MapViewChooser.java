@@ -1,7 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.util.Arrays;
-import java.util.Vector;
+import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
@@ -10,6 +10,7 @@ import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.layout.BoxLayout;
+import net.yura.mobile.gui.layout.FlowLayout;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 
@@ -29,8 +30,6 @@ public class MapViewChooser extends Panel implements ActionListener {
         test.workoutPreferredSize();
 
         setPreferredSize(10, test.getHeightWithBorder()); // some small size, but we will strech
-        
-        setLayout( new BoxLayout(Graphics.HCENTER) );
 
         options = new Option[6];
         options[0] = new Option( String.valueOf( PicturePanel.VIEW_CONTINENTS ) , resb.getProperty("game.tabs.continents") );
@@ -46,7 +45,6 @@ public class MapViewChooser extends Panel implements ActionListener {
     public void setSize(int width, int height) {
 
         Option currentOption = getMapViewOption();
-
 
         int buttonsWidth = 0;
         Button[] buttons = new Button[options.length];
@@ -71,9 +69,9 @@ public class MapViewChooser extends Panel implements ActionListener {
             }
         }
 
-
         removeAll();
         if (buttonsWidth <= width) {
+            setLayout( new FlowLayout(Graphics.HCENTER,0) );
             ButtonGroup group = new ButtonGroup();
             for (Button b: buttons) {
                 group.add(b);
@@ -82,10 +80,11 @@ public class MapViewChooser extends Panel implements ActionListener {
             }
         }
         else {
-            ComboBox combo = new ComboBox( new Vector( Arrays.asList( options ) ) );
+            ComboBox combo = new ComboBox( new java.util.Vector( Arrays.asList( options ) ) );
             combo.setSelectedItem(currentOption);
             combo.workoutPreferredSize();
             combo.addActionListener(this);
+            setLayout( new BoxLayout(Graphics.HCENTER) );
             add(combo);
         }
         
@@ -99,15 +98,15 @@ public class MapViewChooser extends Panel implements ActionListener {
     
     Option getMapViewOption() {
         
-        Vector components = getComponents();
+        List components = getComponents();
         if (components.isEmpty()) {
             return options[0]; // default
         }
-        else if (components.elementAt(0) instanceof ComboBox) {
-            return (Option) ((ComboBox)components.elementAt(0)).getSelectedItem();
+        else if (components.get(0) instanceof ComboBox) {
+            return (Option) ((ComboBox)components.get(0)).getSelectedItem();
         }
         else {
-            for (Button b: (Vector<Button>)components) {
+            for (Button b: (List<Button>)components) {
                 if (b.isSelected()) {
                     String id = b.getActionCommand();
                     for (int c=0;c<options.length;c++) {
@@ -127,15 +126,15 @@ public class MapViewChooser extends Panel implements ActionListener {
     }
     
     public void resetMapView() {
-        Vector components = getComponents();
+        List components = getComponents();
         if (components.isEmpty()) {
             // do nothing
         }
-        else if (components.elementAt(0) instanceof ComboBox) {
-            ((ComboBox)components.elementAt(0)).setSelectedIndex(0);
+        else if (components.get(0) instanceof ComboBox) {
+            ((ComboBox)components.get(0)).setSelectedIndex(0);
         }
         else {
-            ((Button)components.elementAt(0)).setSelected(true);
+            ((Button)components.get(0)).setSelected(true);
         }
     }
     
