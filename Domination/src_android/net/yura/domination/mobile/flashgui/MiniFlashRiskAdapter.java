@@ -23,12 +23,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
         if (mainFrame==null) {
             mainFrame = new MiniFlashGUI(myRisk);
         }
-
         mainFrame.openMainMenu();
-
-        if (!mainFrame.isVisible()) {
-            mainFrame.setVisible(true);
-        }
     }
     
     @Override
@@ -219,7 +214,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showMessageDialog(String a) {
-        OptionPane.showMessageDialog(null, a, "TODO: Title", OptionPane.INFORMATION_MESSAGE);
+        OptionPane.showMessageDialog(null, a, null, OptionPane.INFORMATION_MESSAGE);
     }
 
 }

@@ -15,6 +15,7 @@ import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
@@ -203,10 +204,29 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         XULLoader loader = getPanel("/mainmenu.xml");
 
-        setContentPane( new ScrollPane( loader.getRoot() ) );
+        final Panel newContentPane = new ScrollPane( loader.getRoot() );
+        
+        
 
-        revalidate();
-        repaint();
+
+        
+        
+        if (isVisible()) {
+            DesktopPane.invokeLater(new Runnable() {
+                public void run() {
+                    setContentPane( newContentPane );
+                    revalidate();
+                    repaint();
+                }
+            });
+            
+        }
+        else {
+            setContentPane( newContentPane );
+            revalidate();
+            setVisible(true);
+        }
+        
     }
 
     // ================================================ GAME SETUP
