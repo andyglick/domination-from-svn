@@ -126,7 +126,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         gobutton = new Button(" ");
         gobutton.setName("GoButton");
-        gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWW"), -1);
+        gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWWWW"), -1);
         gobutton.setActionCommand("go");
         gobutton.addActionListener(this);
 
@@ -138,14 +138,14 @@ public class GameActivity extends Frame implements ActionListener {
         
         cardsbutton = new Button();
         cardsbutton.setName("CardsButton");
-        cardsbutton.setIcon( new Icon("/cards_button.png") );
+        //cardsbutton.setIcon( new Icon("/cards_button.png") );
         cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
         cardsbutton.setActionCommand("cards");
         cardsbutton.addActionListener(this);
         
         missionbutton = new Button();
         missionbutton.setName("HintButton");
-        missionbutton.setIcon( new Icon("/mission_button.png") );
+        //missionbutton.setIcon( new Icon("/mission_button.png") );
         missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
         missionbutton.setActionCommand("mission");
         missionbutton.addActionListener(this);
