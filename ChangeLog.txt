@@ -15,6 +15,7 @@ CURRENT VERSION:
 
 1.1.1.0
 
+	Android 4 DONE - Go> Button needs to be green and nice
 	Android 3 FileChooser nullpointer fix
 		  save and undo icons added
 		  RadioButton hack added to make startgame button more visible

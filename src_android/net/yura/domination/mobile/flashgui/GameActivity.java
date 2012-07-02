@@ -20,7 +20,6 @@ import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.CheckBox;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
-import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
@@ -48,8 +47,7 @@ public class GameActivity extends Frame implements ActionListener {
     Risk myrisk;
     PicturePanel pp;
     MapViewChooser mapViewControl;
-    Button gobutton,closebutton,savebutton,undobutton;
-    Label note;
+    Button note,gobutton,closebutton,savebutton,undobutton;
     
     String status;
     int gameState;
@@ -127,20 +125,26 @@ public class GameActivity extends Frame implements ActionListener {
         // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
         gobutton = new Button(" ");
-        gobutton.addActionListener(this);
-        gobutton.setActionCommand("go");
+        gobutton.setName("GoButton");
         gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWW"), -1);
+        gobutton.setActionCommand("go");
+        gobutton.addActionListener(this);
 
-        note = new Label(" ");
+        note = new Button(" ");
+        note.setName("GoNote");
         note.setHorizontalAlignment(Graphics.HCENTER);
+        note.setActionCommand("go");
+        note.addActionListener(this);
         
         cardsbutton = new Button();
+        cardsbutton.setName("CardsButton");
         cardsbutton.setIcon( new Icon("/cards_button.png") );
         cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
         cardsbutton.setActionCommand("cards");
         cardsbutton.addActionListener(this);
         
         missionbutton = new Button();
+        missionbutton.setName("HintButton");
         missionbutton.setIcon( new Icon("/mission_button.png") );
         missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
         missionbutton.setActionCommand("mission");
@@ -194,7 +198,7 @@ public class GameActivity extends Frame implements ActionListener {
         Panel bottom = new Panel(new BorderLayout());
         
         int g = XULLoader.adjustSizeToDensity(1);
-        Panel gamepanel2 = new Panel( new GridBagLayout(3, g, g, 0, g, g) );
+        Panel gamepanel2 = new Panel( new GridBagLayout(3, g, g, g, g, g) );
         gamepanel2.setName("TransPanel");
 
         GridBagConstraints gc = new GridBagConstraints();
@@ -426,10 +430,12 @@ public class GameActivity extends Frame implements ActionListener {
 
             if (gobutton!=null) {
                 if (goButtonText!=null) {
+                        note.setFocusable(true);
                         gobutton.setFocusable(true);
                         gobutton.setText(goButtonText);
                 }
                 else {
+                        note.setFocusable(false);
                         gobutton.setFocusable(false);
                         gobutton.setText(" ");
                 }
@@ -532,6 +538,8 @@ public class GameActivity extends Frame implements ActionListener {
             gobutton.setFocusable(false);
 
             note.setText( resb.getString("game.pleasewait") );
+            note.setFocusable(false);
+
             gameState=0;
 
     }
