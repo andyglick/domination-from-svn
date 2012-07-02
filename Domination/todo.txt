@@ -13,7 +13,6 @@ TODO Android
         (add "custom player" button and dialog)
 
     INGAME SCREEN:
-	Go> Button needs to be green and nice
 	[Cards] button needs to be nice
 	[Hint] button needs to be nice
 	attack and move screen need to take into account dpi when drawing the countries

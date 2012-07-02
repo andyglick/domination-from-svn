@@ -140,4 +140,21 @@
     </style>
     <bind style="spinner" key="Spinner"/>
 
+
+
+    <style id="goButton">
+	<state>
+	    <imagePainter path="/go_button.9.png" />
+	</state>
+	<state value="FOCUSED">
+	    <imagePainter path="/go_button_active.9.png" />
+	</state>
+        <state value="DISABLED"> 
+	    <imagePainter path="/go_button_disabled.9.png" />
+	</state>
+    </style>
+    <bind style="goButton" type="region" key="GoButton"/>
+
+
+
 </synth>
