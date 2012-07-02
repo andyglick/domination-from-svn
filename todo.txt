@@ -11,11 +11,13 @@ TODO Android
     GAME SETUP SCREEN:
 	(design game setup screen)
         (add "custom player" button and dialog)
+	on small ldpi "Start Game" button still not visable
 
     INGAME SCREEN:
 	attack and move screen need to take into account dpi when drawing the countries
 	in capital mode, the circles around countries look wrong, maybe draw 2 or use thicker lines
 	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
+	something fun for the end of the game has not been added to the Android version
 	when you are in "MUST TRADE" mode the "Go" button should not say "End Trade"
 	Text in cards dialog is not very good and does not mention "trade 3 same or 3 different cards"
         (add stats button)
