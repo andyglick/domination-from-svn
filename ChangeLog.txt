@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	7
 	 * Network:	9
 
-	Android		3
+	Android		5
 	CommandLine:	1.0.4.1
 	Flash GUI:	1.0.3.5
 	Increment1GUI:	1.1.1.1
