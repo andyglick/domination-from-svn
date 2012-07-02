@@ -126,7 +126,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         gobutton = new Button(" ");
         gobutton.setName("GoButton");
-        gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWWWW"), -1);
+        gobutton.setPreferredSize(gobutton.getFont().getWidth("WWWWWWWWWWW"), -1);
         gobutton.setActionCommand("go");
         gobutton.addActionListener(this);
 
