@@ -157,4 +157,39 @@
 
 
 
+    <style id="cardsButton">
+	<imageIcon id="cards" path="/cards_button.png"/>
+	<imageIcon id="cards_active" path="/cards_button_active.png"/>
+	<imageIcon id="cards_disabled" path="/cards_button_disabled.png"/>
+	<state>
+	    <property key="icon" value="cards"/>
+	</state>
+	<state value="FOCUSED">
+	    <property key="icon" value="cards_active"/>
+	</state>
+	<state value="DISABLED">
+	    <property key="icon" value="cards_disabled"/>
+	</state>
+    </style>
+    <bind style="cardsButton" key="CardsButton"/>
+
+
+    <style id="hintButton">
+	<imageIcon id="mission" path="/mission_button.png"/>
+	<imageIcon id="mission_active" path="/mission_button_active.png"/>
+	<imageIcon id="mission_disabled" path="/mission_button_disabled.png"/>
+	<state>
+	    <property key="icon" value="mission"/>
+	</state>
+	<state value="FOCUSED">
+	    <property key="icon" value="mission_active"/>
+	</state>
+	<state value="DISABLED">
+	    <property key="icon" value="mission_disabled"/>
+	</state>
+    </style>
+    <bind style="hintButton" key="HintButton"/>
+
+
+
 </synth>
