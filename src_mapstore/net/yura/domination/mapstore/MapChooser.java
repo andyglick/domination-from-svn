@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
 import net.yura.domination.engine.Risk;
@@ -572,6 +571,13 @@ public class MapChooser implements ActionListener,MapServerListener {
         if ( !this.mapfiles.contains( download ) ) {
             this.mapfiles.addElement( download );
         }
+
+        if (((Button)loader.find("updateButton")).isSelected() && MapUpdateService.getInstance().mapsToUpdate.isEmpty()) {
+            loader.find("updateAll").setVisible(false);
+            getRoot().revalidate();
+            getRoot().repaint();
+        }
+
         //else {
             // this must have been a update or re-download, no need to show message
             //OptionPane.showMessageDialog(null, "got map, but we already have it "+download, "error", 0);
