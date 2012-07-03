@@ -49,7 +49,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     static Cache repo;
     static {
         try {
-            repo = new Cache();
+            repo = new Cache("net.yura.domination");
         }
         catch (Throwable ex) {
             System.err.println("[MapChooser] no cache: "+ex);

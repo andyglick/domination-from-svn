@@ -5,23 +5,23 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.logging.Level; // as this class is only used on j2se and android, we should use proper logging
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author Yura Mamyrin
  */
 public class Cache {
+
+    // as this class is only used on j2se and android, we should use proper logging
+    static final Logger logger = Logger.getLogger(Cache.class.getName());
     
     public static final boolean DEBUG = false;
     File cacheDir;
     
-    public Cache() {
-        
-        
+    public Cache(String appName) {
+
         String tmpDir = System.getProperty("java.io.tmpdir");
-        
-        String appName = "net.yura.domination"; // TODO fix
         
         cacheDir = new File(new File(tmpDir),appName+".cache");
         
@@ -30,7 +30,7 @@ public class Cache {
         }
 
         if (DEBUG) {
-            System.out.println("[yura.net Cache] starting "+cacheDir);
+            logger.log(Level.INFO, "[yura.net Cache] starting {0}", cacheDir);
         }
         
     }
@@ -49,13 +49,13 @@ public class Cache {
     public void put(String key, byte[] value) {
         File file = getFileName(key);
         if (file.exists()) {
-            System.err.println("[yura.net Cache] already has file: "+key);
+            logger.log(Level.WARNING, "[yura.net Cache] already has file: {0}", key);
         }
         else {
             try {
                 
                 if (DEBUG) {
-                    System.out.println("[yura.net Cache] saving to cache: "+key);
+                    logger.log(Level.INFO, "[yura.net Cache] saving to cache: {0}", key);
                 }
                 
                 FileOutputStream out = new FileOutputStream(file);
@@ -66,7 +66,7 @@ public class Cache {
                 if (file.exists()) {
                     file.delete();
                 }
-                Logger.getLogger(Cache.class.getName()).log(Level.WARNING, "failed to save data to file: "+key , ex);
+                logger.log(Level.WARNING, "failed to save data to file: "+key , ex);
             }
         }
         
@@ -77,7 +77,7 @@ public class Cache {
         if (file.exists()) {
             try {
                 if (DEBUG) {
-                    System.out.println("[yura.net Cache] getting from cache: "+key);
+                    logger.log(Level.INFO, "[yura.net Cache] getting from cache: {0}", key);
                 }
                 
                 file.setLastModified(System.currentTimeMillis());
@@ -89,7 +89,7 @@ public class Cache {
         }
         else {
             if (DEBUG) {
-                System.out.println("[yura.net Cache] key not found: "+key);
+                logger.log(Level.INFO, "[yura.net Cache] key not found: {0}", key);
             }
         }
         return null;
