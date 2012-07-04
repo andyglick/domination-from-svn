@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import android.graphics.ColorMatrix;
+import collisionphysics.BallWorld;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import net.yura.domination.engine.Risk;
@@ -98,8 +99,21 @@ public class PicturePanel extends ImageView implements MapPanel {
             else {
                 DesktopPane dp = DesktopPane.getDesktopPane();
                 if (DesktopPane.isAccurate(this.x, x, dp.inaccuracy) && DesktopPane.isAccurate(this.y, y, dp.inaccuracy)) {
-                    if (type == DesktopPane.RELEASED && ml!=null) {
-                        ml.click(x,y);
+                    if (type == DesktopPane.RELEASED) {
+                        if (ml!=null) {
+                            ml.click(x,y);
+                        }
+
+                        if (myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER ) {
+                            // toggle the animation
+                            if (ballWorld==null) {
+                                startAni();
+                            }
+                            else {
+                                stopAni();
+                            }
+                        }
+
                     }
                 }
                 else {
@@ -360,6 +374,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
+        public static final int BALL_SIZE=10;
 
         /**
          * Paints the army components
@@ -372,11 +387,10 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
 
                 Country[] v = game.getCountries();
-                Country t;
+                
+                int state = game.getState();
 
-                int r=10;
-
-                if (game.getState()==4 || game.getState()==5 || game.getState()==10) {
+                if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
                         Country attacker = game.getAttacker();
                         Country defender = game.getDefender();
@@ -396,8 +410,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 if ( attacker.getX() > (map.length / 2) ) { // ie the attacker is on the right
 
-                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), r );
-                                    Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), r );
+                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), BALL_SIZE );
+                                    Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
 
                                     g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                     g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
@@ -405,8 +419,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 }
                                 else { // the attacker is on the left
 
-                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), r );
-                                    Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), r );
+                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), BALL_SIZE );
+                                    Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
 
                                     g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                     g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
@@ -415,7 +429,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                         else {
 
-                            Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), r );
+                            Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
 
                             g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
 
@@ -425,22 +439,44 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 }
 
+                
+                if (oldState != state) { // if the state has changed!!!
+                    oldState = state;
+                    if (state == RiskGame.STATE_GAME_OVER) {
+                        startAni();
+                    }
+                    else {
+                        stopAni();
+                    }
+                }
+
+                Country t;
                 for (int c=0; c< v.length ; c++) {
 
                         t = v[c];
 
-                        if ( ((Player)t.getOwner()) != null ) {
+                        if ( t.getOwner() != null ) {
 
+                                int x,y;
+                                if (ballWorld==null) {
+                                    x = t.getX();
+                                    y = t.getY();
+                                }
+                                else {
+                                    x = (int)ballWorld.balls[c].x;
+                                    y = (int)ballWorld.balls[c].y;
+                                }
+                            
                                 g.setARGBColor( ((Player)t.getOwner()).getColor() );
 
-                                g2.fillOval( t.getX()-r , t.getY()-r , (r*2), (r*2) );
+                                g2.fillOval( x-BALL_SIZE , y-BALL_SIZE , (BALL_SIZE*2), (BALL_SIZE*2) );
 
                                 g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 
-                                int h = t.getY() -(font.getHeight()/2 -1);
+                                int h = y -(font.getHeight()/2 -1);
                                 String noa=String.valueOf(t.getArmies());
 
-                                g2.drawString( noa, t.getX() - (font.getWidth(noa)/2) , h );
+                                g2.drawString( noa, x - (font.getWidth(noa)/2) , h );
 
                         }
 
@@ -453,16 +489,30 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         for (int c=0; c< players.size() ; c++) {
 
-                                if ( ((Player)players.elementAt(c)).getCapital() !=null ) {
-                                        Country capital = ((Country)((Player)players.elementAt(c)).getCapital());
+                                Country capital = ((Player)players.elementAt(c)).getCapital();
 
+				if ( capital !=null ) {
+					
+                                        int pos = capital.getColor()-1;
+
+                                        int x,y;
+                                        if (ballWorld==null) {
+                                            x = v[pos].getX();
+                                            y = v[pos].getY();
+                                        }
+                                        else {
+                                            x = (int)ballWorld.balls[pos].x;
+                                            y = (int)ballWorld.balls[pos].y;
+                                        }
+                                        
+                                        
                                         g.setARGBColor( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
 
-                                        g2.drawArc( capital.getX()-10 , capital.getY()-10 , 19, 19 , 0, 360);
+                                        g2.drawArc( x-10 , y-10 , 19, 19 , 0, 360);
 
                                         g.setARGBColor( ((Player)players.elementAt(c)).getColor() );
 
-                                        g2.drawArc( capital.getX()-12 , capital.getY()-12 , 23, 23, 0, 360);
+                                        g2.drawArc( x-12 , y-12 , 23, 23, 0, 360);
 
                                 }
 
@@ -472,6 +522,24 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
+        BallWorld ballWorld;
+        int oldState;
+
+        public void startAni() {
+            if (ballWorld==null) {
+                ballWorld = new BallWorld(myrisk, this, BALL_SIZE); // start the ball world!!
+            }
+        }
+        /**
+         * stop all animations
+         */
+        public void stopAni() {
+            if (ballWorld!=null) {
+                ballWorld.stop();
+                ballWorld = null;
+                repaint();
+            }
+        }
         
         private void drawHighLightImage(Graphics2D g, countryImage countryImage) {
             

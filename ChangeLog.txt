@@ -18,6 +18,7 @@ CURRENT VERSION:
 	when you must trade, the "End Trade" button becomes disabled/hidden
 
 	Android 6 DONE - when you are in "MUST TRADE" mode the "Go" button should not say "End Trade" and the cards button should be green
+		  DONE - something fun for the end of the game has not been added to the Android version
 	Android 5 save game works on api < 9
 	Android 4 DONE - Go> Button needs to be green and nice
 		  DONE - [Cards] button needs to be nice
