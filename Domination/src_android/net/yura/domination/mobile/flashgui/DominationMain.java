@@ -106,6 +106,10 @@ public class DominationMain extends Midlet {
             
         }
         catch (Exception ex) {
+            if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
+                net.yura.mobile.logging.Logger.warn(ex);
+            }
+            
             synth = new NimbusLookAndFeel();
         }
         
