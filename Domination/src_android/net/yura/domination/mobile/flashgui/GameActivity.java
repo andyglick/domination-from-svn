@@ -369,13 +369,19 @@ public class GameActivity extends Frame implements ActionListener {
             gameState=s;
             String goButtonText=null;
             String noteText=null;
+            boolean mustTrade=false;
             switch (gameState) {
                     case RiskGame.STATE_TRADE_CARDS: {
                             // after wiping out someone if you go into trade mode
                             pp.setC1(255);
                             pp.setC2(255);
-                            goButtonText = resb.getProperty("game.button.go.endtrade");
                             noteText = getArmiesLeftText();
+                            if (myrisk.getGame().canEndTrade()) {
+                                goButtonText = resb.getProperty("game.button.go.endtrade");
+                            }
+                            else {
+                                mustTrade = true;
+                            }
                             break;
                     }
                     case RiskGame.STATE_PLACE_ARMIES: {
@@ -398,12 +404,10 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_END_TURN: {
-                            noteText = " ";
                             goButtonText = resb.getProperty("game.button.go.endgo");
                             break;
                     }
                     case RiskGame.STATE_GAME_OVER: {
-                            noteText = " ";
                             if (myrisk.getGame().canContinue()) {
                                 goButtonText = resb.getProperty("game.button.go.continue");
                             }
@@ -441,9 +445,9 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }
             
-            if (noteText!=null) {
-                note.setText(noteText);
-            }
+            note.setText(noteText==null?" ":noteText);
+            
+            cardsbutton.setName(mustTrade?"MustTradeButton":"CardsButton");
 
             if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
                     cardsbutton.setFocusable(true);
@@ -462,7 +466,7 @@ public class GameActivity extends Frame implements ActionListener {
                     //AutoDefend.setBackground( Color.white );
                     AutoDefend.setSelected( myrisk.getAutoDefend() );
             }
-
+            
             repaint(); // SwingGUI has this here, if here then not needed in set status
     }
     

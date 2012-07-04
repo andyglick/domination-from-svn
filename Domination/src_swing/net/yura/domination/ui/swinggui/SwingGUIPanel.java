@@ -87,7 +87,7 @@ import net.yura.domination.tools.mapeditor.MapEditor;
 
 public class SwingGUIPanel extends JPanel implements ActionListener{
 
-	public final static String version = "1.0.6.4";
+	public final static String version = "2";
 	public final static String product;
 
 	static {
@@ -140,6 +140,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	private JPanel defend;
 	private JPanel roll;
         private winnerPanel winner;
+        private tradeCardsPanel tradeCards;
 
 	private JSlider slider;
 	private JSlider moveNumber;
@@ -2144,6 +2145,8 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				pp.setC1(PicturePanel.NO_COUNTRY);
 				pp.setC2(PicturePanel.NO_COUNTRY);
 
+                                tradeCards.endtrade.setVisible( myrisk.getGame().canEndTrade() );
+                                
 				inGameCards.show(inGameInput, "tradeCards");
 			}
 			else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
@@ -2544,7 +2547,7 @@ public void setNODDefender(int n) {}
 			capital.setMinimumSize(d);
 			capital.setMaximumSize(d);
 
-			JPanel tradeCards = new tradeCardsPanel();
+			tradeCards = new tradeCardsPanel();
 			tradeCards.setPreferredSize(d);
 			tradeCards.setMinimumSize(d);
 			tradeCards.setMaximumSize(d);
@@ -3470,15 +3473,11 @@ public void setNODDefender(int n) {}
 
 	class tradeCardsPanel extends JPanel {
 
+                JButton endtrade;
+            
 		public tradeCardsPanel() {
 
-			this.setLayout(new java.awt.GridBagLayout());
-
-			GridBagConstraints c = new GridBagConstraints();
-			c.insets = new java.awt.Insets(3, 3, 3, 3);
-			c.fill = GridBagConstraints.BOTH;
-
-			JButton endtrade = new JButton(resbundle.getString("game.button.go.endtrade"));
+			endtrade = new JButton(resbundle.getString("game.button.go.endtrade"));
 
 			endtrade.addActionListener(
 					new ActionListener() {
@@ -3488,19 +3487,8 @@ public void setNODDefender(int n) {}
 					}
 			);
 
-			JLabel label = new JLabel(resbundle.getString("cards.totradeclick"));
-
-			c.gridx = 0; // col
-			c.gridy = 0; // row
-			c.gridwidth = 1; // width
-			c.gridheight = 1; // height
-			this.add(label, c);
-
-			c.gridx = 1; // col
-			c.gridy = 0; // row
-			c.gridwidth = 1; // width
-			c.gridheight = 1; // height
-			this.add(endtrade, c);
+			add( new JLabel(resbundle.getString("cards.totradeclick")) );
+			add(endtrade);
 
 		}
 	}
