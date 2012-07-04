@@ -38,7 +38,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 
 public class MainMenu extends JPanel implements MouseInputListener, KeyListener {
 
-	private final static String version = "1.0.3.5";
+	private final static String version = "2";
 	private final static String product;
 
 	static {

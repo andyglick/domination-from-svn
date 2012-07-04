@@ -651,8 +651,9 @@ public class GameFrame extends JFrame implements KeyListener {
 				pp.setC1(255);
 				pp.setC2(255);
 
-				goButtonText = resb.getString("game.button.go.endtrade");
-
+                                if (myrisk.getGame().canEndTrade()) {
+                                    goButtonText = resb.getString("game.button.go.endtrade");
+                                }
 				break;
 			}
 			case RiskGame.STATE_PLACE_ARMIES: {

@@ -694,7 +694,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return boolean Returns true if the player has ended the trade phase, returns false if the player cannot end the trade phase
 	 */
 	public boolean endTrade() {
-
+            if (canEndTrade()) {
+                gameState=STATE_PLACE_ARMIES;
+                tradeCap=false;
+                return true;
+            }
+            return false;
+	}
+        
+        public boolean canEndTrade() {
+            
 		if (gameState==STATE_TRADE_CARDS) {
 
 			if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() > 5 ) {
@@ -702,9 +711,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 			}
 
 			if (((Vector)currentPlayer.getCards()).size() < 5) {
-
-				gameState=STATE_PLACE_ARMIES;
-				tradeCap=false;
 				return true;
 			}
 

@@ -174,6 +174,23 @@
     <bind style="cardsButton" key="CardsButton"/>
 
 
+    <style id="mustTradeButton">
+	<imageIcon id="cards_green" path="/cards_button_green.png"/>
+	<imageIcon id="cards_green_active" path="/cards_button_green_active.png"/>
+	<imageIcon id="cards_disabled" path="/cards_button_disabled.png"/>
+	<state>
+	    <property key="icon" value="cards_green"/>
+	</state>
+	<state value="FOCUSED">
+	    <property key="icon" value="cards_green_active"/>
+	</state>
+	<state value="DISABLED">
+	    <property key="icon" value="cards_disabled"/>
+	</state>
+    </style>
+    <bind style="mustTradeButton" key="MustTradeButton"/>
+
+
     <style id="hintButton">
 	<imageIcon id="mission" path="/mission_button.png"/>
 	<imageIcon id="mission_active" path="/mission_button_active.png"/>
