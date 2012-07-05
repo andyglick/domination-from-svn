@@ -242,21 +242,16 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
     
     private void go(String input) {
 
-        blockInput();
+        int gameState = myrisk.getGame().getState();
+
+        if (gameState==RiskGame.STATE_BATTLE_WON || gameState==RiskGame.STATE_FORTIFYING) {
+
+                // this hides the dailog
+                setVisible(false);
+        }
 
         myrisk.parser(input);
 
-    }
-    
-    private void blockInput() {
-        
-            int gameState = myrisk.getGame().getState();
-        
-            if (gameState==RiskGame.STATE_BATTLE_WON || gameState==RiskGame.STATE_FORTIFYING) {
-
-                    // this hides the dailog
-                    setVisible(false);
-            }
     }
 
     @Override
