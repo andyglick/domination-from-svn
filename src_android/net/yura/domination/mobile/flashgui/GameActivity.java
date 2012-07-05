@@ -24,6 +24,7 @@ import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
+import net.yura.mobile.gui.components.TextArea;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.BorderLayout;
@@ -265,15 +266,26 @@ public class GameActivity extends Frame implements ActionListener {
         try {
             pp.load();
         }
+        catch (OutOfMemoryError ex) {
+            System.gc();
+            ex.printStackTrace();
+
+            Panel parent = (Panel)pp.getParent();
+            parent.removeAll();
+            TextArea ta = new TextArea("Not enough memory to load this map: "+ex);
+            ta.setLineWrap(true);
+            ta.setFocusable(false);
+            parent.add(ta);
+        }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+        
         mapViewControl.resetMapView();
-
+        
         // ============================================ show
 
         setVisible(true);
-
     }
     
     public void actionPerformed(String actionCommand) {
