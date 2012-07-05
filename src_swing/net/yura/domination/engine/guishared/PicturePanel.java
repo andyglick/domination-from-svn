@@ -49,7 +49,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	public final static int VIEW_TROOP_STRENGTH   = 4;
 	public final static int VIEW_CONNECTED_EMPIRE = 5;
 
-	private countryImage[] CountryImages;
+	private CountryImage[] countryImages;
 	private Risk myrisk;
 	private BufferedImage original;
 	private BufferedImage img;
@@ -76,7 +76,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 		 			 // 0-2  0-255
 		HighLight = new RescaleOp(1.5f, 1.0f, null);
 
-		setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
+		//setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
 	}
 
@@ -113,7 +113,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 // clean up before we load new images
                 original = null;
-                CountryImages = null;
+                countryImages = null;
                 
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
                 
@@ -150,13 +150,13 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 
 
-		CountryImages = new countryImage[noc];
+		countryImages = new CountryImage[noc];
 		for (int c=0; c < noc; c++) {
-			CountryImages[c] = new countryImage();
+			countryImages[c] = new CountryImage();
 		}
 
 
-		countryImage cci;
+		CountryImage cci;
 		// create a very big 2d array with all the data from the image map
 		for(int x=0; x < mWidth; x++) {
 
@@ -170,7 +170,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 				if ( num != NO_COUNTRY ) {
 
-					cci = CountryImages[num-1];
+					cci = countryImages[num-1];
 
 					if (x < cci.getX1() ) { cci.setX1(x); }
 					if (x > cci.getX2() ) { cci.setX2(x); }
@@ -188,9 +188,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 		//ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
 		// create the bufferd image for each country
-		for (int c=0; c < CountryImages.length ; c++) {
+		for (int c=0; c < countryImages.length ; c++) {
 
-			cci = CountryImages[c];
+			cci = countryImages[c];
 
 			int x1=cci.getX1();
 //			int x2=cci.getX2();
@@ -252,15 +252,15 @@ public class PicturePanel extends JPanel implements MapPanel {
 			g2.drawImage(img,0,0,this);
 
 			if (c1 != NO_COUNTRY) {
-				g2.drawImage( CountryImages[c1-1].getHighLightImage() ,CountryImages[c1-1].getX1() ,CountryImages[c1-1].getY1() ,this);
+				g2.drawImage( countryImages[c1-1].getHighLightImage() ,countryImages[c1-1].getX1() ,countryImages[c1-1].getY1() ,this);
 			}
 
 			if (c2 != NO_COUNTRY) {
-				g2.drawImage(CountryImages[c2-1].getHighLightImage() ,CountryImages[c2-1].getX1() ,CountryImages[c2-1].getY1() ,this);
+				g2.drawImage(countryImages[c2-1].getHighLightImage() ,countryImages[c2-1].getX1() ,countryImages[c2-1].getY1() ,this);
 			}
 
 			if (cc != NO_COUNTRY) {
-				g2.drawImage( CountryImages[cc-1].getHighLightImage() ,CountryImages[cc-1].getX1() ,CountryImages[cc-1].getY1() ,this);
+				g2.drawImage( countryImages[cc-1].getHighLightImage() ,countryImages[cc-1].getX1() ,countryImages[cc-1].getY1() ,this);
 			}
 
 			drawArmies(g2);
@@ -331,8 +331,8 @@ public class PicturePanel extends JPanel implements MapPanel {
 			int a=game.getAttacker().getColor();
 			int b=game.getDefender().getColor();
 
-			g2.drawImage(CountryImages[a-1].getHighLightImage() ,CountryImages[a-1].getX1() ,CountryImages[a-1].getY1() ,this);
-			g2.drawImage(CountryImages[b-1].getHighLightImage() ,CountryImages[b-1].getX1() ,CountryImages[b-1].getY1() ,this);
+			g2.drawImage(countryImages[a-1].getHighLightImage() ,countryImages[a-1].getX1() ,countryImages[a-1].getY1() ,this);
+			g2.drawImage(countryImages[b-1].getHighLightImage() ,countryImages[b-1].getX1() ,countryImages[b-1].getY1() ,this);
 
 			Color ac = new Color( game.getAttacker().getOwner().getColor() );
 			g2.setColor( new Color(ac.getRed(),ac.getGreen(), ac.getBlue(), 150) );
@@ -611,7 +611,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			}
 		}
 
-		for (int c=0; c < CountryImages.length ; c++) {
+		for (int c=0; c < countryImages.length ; c++) {
 
 		    Color val=null;
 
@@ -741,7 +741,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 */
 		    }
 
-		    countryImage ci = CountryImages[c];
+		    CountryImage ci = countryImages[c];
 
 		    int x1=ci.getX1();
 		    int y1=ci.getY1();
@@ -870,7 +870,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 	// Subclass countryImage - holds all the image information
 
-	class countryImage {
+	class CountryImage {
 
 		private int x1;
 		private int y1;
@@ -886,9 +886,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		private Color color;
 
-		public countryImage() {
-			x1=map.length;
-			y1=map[0].length;
+		public CountryImage() {
+			x1=Integer.MAX_VALUE;
+			y1=Integer.MAX_VALUE;
 			x2=0;
 			y2=0;
 			SourceImage=null;
@@ -1072,7 +1072,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		int i = num-1;
 
-		countryImage ci = CountryImages[i];
+		CountryImage ci = countryImages[i];
 
 		int x1=ci.getX1();
 //		int x2=ci.getX2();

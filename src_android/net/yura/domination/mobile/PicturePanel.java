@@ -44,15 +44,15 @@ public class PicturePanel extends ImageView implements MapPanel {
         public final static int VIEW_CONNECTED_EMPIRE = 5;
 
         private Risk myrisk;
+        private int c1,c2,cc;
+        private Font font;
+        private String strCountry;
 
+        // all the image data when the map is loaded
         private Image img;
         private Image tempimg;
         private byte[][] map;
-        private countryImage[] CountryImages;
-        private int c1,c2,cc;
-
-        private Font font;
-        private String strCountry;
+        private CountryImage[] countryImages;
 
         private static final ColorMatrix HighLight;
         public static final ColorMatrix gray;
@@ -136,7 +136,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 // clean up before we load new images
                 //original = null;
-                CountryImages = null;
+                countryImages = null;
 
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
                 
@@ -204,16 +204,16 @@ public class PicturePanel extends ImageView implements MapPanel {
 
 
 
-                countryImage[] newCountryImages = new countryImage[noc];
+                CountryImage[] newCountryImages = new CountryImage[noc];
                 for (int c=0; c < noc; c++) {
-                    newCountryImages[c] = new countryImage();
+                    newCountryImages[c] = new CountryImage();
                 }
 
  
 
                 int[] pixels = new int[m.getWidth()];
 
-                countryImage cci;
+                CountryImage cci;
                 // create a very big 2d array with all the data from the image map
                 for(int y=0; y < m.getHeight(); y++) {
 
@@ -273,7 +273,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 }
 
                 // assign everything at the end
-                CountryImages = newCountryImages;
+                countryImages = newCountryImages;
                 img = newImg;
                 tempimg = newTempimg;
                 map = newMap;
@@ -329,15 +329,15 @@ public class PicturePanel extends ImageView implements MapPanel {
                         g.drawImage(img,0,0);
 
                         if (c1 != NO_COUNTRY) {
-                                drawHighLightImage(g, CountryImages[c1-1]);
+                                drawHighLightImage(g, countryImages[c1-1]);
                         }
 
                         if (c2 != NO_COUNTRY) {
-                                drawHighLightImage(g,CountryImages[c2-1]);
+                                drawHighLightImage(g,countryImages[c2-1]);
                         }
 
                         if (cc != NO_COUNTRY) {
-                                drawHighLightImage(g,CountryImages[cc-1]);
+                                drawHighLightImage(g,countryImages[cc-1]);
                         }
 
                         g.setFont(font);
@@ -406,8 +406,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                         int a=attacker.getColor();
                         int b=defender.getColor();
 
-                        drawHighLightImage(g2,CountryImages[a-1]);
-                        drawHighLightImage(g2,CountryImages[b-1]);
+                        drawHighLightImage(g2,countryImages[a-1]);
+                        drawHighLightImage(g2,countryImages[b-1]);
 
                         int ac = attacker.getOwner().getColor();
 
@@ -549,7 +549,7 @@ public class PicturePanel extends ImageView implements MapPanel {
             }
         }
         
-        private void drawHighLightImage(Graphics2D g, countryImage countryImage) {
+        private void drawHighLightImage(Graphics2D g, CountryImage countryImage) {
             
             int val = countryImage.color;
             Graphics g2 = g.getGraphics();
@@ -695,7 +695,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                 }
 
-                for (int c=0; c < CountryImages.length ; c++) {
+                for (int c=0; c < countryImages.length ; c++) {
 
                     int val=0;
 
@@ -825,7 +825,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 */
                     }
 
-                    countryImage ci = CountryImages[c];
+                    CountryImage ci = countryImages[c];
 
                     int x1=ci.getX1();
                     int y1=ci.getY1();
@@ -949,7 +949,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          * @return BufferedImage Image buffered of a country
          */
         public Image getCountryImage(int num) {
-                countryImage ci = CountryImages[num-1];
+                CountryImage ci = countryImages[num-1];
                 return ci.getSourceImage();
         }
 
@@ -971,7 +971,7 @@ public class PicturePanel extends ImageView implements MapPanel {
         
         // Subclass countryImage - holds all the image information
 
-        class countryImage {
+        class CountryImage {
 
                 private int x1;
                 private int y1;
@@ -981,7 +981,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 private int  color;
 
-                public countryImage() {
+                public CountryImage() {
                         x1=Integer.MAX_VALUE;
                         y1=Integer.MAX_VALUE;
                 }
