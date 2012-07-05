@@ -82,7 +82,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 img = null;
                 map = null;
                 
-                setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
+                //setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
                 setName("PicturePanel");
         }
@@ -127,30 +127,6 @@ public class PicturePanel extends ImageView implements MapPanel {
             this.ml = ml;
         }
 
-        private void setupSize(int x,int y) {
-
-            if (map==null || map.length!=x || map[0].length!=y) {
-
-                //System.out.println("MAKING NEW SIZE!!!!");
-
-                //Dimension size = new Dimension(x,y);
-
-                setPreferredSize(x,y);
-                //setMinimumSize(size);
-                //setMaximumSize(size);
-
-                // clear out old values
-                img = null;
-                tempimg = null;
-                map = null;
-                
-                img = Image.createImage(x, y);
-                tempimg = Image.createImage(x, y);
-                map = new byte[x][y];
-            }
-
-        }
-
         /**
          * Adds the images related to the game to the picture panel
          */
@@ -180,28 +156,57 @@ public class PicturePanel extends ImageView implements MapPanel {
         
         public void memoryLoad(Image m, Image original) {
 
-                // ImageView vars
-                imgW = original.getWidth();
-                imgH = original.getHeight();
-
-
-
-                RiskGame game = myrisk.getGame();
                 cc=NO_COUNTRY;
                 c1=NO_COUNTRY;
                 c2=NO_COUNTRY;
+            
+                // ImageView vars
+                imgW = original.getWidth();
+                imgH = original.getHeight();
+                int mW = m.getWidth();
+                int mH = m.getHeight();
+
+
+                RiskGame game = myrisk.getGame();
                 int noc = game.getCountries().length;
 
 
+                Image newImg;
+                Image newTempimg;
+                byte[][] newMap;
 
-                setupSize(m.getWidth(),m.getHeight()); // creates a 2D byte array and double paint buffer
-                { Graphics zg = img.getGraphics(); zg.drawImage(original, 0, 0, 0); }
+                if (map==null || map.length!=mW || map[0].length!=mH) {
+
+                    setPreferredSize(mW,mH);
+
+                    // clear out old values
+                    img = null;
+                    tempimg = null;
+                    map = null;
+                    
+                    newImg = Image.createImage(mW, mH);
+                    newTempimg = Image.createImage(mW, mH);
+                    newMap = new byte[mW][mH];
+                }
+                else {
+                    newImg = img;
+                    newTempimg = tempimg;
+                    newMap = map;
+                    
+                    img = null;
+                    tempimg = null;
+                    map = null;
+                }
+                
+                
+                
+                { Graphics zg = newImg.getGraphics(); zg.drawImage(original, 0, 0, 0); }
 
 
 
-                CountryImages = new countryImage[noc];
+                countryImage[] newCountryImages = new countryImage[noc];
                 for (int c=0; c < noc; c++) {
-                        CountryImages[c] = new countryImage();
+                    newCountryImages[c] = new countryImage();
                 }
 
  
@@ -221,11 +226,11 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 // if ( num > noc && num !=NO_COUNTRY ) System.out.print("map error: "+x+" "+y+"\n"); // testing map
 
-                                map[x][y]= (byte) (num - 128); // as byte is signed we have to use this
+                                newMap[x][y]= (byte) (num - 128); // as byte is signed we have to use this
 
                                 if ( num != NO_COUNTRY ) {
 
-                                        cci = CountryImages[num-1];
+                                        cci = newCountryImages[num-1];
 
                                         if (x < cci.getX1() ) { cci.setX1(x); }
                                         if (x > cci.getX2() ) { cci.setX2(x); }
@@ -241,9 +246,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                 m=null;
 
                 // create the bufferd image for each country
-                for (int c=0; c < CountryImages.length ; c++) {
+                for (int c=0; c < newCountryImages.length ; c++) {
 
-                        cci = CountryImages[c];
+                        cci = newCountryImages[c];
 
                         int x1=cci.getX1();
 //                      int x2=cci.getX2();
@@ -259,7 +264,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         
                         for(int y=y1; y <= y2; y++) {
                                 for(int x=0; x < w; x++) {
-                                        if (map[x+x1][y] + 128 != (c+1) ) {
+                                        if (newMap[x+x1][y] + 128 != (c+1) ) {
                                                 cimg.setRGB( x, (y-y1), 0); // clear the un-needed area!
                                         }
                                 }
@@ -267,8 +272,11 @@ public class PicturePanel extends ImageView implements MapPanel {
                         
                 }
 
-
-
+                // assign everything at the end
+                CountryImages = newCountryImages;
+                img = newImg;
+                tempimg = newTempimg;
+                map = newMap;
         }
 
         protected void paintBorder(Graphics2D g) {
@@ -669,6 +677,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 RiskGame game = myrisk.getGame();
 
+                if (tempimg==null) return;
+                
                 Graphics zg = tempimg.getGraphics();
                 zg.drawImage(img ,0 ,0, 0 );
 
@@ -972,8 +982,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 private int  color;
 
                 public countryImage() {
-                        x1=map.length;
-                        y1=map[0].length;
+                        x1=Integer.MAX_VALUE;
+                        y1=Integer.MAX_VALUE;
                 }
 
                 public boolean checkChange(int b) {
