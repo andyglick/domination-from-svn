@@ -169,6 +169,19 @@
     <bind style="goButton" type="region" key="GoButton"/>
 
 
+    <style id="card">
+	<state>
+	    <imagePainter path="/card.9.png" />
+	</state>
+	<state value="SELECTED">
+	    <imagePainter path="/card_active.9.png" />
+	</state>
+        <state value="DISABLED"> 
+	    <imagePainter path="/card_disabled.9.png" />
+	</state>
+    </style>
+    <bind style="card" type="region" key="Card"/>
+
 
     <style id="cardsButton">
 	<imageIcon id="cards" path="/cards_button.png"/>

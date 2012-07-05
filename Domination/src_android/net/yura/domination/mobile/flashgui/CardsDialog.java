@@ -84,7 +84,7 @@ public class CardsDialog extends Frame implements ActionListener {
 
                 NumArmies = ((Component)loader.find("NumArmies"));
 
-		myCardsPanel = (Panel) ((ScrollPane)loader.find("myCardsPanel")).getView();
+                myCardsPanel = (Panel)loader.find("myCardsPanel");
 		myCardsPanel.setLayout( new BoxLayout( Graphics.HCENTER ) );
 
 
@@ -195,11 +195,13 @@ public class CardsDialog extends Frame implements ActionListener {
 		public CardPanel (Card c) {
 			card=c;
 
-			int cardWidth=XULLoader.adjustSizeToDensity(40);
+			int cardWidth=XULLoader.adjustSizeToDensity(50);
 			//int cardHeight=100;
 
                         // height will be set by the scrollarea height in the XML file
 			setPreferredSize( cardWidth, -1 );
+			
+			setName("Card");
 		}
 
 		/**
