@@ -141,6 +141,19 @@
     <bind style="spinner" key="Spinner"/>
 
 
+    <style id="mainButton">
+	<state>
+	    <imagePainter path="/button.9.png" />
+	</state>
+	<state value="FOCUSED">
+	    <imagePainter path="/button_focus.9.png" />
+	</state>
+        <state value="FOCUSED AND SELECTED"> 
+	    <imagePainter path="/button_pressed.9.png" />
+	</state>
+    </style>
+    <bind style="mainButton" type="region" key="MainButton"/>
+
 
     <style id="goButton">
 	<state>
