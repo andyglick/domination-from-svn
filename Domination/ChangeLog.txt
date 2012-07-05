@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	7
 	 * Network:	9
 
-	Android		6
+	Android		7
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
 
+	Android 7 handle OutOfMemoryError much better when loading the map
 	Android 6 DONE - when you are in "MUST TRADE" mode the "Go" button should not say "End Trade" and the cards button should be green
 		  DONE - something fun for the end of the game has not been added to the Android version
 		  fixed - java.lang.NoSuchFieldException: btn_circle
