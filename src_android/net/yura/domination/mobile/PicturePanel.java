@@ -87,8 +87,6 @@ public class PicturePanel extends ImageView implements MapPanel {
                 setName("PicturePanel");
         }
 
-        int[] oldintx,oldinty;
-
         MouseListener ml;
         int x=-1000,y=-1000;
         public void processMouseEvent(int type, int x, int y, KeyEvent keys) {

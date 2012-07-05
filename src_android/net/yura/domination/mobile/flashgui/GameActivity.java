@@ -527,17 +527,11 @@ public class GameActivity extends Frame implements ActionListener {
 
     private void go(String input) {
 
-        blockInput();
+        pp.setHighLight(255);
+
+        if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetup() ) { noInput(); }
 
         myrisk.parser(input);
-
-    }
-    
-    private void blockInput() {
-
-            pp.setHighLight(255);
-
-            if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetup() ) { noInput(); }
 
     }
 
@@ -558,6 +552,7 @@ public class GameActivity extends Frame implements ActionListener {
 
             gameState=0;
 
+            repaint();
     }
 
     public void mapClick(int[] countries) {

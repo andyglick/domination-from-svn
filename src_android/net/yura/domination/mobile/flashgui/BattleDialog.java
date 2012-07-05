@@ -3,18 +3,14 @@ package net.yura.domination.mobile.flashgui;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.Random;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mapstore.MapRenderer;
-import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
-import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
-import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
@@ -173,8 +169,8 @@ public class BattleDialog extends Frame implements ActionListener {
         this.c2img = c2img;
         reset();
     }
-
-    private void blockInput() {
+    
+    private void go(String input) {
         
         int gameState = myrisk.getGame().getState();
         
@@ -183,11 +179,6 @@ public class BattleDialog extends Frame implements ActionListener {
                 //this does not close it, just resets its params
                 reset();
         }
-    }
-    
-    private void go(String input) {
-        
-        blockInput();
         
         myrisk.parser(input);
         
