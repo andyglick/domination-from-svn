@@ -563,7 +563,8 @@ public class MapChooser implements ActionListener,MapServerListener {
     
     public void onError(String error) {
         // TODO make this better
-        OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
+        //OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
+        show("Error");
     }
 
     public void downloadFinished(String download) {
@@ -615,11 +616,13 @@ public class MapChooser implements ActionListener,MapServerListener {
         Component loading = loader.find("Loading");
         Component noMatches = loader.find("NoMatches");
         Component allUpToDate = loader.find("AllUpToDate");
+        Component error = loader.find("Error");
 
         list.setVisible( "ResultList".equals(name) );
         noMatches.setVisible( "NoMatches".equals(name) );
         allUpToDate.setVisible( "AllUpToDate".equals(name) );
         loading.setVisible( "Loading".equals(name) );
+        error.setVisible( "Error".equals(name) );
 
         getRoot().revalidate();
         getRoot().repaint();
