@@ -20,8 +20,7 @@ TODO Android
 	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
 	Text in cards dialog is not very good and does not mention "trade 3 same or 3 different cards"
         (add stats button)
-	(make a theme for cards so they actually look like cards)
-	(try semi-transparent marble for top and bottom)
+	(try semi-transparent marble for top and bottom, or add a gradient to the black)
 
 Still needs to be done:
 

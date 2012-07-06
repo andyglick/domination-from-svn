@@ -32,7 +32,11 @@ import net.yura.swingme.core.CoreUtil;
 public class DominationMain extends Midlet {
 
     public static final String product = "MiniFlashGUI";
-    public static final String version = System.getProperty("versionCode");
+    public static final String version;
+    static {
+        String versionCode = System.getProperty("versionCode");
+        version = versionCode!=null ? versionCode : "?me4se?";
+    }
     
     public DominationMain() {
 
@@ -40,8 +44,8 @@ public class DominationMain extends Midlet {
         RiskUtil.streamOpener = new RiskMiniIO();
 
         // get version from AndroidManifest.xml
-        String versionName = System.getProperty("versionName");
-        Risk.RISK_VERSION = versionName!=null ? versionName : "?me4se?";
+        //String versionName = System.getProperty("versionName");
+        //Risk.RISK_VERSION = versionName!=null ? versionName : "?me4se?";
         
         try {
 
