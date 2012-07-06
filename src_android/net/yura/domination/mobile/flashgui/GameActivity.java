@@ -32,6 +32,7 @@ import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.GridBagLayout;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
+import net.yura.mobile.util.Url;
 import net.yura.swingme.core.CoreUtil;
 
 /**
@@ -263,6 +264,8 @@ public class GameActivity extends Frame implements ActionListener {
         
         // ============================================ setup UI
 
+        Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?message=" + Url.encode( resb.getProperty("mainmenu.loading") ));
+        
         try {
             pp.load();
         }
@@ -280,6 +283,8 @@ public class GameActivity extends Frame implements ActionListener {
         catch (Exception e) {
             throw new RuntimeException("can not load "+myrisk.getGame().getMapFile() ,e);
         }
+        
+        Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
         
         mapViewControl.resetMapView();
         
