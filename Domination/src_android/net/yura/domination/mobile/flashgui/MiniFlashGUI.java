@@ -231,21 +231,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     // ================================================ GAME SETUP
 
-    public void openNewGame(boolean localgame) {
+    public void openNewGame(boolean islocalgame) {
 
         // clean up
         chooser = null;
         
-        this.localgame = localgame;
-
-        if (localgame) {
-            setTitle(resb.getProperty("newgame.title.local"));
-            //resetplayers.setVisible(true);
-        }
-        else {
-            setTitle(resb.getProperty("newgame.title.network"));
-            //resetplayers.setVisible(false);
-        }
+        localgame = islocalgame;
 
         newgame = getPanel("/newgame.xml");
 
@@ -264,14 +255,29 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             addChangeListener(compsNames[c]);
         }
 
-        setContentPane( new ScrollPane( newgame.getRoot() ) );
-
         if (localgame) {
             RiskUtil.loadPlayers( myrisk ,getClass());
         }
 
-        revalidate();
-        repaint();
+        // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
+        DesktopPane.invokeLater( new Runnable() {
+            public void run() {
+                if (localgame) {
+                    setTitle(resb.getProperty("newgame.title.local"));
+                    //resetplayers.setVisible(true);
+                }
+                else {
+                    setTitle(resb.getProperty("newgame.title.network"));
+                    //resetplayers.setVisible(false);
+                }
+
+                setContentPane( new ScrollPane( newgame.getRoot() ) );
+
+                revalidate();
+                repaint();
+            }
+        } );
+
     }
 
     @Override
