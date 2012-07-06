@@ -270,15 +270,15 @@ public class GameActivity extends Frame implements ActionListener {
             System.gc();
             ex.printStackTrace();
 
-            Panel parent = (Panel)pp.getParent();
-            parent.removeAll();
+            Panel pparent = (Panel)pp.getParent();
+            pparent.removeAll();
             TextArea ta = new TextArea("Not enough memory to load this map: "+ex);
             ta.setLineWrap(true);
             ta.setFocusable(false);
-            parent.add(ta);
+            pparent.add(ta);
         }
         catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("can not load "+myrisk.getGame().getMapFile() ,e);
         }
         
         mapViewControl.resetMapView();
