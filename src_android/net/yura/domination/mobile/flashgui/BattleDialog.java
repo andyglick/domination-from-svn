@@ -218,7 +218,12 @@ public class BattleDialog extends Frame implements ActionListener {
         //g.setColor(0xFFFF0000);
         //g.drawRect( (getContentPane().getWidth()-imageAreaHeight)/2 , (getContentPane().getHeight()-heightOfComponents)/2 + getContentPane().getY(), imageAreaHeight, imageAreaHeight);
         
-        MoveDialog.paintMove(g,xOffset,yOffset,c1img,c2img,color1,color2,csrc,cdes,0);
+        MoveDialog.paintMove(g,
+                xOffset,yOffset,
+                c1img,c2img,
+                color1,color2,
+                myrisk.getCountryName(c1num),myrisk.getCountryName(c2num),
+                csrc,cdes,0);
 
         // #####################################################
         // ################## drawing DICE!!!!! ################

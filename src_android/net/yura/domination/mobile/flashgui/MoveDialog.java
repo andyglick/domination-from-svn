@@ -140,7 +140,12 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         int xOffset = getContentPane().getWidth() / 2;
         int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/2 + getContentPane().getY();
 
-        paintMove(g,xOffset,yOffset,c1img,c2img,color,color,csrc-move,cdes+move,move);
+        paintMove(g,
+                xOffset,yOffset,
+                c1img,c2img,
+                color,color,
+                myrisk.getCountryName(c1num),myrisk.getCountryName(c2num),
+                csrc-move,cdes+move,move);
     }
 
     public static int distanceFromCenter = XULLoader.adjustSizeToDensity(80);
@@ -149,6 +154,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
             int xMiddle,int yMiddle,
             Image c1img,Image c2img,
             int color1, int color2,
+            String name1,String name2,
             int noa1i, int noa2i, int move
             ) {
         
@@ -156,12 +162,14 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         
         int fh = font.getHeight();
         
+        int xC1 = xMiddle-distanceFromCenter;
+        int xC2 = xMiddle+distanceFromCenter;
 
         g.getGraphics().setColorMarix( getMarix(color1) );
-        drawCountry(g,c1img, xMiddle-distanceFromCenter, yMiddle);
+        drawCountry(g,c1img, xC1, yMiddle);
         
         if (color1!=color2) g.getGraphics().setColorMarix( getMarix(color2) );
-        drawCountry(g,c2img, xMiddle+distanceFromCenter, yMiddle);
+        drawCountry(g,c2img, xC2, yMiddle);
 
         g.getGraphics().setColorMarix(null);
 
@@ -199,6 +207,11 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
             g.drawString( Integer.toString(move) , xMiddle -7, textY );
         }
 
+        g.setColor(0xFFFFFFFF); // white
+        int texty = yMiddle - distanceFromCenter/2;
+        
+        g.drawString(name1, xC1-font.getWidth(name1)/2, texty);
+        g.drawString(name2, xC2-font.getWidth(name2)/2, texty);
     }
 
     public static void drawCountry(Graphics2D g, Image img, int x, int y) {
