@@ -158,10 +158,10 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         
 
         g.getGraphics().setColorMarix( getMarix(color1) );
-        g.drawImage(c1img, xMiddle-distanceFromCenter-(c1img.getWidth()/2), yMiddle-(c1img.getHeight()/2));
+        drawCountry(g,c1img, xMiddle-distanceFromCenter, yMiddle);
         
         if (color1!=color2) g.getGraphics().setColorMarix( getMarix(color2) );
-        g.drawImage(c2img, xMiddle+distanceFromCenter-(c2img.getWidth()/2), yMiddle-(c2img.getHeight()/2));
+        drawCountry(g,c2img, xMiddle+distanceFromCenter, yMiddle);
 
         g.getGraphics().setColorMarix(null);
 
@@ -198,6 +198,24 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         if (move > 0) {
             g.drawString( Integer.toString(move) , xMiddle -7, textY );
         }
+
+    }
+
+    public static void drawCountry(Graphics2D g, Image img, int x, int y) {
+
+        int maxW = distanceFromCenter * 2;
+        int maxH = distanceFromCenter;
+        
+        int w = XULLoader.adjustSizeToDensity( img.getWidth() );
+        int h = XULLoader.adjustSizeToDensity( img.getHeight() );
+        
+        if (w > maxW || h > maxH) {
+            double scale = Math.min(maxW/(double)w,maxH/(double)h);
+            w = (int)( scale * w );
+            h = (int)( scale * h );
+        }
+        
+        g.drawScaledImage(img, x - w/2, y - h/2, w, h);
 
     }
 

@@ -206,7 +206,7 @@ public class BattleDialog extends Frame implements ActionListener {
 
         int csrc = myrisk.hasArmiesInt( c1num );
         int cdes = myrisk.hasArmiesInt( c2num );
-        int color1 = myrisk.getCurrentPlayerColor();
+        int color1 = myrisk.getColorOfOwner( c1num );
         int color2 = myrisk.getColorOfOwner( c2num );
 
         int imageAreaHeight = getImageAreaHeight();
