@@ -36,7 +36,7 @@
         <label text="mapchooser.no-matches" i18n="true" name="NoMatches" alignment="center" property="valign=center" weightx="1" weighty="1" visible="false"/>
         <label text="mapchooser.loading" i18n="true" name="Loading" alignment="center" property="valign=center" weightx="1" weighty="1" visible="false"/>
         <label text="mapchooser.alluptodate" i18n="true" name="AllUpToDate" alignment="center" property="valign=center" weightx="1" weighty="1" visible="false"/>
-        <panel columns="1" weightx="1" weighty="1" name="Error" visible="false">
+        <panel columns="1" weightx="1" weighty="1" name="Error" visible="false" right="5" left="5">
             <label weighty="1"/>
             <textarea editable="false" i18n="true" text="mapchooser.error.title" weightx="1" wrap="true" font="LARGE bold" property="class=net.yura.mobile.gui.components.TextPane;halign=center"/>
             <textarea editable="false" i18n="true" text="mapchooser.error.tip" wrap="true" property="class=net.yura.mobile.gui.components.TextPane;halign=center"/>
