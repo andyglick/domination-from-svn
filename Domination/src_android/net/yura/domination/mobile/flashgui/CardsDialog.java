@@ -118,6 +118,13 @@ public class CardsDialog extends Frame implements ActionListener {
                     selected.add(cp);
                 }
             }
+            
+            // if we have a extra armies card, put it at the start
+            if (extraArmiesCard!=null) {
+                selected.remove(extraArmiesCard);
+                selected.add(0, extraArmiesCard);
+            }
+            
             return selected;
         }
 
@@ -131,12 +138,6 @@ public class CardsDialog extends Frame implements ActionListener {
 
             if (cards2.size()==3) {
 
-                // if we have a extra armies card, put it at the start
-                if (extraArmiesCard!=null) {
-                    cards2.remove(extraArmiesCard);
-                    cards2.add(0, extraArmiesCard);
-                }
-                
                 myrisk.parser("trade "+cards2.get(0).getCardName() + " " + cards2.get(1).getCardName() + " " + cards2.get(2).getCardName() );
 
                 for (CardPanel cp:cards2) {
