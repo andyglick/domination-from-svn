@@ -19,6 +19,7 @@ CURRENT VERSION:
 
 	Android 8 fixed - WARNING: trying to set a transparent color: 0 (going from mainmenu to newgame)
 		  DONE - when map is loading, should show a loading screen
+		  DONE - attack and move screen need to take into account dpi when drawing the countries
 	Android 7 handle OutOfMemoryError much better when loading the map
 		  nice theme added for main menu buttons
 		  nice theme added for cards
