@@ -404,6 +404,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         }
         else if ("doMapSearch".equals(actionCommand)) {
+            TextComponent.closeNativeEditor();
             String text = ((TextComponent)loader.find("mapSearchBox")).getText();
             clearList();
             if (text != null && !"".equals(text)) {
