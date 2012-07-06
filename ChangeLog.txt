@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	7
 	 * Network:	9
 
-	Android		7
+	Android		8
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
 
+	Android 8 fixed - WARNING: trying to set a transparent color: 0 (going from mainmenu to newgame)
 	Android 7 handle OutOfMemoryError much better when loading the map
 		  nice theme added for main menu buttons
 		  nice theme added for cards
@@ -32,7 +33,7 @@ CURRENT VERSION:
 		  save and undo icons added
 		  RadioButton hack added to make startgame button more visible
 		  DONE - PicturePanel should not use defualt font as it changes with dpi, should be a fixed size
-		  fixed - WARNING: trying to set a transparent color: 0
+		  fixed - WARNING: trying to set a transparent color: 0 (going from newgame to mainmenu)
 		  fixed - on tablet the segmented control for the map views needs extra padding
 	Android 2 MapStore sprite wrong size on ldpi fix
 	Android 1 DONE - layout attack dialog fully
