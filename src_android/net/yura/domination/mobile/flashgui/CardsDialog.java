@@ -134,6 +134,7 @@ public class CardsDialog extends Frame implements ActionListener {
             
             // if we have a extra armies card, put it at the start
             if (extraArmiesCard!=null) {
+                assert selected.contains(extraArmiesCard);
                 selected.remove(extraArmiesCard);
                 selected.add(0, extraArmiesCard);
             }
