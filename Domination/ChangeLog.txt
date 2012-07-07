@@ -22,6 +22,7 @@ CURRENT VERSION:
 		  DONE - attack and move screen need to take into account dpi when drawing the countries
 		  country names added to move and attack screen
 		  fixed - Text in cards dialog is not very good and does not mention "trade 3 same or 3 different cards"
+		  in fixed cards rules the cards dialog shows you have many armies you will get for a particular trade
 	Android 7 handle OutOfMemoryError much better when loading the map
 		  nice theme added for main menu buttons
 		  nice theme added for cards
