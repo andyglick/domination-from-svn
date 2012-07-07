@@ -19,7 +19,6 @@ import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
-import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.layout.BoxLayout;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
@@ -323,12 +322,7 @@ public class CardsDialog extends Frame implements ActionListener {
                     }
 
                     List<CardPanel> trades = getSelectedCards();
-                    if (trades.size() == 3 && canTrade && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) ) {
-                        tradeButton.setFocusable(true);
-                    }
-                    else {
-                        tradeButton.setFocusable(false);
-                    }
+                    tradeButton.setFocusable( canTrade && trades.size() == 3 && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) );
                     tradeButton.repaint();
                     setupNumArmies();
                 }
