@@ -95,13 +95,27 @@ public class CardsDialog extends Frame implements ActionListener {
         public void setupNumArmies() {
             
             String text;
+            int cardsMode = myrisk.getGame().getCardMode();
             
             // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
-            if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
-		 text= resb.getString("cards.fixed");
-            }
-            else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-		 text= resb.getString("cards.italianlike");
+            if(cardsMode==RiskGame.CARD_FIXED_SET || cardsMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                
+                List<CardPanel> cards = getSelectedCards();
+
+                int trade = 0;
+                if (cards.size() == 3) {
+                    trade = myrisk.getGame().getTradeAbsValue(cards.get(0).card.getName(), cards.get(1).card.getName(), cards.get(2).card.getName(), cardsMode);
+                }
+                
+                if (trade > 0) {
+                    text= RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf( trade ) );
+                }
+                else if(cardsMode==RiskGame.CARD_FIXED_SET) {
+                    text= resb.getString("cards.fixed");
+                }
+                else { // if(cardsMode==RiskGame.CARD_ITALIANLIKE_SET)
+	            text= resb.getString("cards.italianlike");
+	        }
             }
             else {
 		 text= RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf( myrisk.getNewCardState() ) );
@@ -294,19 +308,10 @@ public class CardsDialog extends Frame implements ActionListener {
                 public void fireActionPerformed() {
                     super.fireActionPerformed();
 
-                    List<CardPanel> trades = getSelectedCards();
-
-                    if (trades.size() == 3 && canTrade && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) ) {
-                        tradeButton.setFocusable(true);
-                    }
-                    else {
-                        tradeButton.setFocusable(false);
-                    }
-
                     if (!isSelected() && extraArmiesCard==this) {
                         CardPanel newSelected=null;
-                        for (CardPanel cp:trades) {
-                            if ( isOwnedCurrentPlayer(cp) ) {
+                        for (CardPanel cp: (List<CardPanel>)myCardsPanel.getComponents() ) {
+                            if ( cp.isSelected() && isOwnedCurrentPlayer(cp) ) {
                                 newSelected = cp;
                                 break;
                             }
@@ -317,7 +322,20 @@ public class CardsDialog extends Frame implements ActionListener {
                         extraArmiesCard = this;
                     }
 
+                    List<CardPanel> trades = getSelectedCards();
+                    if (trades.size() == 3 && canTrade && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) ) {
+                        tradeButton.setFocusable(true);
+                    }
+                    else {
+                        tradeButton.setFocusable(false);
+                    }
                     tradeButton.repaint();
+                    setupNumArmies();
+                }
+                
+                @Override
+                public String toString() {
+                    return card.toString();
                 }
         }
 }
