@@ -283,8 +283,9 @@ public class GameActivity extends Frame implements ActionListener {
         catch (Exception e) {
             throw new RuntimeException("can not load "+myrisk.getGame().getMapFile() ,e);
         }
-        
-        Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
+        finally {
+            Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
+        }
         
         mapViewControl.resetMapView();
         
