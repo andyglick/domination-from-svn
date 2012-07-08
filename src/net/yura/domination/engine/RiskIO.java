@@ -24,6 +24,7 @@ public interface RiskIO {
         InputStream loadGameFile(String file) throws Exception;
         
         OutputStream saveMapFile(String fileName) throws Exception;
+        void renameMapFile(String oldName, String newName);
         
         void getMap(String filename,Risk risk,Exception ex);
 }

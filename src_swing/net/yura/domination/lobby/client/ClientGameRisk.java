@@ -67,12 +67,15 @@ public class ClientGameRisk extends TurnBasedAdapter {
                     public InputStream loadGameFile(String file) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
-                    public OutputStream saveMapFile(String fileName) throws Exception {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
                     public void getMap(String filename, Risk risk,Exception ex) {
                         RiskUtil.printStackTrace(ex);
                         risk.getMapError(ex.toString());
+                    }
+                    public OutputStream saveMapFile(String fileName) throws Exception {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                    public void renameMapFile(String oldName, String newName) {
+                        throw new UnsupportedOperationException("Not supported yet.");
                     }
             };
 	}

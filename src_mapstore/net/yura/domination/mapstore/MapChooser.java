@@ -562,12 +562,18 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     }
     
-    public void onError(String error) {
-        // TODO make this better
-        //OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
+    public void onXMLError(String error) {
         show("Error");
     }
 
+    /**
+     * currently this is for download or image errors
+     */
+    public void onDownloadError(String error) {
+        // TODO make this better
+        OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
+    }
+    
     public void downloadFinished(String download) {
 
         if ( !this.mapfiles.contains( download ) ) {
