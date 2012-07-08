@@ -149,18 +149,5 @@ public class MiniUtil {
             OptionPane.showMessageDialog(null,"Unable to open manual: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static Image createImage(InputStream in) throws IOException {
-        try {
-            Image img = Image.createImage(in);
-            if (img==null) {
-                throw new IOException("Image.createImage returned null");
-            }
-            return img;
-        }
-        finally {
-            FileUtil.close(in);
-        }
-    }
     
 }

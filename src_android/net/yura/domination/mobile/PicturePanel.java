@@ -16,6 +16,7 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -139,8 +140,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
                 
                 memoryLoad(
-                        MiniUtil.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
-                        MiniUtil.createImage(RiskUtil.openMapStream(game.getImagePic()) )
+                        MapChooser.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
+                        MapChooser.createImage(RiskUtil.openMapStream(game.getImagePic()) )
                         );
 
         }
