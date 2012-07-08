@@ -106,6 +106,13 @@ public class RiskUIUtil {
                 public void getMap(String filename, Risk risk,Exception ex) {
                     net.yura.domination.mapstore.GetMap.getMap(filename,risk,ex);
                 }
+                public void renameMapFile(String oldName, String newName) {
+                    File oldFile = new File( getSaveMapDir() ,oldName);
+                    File newFile = new File( getSaveMapDir() ,newName);
+                    if (!oldFile.renameTo(newFile)) {
+                        throw new RuntimeException("rename failed: from: "+oldName+" to: "+newName);
+                    }
+                }
             };
         }
     }

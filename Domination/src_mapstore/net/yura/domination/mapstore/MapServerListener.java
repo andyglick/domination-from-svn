@@ -7,9 +7,11 @@ import net.yura.mobile.io.ServiceLink.Task;
  */
 public interface MapServerListener {
 
-    public void onError(String string);
     public void gotResultXML(String url, Task task);
-    public void downloadFinished(String mapUID);
+    public void onXMLError(String string);
+
+    public void downloadFinished(String mapUID);    
     public void gotImgFromServer(String url,byte[] data);
-    
+    public void onDownloadError(String string); // (file and image errors here)
+
 }

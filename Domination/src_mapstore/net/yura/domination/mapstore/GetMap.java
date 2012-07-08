@@ -26,7 +26,7 @@ public class GetMap implements MapServerListener {
         get.client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",filename );
     }
 
-    public void onError(String exception) {
+    private void onError(String exception) {
         myrisk.getMapError(exception);
         client.kill();
     }
@@ -57,8 +57,16 @@ public class GetMap implements MapServerListener {
         }
     }
 
+    public void onXMLError(String string) {
+        onError(string);
+    }
+
+    public void onDownloadError(String string) {
+        onError(string);
+    }
+
     public void gotImgFromServer(String url, byte[] data) {
         throw new UnsupportedOperationException("Not supported");
     }
-    
+
 }

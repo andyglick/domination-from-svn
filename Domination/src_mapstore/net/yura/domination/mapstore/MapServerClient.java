@@ -52,7 +52,13 @@ public class MapServerClient extends HTTPClient {
 
         // show error dialog to the user
         if (ch!=null) {
-            ch.onError("error: "+responseCode+(ex!=null?" "+ex:"") );
+            String error = "error:"+(responseCode!=0?" "+responseCode:"")+(ex!=null?" "+ex:"");
+            if (request.id == XML_REQUEST_ID) {
+                ch.onXMLError(error);
+            }
+            else {
+                ch.onDownloadError(error);
+            }
         }
     }
 
@@ -164,6 +170,7 @@ Logger.info("Make Request: "+request);
         String mapUID;
         String mapContext;
         Vector urls = new Vector();
+        Vector fileNames = new Vector();
         boolean error = false;
         
         MapDownload(String url) {
@@ -183,6 +190,8 @@ Logger.info("Make Request: "+request);
             // this does not support spaces in file names
             //String url = mapContext + fileName;
             
+            fileNames.add(fileName);
+            
             String url = getURL(mapContext, fileName);
 
             urls.addElement(url);
@@ -199,6 +208,14 @@ Logger.info("Make Request: "+request);
             if (urls.isEmpty()) {
                 downloads.removeElement(this);
 
+                if (!error) {
+                    // rename all .part to there normal names
+                    for (int c=0;c<fileNames.size();c++) {
+                        String fileName = (String)fileNames.get(c);
+                        RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
+                    }
+                }
+                
                 MapUpdateService.getInstance().downloadFinished(mapUID);
                 
                 MapServerListener ch = chooser;
@@ -219,13 +236,14 @@ Logger.info("Make Request: "+request);
             //String fileName = url.substring(mapContext.length());
             
             String fileName = getPath(mapContext, url);
+            String saveToDiskName = fileName + ".part";
             
             OutputStream out = null;
             try {
-                out = RiskUtil.streamOpener.saveMapFile(fileName);
+                out = RiskUtil.streamOpener.saveMapFile(saveToDiskName);
                 saveFile(is, out);
                 if (fileName.endsWith(".map")) {
-                    Hashtable info = RiskUtil.loadInfo(fileName, false);
+                    Hashtable info = RiskUtil.loadInfo(saveToDiskName, false);
 
                     // {prv=ameroki.jpg, pic=ameroki_pic.png, name=Ameroki Map, crd=ameroki.cards, map=ameroki_map.gif, comment=map: ameroki.map blah... }
 
@@ -245,8 +263,7 @@ Logger.info("Make Request: "+request);
             }
             catch (Exception ex) {
                 RiskUtil.printStackTrace(ex);
-                // TODO what to do here?
-                // TODO what if disk is full??
+                error = true;
             }
             finally {
                 FileUtil.close(is);
@@ -264,7 +281,10 @@ Logger.info("Make Request: "+request);
             
             boolean fileExists = MapChooser.fileExists(fileName);
             
-            if (!fileExists) {
+            if (fileExists) {
+                fileNames.remove(fileName);
+            }
+            else {
                 error = true;
             }
             
