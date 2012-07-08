@@ -211,7 +211,8 @@ Logger.info("Make Request: "+request);
                 try {
                     if (!error) {
                         // rename all .part to there normal names
-                        for (int c=0;c<fileNames.size();c++) {
+                        // go backwards so we get to the .map file last
+                        for (int c=fileNames.size()-1;c>=0;c--) {
                             String fileName = (String)fileNames.get(c);
                             RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
                         }

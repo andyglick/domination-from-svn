@@ -1,9 +1,12 @@
 package net.yura.domination.mobile;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -144,6 +147,19 @@ public class MiniUtil {
         }
         catch(Exception e) {
             OptionPane.showMessageDialog(null,"Unable to open manual: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static Image createImage(InputStream in) throws IOException {
+        try {
+            Image img = Image.createImage(in);
+            if (img==null) {
+                throw new IOException("Image.createImage returned null");
+            }
+            return img;
+        }
+        finally {
+            FileUtil.close(in);
         }
     }
     

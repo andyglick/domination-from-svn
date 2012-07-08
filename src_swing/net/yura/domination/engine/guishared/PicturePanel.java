@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import java.io.IOException;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
@@ -118,8 +119,8 @@ public class PicturePanel extends JPanel implements MapPanel {
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
                 
 		memoryLoad(
-                        ImageIO.read(RiskUtil.openMapStream(game.getImageMap()) ),
-                        ImageIO.read(RiskUtil.openMapStream(game.getImagePic()) )
+                        RiskUIUtil.read(RiskUtil.openMapStream(game.getImageMap()) ),
+                        RiskUIUtil.read(RiskUtil.openMapStream(game.getImagePic()) )
                         );
 
 	}
@@ -1130,7 +1131,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		if (previewName!=null) {
                     try {
-                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream("preview/"+previewName) );
+                        BufferedImage s = RiskUIUtil.read(RiskUtil.openMapStream("preview/"+previewName) );
 			img = s;
                         width = s.getWidth();
                         height = s.getHeight();
@@ -1141,7 +1142,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
                 if (img==null) {
-                        BufferedImage s = ImageIO.read(RiskUtil.openMapStream( game.getImagePic() ) );
+                        BufferedImage s = RiskUIUtil.read(RiskUtil.openMapStream( game.getImagePic() ) );
                         img = s.getScaledInstance(PREVIEW_WIDTH,PREVIEW_HEIGHT, java.awt.Image.SCALE_SMOOTH );
                         width = PREVIEW_WIDTH;
                         height = PREVIEW_HEIGHT;
