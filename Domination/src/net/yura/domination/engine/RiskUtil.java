@@ -491,7 +491,14 @@ return Color.white;
             return new FileOutputStream( outFile );
         }
 
-        
+        public static void rename(File oldFile,File newFile) {
+            if (newFile.exists() && !newFile.delete()) {
+                throw new RuntimeException("can not del dest file: "+newFile);
+            }
+            if (!oldFile.renameTo(newFile)) {
+                throw new RuntimeException("rename failed: from: "+oldFile+" to: "+newFile);
+            }
+        }
         
         
         

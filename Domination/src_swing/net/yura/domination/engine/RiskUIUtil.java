@@ -109,9 +109,7 @@ public class RiskUIUtil {
                 public void renameMapFile(String oldName, String newName) {
                     File oldFile = new File( getSaveMapDir() ,oldName);
                     File newFile = new File( getSaveMapDir() ,newName);
-                    if (!oldFile.renameTo(newFile)) {
-                        throw new RuntimeException("rename failed: from: "+oldName+" to: "+newName);
-                    }
+                    RiskUtil.rename(oldFile, newFile);
                 }
             };
         }

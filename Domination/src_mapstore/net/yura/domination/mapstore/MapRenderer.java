@@ -217,15 +217,11 @@ public class MapRenderer extends DefaultListCellRenderer {
                 // its ok to register more than once
                 Animation.registerAnimated(this);
             }
-            else if ( chooser.mapfiles.contains( mapUID ) ) {
-
-                g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
-
+            else if ( chooser.willDownload( map ) ) {
+                g.drawImage(download, getWidth()-download.getWidth()-gap, gap);
             }
             else {
-                
-                g.drawImage(download, getWidth()-download.getWidth()-gap, gap);
-                
+                g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
             }
         }
         

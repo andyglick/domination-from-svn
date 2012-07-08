@@ -58,7 +58,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     MapServerClient client;
 
-    Vector mapfiles;
+    private Vector mapfiles;
     List list;
 
     // Nathans server
@@ -420,7 +420,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
     
     public void click(Map map) {
-        String fileUID = getFileUID( map.mapUrl );
+        String fileUID = getFileUID( map.getMapUrl() );
 
         String context = ((MapRenderer)list.getCellRenderer()).getContext();
 
@@ -640,6 +640,18 @@ public class MapChooser implements ActionListener,MapServerListener {
         String mincat = ((ButtonGroup)loader.getGroups().get(string)).getSelection().getActionCommand();
         actionPerformed(mincat);
 
+    }
+    
+    public boolean willDownload(Map map) {
+        
+        String mapUID = MapChooser.getFileUID( map.getMapUrl() );
+        
+        // if we dont have a local file with the same uid
+        if ( !mapfiles.contains( mapUID ) ) {
+            return true;
+        }
+
+        return MapUpdateService.getInstance().mapsToUpdate.contains(map);
     }
 
 }

@@ -24,6 +24,19 @@ public class Map {
     String mapWidth;
     String mapHeight;
 
+/*
+    String cardsFile;
+    String cardsURL;
+    String mapFile;
+    String mapURL;
+    String previewFile;
+    String PreviewURL;
+    String imagePicFile;
+    String imagePicURL;
+    String imageMapFile;
+    String imageMapURL;
+*/
+
     public String getAuthorId() {
         return authorId;
     }
@@ -135,19 +148,18 @@ public class Map {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-/*
-    String cardsFile;
-    String cardsURL;
-    String mapFile;
-    String mapURL;
-    String previewFile;
-    String PreviewURL;
-    String imagePicFile;
-    String imagePicURL;
-    String imageMapFile;
-    String imageMapURL;
-*/
+
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Map other = (Map) obj;
+
+        return this.id != null && other.id != null && this.id.equals(other.id);
+    }
 
     public String toString() {
 
