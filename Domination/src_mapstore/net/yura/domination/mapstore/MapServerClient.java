@@ -214,18 +214,16 @@ Logger.info("Make Request: "+request);
                         String fileName = (String)fileNames.get(c);
                         RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
                     }
-                }
-                
-                MapUpdateService.getInstance().downloadFinished(mapUID);
-                
-                MapServerListener ch = chooser;
-                
-                if (ch!=null) {
-                    if (!error) {
+                    
+                    MapUpdateService.getInstance().downloadFinished(mapUID);
+
+                    MapServerListener ch = chooser; // avoid null pointers, take a copy
+                    if (ch!=null) {
                         ch.downloadFinished(mapUID);
                     }
                 }
-                else {
+
+                if (chooser==null) {
                     kill();
                 }
             }
