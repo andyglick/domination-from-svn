@@ -72,9 +72,7 @@ public class RiskMiniIO implements RiskIO {
     public void renameMapFile(String oldName, String newName) {
         File oldFile = new File( MiniUtil.getSaveMapDir() ,oldName);
         File newFile = new File( MiniUtil.getSaveMapDir() ,newName);
-        if (!oldFile.renameTo(newFile)) {
-            throw new RuntimeException("rename failed: from: "+oldName+" to: "+newName);
-        }
+        RiskUtil.rename(oldFile, newFile);
     }
 
 }

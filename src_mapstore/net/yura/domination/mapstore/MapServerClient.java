@@ -208,19 +208,24 @@ Logger.info("Make Request: "+request);
             if (urls.isEmpty()) {
                 downloads.removeElement(this);
 
-                if (!error) {
-                    // rename all .part to there normal names
-                    for (int c=0;c<fileNames.size();c++) {
-                        String fileName = (String)fileNames.get(c);
-                        RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
-                    }
-                    
-                    MapUpdateService.getInstance().downloadFinished(mapUID);
+                try {
+                    if (!error) {
+                        // rename all .part to there normal names
+                        for (int c=0;c<fileNames.size();c++) {
+                            String fileName = (String)fileNames.get(c);
+                            RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
+                        }
 
-                    MapServerListener ch = chooser; // avoid null pointers, take a copy
-                    if (ch!=null) {
-                        ch.downloadFinished(mapUID);
+                        MapUpdateService.getInstance().downloadFinished(mapUID);
+
+                        MapServerListener ch = chooser; // avoid null pointers, take a copy
+                        if (ch!=null) {
+                            ch.downloadFinished(mapUID);
+                        }
                     }
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
                 if (chooser==null) {
