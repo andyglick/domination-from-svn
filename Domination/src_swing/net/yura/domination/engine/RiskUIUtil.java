@@ -1135,4 +1135,24 @@ public class RiskUIUtil {
         mapsDir = userMaps;
         return userMaps;
     }
+    
+    
+    
+    public static BufferedImage read(InputStream in) throws IOException {
+        try {
+            BufferedImage img = ImageIO.read(in);
+            if (img==null) {
+                throw new IOException("ImageIO.read returned null");
+            }
+            return img;
+        }
+        finally {
+            try {
+                in.close();
+            }
+            catch (Throwable th) { }
+        }
+    }
+    
+    
 }

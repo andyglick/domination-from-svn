@@ -29,6 +29,7 @@ import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.LookAndFeel;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
+import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.ImageUtil;
@@ -200,6 +201,9 @@ public class MapChooser implements ActionListener,MapServerListener {
         catch (Exception ex) {
             throw new RuntimeException("failed to decode img "+url, ex);
         }
+        finally {
+            FileUtil.close(in);
+        }
     }
 
     public static InputStream getLocalePreviewImg(String url) {
@@ -217,9 +221,10 @@ public class MapChooser implements ActionListener,MapServerListener {
                     return in;
                 }
                 else {
+                    InputStream min=null;
                     try {
                         System.out.println("[MapChooser] ### Going to re-encode img: "+url);
-                        InputStream min = RiskUtil.openMapStream(url);
+                        min = RiskUtil.openMapStream(url);
                         Image img = Image.createImage(min);                    
                         img = ImageUtil.scaleImage(img, 150, 94);
                         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -229,6 +234,9 @@ public class MapChooser implements ActionListener,MapServerListener {
                     }
                     catch (Exception ex) {
                         Logger.warn(ex);
+                    }
+                    finally {
+                        FileUtil.close(min);
                     }
                 }
             }

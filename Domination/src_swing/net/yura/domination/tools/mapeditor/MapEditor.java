@@ -455,8 +455,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				map.loadMap();
 				map.loadCards();
 
-				BufferedImage ipic = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImagePic()) ) );
-				BufferedImage imap = makeRGBImage( ImageIO.read(RiskUtil.openMapStream(map.getImageMap()) ) );
+				BufferedImage ipic = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImagePic()) ) );
+				BufferedImage imap = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImageMap()) ) );
 
 				map.setMemoryLoad();
 

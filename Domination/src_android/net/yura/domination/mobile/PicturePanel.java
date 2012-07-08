@@ -139,8 +139,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
                 
                 memoryLoad(
-                        Image.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
-                        Image.createImage(RiskUtil.openMapStream(game.getImagePic()) )
+                        MiniUtil.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
+                        MiniUtil.createImage(RiskUtil.openMapStream(game.getImagePic()) )
                         );
 
         }
