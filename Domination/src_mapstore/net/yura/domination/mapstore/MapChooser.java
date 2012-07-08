@@ -2,6 +2,7 @@ package net.yura.domination.mapstore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
@@ -193,16 +194,13 @@ public class MapChooser implements ActionListener,MapServerListener {
         try {
             if (client!=null) { // if we have shut down, dont need to do anything
                 MapRenderer ren = (MapRenderer)list.getCellRenderer();
-                Image img = Image.createImage(in);
+                Image img = MapChooser.createImage(in);
                 ren.gotImg(url, img);
                 list.repaint();
             }
         }
         catch (Exception ex) {
             throw new RuntimeException("failed to decode img "+url, ex);
-        }
-        finally {
-            FileUtil.close(in);
         }
     }
 
@@ -221,11 +219,10 @@ public class MapChooser implements ActionListener,MapServerListener {
                     return in;
                 }
                 else {
-                    InputStream min=null;
                     try {
                         System.out.println("[MapChooser] ### Going to re-encode img: "+url);
-                        min = RiskUtil.openMapStream(url);
-                        Image img = Image.createImage(min);                    
+                        InputStream min = RiskUtil.openMapStream(url);
+                        Image img = MapChooser.createImage(min);                    
                         img = ImageUtil.scaleImage(img, 150, 94);
                         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                         ImageUtil.saveImage(img, bytes);
@@ -234,9 +231,6 @@ public class MapChooser implements ActionListener,MapServerListener {
                     }
                     catch (Exception ex) {
                         Logger.warn(ex);
-                    }
-                    finally {
-                        FileUtil.close(min);
                     }
                 }
             }
@@ -662,4 +656,17 @@ public class MapChooser implements ActionListener,MapServerListener {
         return MapUpdateService.getInstance().mapsToUpdate.contains(map);
     }
 
+    public static Image createImage(InputStream in) throws IOException {
+        try {
+            Image img = Image.createImage(in);
+            if (img==null) {
+                throw new IOException("Image.createImage returned null");
+            }
+            return img;
+        }
+        finally {
+            FileUtil.close(in);
+        }
+    }
+    
 }

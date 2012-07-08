@@ -432,7 +432,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         Image img=null;
         if (in!=null) {
             try {
-                img = MiniUtil.createImage(in);
+                img = MapChooser.createImage(in);
             }
             catch (Exception ex) {
                 Logger.warn(ex);
