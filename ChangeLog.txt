@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	7
 	 * Network:	9
 
-	Android		8
+	Android		9
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,9 @@ CURRENT VERSION:
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
 
+	Android 9 some maps fail to load on Android
+		  when a map needs to be updated then it shows the download icon instead of the play icon
+		  if a map does not download fully it does not come up in the list of maps
 	Android 8 fixed - WARNING: trying to set a transparent color: 0 (going from mainmenu to newgame)
 		  DONE - when map is loading, should show a loading screen
 		  DONE - attack and move screen need to take into account dpi when drawing the countries

@@ -656,6 +656,9 @@ public class MapChooser implements ActionListener,MapServerListener {
         return MapUpdateService.getInstance().mapsToUpdate.contains(map);
     }
 
+    /**
+     * @see net.yura.domination.engine.RiskUIUtil#read(java.io.InputStream) 
+     */
     public static Image createImage(InputStream in) throws IOException {
         try {
             Image img = Image.createImage(in);
