@@ -223,6 +223,12 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 int num = pixels[ x ] & 0xff; // (m.getRGB(x,y))&0xff;
 
+                                // sometimes pixels[ x ] gives alpha values other then 255,
+                                // only on Android and only for some maps, (mapsqa Error.map)
+                                // so white areas come out as alpha=0 r=0 g=0 b=0
+                                // if this happens, set it to NO_COUNTRY
+                                if (num==0) { num=NO_COUNTRY; }
+
                                 // if ( num > noc && num !=NO_COUNTRY ) System.out.print("map error: "+x+" "+y+"\n"); // testing map
 
                                 newMap[x][y]= (byte) (num - 128); // as byte is signed we have to use this

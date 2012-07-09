@@ -15,6 +15,19 @@ import net.yura.domination.engine.RiskUIUtil;
  */
 public class MapUpdateServiceTest extends TestCase {
     
+    
+    
+    /*
+     * possible things to test:
+     * 
+     *  downloading a new map
+     *  downloading a update to an existing map (existing map has a older version)
+     *  downloading a map when the existing map is missing a file
+     * 
+     */
+
+
+
     public MapUpdateServiceTest(String testName) {
         super(testName);
     }
