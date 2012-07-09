@@ -584,8 +584,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         if (((Button)loader.find("updateButton")).isSelected() && MapUpdateService.getInstance().mapsToUpdate.isEmpty()) {
             loader.find("updateAll").setVisible(false);
-            getRoot().revalidate();
-            getRoot().repaint();
+            show("AllUpToDate");
         }
 
         //else {
