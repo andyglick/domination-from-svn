@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.yura.domination"
-      android:versionCode="9"
-      android:versionName="9"
+      android:versionCode="10"
+      android:versionName="10"
       android:installLocation="preferExternal">
       
     <!-- android:targetSdkVersion needs to be 11 to hide the legacy menu button -->
@@ -39,7 +39,8 @@
         <activity android:name="net.yura.android.OptionPaneActivity" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/DialogTheme"/>
         <activity android:name="net.yura.android.WebViewActivity" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name="net.yura.android.LoadingDialog" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@android:style/Theme.NoDisplay"/>
-
+		<activity android:name="net.yura.domination.android.StatsActivity" android:configChanges="orientation|keyboard|keyboardHidden" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />
+        
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
     </application>
 

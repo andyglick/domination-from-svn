@@ -90,6 +90,7 @@ public class GameActivity extends Frame implements ActionListener {
         savebutton.setActionCommand("save");
         
         Button graphbutton = new Button( resb.getProperty("game.button.statistics") );
+        graphbutton.setIcon( new Icon("/ic_menu_chartsettings.png") );
         graphbutton.addActionListener(this);
         graphbutton.setActionCommand("graph");
         
