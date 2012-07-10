@@ -38,6 +38,8 @@ public class DominationMain extends Midlet {
         version = versionCode!=null ? versionCode : "?me4se?";
     }
     
+    public Risk risk;
+    
     public DominationMain() {
 
         // IO depends on this, so we need to do this first
@@ -130,7 +132,7 @@ public class DominationMain extends Midlet {
 
 
 
-        Risk risk = new Risk();
+        risk = new Risk();
         MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter(risk);
 
         adapter.openMainMenu();
