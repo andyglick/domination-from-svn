@@ -145,6 +145,7 @@ public class StatsActivity extends Activity {
             
             for (int i = 0; i < PointToDraw.length; i++) {
 
+                // TODO why 0? this makes no sense??
                 if ( a==0 || a==1 || a==2 || a==6 || a==7) {
                     newPoint = PointToDraw[i] ;
                 }
