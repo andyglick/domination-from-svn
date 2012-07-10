@@ -118,7 +118,7 @@ public class GameActivity extends Frame implements ActionListener {
         menu.setName("ActionbarMenuButton");
         menu.setIcon( new Icon("/menu.png") );
         menu.add( savebutton );
-        //menu.add( graphbutton );
+        menu.add( graphbutton );
         menu.add( undobutton );
         menu.add( AutoEndGo );
         menu.add( AutoDefend );
@@ -325,7 +325,8 @@ public class GameActivity extends Frame implements ActionListener {
         }
         else if ("graph".equals(actionCommand)) {
             
-            
+            Midlet.openURL("nativeNoResult://net.yura.domination.android.StatsActivity");
+
         }
         else if ("undo".equals(actionCommand)) {
             pp.setC1(PicturePanel.NO_COUNTRY);
