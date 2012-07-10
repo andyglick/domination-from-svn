@@ -501,7 +501,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <mkdir dir="${dir.build}/swingme"/>
         <mkdir dir="dist"/>
 
-        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="lib/midletrunner.jar:lib/SwingME.jar:lib/Grasshopper.jar"/>
+        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="lib/midletrunner.jar:lib/SwingME.jar:lib/Grasshopper.jar" excludes="net/yura/domination/android/**"/>
 
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*"/>
