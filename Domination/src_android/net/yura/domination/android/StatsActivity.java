@@ -102,6 +102,9 @@ public class StatsActivity extends Activity {
     }
     
     public void showGraph(Stat a) {
+        
+        setTitle( resb.getString("swing.tab.statistics")+" - "+resb.getString("swing.toolbar." + a.name ) );
+        
         GraphicalView gview = ChartFactory.getLineChartView(this, getDataset(a.id), getRenderer() );
         setContentView(gview);
     }
