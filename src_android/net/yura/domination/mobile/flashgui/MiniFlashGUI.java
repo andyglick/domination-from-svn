@@ -149,6 +149,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             else if ("customPlayers".equals(actionCommand)) {
                 // TODO
             }
+            else if ("donate".equals(actionCommand)) {
+                try {
+                    RiskUtil.donate();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
             else {
                 System.out.println("Unknown command: "+actionCommand);
             }
