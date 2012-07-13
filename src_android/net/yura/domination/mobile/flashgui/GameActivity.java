@@ -270,19 +270,20 @@ public class GameActivity extends Frame implements ActionListener {
         try {
             pp.load();
         }
-        catch (OutOfMemoryError ex) {
+        catch (Throwable ex) { // ALL errors come here
             System.gc();
+            String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ") + myrisk.getGame().getMapFile();
+
+            System.err.println(text);
             ex.printStackTrace();
 
             Panel pparent = (Panel)pp.getParent();
             pparent.removeAll();
-            TextArea ta = new TextArea("Not enough memory to load this map: "+ex);
+            
+            TextArea ta = new TextArea(text+" "+ex+(ex.getCause()!=null?" "+ex.getCause():"") );
             ta.setLineWrap(true);
             ta.setFocusable(false);
             pparent.add(ta);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("can not load "+myrisk.getGame().getMapFile() ,e);
         }
         finally {
             Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");

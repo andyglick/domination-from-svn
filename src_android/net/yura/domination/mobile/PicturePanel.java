@@ -277,8 +277,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                     }
                     catch (RuntimeException ex) {
-                        System.out.println("Error creating CountryImages: c=" + c + " " + cci);
-                        throw ex;
+                        throw new RuntimeException( "Error creating CountryImages: c=" + c + " " + cci , ex);
                     }
                 }
 
