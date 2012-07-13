@@ -253,8 +253,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                 // create the bufferd image for each country
                 for (int c=0; c < newCountryImages.length ; c++) {
 
-                        cci = newCountryImages[c];
+                    cci = newCountryImages[c];
 
+                    try {
                         int x1=cci.getX1();
 //                      int x2=cci.getX2();
                         int y1=cci.getY1();
@@ -274,7 +275,11 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         }
                                 }
                         }
-                        
+                    }
+                    catch (RuntimeException ex) {
+                        System.out.println("Error creating CountryImages: c=" + c + " " + cci);
+                        throw ex;
+                    }
                 }
 
                 // assign everything at the end
@@ -1099,6 +1104,10 @@ public class PicturePanel extends ImageView implements MapPanel {
                         return (y2-y1+1);
                 }
 
+                @Override
+                public String toString() {
+                    return "CountryImage{x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", w=" + getWidth() + ", h=" + getHeight() + '}';
+                }
 
         }
         
