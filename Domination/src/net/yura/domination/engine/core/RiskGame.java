@@ -2,14 +2,14 @@
 
 package net.yura.domination.engine.core;
 
-//import java.awt.Color; // not on android
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -140,8 +140,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String ImageMap;
 	private String previewPic;
         
-	private String mapName;
-        private int ver;
+        private Map properties;
 
 	private Vector replayCommands;
 	private int maxDefendDice;
@@ -1659,8 +1658,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		runmaptest = false;
 		previewPic = null;
-		mapName = null;
-                ver=1; // if there is no version then version is 1
+		properties = new HashMap();
 
 		String input = bufferin.readLine();
 		String mode = null;
@@ -1701,20 +1699,24 @@ transient - A keyword in the Java programming language that indicates that a fie
 				}
 				else if (mode == null) {
 
+                                        int space = input.indexOf(' ');
+                                    
                                         if (input.equals("test")) {
 
 						runmaptest = true;
 
 					}
-                                        else if (input.startsWith("name ")) {
-
-						mapName = input.substring(5,input.length());
-
-					}
-                                        else if (input.startsWith("ver ")) {
+                                        //else if (input.startsWith("name ")) {
+					//	mapName = input.substring(5,input.length());
+					//}
+                                        //else if (input.startsWith("ver ")) {
+                                        //        ver = Integer.parseInt( input.substring(4,input.length()) );
+                                        //}
+                                        else if (space >= 0) {
+                                            String key = input.substring(0,space);
+                                            String value = input.substring(space+1);
                                             
-                                                ver = Integer.parseInt( input.substring(4,input.length()) );
-                                            
+                                            properties.put(key, value);
                                         }
                                         // else unknown section
 
@@ -1759,8 +1761,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Cards = new Vector();
 		Missions = new Vector();
 
-                ver=1;
-                mapName = null;
+                properties = new HashMap();
                 
                 runmaptest = false;
                 previewPic=null;
@@ -2252,15 +2253,42 @@ transient - A keyword in the Java programming language that indicates that a fie
 		return previewPic;
 	}
 
-	public String getMapName() {
-		return mapName;
-	}
+        public Map getProperties() {
+            return properties;
+        }
+        
+        int getIntProperty(String name, int defaultValue) {
+            Object value = properties.get(name);
+            if (value!=null) {
+                return Integer.parseInt( String.valueOf(value) );
+            }
+            return defaultValue;
+        }
+        void setIntProperty(String name, int value) {
+            properties.put(name, String.valueOf(value));
+        }
+        
+        public int getCircleSize() {
+            return getIntProperty("circle",20);
+        }
+        public void setCircleSize(int a) {
+            setIntProperty("circle", a);
+        }
+
         public int getVersion() {
-            return ver;
+            return getIntProperty("ver",1);
         }
         public void setVersion(int newVersion) {
-            ver = newVersion;
+            setIntProperty("ver", newVersion);
         }
+
+	public String getMapName() {
+            return String.valueOf( properties.get("name") );
+	}
+        public void setMapName(String name) {
+            properties.put("name", name);
+        }
+
 
 	/**
 	 * Gets the ImageMap

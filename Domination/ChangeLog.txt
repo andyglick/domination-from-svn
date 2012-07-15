@@ -16,6 +16,7 @@ CURRENT VERSION:
 1.1.1.0
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
+	can have different circle sizes on maps
 
 	Android 10 stats graph added
 	Android 9 some maps fail to load on Android
