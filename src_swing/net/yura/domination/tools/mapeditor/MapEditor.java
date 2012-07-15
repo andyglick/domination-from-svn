@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -88,6 +90,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	private JSlider fader;
 	private JSlider brush;
+        private JSlider circle;
 
 	private JButton save;
 	private JButton play;
@@ -280,11 +283,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		brush.setMajorTickSpacing(20);
 		brush.setPaintLabels(true);
 
-		topPanel.add( new JLabel("Image Map Fade:") );
+                circle = new JSlider(15, 80);
+                circle.addChangeListener(this);
+		circle.setOpaque(false);
+		circle.setMajorTickSpacing(20);
+		circle.setPaintLabels(true);
+                circle.setPreferredSize( new Dimension(100, circle.getPreferredSize().height) );
+                
+		topPanel.add( new JLabel("Image/Map Fade:") );
 		topPanel.add(fader);
 		topPanel.add( new JLabel("Draw Brush Size:") );
 		topPanel.add(brush);
-
+		topPanel.add(circle);
 
 		add(topPanel, BorderLayout.NORTH );
 
@@ -321,6 +331,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 			editPanel.setBrush(brush.getValue());
 
+		}
+                else if (e.getSource() == circle) {
+
+                    if (myMap!=null) {
+                        myMap.setCircleSize(circle.getValue());
+                        editPanel.repaint();
+                    }
 		}
 	}
 
@@ -385,6 +402,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		fixButton.setEnabled(true);
 
                 fileName = fname;
+                
+                circle.setValue( m.getCircleSize() );
                 
 		revalidate();
 		repaint();
@@ -1271,20 +1290,32 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    buffer.append(n);
             buffer.append(n); // empty line
 
-            String name = myMap.getMapName();
-            if (name!=null) {
-                buffer.append("name ");
-                buffer.append(name);
+//            String name = myMap.getMapName();
+//            if (name!=null) {
+//                buffer.append("name ");
+//                buffer.append(name);
+//                buffer.append(n);
+//            }
+//            int version = myMap.getVersion();
+//            if (version!=1) { // 1 is the default, we do not need to save that
+//                buffer.append("ver ");
+//                buffer.append(version);
+//                buffer.append(n);
+//            }
+//            if (name!=null || version!=1) {
+//                buffer.append(n); // in case we put a name or a version, add a extra empty line
+//            }
+            Map properties = myMap.getProperties();
+            if (!properties.isEmpty()) {
+                Iterator keyvals = properties.entrySet().iterator();
+                while (keyvals.hasNext()) {
+                    Map.Entry entry = (Map.Entry)keyvals.next();
+                    buffer.append( entry.getKey() );
+                    buffer.append(' ');
+                    buffer.append( entry.getValue() );
+                    buffer.append(n);
+                }
                 buffer.append(n);
-            }
-            int version = myMap.getVersion();
-            if (version!=1) { // 1 is the default, we do not need to save that
-                buffer.append("ver ");
-                buffer.append(version);
-                buffer.append(n);
-            }
-            if (name!=null || version!=1) {
-                buffer.append(n); // in case we put a name or a version, add a extra empty line
             }
 
 	    buffer.append("[files]");

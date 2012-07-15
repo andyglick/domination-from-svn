@@ -17,7 +17,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.io.IOException;
 import java.util.Vector;
@@ -133,6 +132,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 
 		RiskGame game = myrisk.getGame();
+                BALL_SIZE = game.getCircleSize();
 		original = O;
 		cc=NO_COUNTRY;
 		c1=NO_COUNTRY;
@@ -313,7 +313,7 @@ public class PicturePanel extends JPanel implements MapPanel {
             return map[0].length;
         }
 
-        public static final int BALL_SIZE=10;
+        public int BALL_SIZE=20;
         
 	/**
 	 * Paints the army components
@@ -392,7 +392,8 @@ public class PicturePanel extends JPanel implements MapPanel {
                                 g2.setColor( new Color( t.getOwner().getColor() ) );
 
                                 Ellipse2D ellipse = new Ellipse2D.Double();
-                                ellipse.setFrame( x-BALL_SIZE , y-BALL_SIZE , (BALL_SIZE*2), (BALL_SIZE*2) );
+                                int r = BALL_SIZE/2;
+                                ellipse.setFrame( x-r , y-r , BALL_SIZE, BALL_SIZE );
                                 g2.fill(ellipse);
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
@@ -440,13 +441,14 @@ public class PicturePanel extends JPanel implements MapPanel {
 					g2.setColor( new Color( RiskUtil.getTextColorFor( capital.getOwner().getColor() ) ) );
 
 					Ellipse2D ellipse = new Ellipse2D.Double();
-					ellipse.setFrame( x-10 , y-10 , 19, 19);
+					ellipse.setFrame( x-(BALL_SIZE/2) , y-(BALL_SIZE/2) , BALL_SIZE-1, BALL_SIZE-1);
 					g2.draw(ellipse);
 
 					g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ) );
 
 					Ellipse2D ellipse2 = new Ellipse2D.Double();
-					ellipse2.setFrame( x-12 , y-12 , 23, 23);
+                                        int size = BALL_SIZE + 4;
+					ellipse2.setFrame( x-(size/2) , y-(size/2) , size-1, size-1);
 					g2.draw(ellipse2);
 
 				}
@@ -462,7 +464,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
         public void startAni() {
             if (ballWorld==null) {
-                ballWorld = new BallWorld(myrisk, this, BALL_SIZE); // start the ball world!!
+                ballWorld = new BallWorld(myrisk, this, BALL_SIZE/2 ); // start the ball world!!
             }
         }
         /**

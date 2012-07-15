@@ -261,7 +261,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		brush = (a==0)?1:a;
 
 	}
-
+        
 	public void setMode(int a) {
 
 		mode = a;
@@ -330,7 +330,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
         
             long time = System.currentTimeMillis();
 
-	    int r=10;
+	    int d = myMap.getCircleSize();
 
 	    int width = pic.getWidth();
 
@@ -343,7 +343,8 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
                 int y = n.getY();
 
 		g.setColor( new Color( n.getContinent().getColor() ) );
-		g.fillOval( x-r , y-r, (r*2), (r*2) );
+                int r = d/2;
+		g.fillOval( x-r , y-r, d, d );
 
                 List ney = n.getNeighbours();
                 for (int j = 0; j < ney.size(); j++) {
