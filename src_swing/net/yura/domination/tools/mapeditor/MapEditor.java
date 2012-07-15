@@ -334,6 +334,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
                 else if (e.getSource() == circle) {
 
+                    circle.setToolTipText( String.valueOf( circle.getValue() ) );
+                    
                     if (myMap!=null) {
                         myMap.setCircleSize(circle.getValue());
                         editPanel.repaint();
