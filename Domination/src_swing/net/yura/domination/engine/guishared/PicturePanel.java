@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
@@ -419,6 +420,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
 
+                        Stroke old = g2.getStroke();
 			g2.setStroke(new BasicStroke(2));
 			Vector players = game.getPlayers();
 
@@ -456,7 +458,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 				}
 
 			}
-			g2.setStroke(new BasicStroke(1));
+			g2.setStroke(old);
 		}
 
 	}

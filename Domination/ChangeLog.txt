@@ -20,6 +20,7 @@ CURRENT VERSION:
 
 	Android 11 donate button added to main menu
 		   circles on map can be different size for different maps
+		   capitals look a bit better
 	Android 10 stats graph added
 	Android 9 some maps fail to load on Android
 		  when a map needs to be updated then it shows the download icon instead of the play icon

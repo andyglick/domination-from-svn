@@ -494,9 +494,10 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 }
 
-                if (game.getGameMode() == 2 && game.getSetup() && game.getState() !=9 ) {
+                if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state != RiskGame.STATE_SELECT_CAPITAL ) {
 
-                        //g2.setStroke(new BasicStroke(2));
+                        int old = g2.getGraphics().getStrokeWidth();
+                        g2.getGraphics().setStrokeWidth(2);
                         Vector players = game.getPlayers();
 
                         for (int c=0; c< players.size() ; c++) {
@@ -530,7 +531,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 }
 
                         }
-                        //g2.setStroke(new BasicStroke(1));
+                        g2.getGraphics().setStrokeWidth(old);
                 }
 
         }
