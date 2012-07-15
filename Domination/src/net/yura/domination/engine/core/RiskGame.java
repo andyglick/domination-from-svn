@@ -2282,8 +2282,11 @@ transient - A keyword in the Java programming language that indicates that a fie
             setIntProperty("ver", newVersion);
         }
 
+        /**
+         * can return the name or null
+         */
 	public String getMapName() {
-            return String.valueOf( properties.get("name") );
+            return (String) properties.get("name");
 	}
         public void setMapName(String name) {
             properties.put("name", name);
