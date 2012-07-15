@@ -169,6 +169,13 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
                 int noc = game.getCountries().length;
 
+                BALL_SIZE = game.getCircleSize();
+                String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
+                float d = (density!=null)?Float.parseFloat(density):1.0F;
+                font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (BALL_SIZE*0.75) /d +0.5) );
+
+                
+                
 
                 Image newImg;
                 Image newTempimg;
@@ -377,21 +384,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         }
 
-        public void updateUI() {
-            super.updateUI();
-            
-            String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
-            if (density!=null) {
-                float d = Float.parseFloat(density);
-                font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -(15/d +0.5) );
-            }
-            else {
-                font = theme.getFont(Style.ALL);
-            }
-
-        }
-
-        public static final int BALL_SIZE=10;
+        public int BALL_SIZE=20;
 
         /**
          * Paints the army components
@@ -407,6 +400,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 
                 int state = game.getState();
 
+                int r = BALL_SIZE/2;
+                
                 if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
                         Country attacker = game.getAttacker();
@@ -486,7 +481,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                             
                                 g.setARGBColor( ((Player)t.getOwner()).getColor() );
 
-                                g2.fillOval( x-BALL_SIZE , y-BALL_SIZE , (BALL_SIZE*2), (BALL_SIZE*2) );
+                                g2.fillOval( x-r , y-r , BALL_SIZE, BALL_SIZE );
 
                                 g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 
@@ -525,11 +520,12 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         
                                         g.setARGBColor( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
 
-                                        g2.drawArc( x-10 , y-10 , 19, 19 , 0, 360);
+                                        g2.drawArc( x-r , y-r , BALL_SIZE, BALL_SIZE , 0, 360);
 
                                         g.setARGBColor( ((Player)players.elementAt(c)).getColor() );
 
-                                        g2.drawArc( x-12 , y-12 , 23, 23, 0, 360);
+                                        int size = BALL_SIZE + 4;
+                                        g2.drawArc( x-(size/2) , y-(size/2) , size, size, 0, 360);
 
                                 }
 
@@ -544,7 +540,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         public void startAni() {
             if (ballWorld==null) {
-                ballWorld = new BallWorld(myrisk, this, BALL_SIZE); // start the ball world!!
+                ballWorld = new BallWorld(myrisk, this, BALL_SIZE/2); // start the ball world!!
             }
         }
         /**
@@ -586,7 +582,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          * @param y2i y point of the defender's co-ordinates.
          * @param ri the radius of the circle
          */
-        public Polygon makeArrow(int x1i, int y1i, int x2i, int y2i, int ri) {
+        public Polygon makeArrow(int x1i, int y1i, int x2i, int y2i, int d) {
 
                 Polygon arrow;
 
@@ -598,7 +594,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 double xd = x2-x1;
                 double yd = y1-y2;
 
-                double r = ri;
+                double r = d/2;
                 double l = Math.sqrt( Math.pow(xd, 2d) + Math.pow(yd, 2d) );
 
                 double a = Math.acos( (r/l) );

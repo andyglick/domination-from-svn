@@ -3,10 +3,10 @@ Risk - Yura Mamyrin (yura@yura.net)
 CURRENT VERSION:
 
 	Risk Game:	1.1.1.0
-	 * Save:	7
+	 * Save:	8
 	 * Network:	9
 
-	Android		10
+	Android		11
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -18,6 +18,8 @@ CURRENT VERSION:
 	when you must trade, the "End Trade" button becomes disabled/hidden
 	can have different circle sizes on maps
 
+	Android 11 donate button added to main menu
+		   circles on map can be different size for different maps
 	Android 10 stats graph added
 	Android 9 some maps fail to load on Android
 		  when a map needs to be updated then it shows the download icon instead of the play icon

@@ -24,7 +24,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 
 public class RiskGame implements Serializable { // transient
 
-	private static final long serialVersionUID = 7L;
+	private static final long serialVersionUID = 8L;
 
 	public final static String SAVE_VERSION = String.valueOf(serialVersionUID);
 	public final static String NETWORK_VERSION = "9";
@@ -1759,6 +1759,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Continents = new Continent[0];
 
 		Cards = new Vector();
+                usedCards = new Vector();
 		Missions = new Vector();
 
                 properties = new HashMap();
@@ -1791,6 +1792,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		StringTokenizer st=null;
 
 		Cards = new Vector();
+                usedCards = new Vector();
 		Missions = new Vector();
 
 		//System.out.print("Starting load cards and missions...\n");
@@ -2315,9 +2317,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 		return Cards;
 	}
         public Vector getUsedCards() {
-            if (usedCards==null) {
-                usedCards = new Vector();
-            }
             return usedCards;
 	}
 
