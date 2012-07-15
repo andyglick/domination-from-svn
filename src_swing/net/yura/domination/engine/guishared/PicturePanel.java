@@ -330,6 +330,8 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 int state = game.getState();
 
+                int r = BALL_SIZE/2;
+                
 		if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
 			int a=game.getAttacker().getColor();
@@ -395,7 +397,6 @@ public class PicturePanel extends JPanel implements MapPanel {
                                 g2.setColor( new Color( t.getOwner().getColor() ) );
 
                                 Ellipse2D ellipse = new Ellipse2D.Double();
-                                int r = BALL_SIZE/2;
                                 ellipse.setFrame( x-r , y-r , BALL_SIZE, BALL_SIZE );
                                 g2.fill(ellipse);
 
@@ -442,7 +443,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 					g2.setColor( new Color( RiskUtil.getTextColorFor( capital.getOwner().getColor() ) ) );
 
 					Ellipse2D ellipse = new Ellipse2D.Double();
-					ellipse.setFrame( x-(BALL_SIZE/2) , y-(BALL_SIZE/2) , BALL_SIZE-1, BALL_SIZE-1);
+					ellipse.setFrame( x-r , y-r , BALL_SIZE-1, BALL_SIZE-1);
 					g2.draw(ellipse);
 
 					g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ) );
@@ -500,7 +501,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	 * @param y2i y point of the defender's co-ordinates.
 	 * @param ri the radius of the circle
 	 */
-	public Polygon makeArrow(int x1i, int y1i, int x2i, int y2i, int ri) {
+	public Polygon makeArrow(int x1i, int y1i, int x2i, int y2i, int d) {
 
 		Polygon arrow;
 
@@ -512,7 +513,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 		double xd = x2-x1;
 		double yd = y1-y2;
 
-		double r = ri;
+		double r = d/2;
 		double l = Math.sqrt( Math.pow(xd, 2d) + Math.pow(yd, 2d) );
 
 		double a = Math.acos( (r/l) );
