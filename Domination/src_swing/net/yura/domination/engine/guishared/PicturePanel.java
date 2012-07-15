@@ -133,6 +133,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		RiskGame game = myrisk.getGame();
                 BALL_SIZE = game.getCircleSize();
+                setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, (BALL_SIZE+2)/2 ) );
 		original = O;
 		cc=NO_COUNTRY;
 		c1=NO_COUNTRY;
@@ -268,15 +269,17 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 			if (cc != NO_COUNTRY) {
 
+                                int offset = 5;
+                            
 				TextLayout tl = new TextLayout( this.strCountry + " "+ myrisk.getCountryName( cc ) , g2.getFont() , g2.getFontRenderContext() );
 				int w = (int)tl.getAdvance();
 				int h = (int)tl.getAscent() + (int)tl.getDescent();
 
 				g2.setColor( new Color(255,255,255, 150) );
-				g2.fill(new Rectangle2D.Float( 5 , 5, w+3, h+1 ));
+				g2.fill(new Rectangle2D.Float( offset , offset, w+3, h+1 ));
 
 				g2.setColor( Color.black );
-				tl.draw( g2, (float)6, (float)15);
+				tl.draw( g2, offset + (float)1, offset + tl.getAscent() );
 			}
 
 
@@ -400,17 +403,15 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                                 g2.setColor( new Color( RiskUtil.getTextColorFor( t.getOwner().getColor() ) ) );
 
-                                g2.setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, 11) );
-                                int noa=t.getArmies();
-                                if (noa < 10) {
-                                        g2.drawString( String.valueOf( noa ) , x-3, y+4 );
-                                }
-                                else if (noa < 100) {
-                                        g2.drawString( String.valueOf( noa ) , x-6, y+4 );
-                                }
-                                else {
-                                        g2.drawString( String.valueOf( noa ) , x-9, y+4 );
-                                }
+                                g2.setFont( getFont() );
+                                
+                                String noa= String.valueOf( t.getArmies() );
+                                
+                                int w2 = g2.getFontMetrics().stringWidth(noa) / 2;
+                                int h2 = g2.getFontMetrics().getAscent()*2/5 ;
+
+                                g2.drawString( String.valueOf( noa ) , x-w2, y+h2 );
+
                         }
 
                 }
