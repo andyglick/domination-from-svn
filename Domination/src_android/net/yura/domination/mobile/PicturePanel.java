@@ -21,6 +21,7 @@ import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.border.Border;
 import net.yura.mobile.gui.components.ImageView;
 import net.yura.mobile.gui.plaf.Style;
@@ -172,7 +173,12 @@ public class PicturePanel extends ImageView implements MapPanel {
                 BALL_SIZE = game.getCircleSize();
                 String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
                 float d = (density!=null)?Float.parseFloat(density):1.0F;
-                font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (BALL_SIZE*0.75) /d +0.5) );
+                if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {
+                    font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (BALL_SIZE*0.75) /d +0.5) );
+                }
+                else {
+                    font = theme.getFont( Style.ALL ); // TODO HACK any size fonts do not work on me4se!!
+                }
 
                 
                 
