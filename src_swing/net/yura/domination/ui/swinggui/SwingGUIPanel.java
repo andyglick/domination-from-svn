@@ -304,6 +304,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                 if (debugTab!=null) {
                     debugTab.start();
                 }
+                
+                net.yura.domination.engine.ai.AIPlayer.setWait(5);
 	}
 
         public JMenuBar getJMenuBar() {

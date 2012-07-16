@@ -496,8 +496,10 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state != RiskGame.STATE_SELECT_CAPITAL ) {
 
+                        int stroke = BALL_SIZE / 10;
+                    
                         int old = g2.getGraphics().getStrokeWidth();
-                        g2.getGraphics().setStrokeWidth(2);
+                        g2.getGraphics().setStrokeWidth( stroke );
                         Vector players = game.getPlayers();
 
                         for (int c=0; c< players.size() ; c++) {
@@ -525,7 +527,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                         g.setARGBColor( ((Player)players.elementAt(c)).getColor() );
 
-                                        int size = BALL_SIZE + 4;
+                                        int size = BALL_SIZE + (stroke*2);
                                         g2.drawArc( x-(size/2) , y-(size/2) , size, size, 0, 360);
 
                                 }
