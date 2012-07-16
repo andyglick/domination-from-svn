@@ -420,8 +420,10 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
 
+                        int stroke = BALL_SIZE / 10;
+                    
                         Stroke old = g2.getStroke();
-			g2.setStroke(new BasicStroke(2));
+			g2.setStroke(new BasicStroke( stroke ));
 			Vector players = game.getPlayers();
 
 			for (int c=0; c< players.size() ; c++) {
@@ -451,7 +453,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 					g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ) );
 
 					Ellipse2D ellipse2 = new Ellipse2D.Double();
-                                        int size = BALL_SIZE + 4;
+                                        int size = BALL_SIZE + (stroke*2);
 					ellipse2.setFrame( x-(size/2) , y-(size/2) , size-1, size-1);
 					g2.draw(ellipse2);
 
