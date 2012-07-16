@@ -17,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -45,8 +46,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
@@ -77,6 +80,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	private Risk myrisk;
 	private RiskGame myMap;
         private String fileName;
+        private File imgFile;
         
 	private MapEditorPanel editPanel;
 	private JToolBar toolbar;
@@ -90,7 +94,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	private JSlider fader;
 	private JSlider brush;
-        private JSlider circle;
+        private JSpinner circle;
 
 	private JButton save;
 	private JButton play;
@@ -283,17 +287,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		brush.setMajorTickSpacing(20);
 		brush.setPaintLabels(true);
 
-                circle = new JSlider(15, 80);
+                circle = new JSpinner(new SpinnerNumberModel(20,15,100,5) );
                 circle.addChangeListener(this);
 		circle.setOpaque(false);
-		circle.setMajorTickSpacing(20);
-		circle.setPaintLabels(true);
-                circle.setPreferredSize( new Dimension(100, circle.getPreferredSize().height) );
+		//circle.setMajorTickSpacing(20);
+		//circle.setPaintLabels(true);
+                //circle.setPreferredSize( new Dimension(100, circle.getPreferredSize().height) );
                 
 		topPanel.add( new JLabel("Image/Map Fade:") );
 		topPanel.add(fader);
 		topPanel.add( new JLabel("Draw Brush Size:") );
 		topPanel.add(brush);
+                topPanel.add( new JLabel("Circles:") );
 		topPanel.add(circle);
 
 		add(topPanel, BorderLayout.NORTH );
@@ -334,10 +339,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
                 else if (e.getSource() == circle) {
 
-                    circle.setToolTipText( String.valueOf( circle.getValue() ) );
+                    //circle.setToolTipText( String.valueOf( circle.getValue() ) );
                     
                     if (myMap!=null) {
-                        myMap.setCircleSize(circle.getValue());
+                        //myMap.setCircleSize(circle.getValue());
+                        myMap.setCircleSize(  ((Integer)circle.getValue()).intValue()  );
                         editPanel.repaint();
                     }
 		}
@@ -387,7 +393,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname) {
+	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname,File img) {
 
 		myMap = m;
 
@@ -404,8 +410,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		fixButton.setEnabled(true);
 
                 fileName = fname;
+                imgFile = img;
                 
-                circle.setValue( m.getCircleSize() );
+                circle.setValue( new Integer(m.getCircleSize()) );
                 
 		revalidate();
 		repaint();
@@ -450,7 +457,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				g.fillRect(0,0,PicturePanel.PP_X , PicturePanel.PP_Y);
 				g.dispose();
 
-				setNewMap(map,ipic,imap,null);
+				setNewMap(map,ipic,imap,null,null);
 
 			}
 			catch(Exception ex) {
@@ -476,12 +483,21 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				map.loadMap();
 				map.loadCards();
 
-				BufferedImage ipic = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImagePic()) ) );
+                                InputStream in = RiskUtil.openMapStream(map.getImagePic());
+                                
+				BufferedImage ipic = makeRGBImage( RiskUIUtil.read( in ) );
 				BufferedImage imap = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImageMap()) ) );
 
 				map.setMemoryLoad();
 
-				setNewMap(map,ipic,imap,name);
+                                File file=null;
+                                if (in instanceof RiskUIUtil.FileInputStream) {
+                                    file = ( (RiskUIUtil.FileInputStream)in ).getFile();
+                                }
+                                
+				setNewMap(map,ipic,imap,name,file);
+                                
+
 			}
 
 		    }
@@ -688,10 +704,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 }
 		else if (a.getActionCommand().equals("loadimagepic")) {
 
-			BufferedImage img = getNewImage(true);
+			NewImage img = getNewImage(true);
 
 			if (img!=null) {
-				editPanel.setImagePic(img,true);
+				editPanel.setImagePic(img.bufferedImage,true);
+                                imgFile = img.file;
 				revalidate();
 				repaint();
 			}
@@ -699,10 +716,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		else if (a.getActionCommand().equals("loadimagemap")) {
 
-			BufferedImage img = getNewImage(false);
+			NewImage img = getNewImage(false);
 
 			if (img!=null) {
-				editPanel.setImageMap(img);
+				editPanel.setImageMap(img.bufferedImage);
 				repaint();
 			}
 
@@ -811,7 +828,16 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             return JOptionPane.showConfirmDialog(this, panel,title,JOptionPane.OK_CANCEL_OPTION);
         }
 
-	private BufferedImage getNewImage(boolean jpeg) {
+        static class NewImage {
+            public final BufferedImage bufferedImage;
+            public final File file;
+            public NewImage(BufferedImage bufferedImage,File file) {
+                this.bufferedImage = bufferedImage;
+                this.file = file;
+            }
+        }
+        
+	private NewImage getNewImage(boolean jpeg) {
 
 		if (!RiskUIUtil.checkForNoSandbox()) {
 			RiskUIUtil.showAppletWarning(RiskUIUtil.findParentFrame(this));
@@ -863,7 +889,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             BufferedImage img = ImageIO.read( newFile );
                             
                             if (img!=null) {
-                                return makeRGBImage(img);
+                                return new NewImage(makeRGBImage(img),newFile);
                             }
 
                             JOptionPane.showMessageDialog(this,
@@ -1160,7 +1186,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	    String cardsName = safeName + "." + RiskFileFilter.RISK_CARDS_FILES;
 	    String imageMapName = safeName+"_map."+IMAGE_MAP_EXTENSION;
-	    String imagePicName = safeName+"_pic."+IMAGE_PIC_EXTENSION;
+
+            String pic_extension;
+            boolean doCopy;
+            if (imgFile!=null && imgFile.exists() ) {
+                doCopy = true;
+                String name = imgFile.getName();
+                pic_extension = name.substring( name.lastIndexOf('.')+1 );
+            }
+            else {
+                doCopy = false;
+                pic_extension = IMAGE_PIC_EXTENSION;
+            }
+	    String imagePicName = safeName+"_pic."+pic_extension;
 
 	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
 	    File imageMapFile = new File( mapFile.getParentFile(),imageMapName );
@@ -1415,22 +1453,31 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             saveMap( buffer.toString() ,new FileOutputStream(mapFile));
             saveMap( cardsBuffer.toString() ,new FileOutputStream(cardsFile));
 
-	    if (
+            saveImage( editPanel.getImageMap() , IMAGE_MAP_EXTENSION , imageMapFile );
 
-		!ImageIO.write( editPanel.getImageMap() , IMAGE_MAP_EXTENSION , imageMapFile ) |
+            if (doCopy) {
+                if (imgFile.equals( imagePicFile )) {
+                    // do nothing
+                    System.out.println("no change in pic, no save needed: "+imgFile);
+                }
+                else {
+                    RiskUtil.copy(imgFile, imagePicFile);
+                }
+            }
+            else {
+                saveImage( editPanel.getImagePic() , IMAGE_PIC_EXTENSION , imagePicFile );
+            }
 
-		!ImageIO.write( editPanel.getImagePic() , IMAGE_PIC_EXTENSION , imagePicFile )
-
-	    ) {
-
-		// this should NEVER happen
-		throw new Exception("unable to save image files!\nPlease email yura@yura.net and tell!");
-
-	    }
-            
             return true;
             
 	}
+        
+        void saveImage(BufferedImage im, String formatName, File output) throws Exception {
+	    if ( !ImageIO.write( im , formatName , output ) ) {
+		// this should NEVER happen
+		throw new Exception("unable to save image files! "+output+" format="+formatName);
+	    }
+        }
 
     private void saveMap(String text, OutputStream outputStream) throws IOException {
             Writer output = null;
