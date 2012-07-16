@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
 	can have different circle sizes on maps
+	the map Editor can save jpeg files as well as png for the img pic
 
 	Android 11 donate button added to main menu
 		   circles on map can be different size for different maps

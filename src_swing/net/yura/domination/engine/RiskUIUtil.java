@@ -16,7 +16,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -58,6 +58,21 @@ public class RiskUIUtil {
     //PicturePanel.getImage(
     // setupMapsDir(null) should be called b4 the Risk() object is created
 
+    public static class FileInputStream extends java.io.FileInputStream {
+
+        private final File file;
+        
+        private FileInputStream(File file) throws FileNotFoundException {
+            super(file);
+            this.file = file;
+        }
+        
+        public File getFile() {
+            return file;
+        }
+    }
+    
+    
     static {
         // this could have alredy been set by lobby, so only set it if its null
         if (RiskUtil.streamOpener==null) {
@@ -581,7 +596,7 @@ public class RiskUIUtil {
 		}
 		else {
 
-			return new FileInputStream(file);
+			return new java.io.FileInputStream(file);
 
 		}
 
