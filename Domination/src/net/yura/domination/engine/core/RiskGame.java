@@ -2266,22 +2266,27 @@ transient - A keyword in the Java programming language that indicates that a fie
             }
             return defaultValue;
         }
-        void setIntProperty(String name, int value) {
-            properties.put(name, String.valueOf(value));
+        void setIntProperty(String name, int value, int defaultValue) {
+            if (value == defaultValue) {
+                properties.remove(name);
+            }
+            else {
+                properties.put(name, String.valueOf(value));
+            }
         }
         
         public int getCircleSize() {
             return getIntProperty("circle",20);
         }
         public void setCircleSize(int a) {
-            setIntProperty("circle", a);
+            setIntProperty("circle",a,20);
         }
 
         public int getVersion() {
             return getIntProperty("ver",1);
         }
         public void setVersion(int newVersion) {
-            setIntProperty("ver", newVersion);
+            setIntProperty("ver",newVersion,1);
         }
 
         /**
@@ -2291,7 +2296,12 @@ transient - A keyword in the Java programming language that indicates that a fie
             return (String) properties.get("name");
 	}
         public void setMapName(String name) {
-            properties.put("name", name);
+            if (name==null) {
+                properties.remove("name");
+            }
+            else {
+                properties.put("name", name);
+            }
         }
 
 
