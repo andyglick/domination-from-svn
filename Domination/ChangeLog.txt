@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	9
 
-	Android		11
+	Android		12
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -19,6 +19,9 @@ CURRENT VERSION:
 	can have different circle sizes on maps
 	the map Editor can save jpeg files as well as png for the img pic
 
+	Android 12 Grasshopper update
+		   xhdpi update for 9.png for main meu button and appstore
+		   null pointer in drawArnies fix
 	Android 11 donate button added to main menu
 		   circles on map can be different size for different maps
 		   capitals look a bit better
