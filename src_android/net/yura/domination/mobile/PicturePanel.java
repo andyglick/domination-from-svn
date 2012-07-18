@@ -412,48 +412,49 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         Country attacker = game.getAttacker();
                         Country defender = game.getDefender();
-                    
-                        int a=attacker.getColor();
-                        int b=defender.getColor();
 
-                        drawHighLightImage(g2,countryImages[a-1]);
-                        drawHighLightImage(g2,countryImages[b-1]);
+                        if (attacker!=null && defender!=null) {
+                        
+                            int a=attacker.getColor();
+                            int b=defender.getColor();
 
-                        int ac = attacker.getOwner().getColor();
+                            drawHighLightImage(g2,countryImages[a-1]);
+                            drawHighLightImage(g2,countryImages[b-1]);
 
-                        int argb = colorWithAlpha( ac, 150 );
-                        //g2.setStroke(new BasicStroke(3));
+                            int ac = attacker.getOwner().getColor();
 
-                        if ( Math.abs( attacker.getX() - defender.getX() ) > (map.length / 2) ) {
+                            int argb = colorWithAlpha( ac, 150 );
 
-                                if ( attacker.getX() > (map.length / 2) ) { // ie the attacker is on the right
+                            if ( Math.abs( attacker.getX() - defender.getX() ) > (map.length / 2) ) {
 
-                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), BALL_SIZE );
-                                    Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
+                                    if ( attacker.getX() > (map.length / 2) ) { // ie the attacker is on the right
 
-                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
-                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
+                                        Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), BALL_SIZE );
+                                        Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
 
-                                }
-                                else { // the attacker is on the left
+                                        g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
+                                        g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
 
-                                    Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), BALL_SIZE );
-                                    Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
+                                    }
+                                    else { // the attacker is on the left
 
-                                    g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
-                                    g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
-                                }
+                                        Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), BALL_SIZE );
+                                        Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
+
+                                        g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
+                                        g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
+                                    }
+
+                            }
+                            else {
+
+                                Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
+
+                                g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
+
+                            }
 
                         }
-                        else {
-
-                            Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
-
-                            g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
-
-                        }
-
-                        //g2.setStroke(new BasicStroke(1));
 
                 }
 
