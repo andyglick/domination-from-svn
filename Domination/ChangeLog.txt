@@ -19,6 +19,7 @@ CURRENT VERSION:
 	can have different circle sizes on maps
 	the map Editor can save jpeg files as well as png for the img pic
 
+	Android 13 xhdpi graphics update
 	Android 12 Grasshopper update
 		   xhdpi update for 9.png for main meu button and appstore
 		   null pointer in drawArnies fix
