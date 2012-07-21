@@ -20,6 +20,7 @@ CURRENT VERSION:
 	the map Editor can save jpeg files as well as png for the img pic
 
 	Android 13 xhdpi graphics update
+		   fixed - some maps not loading (e.g Italia_s)
 	Android 12 Grasshopper update
 		   xhdpi update for 9.png for main meu button and appstore
 		   null pointer in drawArnies fix
