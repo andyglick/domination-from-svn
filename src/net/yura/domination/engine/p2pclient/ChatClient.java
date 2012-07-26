@@ -38,7 +38,7 @@ public class ChatClient implements OnlineRisk {
                 myReader.start();
 
                 outChat.println( RiskGame.NETWORK_VERSION +" "+uid+" "+RiskGame.getDefaultMap() );
-            
+
         }
 
         public void sendUserCommand(String mtemp) {
@@ -63,6 +63,5 @@ public class ChatClient implements OnlineRisk {
 
             chatSocket = null;
         }
-
 
 }
