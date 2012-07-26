@@ -2,16 +2,22 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.0
+	Risk Game:	1.1.1.1
 	 * Save:	8
-	 * Network:	9
+	 * Network:	10
 
-	Android		12
+	Android		14
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
 	Increment1GUI:	1.1.1.1
 	CommandLine:	1.0.4.1
+
+1.1.1.1
+
+	in p2p online play, when someone disconnects, the others can carry on playing
+
+	Android 14 lobby integration started
 
 1.1.1.0
 
