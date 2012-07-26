@@ -1221,9 +1221,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 			if (result == JOptionPane.OK_OPTION ) {
 
+                                myrisk.parser( "autodefend " + ((((JCheckBox)message[1]).isSelected()) ? "on" : "off") );
+                                // "autoendgo on" may trigger the end of my go
 				myrisk.parser( "autoendgo " + ((((JCheckBox)message[0]).isSelected()) ? "on" : "off") );
-
-				myrisk.parser( "autodefend " + ((((JCheckBox)message[1]).isSelected()) ? "on" : "off") );
 
 			}
 /*

@@ -153,14 +153,13 @@ public class ChatArea extends Thread {
     // called to get the list of strings awaiting any given
     // thread
     synchronized String getStrings(int index) {
-       int i, num;        
+       if (chatArr[index]==null) return null;
+
+        int i, num;        
        String str;
        StringBuffer sb = new StringBuffer("");
-       LinkedList lList;
-
-       lList = chatArr[index].m_lList;
+       LinkedList lList = chatArr[index].m_lList;
        num=lList.size();
-
        try {
 
            for (i=0; i < num; i++) {
@@ -171,8 +170,7 @@ public class ChatArea extends Thread {
            }
        }
        catch (NoSuchElementException e) {
-
-           //System.out.println("Our List Count is Messed Up???");
+           System.err.println("Our List Count is Messed Up???");
        }
       
        return sb.toString();
@@ -186,6 +184,9 @@ public class ChatArea extends Thread {
 
        do {
 		str = getStrings(index);
+                
+                if (str == null) return null;
+                
 		try {
                        if (str.length()== 0)               
                            wait(); 
@@ -211,4 +212,9 @@ public class ChatArea extends Thread {
     //synchronized void removeChat(int index) {
     //   chatArr[index] = null;
     //}
+
+    synchronized void imDead(int index) {
+        chatArr[index] = null;
+	notifyAll();
+    }
 }

@@ -43,6 +43,8 @@ public class ChatReader extends Thread{
 		//RiskUtil.printStackTrace(e);
 
 	}
+        
+        myChatArea.imDead(myIndex);
 	//System.out.println("ChatReader Terminating: " + myIndex);
    }
 }
