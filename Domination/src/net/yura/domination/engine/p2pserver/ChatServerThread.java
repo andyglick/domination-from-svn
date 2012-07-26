@@ -2,7 +2,6 @@
 
 package net.yura.domination.engine.p2pserver;
 
-import net.yura.domination.engine.p2pserver.ChatArea;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
