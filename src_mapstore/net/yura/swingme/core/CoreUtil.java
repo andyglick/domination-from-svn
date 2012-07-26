@@ -11,7 +11,12 @@ public class CoreUtil {
     public static Properties wrap(final ResourceBundle res) {
         return new Properties() {
             public String getProperty(String key) {
-                return res.getString(key);
+                try {
+                    return res.getString(key);
+                }
+                catch (Exception ex) {
+                    return "???"+key+"???";
+                }
             }
             public String getProperty(String key, String defaultValue) {
                 try {
