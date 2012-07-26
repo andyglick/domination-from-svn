@@ -1,4 +1,4 @@
-package net.yura.domination.engine;
+package net.yura.domination.engine.p2pserver;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import net.yura.domination.engine.RiskController;
 
 /**
  * <p> Chat Area </p>
@@ -27,7 +28,7 @@ public class ChatArea extends Thread {
 
 
 
-    ChatArea(RiskController g,int port) throws Exception {
+    public ChatArea(RiskController g,int port) throws Exception {
 
 	gui = g;
 

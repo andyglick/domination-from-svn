@@ -1,9 +1,10 @@
 // Yura Mamyrin, Group D
 
-package net.yura.domination.engine;
+package net.yura.domination.engine.p2pclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import net.yura.domination.engine.Risk;
 
 /**
  * <p> Display Thread </p>

@@ -2,6 +2,8 @@
 
 package net.yura.domination.engine;
 
+import net.yura.domination.engine.p2pserver.ChatArea;
+import net.yura.domination.engine.p2pclient.ChatClient;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -469,7 +471,7 @@ RiskUtil.printStackTrace(e);
                                         // CREATE A CLIENT
                                         try {
 
-                                                onlinePlayClient = new P2PRisk( this, myAddress, GetNext(), port );
+                                                onlinePlayClient = new ChatClient( this, myAddress, GetNext(), port );
 
                                                 // CREATE A GAME
                                                 game = new RiskGame();
