@@ -497,7 +497,16 @@ return Color.white;
                 throw new RuntimeException("can not del dest file: "+newFile);
             }
             if (!oldFile.renameTo(newFile)) {
-                throw new RuntimeException("rename failed: from: "+oldFile+" to: "+newFile);
+                try {
+                    copy(oldFile, newFile);
+                    if (!oldFile.delete()) {
+                        // this is not so bad, but still very strange
+                        System.err.println("can not del source file: "+oldFile);
+                    }
+                }
+                catch(Exception ex) {
+                    throw new RuntimeException("rename failed: from: "+oldFile+" to: "+newFile,ex);
+                }
             }
         }
         

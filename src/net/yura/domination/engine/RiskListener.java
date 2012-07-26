@@ -16,7 +16,7 @@ public interface RiskListener {
     public void noInput();
     public void setGameStatus(String state);
     public void newGame(boolean t);
-    public void startGame(boolean s);
+    public void startGame(boolean localGame);
     public void closeGame();
     public void setSlider(int min, int c1num, int c2num);
     public void armiesLeft(int l, boolean s);

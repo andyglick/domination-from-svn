@@ -34,9 +34,9 @@ public class ChatDisplayThread extends Thread {
                {
                        if (str.length() > 0)
                        {
-                           risk.GameParser(str);
+                           risk.parserFromNetwork( str );
                        }
-               }   
+               }
 	}
 	catch (IOException e) {
 

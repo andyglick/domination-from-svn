@@ -212,7 +212,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 	//##################################################################################
 
 
-	private ClientRisk myrisk;
+	private Risk myrisk;
 
 	private JLabel nameLabel;
 
@@ -224,7 +224,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 		if (frame==null) {
 
 
-			myrisk = new ClientRisk(this);
+			myrisk = new Risk();
 
 			makeNewGameFrame();
 
@@ -382,6 +382,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 	// this NEEDS to call leaveGame();
 	public void closegame() {
 
+                // simulate a normal ui command into the game
 		myrisk.parser("closegame");
 
 	}
@@ -401,17 +402,19 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 		System.out.println("\tGOT: "+message);
 
-		myrisk.addToInbox(message);
+		myrisk.parserFromNetwork(message);
 
 	}
 
-
 	public void gameObject(Object object) {
-
 
 		Object[] objects = (Object[])object;
 
-		myrisk.createGame( (String)objects[0] , (RiskGame)objects[1] );
+                String address = (String)objects[0];
+                RiskGame game = (RiskGame)objects[1];
+                ClientRisk lrisk = new ClientRisk(this,myrisk);
+                
+		myrisk.createGame( address , game, lrisk );
 
 		// not needed as "gameFrame.setup(s);" calls this anyway
 		//frame.setGameStatus(null);

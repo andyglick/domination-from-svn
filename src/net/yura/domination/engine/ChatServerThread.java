@@ -38,6 +38,7 @@ public class ChatServerThread extends Thread {
 	public void run() {
 
 		String outputLine;
+                String id=null;
 
 		try {
 
@@ -57,14 +58,17 @@ public class ChatServerThread extends Thread {
 
 			// got a connection from the client and do a read right away to get the version
 
-			String hello = inChat.readLine();
+			String hello = inChat.readLine(); // "10 myID#123456 default.map"
 			int index = hello.indexOf(' ');
-			String version = (index==-1)?hello:hello.substring(0,index);
-			String map = (index==-1)?null:hello.substring(index+1);
+			String version = hello.substring(0,index);
+			hello = hello.substring(index+1);
+                        index = hello.indexOf(' ');
+                        id = hello.substring(0,index);
+			String map = hello.substring(index+1);
+                        
+			if (!RiskGame.getDefaultMap().equals( map )) {
 
-			if (map!=null && !map.equals( RiskGame.getDefaultMap() )) {
-
-				outChat.println( "sever choosemap "+RiskGame.getDefaultMap() );
+				outChat.println( "server choosemap "+RiskGame.getDefaultMap() );
 
 			}
 
@@ -108,7 +112,9 @@ public class ChatServerThread extends Thread {
                        //e.getMessage());
                        //RiskUtil.printStackTrace(e);
 		}
-		//@todo does not get here if player presses leave, only goes here when they close the app
+
+                myChatArea.putString(myIndex, "LEAVE "+id);
+                
 		//System.out.println("ChatServerThread Terminating: " + myIndex);
 
 	}

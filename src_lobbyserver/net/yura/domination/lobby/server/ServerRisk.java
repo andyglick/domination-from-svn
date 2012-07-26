@@ -176,7 +176,7 @@ public class ServerRisk extends Risk {
 
 			}
 
-			GameParser(message);
+			inGameParser(message);
 
 		}
 
@@ -187,7 +187,7 @@ public class ServerRisk extends Risk {
 	@Override
 	// catch all things and send it to the clients
 	// game kicks off and messages are sent to here
-	public void GameParser(String mem) {
+	public void inGameParser(String mem) {
 
 		//if not all players hit start and the game is started, just store the commands, do not run them
 
@@ -213,7 +213,7 @@ public class ServerRisk extends Risk {
 
 		}
 
-		super.GameParser(mem);
+		super.inGameParser(mem);
 
 	}
 
