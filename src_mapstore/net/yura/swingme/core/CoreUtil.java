@@ -15,15 +15,7 @@ public class CoreUtil {
                     return res.getString(key);
                 }
                 catch (Exception ex) {
-                    return "???"+key+"???";
-                }
-            }
-            public String getProperty(String key, String defaultValue) {
-                try {
-                    return res.getString(key);
-                }
-                catch (Exception ex) {
-                    return defaultValue;
+                    return null;
                 }
             }
         };
