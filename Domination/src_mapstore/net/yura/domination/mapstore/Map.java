@@ -149,6 +149,15 @@ public class Map {
         this.version = version;
     }
 
+    public int hashCode() {
+        if (id == null) {
+            return super.hashCode();
+        }
+        int hash = 7;
+        hash = 97 * hash + id.hashCode();
+        return hash;
+    }
+
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -156,8 +165,10 @@ public class Map {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        if (this == obj) {
+            return true;
+        }
         final Map other = (Map) obj;
-
         return this.id != null && other.id != null && this.id.equals(other.id);
     }
 
