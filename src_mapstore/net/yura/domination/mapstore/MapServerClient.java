@@ -23,7 +23,7 @@ public class MapServerClient extends HTTPClient {
 
     public static final Object XML_REQUEST_ID = new Object();
     public static final Object MAP_REQUEST_ID = new Object();
-    public static final Object IMG_REQUEST_ID = new Object();
+    //public static final Object IMG_REQUEST_ID = new Object();
 
     MapServerListener chooser;
 
@@ -83,20 +83,20 @@ public class MapServerClient extends HTTPClient {
                 ch.gotResultXML(request.url,task);
             }
         }
-        else if (request.id == IMG_REQUEST_ID) {
-            
-            if (ch!=null) {
-                ch.gotImgFromServer(request.url, SystemUtil.getData(is, (int)length) );
-            }
-        }
         else if (request.id == MAP_REQUEST_ID) {
 
             getMapDownload(request.url).gotRes(request.url, is );
 
         }
-        else {
-            System.err.println("[MapServerClient] unknown id "+request.id);
+        else { // if (request.id == IMG_REQUEST_ID) {
+            
+            if (ch!=null) {
+                ch.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length) );
+            }
         }
+        //else {
+        //    System.err.println("[MapServerClient] unknown id "+request.id);
+        //}
     }
 
     void makeRequestXML(String string,String a,String b) {
