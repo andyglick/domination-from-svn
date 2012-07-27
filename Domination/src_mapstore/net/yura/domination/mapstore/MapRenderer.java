@@ -1,6 +1,5 @@
 package net.yura.domination.mapstore;
 
-import java.util.Hashtable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
@@ -20,9 +19,6 @@ import net.yura.mobile.gui.plaf.Style;
 public class MapRenderer extends DefaultListCellRenderer {
 
     String line2;
-
-    //net.yura.abba.persistence.ImageManager manager = new net.yura.abba.persistence.ImageManager();
-    Hashtable images = new Hashtable();
 
     private ProgressBar bar = new ProgressBar();
     private Component list;
@@ -84,7 +80,7 @@ public class MapRenderer extends DefaultListCellRenderer {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
         setVerticalTextPosition( Graphics.TOP );
-        
+
         this.list = list;
         
         line2 = null; // reset everything
@@ -117,59 +113,16 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
         // else just do nothing
 
+        //iconUrl = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
         if (iconUrl!=null) {
-
-            iconUrl = MapChooser.getURL(context, iconUrl);
-
-            //key = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
-
-            Icon aicon = (Icon)images.get( iconUrl );
-            if (aicon==null) {
-                //icon = new net.yura.abba.ui.components.IconCache(key, null, 0, 0, 0, 0, manager);
-                //icon = net.yura.abba.ui.AbbaIcon.getIcon(iconUrl, 0, 0, 0, 0);
-                
-                aicon = new LazyIcon();
-                images.put(iconUrl, aicon);
-                
-                chooser.loadImg( iconUrl );
-            }
-
-            setIcon( aicon );
+            setIcon( chooser.getIcon(value,context,iconUrl,loading.getIconWidth(),loading.getIconHeight()) );
         }
         else {
             System.out.println("[MapRenderer] No PreviewUrl for map or category: "+value);
         }
 
-        
         return c;
-    }
-    
-    public void gotImg(String url,Image img) {
-        LazyIcon aicon = (LazyIcon)images.get( url );
-        aicon.setImage(img,loading.getIconWidth(),loading.getIconHeight());
-    }
-    
-    public static class LazyIcon extends Icon {
-
-        Image img;
-        
-        public void setImage(Image img,int w,int h) {
-            this.img = img;
-            width = w;
-            height = h;
-        }
-
-        public void paintIcon(Component c, Graphics2D g, int x, int y) {
-            if (img!=null) {
-                g.drawScaledImage(img, x, y, width, height);
-            }
-        }
-
-        public Image getImage() {
-            return img;
-        }
-
     }
 
     public void paintComponent(Graphics2D g) {

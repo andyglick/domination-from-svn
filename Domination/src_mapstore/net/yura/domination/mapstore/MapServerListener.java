@@ -11,7 +11,7 @@ public interface MapServerListener {
     public void onXMLError(String string);
 
     public void downloadFinished(String mapUID);    
-    public void gotImgFromServer(String url,byte[] data);
+    public void gotImgFromServer(Object param,String url,byte[] data);
     public void onDownloadError(String string); // (file and image errors here)
 
 }

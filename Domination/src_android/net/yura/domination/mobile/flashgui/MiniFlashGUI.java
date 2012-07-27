@@ -11,7 +11,6 @@ import net.yura.domination.lobby.mini.MiniLobbyClient;
 import net.yura.domination.mapstore.BadgeButton;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
-import net.yura.domination.mapstore.MapRenderer.LazyIcon;
 import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
@@ -31,6 +30,7 @@ import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
+import net.yura.domination.ImageManager.LazyIcon;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
@@ -160,7 +160,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
             else if ("online".equals(actionCommand)) {
                 
-                MiniLobbyClient client = new MiniLobbyClient(myrisk,"Domination");
+                MiniLobbyClient lobby = new MiniLobbyClient(myrisk);
+                
+                Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
+                mapFrame.setContentPane( lobby.getRoot() );
+                mapFrame.setMaximum(true);
+                mapFrame.setVisible(true);
                 
             }
             else {
@@ -456,8 +461,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         Label label = (Label)newgame.find("MapImg");
         
         if (img!=null) {
-            LazyIcon icon = new LazyIcon();//new Icon(img);
-            icon.setImage( img, adjustSizeToDensityFromMdpi(150) , adjustSizeToDensityFromMdpi(94) ); // 150x94
+            LazyIcon icon = new LazyIcon( adjustSizeToDensityFromMdpi(150) , adjustSizeToDensityFromMdpi(94) ); // 150x94
+            icon.setImage( img );
             label.setIcon( icon );
         }
         else {

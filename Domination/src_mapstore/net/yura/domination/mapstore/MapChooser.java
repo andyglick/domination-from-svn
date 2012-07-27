@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
+import net.yura.domination.ImageManager;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -166,41 +167,49 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     }
 
-    public void loadImg(String url) {
+    public Icon getIcon(Object key,String context,String iconUrl,int w,int h) {
+        Icon aicon = ImageManager.get( key );
+        if (aicon==null) {
+            aicon = ImageManager.newIcon(key,w,h);
+            loadImg( key, getURL(context, iconUrl)  );
+        }
+        return aicon;
+    }
+    
+    public void loadImg(Object obj, String url) {
         // if this is a remote file
         if ( url.indexOf(':')>0 ) {
             InputStream in = repo!=null?repo.get(url):null;
             if (in!=null) {
-                publishImg(url, in);
+                publishImg(obj, in);
             }
             else {
-                client.makeRequest( url,null,MapServerClient.IMG_REQUEST_ID );
+                client.makeRequest( url,null,obj );
             }
         }
         // if this is a locale file
         else {
             InputStream in = getLocalePreviewImg(url);
             if (in!=null) {
-                publishImg(url, in);
+                publishImg(obj, in);
             }
         }
     }
 
-    public void gotImgFromServer(String url,byte[] data) {
-        publishImg(url, cache(url, data) );
+    public void gotImgFromServer(Object obj,String url, byte[] data) {
+        publishImg(obj, cache(url, data) );
     }
 
-    private void publishImg(String url,InputStream in) {
+    private void publishImg(Object obj,InputStream in) {
         try {
             if (client!=null) { // if we have shut down, dont need to do anything
-                MapRenderer ren = (MapRenderer)list.getCellRenderer();
                 Image img = MapChooser.createImage(in);
-                ren.gotImg(url, img);
+                ImageManager.gotImg(obj, img);
                 list.repaint();
             }
         }
         catch (Exception ex) {
-            throw new RuntimeException("failed to decode img "+url, ex);
+            throw new RuntimeException("failed to decode img "+obj, ex);
         }
     }
 
@@ -670,5 +679,5 @@ public class MapChooser implements ActionListener,MapServerListener {
             FileUtil.close(in);
         }
     }
-    
+
 }
