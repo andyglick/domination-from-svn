@@ -18,6 +18,11 @@ CURRENT VERSION:
 	in p2p online play, when someone disconnects, the others can carry on playing
 
 	Android 14 lobby integration started
+		   2nd nullpointer in loadgame fixed
+		   do not print stack on getDrawable(Context,String) failing
+		   fixed: in ICS the menu button still comes up, (eg THC One X)
+
+TODO: on ldpi/small fix go button
 
 1.1.1.0
 
