@@ -29,10 +29,10 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
 import net.yura.domination.ui.flashgui.GameFrame;
-import org.lobby.client.GameSetup;
-import org.lobby.client.LobbyClientGUI;
-import org.lobby.client.ResBundle;
-import org.lobby.client.TurnBasedAdapter;
+import net.yura.lobby.model.Game;
+import net.yura.lobby.client.LobbyClientGUI;
+import net.yura.lobby.client.ResBundle;
+import net.yura.lobby.client.TurnBasedAdapter;
 
 public class ClientGameRisk extends TurnBasedAdapter {
 
@@ -100,7 +100,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 	private HashMap MapMap;
 
 
-	public GameSetup newGameDialog(Frame parent, String serveroptions,String myname) { // String serveroptions is a list of maps
+	public Game newGameDialog(Frame parent, String serveroptions,String myname) { // String serveroptions is a list of maps
 
 
 		if (dialog == null) {
@@ -170,7 +170,7 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 		String op = gsp.getOptions();
 
-		if (op!=null) { return new GameSetup( gsp.getGameName(), op, gsp.getNumberOfHumanPlayers() ); }
+		if (op!=null) { return new Game( gsp.getGameName(), op, gsp.getNumberOfHumanPlayers() ); }
 
 		return null;
 
