@@ -1,5 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
+import java.io.StringWriter;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
@@ -31,6 +32,9 @@ import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.GridBagLayout;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.io.kdom.Document;
+import net.yura.mobile.io.kdom.Element;
+import net.yura.mobile.io.kxml2.KXmlSerializer;
 import net.yura.mobile.util.Properties;
 import net.yura.mobile.util.Url;
 import net.yura.swingme.core.CoreUtil;
@@ -359,10 +363,23 @@ public class GameActivity extends Frame implements ActionListener {
             
             String missionTitle = resb.getProperty("core.showmission.mission");
             String mission=myrisk.getCurrentMission();
+
+            //String html = "<html><p>" + status + "</p><p><b>" +missionTitle + "</b><br/>"+ mission + "</p></html>";
             
-            String html = "<html><p>" + status + "</p><p><b>" +missionTitle + "</b><br/>"+ mission + "</p></html>";
-            
-            OptionPane.showMessageDialog(null, html, resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
+            Element html = new Element("html",
+                    new Element("p",
+                            status
+                    ),
+                    new Element("p",
+                            new Element("b",
+                                    missionTitle
+                            ),
+                            new Element("br"),
+                            mission
+                    )
+            );
+
+            OptionPane.showMessageDialog(null, toString(html) , resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
         }
         else if ("cards".equals(actionCommand)) {
             
@@ -375,6 +392,30 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
 
+    static String toString(Element element) {
+        try {
+            Document doc = new Document();
+            doc.setEncoding("UTF-8");
+            
+            doc.addChild(element); // adding root
+            
+            StringWriter writer = new StringWriter();
+            
+            KXmlSerializer makeXml = new KXmlSerializer();
+            makeXml.setOutput(writer);
+            
+            doc.write(makeXml);
+
+            makeXml.flush();
+
+            String text = writer.toString();
+            return text.substring( text.indexOf("?>")+2 );
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
     String getLeaveCloseText() {
         return resb.getProperty( localGame ? "game.menu.close" : "game.menu.leave");
     }

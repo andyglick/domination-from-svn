@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	10
 
-	Android		14
+	Android		15
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	in p2p online play, when someone disconnects, the others can carry on playing
 
+	Android 15 fixed: help screen crash on display string with & symbol
 	Android 14 lobby integration started
 		   2nd nullpointer in loadgame fixed
 		   do not print stack on getDrawable(Context,String) failing
