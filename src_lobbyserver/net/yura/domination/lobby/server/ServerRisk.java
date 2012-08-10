@@ -1,9 +1,7 @@
 package net.yura.domination.lobby.server;
 
-import java.util.Vector;
+import java.util.List;
 import net.yura.domination.engine.Risk;
-//import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 
@@ -89,11 +87,11 @@ public class ServerRisk extends Risk {
 			//int count=0;
 
 			// get all the players and make all with the ip of the leaver become nutral
-			Vector leavers = game.getPlayers();
+			List<Player> leavers = game.getPlayers();
 
 			for (int c=0; c< leavers.size() ; c++) {
 
-				Player player = ((Player)leavers.elementAt(c));
+				Player player = leavers.get(c);
 
 				// AI will never have players addr for lobby game
 				if ( player.getAddress().equals(Addr) ) {
