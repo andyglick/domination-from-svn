@@ -5,16 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import net.yura.domination.engine.Risk;
-import org.lobby.server.TurnBasedGame;
-
+import net.yura.lobby.server.TurnBasedGame;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-//import net.yura.domination.engine.RiskUIUtil;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.RiskIO;
@@ -198,11 +195,11 @@ public class ServerGameRisk extends TurnBasedGame {
 			String name="???";
 			int best=-1;
 
-			Vector players = game.getPlayers();
+			List<Player> players = game.getPlayers();
 
 			for (int c=0;c<players.size();c++) {
 
-				Player player = (Player)players.elementAt(c);
+				Player player = players.get(c);
 
 				// player.getType() == Player.PLAYER_HUMAN &&
 				// if all resign then no humans left
