@@ -26,6 +26,8 @@
         >
         <!-- android:backupAgent="TheBackupAgent" cant get this to work :( -->
 
+		<!-- <service android:name="net.yura.android.AndroidMeService" /> -->
+
         <activity android:name="net.yura.android.AndroidMeActivity"
             	  android:launchMode="singleTask"
                   android:label="@string/app_name"
