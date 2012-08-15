@@ -13,7 +13,7 @@ TODO Android
 	on small ldpi "Start Game" button still not visable
 
     INGAME SCREEN:
-	in capital mode, the circles around countries look wrong, maybe draw 2 or use thicker lines
+	when a device runs out of memory, it closes the game without saving it
 	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
 	(try semi-transparent marble for top and bottom, or add a gradient to the black)
 

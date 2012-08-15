@@ -18,6 +18,7 @@ CURRENT VERSION:
 	in p2p online play, when someone disconnects, the others can carry on playing
 
 	Android 15 fixed: help screen crash on display string with & symbol
+		   fixed: MapView combo error when no item selected by swiping bellow items
 	Android 14 lobby integration started
 		   2nd nullpointer in loadgame fixed
 		   do not print stack on getDrawable(Context,String) failing
