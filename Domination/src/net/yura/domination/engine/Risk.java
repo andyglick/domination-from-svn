@@ -227,8 +227,8 @@ public class Risk extends Thread {
         private static class GameCommand {
             public static final int UI_COMMAND = 1;
             public static final int NETWORK_COMMAND = 2;
-            int type;
-            String command;
+            final int type;
+            final String command;
             public GameCommand(int t,String c) {
                 type = t;
                 command = c;
@@ -257,27 +257,30 @@ public class Risk extends Thread {
 		}
         }
 
+        public void kill() {
+            synchronized(inbox) {
+                running = false;
+                inbox.notify();
+            }
+        }
+        
+        boolean running = true;
 	public void run() {
             GameCommand message=null;
-            while (true) {
+            while (running) {
 		try {
 			synchronized(inbox) {
 
-				if( inbox.isEmpty() ) {
+				while ( inbox.isEmpty() ) {
+                                        if (!running) return;
+
 					try { inbox.wait(); }
 					catch(InterruptedException e) {
 						System.err.println("InterruptedException in "+getName());
 					}
 				}
 
-				try {
-					message = (GameCommand)inbox.remove(0);
-				}
-				catch (ArrayIndexOutOfBoundsException ex) {
-					// this should never happen but it does
-					continue;
-				}
-
+				message = (GameCommand)inbox.remove(0);
 			}
                         
                         if (message.type==GameCommand.UI_COMMAND) {
