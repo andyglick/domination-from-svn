@@ -95,6 +95,20 @@ public class DominationMain extends Midlet {
 
     }
 
+/*
+    @Override
+    protected void destroyApp(boolean arg0) throws javax.microedition.midlet.MIDletStateChangeException {
+
+        if (risk.getGame()!=null) {
+            risk.parser("savegame auto.save");
+        }
+        risk.kill();
+        try { risk.join(); } catch (InterruptedException e) { } // wait for game thread to die 
+        
+        super.destroyApp(arg0);
+    }
+*/
+
     @Override
     public void initialize(DesktopPane rootpane) {
 

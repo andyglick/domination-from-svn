@@ -2,6 +2,8 @@ package net.yura.domination.android;
 
 import java.util.HashMap;
 import java.util.List;
+
+import net.yura.android.AndroidMeService;
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.mobile.flashgui.DominationMain;
@@ -15,6 +17,8 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +78,9 @@ public class StatsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //bindService(new Intent(this, AndroidMeService.class), null ,Context.BIND_AUTO_CREATE);
+        
         setTitle( resb.getString("swing.tab.statistics") );
         showGraph( Stat.COUNTRIES );
     }
