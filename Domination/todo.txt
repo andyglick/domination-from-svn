@@ -9,12 +9,13 @@ TODO Android
 
     GAME SETUP SCREEN:
 	(design game setup screen)
-        (add "custom player" button and dialog)
+	(add "custom player" button and dialog)
 	on small ldpi "Start Game" button still not visable
 
     INGAME SCREEN:
 	when a device runs out of memory, it closes the game without saving it
 	when placing armies, the player can only place 1 army at a time, no choice to place 1 or 5 or 10 or 25 ...
+	when attacking should be able to choose less dice to attack
 	(try semi-transparent marble for top and bottom, or add a gradient to the black)
 
 Still needs to be done:
