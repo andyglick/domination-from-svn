@@ -16,6 +16,7 @@ CURRENT VERSION:
 1.1.1.1
 
 	in p2p online play, when someone disconnects, the others can carry on playing
+	in italian cards, there is no limit to the number of cards you can hold
 
 	Android 15 fixed: help screen crash on display string with & symbol
 		   fixed: MapView combo error when no item selected by swiping bellow items

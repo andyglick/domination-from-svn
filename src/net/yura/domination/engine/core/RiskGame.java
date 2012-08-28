@@ -53,6 +53,8 @@ public class RiskGame implements Serializable { // transient
 	public final static int CARD_INCREASING_SET = 0;
 	public final static int CARD_FIXED_SET = 1;
 	public final static int CARD_ITALIANLIKE_SET = 2;
+        
+        public final static int MAX_CARDS = 5;
 
 /*
 
@@ -513,17 +515,15 @@ transient - A keyword in the Java programming language that indicates that a fie
     public int trade(Card card1, Card card2, Card card3) {
         if (gameState!=STATE_TRADE_CARDS) return 0;
 
-        if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 )
-            return 0;
+        if (tradeCap && currentPlayer.getCards().size() < MAX_CARDS )
+            throw new RuntimeException("trying to do a trade when less then 5 cards and tradeCap is on");
 
         int armies = getTradeAbsValue( card1.getName(), card2.getName(), card3.getName(), cardMode);
 
         if (armies <= 0) return 0;
 
         if (cardMode==CARD_INCREASING_SET) {
-
             cardState=armies;
-
         }
 
         currentPlayer.tradeInCards(card1, card2, card3);
@@ -536,7 +536,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
         currentPlayer.addArmies(armies);
 
-        if ( canTrade()==false || (tradeCap==true && ((Vector)currentPlayer.getCards()).size() < 5 ) ) {
+        // if tradeCap you must trade to redude your cards to 4 or fewer cards
+        // but once your hand is reduced to 4, 3 or 2 cards, you must stop trading
+        if ( !canTrade() || (tradeCap && currentPlayer.getCards().size() < MAX_CARDS ) ) {
             gameState=STATE_PLACE_ARMIES;
             tradeCap=false;
         }
@@ -695,27 +697,22 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public boolean endTrade() {
             if (canEndTrade()) {
                 gameState=STATE_PLACE_ARMIES;
-                tradeCap=false;
+                if (tradeCap) {
+                    throw new RuntimeException("endTrade worked when tradeCap was true");
+                }
                 return true;
             }
             return false;
 	}
         
         public boolean canEndTrade() {
-            
 		if (gameState==STATE_TRADE_CARDS) {
-
-			if (tradeCap==true && ((Vector)currentPlayer.getCards()).size() > 5 ) {
-				return false;
-			}
-
-			if (((Vector)currentPlayer.getCards()).size() < 5) {
+                        //in italian rules there isn't a limit to the number of risk cards that you can hold in your hand.
+			if (cardMode == CARD_ITALIANLIKE_SET || currentPlayer.getCards().size() < MAX_CARDS) {
 				return true;
 			}
-
 		}
 		return false;
-
 	}
 
 	/**
@@ -1023,14 +1020,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					currentPlayer.addPlayersEliminated(lostPlayer);
 
-					while (((Vector)lostPlayer.getCards()).size() > 0) {
+					while (lostPlayer.getCards().size() > 0) {
 
 						//System.out.print("Hes got a card .. i must take it!\n");
 						currentPlayer.giveCard( lostPlayer.takeCard() );
 
 					}
 
-					if ( ((Vector)currentPlayer.getCards()).size() > 5) {
+                                        // in italian rules there is no limit to the number of cards you can hold
+                                        // if winning the other players cards gives you 6 or more cards you must immediately trade
+					if ( cardMode!=CARD_ITALIANLIKE_SET && currentPlayer.getCards().size() > MAX_CARDS) {
 						// gameState=STATE_BATTLE_WON;
 						tradeCap=true;
 					}
@@ -2638,9 +2637,8 @@ System.out.print(str+"]\n");
 	/**
 	 * @return the current Card Mode
 	 */
-	public int getCardMode()
-	{
-	 return cardMode;
+	public int getCardMode() {
+            return cardMode;
 	}
 
 	public static int getRandomColor() {
