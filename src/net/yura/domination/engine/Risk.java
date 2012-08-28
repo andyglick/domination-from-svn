@@ -2444,6 +2444,12 @@ RiskUtil.printStackTrace(e);
                     out.close();
 
                 }
+                catch (StackOverflowError e) {
+                    // the game object is too complex for java to serialize it
+                    // this happens for big maps on Android, no fix yet
+                    skipUndo = true;
+                    System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
+                }
                 catch (Throwable e) {
                     skipUndo = true;
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
