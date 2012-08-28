@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		15
+	Android		16
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -18,6 +18,9 @@ CURRENT VERSION:
 	in p2p online play, when someone disconnects, the others can carry on playing
 	in italian cards, there is no limit to the number of cards you can hold
 
+	Android 16 italian fix
+		   grasshopper update
+		   nullpointer in map chooser fixed
 	Android 15 fixed: help screen crash on display string with & symbol
 		   fixed: MapView combo error when no item selected by swiping bellow items
 	Android 14 lobby integration started

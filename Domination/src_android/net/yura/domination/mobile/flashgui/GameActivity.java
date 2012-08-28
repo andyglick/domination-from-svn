@@ -1,6 +1,8 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
@@ -44,6 +46,8 @@ import net.yura.swingme.core.CoreUtil;
  */
 public class GameActivity extends Frame implements ActionListener {
  
+    public static final Logger logger = Logger.getLogger( GameActivity.class.getName() );
+    
     public static final Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
     public static final Border marble;
     static {
@@ -265,6 +269,9 @@ public class GameActivity extends Frame implements ActionListener {
     public void startGame(boolean localGame) {
         this.localGame = localGame;
 
+        String mapFile = myrisk.getGame().getMapFile();
+        logger.log(Level.INFO, "Starting new game: {0}", mapFile);
+
         closebutton.setText( getLeaveCloseText() );
         
         // ============================================ setup UI
@@ -276,10 +283,9 @@ public class GameActivity extends Frame implements ActionListener {
         }
         catch (Throwable ex) { // ALL errors come here
             System.gc();
-            String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ") + myrisk.getGame().getMapFile();
+            String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ") + mapFile;
 
-            System.err.println(text);
-            ex.printStackTrace();
+            logger.log( (ex instanceof OutOfMemoryError && !"luca.map".equals(mapFile) )?Level.INFO:Level.WARNING , text, ex);
 
             Panel pparent = (Panel)pp.getParent();
             pparent.removeAll();

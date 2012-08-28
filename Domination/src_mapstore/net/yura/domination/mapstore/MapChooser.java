@@ -184,7 +184,8 @@ public class MapChooser implements ActionListener,MapServerListener {
                 publishImg(obj, in);
             }
             else {
-                client.makeRequest( url,null,obj );
+                MapServerClient c = client; // can be null when shut down
+                if (c!=null) c.makeRequest( url,null,obj );
             }
         }
         // if this is a locale file
