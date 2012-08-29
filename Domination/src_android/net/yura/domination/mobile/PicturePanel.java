@@ -241,13 +241,15 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 // so white areas come out as alpha=0 r=0 g=0 b=0
                                 // if this happens, set it to NO_COUNTRY
                                 if (num==0) { num=NO_COUNTRY; }
-                                if (num>noc) { throw new RuntimeException("Strange color found: "+num+" ("+Integer.toHexString(pixels[x])+") countries: "+noc+" at: "+x+","+y ); }
 
                                 // if ( num > noc && num !=NO_COUNTRY ) System.out.print("map error: "+x+" "+y+"\n"); // testing map
 
                                 newMap[x][y]= (byte) (num - 128); // as byte is signed we have to use this
 
                                 if ( num != NO_COUNTRY ) {
+
+                                    	// avoid arrayOutOfBounds, throw a real error with more info
+                                    	if (num>noc) { throw new RuntimeException("Strange color found: "+num+" ("+Integer.toHexString(pixels[x])+") countries: "+noc+" at: "+x+","+y ); }
 
                                         cci = newCountryImages[num-1];
 
