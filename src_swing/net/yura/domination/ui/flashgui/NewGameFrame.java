@@ -87,7 +87,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	private JRadioButton human;
 	private JRadioButton ai;
 	private JRadioButton aismart;
-	private JRadioButton aicrap;
+	//private JRadioButton aicrap;
 
 	private JRadioButton fixed;
 	private JRadioButton increasing;
@@ -350,28 +350,37 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		ButtonGroup playerTypeButtonGroup = new ButtonGroup();
 
+                int typeX = 520;
+                int typeY = 330;
+                int typeGap = 20;
+                int typeW = 100;
+                int typeH = 25;
+                
 		human = new JRadioButton(resb.getString("newgame.player.type.human"), true);
 		sortOutButton( human );
-		human.setBounds(520, 325, 100 , 20);
+		human.setBounds(typeX, typeY, typeW , typeH);
 
-		aicrap = new JRadioButton(resb.getString("newgame.player.type.crapai"));
-		sortOutButton( aicrap );
-		aicrap.setBounds(520, 345, 100 , 20);
+                //typeY = typeY + typeGap;
+		//aicrap = new JRadioButton(resb.getString("newgame.player.type.crapai"));
+		//sortOutButton( aicrap );
+		//aicrap.setBounds(typeX, typeY, typeW , typeH);
 
+                typeY = typeY + typeGap;
 		ai = new JRadioButton(resb.getString("newgame.player.type.easyai"));
 		sortOutButton( ai );
-		ai.setBounds(520, 365, 100 , 20);
+		ai.setBounds(typeX, typeY, typeW , typeH);
 
+                typeY = typeY + typeGap;
 		aismart = new JRadioButton(resb.getString("newgame.player.type.hardai"));
 		sortOutButton( aismart );
-		aismart.setBounds(520, 385, 100 , 20);
+		aismart.setBounds(typeX, typeY, typeW , typeH);
 
 
 
 		playerTypeButtonGroup.add ( human );
 		playerTypeButtonGroup.add ( ai );
 		playerTypeButtonGroup.add ( aismart );
-		playerTypeButtonGroup.add ( aicrap );
+		//playerTypeButtonGroup.add ( aicrap );
 
 		color = "black";
 		thecolor = Color.black;
@@ -423,7 +432,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ngp.add(human);
 		ngp.add(ai);
 		ngp.add(aismart);
-		ngp.add(aicrap);
+		//ngp.add(aicrap);
 		ngp.add(playerColor);
 
 		ngp.add(resetplayers);
