@@ -7,7 +7,6 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.lobby.mini.MiniLobbyClient;
 import net.yura.domination.mapstore.BadgeButton;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
@@ -160,10 +159,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
             else if ("online".equals(actionCommand)) {
                 
-                MiniLobbyClient lobby = new MiniLobbyClient(myrisk);
+            	//net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient(myrisk);
                 
                 Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
-                mapFrame.setContentPane( lobby.getRoot() );
+                //mapFrame.setContentPane( lobby.getRoot() );
                 mapFrame.setMaximum(true);
                 mapFrame.setVisible(true);
                 
