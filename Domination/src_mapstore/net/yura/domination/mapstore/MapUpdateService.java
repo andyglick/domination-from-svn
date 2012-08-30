@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -20,6 +22,8 @@ import net.yura.mobile.util.Url;
  */
 public class MapUpdateService extends Observable {
 
+    static final Logger logger = Logger.getLogger(MapUpdateService.class.getName());
+    
     static MapUpdateService updateService;
     
     Vector mapsToUpdate = new Vector();
@@ -61,7 +65,9 @@ public class MapUpdateService extends Observable {
             Task task = (Task)new XMLMapAccess().load( new InputStreamReader(new URL(url).openStream(),"UTF-8") );
             gotResultXML(url, task, maps);
         }
-        catch (Throwable ex) { }
+        catch (Throwable ex) {
+            logger.log(Level.INFO, "error in getting map versions", ex);
+        }
     }
 
     public void gotResultXML(String url, Task task,Vector maps) {
