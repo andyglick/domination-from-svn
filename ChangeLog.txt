@@ -18,6 +18,7 @@ CURRENT VERSION:
 	in p2p online play, when someone disconnects, the others can carry on playing
 	in italian cards, there is no limit to the number of cards you can hold
 	FlashGUI does not show crapAI as a option as it is not needed for normal play
+	FlashGUI nullpointer in closegame double click fix
 
 	Android 17 warn exception in MapUpdateService does not spam logs
 		   nullpointer in getPlayerColors fixed
