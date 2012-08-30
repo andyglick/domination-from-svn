@@ -62,7 +62,7 @@ public class MapServerClient extends HTTPClient {
         }
     }
 
-    protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws IOException {
+    protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws Exception {
 
         MapServerListener ch = this.chooser;
 
