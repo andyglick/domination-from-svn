@@ -450,7 +450,9 @@ RiskUtil.printStackTrace(e);
 
                                         }
                                         catch (Exception ex) {
+                                                System.err.println("error loading game from file: "+filename);
                                                 RiskUtil.printStackTrace(ex);
+
                                                 output=resb.getString( "core.loadgame.error.load")+" "+ex;
                                                 showMessageDialog(output);
                                         }
