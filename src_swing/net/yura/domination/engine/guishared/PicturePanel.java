@@ -292,22 +292,15 @@ public class PicturePanel extends JPanel implements MapPanel {
 	}
 
 	private int getDrawImageX(double ratio) {
-
-		return (int) (getWidth()-(map.length*ratio) )/2;
-
+		return (int) (getWidth()-( getMapWidth() *ratio) )/2;
 	}
 
 	private int getDrawImageY(double ratio) {
-
-
-		return (int) (getHeight()-(map[0].length*ratio) )/2;
-
+		return (int) (getHeight()-( getMapHeight() *ratio) )/2;
 	}
 
 	private double getScale() {
-
-		return Math.min(getHeight()/(double)map[0].length,getWidth()/(double)map.length);
-
+		return Math.min(getHeight()/(double)getMapHeight() ,getWidth()/(double)getMapWidth() );
 	}
         
         public int getMapWidth() {
