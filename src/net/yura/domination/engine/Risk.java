@@ -2594,13 +2594,17 @@ RiskUtil.printStackTrace(e);
 	 */
 	public int[] getPlayerColors() {
 
-		if ( game.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
+                RiskGame g = game;
 
-			return new int[] { game.getDefender().getOwner().getColor() };
+                // sometimes this method can get called if we close a game half way through a paint
+                if (g==null) return new int[0];
+            
+		if ( g.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
+			return new int[] { g.getDefender().getOwner().getColor() };
 		}
 
-		Vector Players = game.getPlayers();
-		boolean setup = game.NoEmptyCountries();
+		Vector Players = g.getPlayers();
+		boolean setup = g.NoEmptyCountries();
 
 		int num=0;
 		int start=0;
@@ -2608,7 +2612,7 @@ RiskUtil.printStackTrace(e);
 		for (int c=0; c< Players.size() ; c++) {
 
 			if ( ((Player)Players.elementAt(c)).getNoTerritoriesOwned() > 0 || setup==false ) { num++; }
-			if ( ((Player)Players.elementAt(c)) == game.getCurrentPlayer() ) { start=c; }
+			if ( ((Player)Players.elementAt(c)) == g.getCurrentPlayer() ) { start=c; }
 
 		}
 
