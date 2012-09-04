@@ -19,9 +19,11 @@ CURRENT VERSION:
 	in italian cards, there is no limit to the number of cards you can hold
 	FlashGUI does not show crapAI as a option as it is not needed for normal play
 	FlashGUI nullpointer in closegame double click fix
+	MapEditor will save a image added as a bmp as a png
 
 	Android 17 warn exception in MapUpdateService does not spam logs
 		   nullpointer in getPlayerColors fixed
+		   fixed: MapView combo error when no item selected by swiping bellow items while AI is playing
 	Android 16 italian fix
 		   grasshopper update
 		   nullpointer in map chooser fixed

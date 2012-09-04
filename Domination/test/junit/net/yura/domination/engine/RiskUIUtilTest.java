@@ -1,6 +1,8 @@
 package net.yura.domination.engine;
 
+import java.io.File;
 import junit.framework.TestCase;
+import net.yura.domination.tools.mapeditor.MapEditor;
 import net.yura.domination.tools.mapeditor.MapsTools;
 
 /**
@@ -44,4 +46,15 @@ public class RiskUIUtilTest extends TestCase {
         assertEquals("", MapsTools.getSafeMapID(""));
     }
 
+    public void testGetExtension() {
+        System.out.println("getExtension");
+        
+        assertEquals("jpeg", MapEditor.getExtension( new File("file.jpeg") ));
+        assertEquals("jpg", MapEditor.getExtension( new File("file.something.jpg") ));
+        assertEquals("", MapEditor.getExtension( new File(".file") ));
+        assertEquals("", MapEditor.getExtension( new File("file") ));
+        assertEquals("JPG", MapEditor.getExtension( new File("Something.JPG") ));
+        assertEquals("PNG", MapEditor.getExtension( new File(".FILE.2.PNG") ));
+    }
+    
 }
