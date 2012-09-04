@@ -1161,6 +1161,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
+        public static String getExtension(File file) {
+            String name = file.getName();
+            int index = name.lastIndexOf('.');
+            return index>0?name.substring( index+1 ):"";
+        }
+        
         /**
          * @return true if everything is ok, false if the user cancelled
          */
@@ -1187,17 +1193,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    String cardsName = safeName + "." + RiskFileFilter.RISK_CARDS_FILES;
 	    String imageMapName = safeName+"_map."+IMAGE_MAP_EXTENSION;
 
-            String pic_extension;
-            boolean doCopy;
+            String pic_extension = IMAGE_PIC_EXTENSION;
+            boolean doCopy = false;
             if (imgFile!=null && imgFile.exists() ) {
-                doCopy = true;
-                String name = imgFile.getName();
-                pic_extension = name.substring( name.lastIndexOf('.')+1 );
+                String extension = getExtension(imgFile).toLowerCase();
+                if ("jpeg".equals(extension)) { extension="jpg"; }
+
+                // these are the file formats we do not want to re-encode
+                if ("jpg".equals(extension) || "png".equals(extension) || "gif".equals(extension)) {
+                    doCopy = true;
+                    pic_extension = extension;
+                }
             }
-            else {
-                doCopy = false;
-                pic_extension = IMAGE_PIC_EXTENSION;
-            }
+
 	    String imagePicName = safeName+"_pic."+pic_extension;
 
 	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
