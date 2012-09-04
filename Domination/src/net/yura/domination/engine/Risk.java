@@ -1496,7 +1496,9 @@ RiskUtil.printStackTrace(e);
                                                 output=resb.getString( "core.save.saved");
                                             }
                                             catch (Exception ex) {
+                                                System.err.println("error saving game to file: "+filename);
                                                 RiskUtil.printStackTrace(ex);
+
                                                 output=resb.getString( "core.save.error.unable")+" "+ex;
                                                 showMessageDialog(output);
                                             }
