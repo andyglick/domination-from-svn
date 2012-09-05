@@ -317,8 +317,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         RiskGame game = (RiskGame)objects[1];
         
         myrisk.createGame( address , game, lrisk );
-        
-        mycom.sendGameMessage(gameId,"LOBBY_STARTGAME");
+
     }
 
 
