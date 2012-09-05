@@ -2602,7 +2602,10 @@ RiskUtil.printStackTrace(e);
                 if (g==null) return new int[0];
             
 		if ( g.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
-			return new int[] { g.getDefender().getOwner().getColor() };
+                    Country defender = g.getDefender();
+                    if (defender!=null) {
+			return new int[] { defender.getOwner().getColor() };
+                    }
 		}
 
 		Vector Players = g.getPlayers();
