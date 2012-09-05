@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		17
+	Android		18
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -21,6 +21,7 @@ CURRENT VERSION:
 	FlashGUI nullpointer in closegame double click fix
 	MapEditor will save a image added as a bmp as a png
 
+	Android 18 nullpointer in getPlayerColors and android menu fixed
 	Android 17 warn exception in MapUpdateService does not spam logs
 		   nullpointer in getPlayerColors fixed
 		   fixed: MapView combo error when no item selected by swiping bellow items while AI is playing
