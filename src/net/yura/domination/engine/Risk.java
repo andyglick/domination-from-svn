@@ -2855,6 +2855,7 @@ RiskUtil.printStackTrace(e);
 
 		if (g==null) { controller.startGame(unlimitedLocalMode); }
 
+                getInput();
 	}
         
        public void resignPlayer() {

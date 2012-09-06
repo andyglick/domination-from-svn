@@ -21,8 +21,8 @@ import net.yura.mobile.util.SystemUtil;
  */
 public class MapServerClient extends HTTPClient {
 
-    public static final Object XML_REQUEST_ID = new Object();
-    public static final Object MAP_REQUEST_ID = new Object();
+    public static final Object XML_REQUEST_ID = "XML_REQUEST";
+    public static final Object MAP_REQUEST_ID = "MAP_REQUEST";
     //public static final Object IMG_REQUEST_ID = new Object();
 
     MapServerListener chooser;
@@ -257,6 +257,10 @@ Logger.info("Make Request: "+request);
                     String map = (String)info.get("map");
                     String prv = (String)info.get("prv");
 
+                    if (pic==null || crd==null || map==null || "".equals(pic) || "".equals(crd) || "".equals(map)) {
+                        throw new RuntimeException("info not found for map: "+mapUID+" in file: "+saveToDiskName+" info="+info);
+                    }
+                    
                     downloadFile( pic );
                     downloadFile( crd );
                     downloadFile( map );
