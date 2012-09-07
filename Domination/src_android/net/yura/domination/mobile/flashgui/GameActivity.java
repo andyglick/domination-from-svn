@@ -37,6 +37,7 @@ import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.io.kdom.Document;
 import net.yura.mobile.io.kdom.Element;
 import net.yura.mobile.io.kxml2.KXmlSerializer;
+import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 import net.yura.mobile.util.Url;
 import net.yura.swingme.core.CoreUtil;
@@ -164,7 +165,19 @@ public class GameActivity extends Frame implements ActionListener {
         Panel gamecontrol = new Panel( new BorderLayout() );
         gamecontrol.setName("TransPanel");
         
-        mapViewControl = new MapViewChooser(pp);
+        Option[] options = new Option[6];
+        options[0] = new Option( String.valueOf( PicturePanel.VIEW_CONTINENTS ) , resb.getProperty("game.tabs.continents") );
+        options[1] = new Option( String.valueOf( PicturePanel.VIEW_OWNERSHIP ) , resb.getProperty("game.tabs.ownership") );
+        options[2] = new Option( String.valueOf( PicturePanel.VIEW_BORDER_THREAT ) , resb.getProperty("game.tabs.borderthreat") );
+        options[3] = new Option( String.valueOf( PicturePanel.VIEW_CARD_OWNERSHIP ) , resb.getProperty("game.tabs.cardownership") );
+        options[4] = new Option( String.valueOf( PicturePanel.VIEW_TROOP_STRENGTH ) , resb.getProperty("game.tabs.troopstrength") );
+        options[5] = new Option( String.valueOf( PicturePanel.VIEW_CONNECTED_EMPIRE ) , resb.getProperty("game.tabs.connectedempire") );        
+
+        
+        mapViewControl = new MapViewChooser(options);
+        mapViewControl.addActionListener(this);
+        mapViewControl.setActionCommand("mapViewChanged");
+        
         gamecontrol.add(mapViewControl);
         
         closebutton = new Button();
@@ -309,6 +322,10 @@ public class GameActivity extends Frame implements ActionListener {
     public void actionPerformed(String actionCommand) {
         if ("go".equals(actionCommand)) {
             goOn();
+        }
+        else if ("mapViewChanged".equals(actionCommand)) {
+            pp.repaintCountries( getMapView() );
+            pp.repaint();
         }
         else if ("menu".equals(actionCommand)) {
             
@@ -675,10 +692,14 @@ public class GameActivity extends Frame implements ActionListener {
 
     }
 
+    public int getMapView() {
+        return Integer.parseInt( mapViewControl.getMapViewOption().getKey() );
+    }
+    
     public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
         if (pp!=null) {
             if(redrawNeeded) {
-                pp.repaintCountries( mapViewControl.getMapView() );
+                pp.repaintCountries( getMapView() );
             }
             if (repaintNeeded) {
                 pp.repaint();

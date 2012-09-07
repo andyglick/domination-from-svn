@@ -3,7 +3,6 @@ package net.yura.domination.mobile.flashgui;
 import java.util.Arrays;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
-import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.components.Button;
@@ -12,33 +11,31 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.layout.BoxLayout;
 import net.yura.mobile.gui.layout.FlowLayout;
 import net.yura.mobile.util.Option;
-import net.yura.mobile.util.Properties;
 
 /**
  * @author Yura
  */
 public class MapViewChooser extends Panel implements ActionListener {
 
-    Properties resb = GameActivity.resb;
     Option[] options;
-    PicturePanel pp;
+    ActionListener actionListener;
+    String actionCommand;
     
-    public MapViewChooser(PicturePanel pp) {
-        this.pp = pp;
+    public MapViewChooser(Option[] pp) {
+        options = pp;
         
         Button test = new Button("test");
         test.workoutPreferredSize();
 
         setPreferredSize(10, test.getHeightWithBorder()); // some small size, but we will strech
 
-        options = new Option[6];
-        options[0] = new Option( String.valueOf( PicturePanel.VIEW_CONTINENTS ) , resb.getProperty("game.tabs.continents") );
-        options[1] = new Option( String.valueOf( PicturePanel.VIEW_OWNERSHIP ) , resb.getProperty("game.tabs.ownership") );
-        options[2] = new Option( String.valueOf( PicturePanel.VIEW_BORDER_THREAT ) , resb.getProperty("game.tabs.borderthreat") );
-        options[3] = new Option( String.valueOf( PicturePanel.VIEW_CARD_OWNERSHIP ) , resb.getProperty("game.tabs.cardownership") );
-        options[4] = new Option( String.valueOf( PicturePanel.VIEW_TROOP_STRENGTH ) , resb.getProperty("game.tabs.troopstrength") );
-        options[5] = new Option( String.valueOf( PicturePanel.VIEW_CONNECTED_EMPIRE ) , resb.getProperty("game.tabs.connectedempire") );        
-        
+    }
+    
+    public void addActionListener(ActionListener al) {
+        actionListener = al;
+    }
+    public void setActionCommand(String com) {
+        actionCommand = com;
     }
     
     @Override
@@ -87,13 +84,12 @@ public class MapViewChooser extends Panel implements ActionListener {
             setLayout( new BoxLayout(Graphics.HCENTER) );
             add(combo);
         }
-        
+
         super.setSize(width, height);
     }
 
-    public void actionPerformed(String actionCommand) {
-        pp.repaintCountries( getMapView() );
-        pp.repaint();
+    public void actionPerformed(String ac) {
+        actionListener.actionPerformed(actionCommand);
     }
     
     Option getMapViewOption() {
@@ -119,10 +115,6 @@ public class MapViewChooser extends Panel implements ActionListener {
             throw new RuntimeException("no button selected");
         }
         
-    }
-
-    public int getMapView() {
-        return Integer.parseInt( getMapViewOption().getKey() );
     }
     
     public void resetMapView() {
