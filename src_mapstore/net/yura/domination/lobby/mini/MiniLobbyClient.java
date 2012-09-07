@@ -335,7 +335,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                     logger.info( "ignore GameCommand "+mtemp );
                 }
                 public void close() {
-                    mycom.leaveGame(gameId);
+                    mycom.closeGame(gameId);
                 }
             };
             myrisk.createGame( address , game, lrisk );
