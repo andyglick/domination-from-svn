@@ -122,6 +122,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 }
             }
         }
+        else if ("close".equals(actionCommand)) {
+            mycom.disconnect();
+            getRoot().getWindow().setVisible(false);
+        }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
