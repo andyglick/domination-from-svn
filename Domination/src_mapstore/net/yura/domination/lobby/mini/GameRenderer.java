@@ -34,7 +34,7 @@ public class GameRenderer extends DefaultListCellRenderer {
         Font font = g.getFont();
         String action;
 
-        switch (game.getState()) {
+        switch (game.getState( lobby.whoAmI() )) {
             case Game.STATE_CAN_JOIN: action = "Join"; break;
             case Game.STATE_CAN_LEAVE: action = "Leave"; break;
             case Game.STATE_CAN_PLAY: action = "Play"; break;

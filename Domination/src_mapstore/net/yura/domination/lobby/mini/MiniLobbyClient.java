@@ -108,17 +108,18 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             List list = (List)loader.find("ResultList");
             Game game = (Game)list.getSelectedValue();
             if (game!=null) {
-                
-                if (game.getState() == Game.STATE_CAN_JOIN) {
-                    mycom.joinGame(game);
+                int state = game.getState( whoAmI() );
+                switch (state) {
+                    case Game.STATE_CAN_JOIN:
+                        mycom.joinGame(game.getGameId());
+                        break;
+                    case Game.STATE_CAN_LEAVE:
+                        mycom.leaveGame( game.getGameId() );
+                        break;
+                    case Game.STATE_CAN_PLAY:
+                        mycom.playGame(game);
+                        break;
                 }
-                else if (game.getState() == Game.STATE_CAN_LEAVE) {
-                    mycom.leaveGame( game.getGameId() );
-                }
-                else if (game.getState() == Game.STATE_CAN_PLAY) {
-                    mycom.playGame(game);
-                }
-
             }
         }
         else {
@@ -223,12 +224,15 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     
     
     
-    
+    String myusername;
     @Override
     public void setUsername(String name, boolean guest) {
-
+        myusername = name;
     }
-
+    public String whoAmI() {
+            return myusername;
+    }
+        
     GameType theGame;
     @Override
     public void addGameType(java.util.List gametypes) {
