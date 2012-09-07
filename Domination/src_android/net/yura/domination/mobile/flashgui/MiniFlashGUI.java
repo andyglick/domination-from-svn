@@ -30,6 +30,7 @@ import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
 import net.yura.domination.ImageManager.LazyIcon;
+import net.yura.mobile.gui.components.Window;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
@@ -243,6 +244,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             setContentPane( newContentPane );
             revalidate();
             setVisible(true);
+
+            // we want to always be at the bottom of the stack
+            // so move anything bellow us to be above us
+            Vector windows = getDesktopPane().getAllFrames();
+            for (int c=1;c<windows.size();c++) {
+                getDesktopPane().setSelectedFrame((Window)windows.elementAt(0));
+            }
+            
         }
         
     }
