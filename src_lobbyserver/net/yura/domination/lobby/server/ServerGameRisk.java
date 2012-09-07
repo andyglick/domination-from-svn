@@ -254,7 +254,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		// game not started OR game IS started and it is there go
 		if (message.trim().equals("closegame")) {
 
-			System.out.println("\tCLOSEGAME NOT ALLOWED TO BE SENT TO CORE: "+username);
+			throw new RuntimeException("CLOSEGAME NOT ALLOWED TO BE SENT TO CORE: "+username);
 
 		}
 		else if (myrisk.getGame().getCurrentPlayer()!=null && myrisk.getGame().getCurrentPlayer().getAddress().equals( address )) {
@@ -265,7 +265,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		}
 		else {
 
-			System.out.print("\tCHEATING!!!!: "+username+" "+message+"\n");
+			throw new RuntimeException("CHEATING!!!!: "+username+" "+message+"\n");
 
 			//listoner.sendChatroomMessage(username+" is trying to cheat!");
 
