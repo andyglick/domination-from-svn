@@ -279,7 +279,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void messageForGame(String gameid, Object message) {
         
         if (message instanceof String) {
-            myrisk.parserFromNetwork((String)message);
+            stringForGame(gameid,(String)message);
         }
         else if (message instanceof byte[]) {
             try {
@@ -297,31 +297,57 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    private void stringForGame(String gameId,String message) {
+        
+        if (message.startsWith("LOBBY_NEEDINPUT ")) {
+                // TODO
+                String who = message.substring(16, message.length() );
+                //playerlist.needInputFrom(who);
+                if (whoAmI().equals(who)) {
+                        //needinput = true;
+                }
+        }
+        else if (message.equals("LOBBY_GAMEOVER")) {
+                // TODO
+                //paused=true;
+        }
+        else {
+                myrisk.parserFromNetwork(message);
+        }
+    }
+    
     private void objectForGame(final String gameId, Object object) {
+        Map map = (Map)object;
+        String command = (String)map.get("command");
 
-        OnlineRisk lrisk = new OnlineRisk() {
-
-            public void sendUserCommand(final String messagefromgui) {
-                mycom.sendGameMessage(gameId,messagefromgui);
+        if ("game".equals(command)) {
+            String address = (String)map.get("playerId");
+            RiskGame game = (RiskGame)map.get("game");
+            OnlineRisk lrisk = new OnlineRisk() {
+                public void sendUserCommand(final String messagefromgui) {
+                    mycom.sendGameMessage(gameId,messagefromgui);
+                }
+                public void sendGameCommand(String mtemp) {
+                    logger.info( "ignore GameCommand "+mtemp );
+                }
+                public void close() {
+                    mycom.leaveGame(gameId);
+                }
+            };
+            myrisk.createGame( address , game, lrisk );
+        }
+        else if ("rename".equals(command)) {
+            String myName = whoAmI();
+            String oldName = (String)map.get("oldName");
+            String newName = (String)map.get("newName");
+            myrisk.renamePlayer(oldName, newName);
+            if (myName.equals(newName)) {
+                myrisk.joinAs(newName);
             }
-
-            public void sendGameCommand(String mtemp) {
-                logger.info( "ignore GameCommand "+mtemp );
-            }
-
-            public void close() {
-                mycom.leaveGame(gameId);
-            }
-        
-        };
-        
-        Object[] objects = (Object[])object;
-
-        String address = (String)objects[0];
-        RiskGame game = (RiskGame)objects[1];
-        
-        myrisk.createGame( address , game, lrisk );
-
+        }
+        else {
+            throw new RuntimeException("unknown command "+command);
+        }
     }
 
 
