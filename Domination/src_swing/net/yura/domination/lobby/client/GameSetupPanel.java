@@ -75,7 +75,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	private RiskMap riskmap;
 
 	private JSpinner human;
-	private JSpinner aipassive;
+	//private JSpinner aipassive;
 	private JSpinner aieasy;
 	private JSpinner aihard;
 
@@ -212,7 +212,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 
 		human = new JSpinner( new SpinnerNumberModel(2,1,6,1) );
-		aipassive = new JSpinner( new SpinnerNumberModel(0,0,6,1) );
+		//aipassive = new JSpinner( new SpinnerNumberModel(0,0,6,1) );
 		aieasy = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 		aihard = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 
@@ -223,8 +223,8 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 		playernum.add(new JLabel("human"));
 		playernum.add(human);
-		playernum.add(new JLabel("crap ai"));
-		playernum.add(aipassive);
+		//playernum.add(new JLabel("crap ai"));
+		//playernum.add(aipassive);
 		playernum.add(new JLabel("easy ai"));
 		playernum.add(aieasy);
 		playernum.add(new JLabel("hard ai"));
@@ -449,17 +449,17 @@ resb = TranslationBundle.getBundle();
 		if (e.getSource()==start) {
 
 			int a = ((Integer)human.getValue()).intValue();
-			int b = ((Integer)aipassive.getValue()).intValue();
+			//int b = ((Integer)aipassive.getValue()).intValue();
 			int c = ((Integer)aieasy.getValue()).intValue();
 			int d = ((Integer)aihard.getValue()).intValue();
 
-			int sum = a+b+c+d;
+			int sum = a+c+d;
 
 			if (sum >=2 && sum <= RiskGame.MAX_PLAYERS) {
 
 				String players = 
 				//a +"\n" +
-				b +"\n" +
+				"0\n" + // AI crap
 				c +"\n" +
 				d +"\n";
 

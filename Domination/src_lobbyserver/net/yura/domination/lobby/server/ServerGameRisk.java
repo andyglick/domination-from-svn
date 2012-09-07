@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIPlayer;
@@ -231,7 +232,12 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		System.out.println(username+" -> "+playerid);
 
-		sendObjectToClient(new Object[] { playerid,myrisk.getGame() }, username );
+                HashMap map = new HashMap();
+                map.put("command", "game");
+                map.put("playerId", playerid );
+                map.put("game", myrisk.getGame() );
+                
+		sendObjectToClient(map, username );
 
 	}
 
@@ -283,6 +289,8 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
+        private List<String> oldIds = new Vector();
+        @Override
 	public void playerResigns(String username) {
 
 		String playerid = playersMap.get(username);
@@ -290,12 +298,19 @@ public class ServerGameRisk extends TurnBasedGame {
 		//String currentAddress = myrisk.getGame().getCurrentPlayer().getAddress();
 
 		if (playerid != null) {
+                        String newName = username+"-Resigned";
+			myrisk.resignPlayer( newName , playerid);
 
+                        sendRename(username,newName);
+                        
+                        if (playersMap.remove(username)==null) { throw new RuntimeException(); }
+                        if (inverseMap.remove(playerid)==null) { throw new RuntimeException(); }
 
-			myrisk.resignPlayer(playerid);
-
-
+                        oldIds.add(playerid);
 		}
+                else {
+                    throw new RuntimeException("can not resign player "+username+" they are not in this game");
+                }
 
 		// already handled by the turn based game
 		// ----
@@ -306,6 +321,33 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
+        private void sendRename(String oldName,String newName) {
+            HashMap map = new HashMap();
+            map.put("command", "rename");
+            map.put("oldName", oldName);
+            map.put("newName", newName);
+            sendObjectToAllClient(map);
+        }
+        
+        @Override
+        public void playerJoins(String newuser) {
+            if (oldIds.isEmpty()) {
+                throw new RuntimeException("no slots left");
+            }
+            else {
+                String playerid = oldIds.remove(0);
+                playersMap.put(newuser,playerid);
+                inverseMap.put(playerid,newuser);
+                String oldName = myrisk.playerJoins(newuser,playerid);
+                
+                sendRename(oldName, newuser);
+            }
+            
+            // TODO
+            //if paused and oldIds.isEmpty() now, we can kick off another game
+        }
+
+        @Override
 	public void renamePlayer(String oldser,String newuser) {
 
 	    synchronized(playersMap) {

@@ -80,7 +80,7 @@ public class ServerRisk extends Risk {
 		notify();
 	}
 
-	public void resignPlayer(String Addr) {
+	public void resignPlayer(String name,String Addr) {
 
 		if (game!=null) { // if its a actual player of the game that has left
 
@@ -95,11 +95,9 @@ public class ServerRisk extends Risk {
 
 				// AI will never have players addr for lobby game
 				if ( player.getAddress().equals(Addr) ) {
-
+                                        player.rename( name );
 					player.setType( Player.PLAYER_AI_CRAP );
-
 					player.setAddress( myAddress );
-
 				}
 
 				//if (player.getType() == Player.PLAYER_HUMAN) {
@@ -119,6 +117,23 @@ public class ServerRisk extends Risk {
 
 	}
 
+	public String playerJoins(String name, String Addr) {
+            if (game!=null) {
+                List<Player> players = game.getPlayers();
+                for (int c=0; c< players.size() ; c++) {
+                    Player player = players.get(c);
+                    if ( player.getType() == Player.PLAYER_AI_CRAP ) {
+                        String oldName = player.getName();
+                        player.rename(name);
+                        player.setType( Player.PLAYER_HUMAN );
+                        player.setAddress( Addr );
+                        return oldName;
+                    }
+                }
+            }
+            throw new RuntimeException("no AI CRAP found in game");
+	}
+        
 	public synchronized void setKillFlag() {
 
 		killflag = true;
