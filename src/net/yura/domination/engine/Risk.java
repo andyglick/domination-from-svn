@@ -2859,24 +2859,23 @@ RiskUtil.printStackTrace(e);
 	}
         
        public void resignPlayer() {
-
-
 		// need to stop asking this player for input
 		Vector players = game.getPlayers();
-
 		for (int c=0;c<players.size();c++) {
-
 			Player player = (Player)players.elementAt(c);
-
 			if (player.getAddress().equals(myAddress)) {
-
 				player.setAddress("resignedplayer");
-
 			}
-
 		}
-
 		closeBattle();
-
 	}
+       public void joinAs(String name) {
+		Vector players = game.getPlayers();
+		for (int c=0;c<players.size();c++) {
+			Player player = (Player)players.elementAt(c);
+			if (player.getName().equals(name)) {
+				player.setAddress( myAddress );
+			}
+		}
+       }
 }

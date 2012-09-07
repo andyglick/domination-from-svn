@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.awt.Insets;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
@@ -408,21 +409,37 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 	public void gameObject(Object object) {
 
-		Object[] objects = (Object[])object;
+		Map map = (Map)object;
+                String command = (String)map.get("command");
 
-                String address = (String)objects[0];
-                RiskGame game = (RiskGame)objects[1];
-                ClientRisk lrisk = new ClientRisk(this,myrisk);
+                if ("game".equals(command)) {
                 
-		myrisk.createGame( address , game, lrisk );
+                    String address = (String)map.get("playerId");
+                    RiskGame game = (RiskGame)map.get("game");
+                    ClientRisk lrisk = new ClientRisk(this,myrisk);
 
-		// not needed as "gameFrame.setup(s);" calls this anyway
-		//frame.setGameStatus(null);
+                    myrisk.createGame( address , game, lrisk );
 
+                }
+                else if ("rename".equals(command)) {
+                    
+                        String myName = lgml.whoAmI();
+
+                        String oldName = (String)map.get("oldName");
+                        String newName = (String)map.get("newName");
+                        
+                        myrisk.renamePlayer(oldName, newName);
+                        if (myName.equals(newName)) {
+                            myrisk.joinAs(newName);
+                        }
+                }
+                else {
+                    throw new RuntimeException("unknown command "+command);
+                }
 	}
 
 	public void renamePlayer(String oldser,String newuser) {
-
+            
 	    myrisk.renamePlayer(oldser,newuser);
 
 	}
