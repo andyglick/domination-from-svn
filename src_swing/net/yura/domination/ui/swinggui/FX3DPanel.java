@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -93,7 +94,10 @@ public class FX3DPanel extends JPanel implements ActionListener, SwingGUITab, Mo
 			if (!fxdone) { fx3d.init(); fxdone=true; }
 
 			// gives it an image to use
-			fx3d.settext( pp.getImage() );
+                        Image img = pp.getImage();
+                        if (img!=null) {
+                            fx3d.settext( img );
+                        }
 
 			// does a repaint
 			fx3d.zeichnen();
