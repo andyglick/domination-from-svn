@@ -56,9 +56,10 @@ public class MapServerClient extends HTTPClient {
             if (request.id == XML_REQUEST_ID) {
                 ch.onXMLError(error);
             }
-            else {
+            else if (request.id == MAP_REQUEST_ID) {
                 ch.onDownloadError(error);
             }
+            // for images do not pop-up error
         }
     }
 

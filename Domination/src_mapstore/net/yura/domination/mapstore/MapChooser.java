@@ -198,7 +198,20 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     public void gotImgFromServer(Object obj,String url, byte[] data) {
-        publishImg(obj, cache(url, data) );
+        try {
+            publishImg(obj, new ByteArrayInputStream(data) );
+        }
+        catch (RuntimeException ex) {
+            // there was some error with this image
+            //ImageManager.gotImg(obj, null); // clear the lazy image, so we can try again
+            // not needed as its a week ref and will clear soon enough anyway
+
+            System.out.println("error in publishImg with img: "+url);
+            throw ex;
+        }
+
+        // only cache if publish works fine
+        cache(url, data);
     }
 
     private void publishImg(Object obj,InputStream in) {
@@ -234,10 +247,14 @@ public class MapChooser implements ActionListener,MapServerListener {
                         InputStream min = RiskUtil.openMapStream(url);
                         Image img = MapChooser.createImage(min);                    
                         img = ImageUtil.scaleImage(img, 150, 94);
-                        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                        ImageUtil.saveImage(img, bytes);
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        ImageUtil.saveImage(img, out);
                         img = null; // drop the small image as soon as we can
-                        return cache(url, bytes.toByteArray() );
+                        byte[] bytes = out.toByteArray();
+                        out = null; // drop the OutputStream as soon as we can
+                        cache(url,bytes);
+                        // TODO we should only cache if we are sure it can be opened as a image
+                        return new ByteArrayInputStream(bytes);
                     }
                     catch (Exception ex) {
                         Logger.warn(ex);
@@ -248,11 +265,10 @@ public class MapChooser implements ActionListener,MapServerListener {
             return null;
     }
     
-    private static InputStream cache(String url,byte[] data) {
+    private static void cache(String url,byte[] data) {
         if (repo!=null && !repo.containsKey( url ) ) {
             repo.put( url , data );
         }
-        return new ByteArrayInputStream(data);
     }
 
     public static Map createMap(String file) {
