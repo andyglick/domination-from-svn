@@ -210,22 +210,21 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWM LobbyClient MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     
-    @Override
+
     public ClassLoader getClassLoader(GameType gameType) {
         return getClass().getClassLoader();
     }
 
-    @Override
     public void connected() {
         mycom.getGameTypes();
     }
-    @Override
+
     public void disconnected() { }
-    @Override
+
     public void connecting(String message) {
         logger.info(message);
     }
-    @Override
+
     public void error(String error) {
         logger.info(error);
     }
@@ -234,7 +233,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     
     
     String myusername;
-    @Override
     public void setUsername(String name, boolean guest) {
         myusername = name;
     }
@@ -243,10 +241,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
         
     GameType theGame;
-    @Override
     public void addGameType(java.util.List gametypes) {
         
-        for (GameType gametype: (java.util.List<GameType>)gametypes ) {
+        for (int c=0;c<gametypes.size();c++) {
+            GameType gametype = (GameType)gametypes.get(c);
         
             if (gameName.equals( gametype.getName() ) ) {
                 theGame = gametype;
@@ -259,7 +257,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    @Override
     public void addOrUpdateGame(Game game) {
         int index = list.indexOf(game);
         if (index>=0) {
@@ -272,7 +269,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
     }
 
-    @Override
     public void removeGame(String gameid) {
         for (int c=0;c<list.getSize();c++) {
             Game game = (Game)list.getElementAt(c);
@@ -284,7 +280,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         list.repaint();
     }
 
-    @Override
     public void messageForGame(String gameid, Object message) {
         
         if (message instanceof String) {

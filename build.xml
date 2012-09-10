@@ -46,7 +46,7 @@
 	<property name="dir.dist" location="dist"/>
 	<property name="dir.sources" location="src:src_swing:src_mapstore"/>
         <property name="dir.properties" location="src"/>
-        <property name="dir.libs" location="lib/httpmime-4.1.2.jar;lib/httpcore-4.1.2.jar;lib/jnlp.jar;lib/TranslationTool.jar;lib/SwingME.jar;lib/midletrunner.jar;lib/Grasshopper.jar"/>
+        <property name="dir.libs" location="lib/httpmime-4.1.2.jar;lib/httpcore-4.1.2.jar;lib/jnlp.jar;lib/TranslationTool.jar;lib/SwingME.jar;lib/midletrunner.jar;lib/Grasshopper.jar;lib/LobbyClient.jar"/>
 
 
 	<property name="file.src" location="${dir.dist}/src.zip"/>
@@ -386,7 +386,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<mkdir dir="${dir.build.lobby.client.classes}"/>
 
 		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.lobby.client.classes}" includes="net/yura/domination/lobby/client/**"
-		source="1.4" target="1.4" classpath="${dir.libs}:lib/LobbyClient.jar"/>
+		source="1.4" target="1.4" classpath="${dir.libs}"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.client.classes}" filtering="true">
@@ -501,7 +501,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <mkdir dir="${dir.build}/swingme"/>
         <mkdir dir="dist"/>
 
-        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="lib/midletrunner.jar:lib/SwingME.jar:lib/Grasshopper.jar:lib/LobbyClient.jar" excludes="net/yura/domination/android/**"/>
+        <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="${dir.libs}" excludes="net/yura/domination/android/**"/>
 
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*"/>
