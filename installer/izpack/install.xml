@@ -20,6 +20,7 @@
 		</authors>
 		<url>@game.website@</url>
 		<run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+		<!-- izpack.macinstall is needed for non-admin mac users, but most mac users are admins -->
 	</info>
 
 	<guiprefs width="640" height="480" resizable="yes"/>
