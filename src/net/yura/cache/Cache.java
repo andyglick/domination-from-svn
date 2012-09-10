@@ -53,23 +53,24 @@ public class Cache {
         }
         else {
             try {
-                
+
                 if (DEBUG) {
                     logger.log(Level.INFO, "[yura.net Cache] saving to cache: {0}", key);
                 }
-                
+
                 FileOutputStream out = new FileOutputStream(file);
                 out.write(value);
                 out.close();
             }
             catch (Exception ex) {
-                if (file.exists()) {
-                    file.delete();
+                boolean exists = file.exists();
+                boolean deleted = false;
+                if (exists) {
+                    deleted = file.delete();
                 }
-                logger.log(Level.WARNING, "failed to save data to file: "+key , ex);
+                logger.log(Level.WARNING, "failed to save data to file: "+file+" exists="+exists+" deleted="+deleted+" key: "+key+" in dir "+cacheDir+" exists="+cacheDir.exists(), ex);
             }
         }
-        
     }
     
     public InputStream get(String key) {

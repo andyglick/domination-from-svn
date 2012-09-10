@@ -21,6 +21,7 @@ public class ImageManager {
         }
         return icon;
     }
+
     public static LazyIcon newIcon(Object key,int w,int h) {
         LazyIcon icon = new LazyIcon( w,h );
         put(key, icon);
@@ -30,7 +31,12 @@ public class ImageManager {
     public static void gotImg(Object key, Image img) {
         LazyIcon icon = get( key );
         if (icon!=null) {
-            icon.setImage(img);
+            if (img!=null) {
+                icon.setImage(img);
+            }
+            else {
+                images.remove(key); // we got a responce but there was some error and no image
+            }
         }
     }
 
