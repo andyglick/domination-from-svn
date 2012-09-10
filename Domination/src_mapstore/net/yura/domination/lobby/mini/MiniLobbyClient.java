@@ -18,7 +18,6 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
-import net.yura.domination.mobile.MiniUtil;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.client.LobbyClient;
 import net.yura.lobby.client.LobbyCom;
@@ -149,8 +148,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     void loadImg(Game game) {
         String mapName = getMapName(game.getOptions());
         
-        java.util.List localFiles = MiniUtil.getFileList("map");
-        if (localFiles.contains(mapName)) {
+        //java.util.List localFiles = net.yura.domination.mobile.MiniUtil.getFileList("map");
+        //if (localFiles.contains(mapName)) {
             Map info = RiskUtil.loadInfo(mapName, false);
             
             String prv = (String)info.get("prv");
@@ -177,7 +176,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 ImageManager.gotImg(game, img);
                 list.repaint();
             }
-        }
+        //}
     }
     
     /**
