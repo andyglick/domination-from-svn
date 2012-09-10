@@ -6,12 +6,12 @@
             <name>Domination</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <source-roots>
-                <root id="src.src_mapstore.dir"/>
-                <root id="src.src.dir"/>
+                <root id="src.src.dir" name="Source Packages"/>
                 <root id="src.src_swing.dir"/>
+                <root id="src.src_mapstore.dir"/>
             </source-roots>
             <test-roots>
-                <root id="test.junit.dir" name="test"/>
+                <root id="test.junit.dir" name="Test Packages"/>
             </test-roots>
         </data>
     </configuration>
