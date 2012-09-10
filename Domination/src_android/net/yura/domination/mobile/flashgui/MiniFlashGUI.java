@@ -300,6 +300,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
                 setContentPane( new ScrollPane( newgame.getRoot() ) );
 
+                //getDesktopPane().setSelectedFrame(MiniFlashGUI.this);
+                
                 revalidate();
                 repaint();
             }
@@ -370,7 +372,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
         }
 
-        if (type!=-1) {
+        if (type==-1) {
+            throw new RuntimeException("type for this Component can not be found "+source); // should also never happen
+        }
+        
+        if (localgame) {
             Vector players = myrisk.getGame().getPlayers();
             int count=0;
             for (int c=0;c<players.size();c++) {
@@ -438,9 +444,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 }
             }
         }
-        else {
-            throw new RuntimeException("type for this Component can not be found "+source); // should also never happen
-        }
+        // else network game not done yet
 
     }
 
