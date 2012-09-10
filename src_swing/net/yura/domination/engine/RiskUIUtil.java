@@ -928,7 +928,12 @@ public class RiskUIUtil {
 			}
 			else if (lobbyAppletURL!=null) {
 
+                                // on older clients open URL
 				RiskUtil.openURL(new URL(lobbyAppletURL));
+
+                                // TODO launch mini lobby
+                                //MiniLobbySwingWrapper lobby = new MiniLobbySwingWrapper(myrisk);
+                                //lobby.show( RiskUIUtil.findParentFrame(this) );
 			}
 
 		}

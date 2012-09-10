@@ -116,10 +116,16 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                         mycom.leaveGame( game.getGameId() );
                         break;
                     case Game.STATE_CAN_PLAY:
+                    case Game.STATE_CAN_WATCH:
                         mycom.playGame(game);
                         break;
                 }
             }
+        }
+        else if ("create".equals(actionCommand)) {
+        
+            // TODO
+            
         }
         else if ("close".equals(actionCommand)) {
             mycom.disconnect();

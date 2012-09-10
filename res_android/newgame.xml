@@ -18,7 +18,7 @@
         <label i18n="true" text="newgame.player.type.hardai" width="10"/>
         <spinbox end="1" maximum="5" minimum="0" name="hardAI" start="1" text="2"/>
         <label i18n="true" text="newgame.player.type.human" width="10"/>
-        <spinbox end="1" maximum="5" minimum="0" name="human" start="1" text="2"/>
+        <spinbox end="1" maximum="6" minimum="1" name="human" start="1" text="2"/>
         <button action="customPlayers" colspan="2" text="Custom Players" visible="false"/>
     </panel>
     <panel columns="1">
