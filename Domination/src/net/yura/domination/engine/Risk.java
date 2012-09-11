@@ -624,19 +624,19 @@ RiskUtil.printStackTrace(e);
 
 		controller.sendDebug(message);
 
-		game.addCommand(message);
-
-		int oldState=game.getState();
-
 		boolean needInput=true;
-
-		String input;
 		String output=null;
 
 		StringT = new StringTokenizer( message );
-
                 final String Addr = GetNext();
-                
+
+
+                // ERROR is not related to the game
+                if (!Addr.equals("ERROR")) {
+                    game.addCommand(message);
+                }
+
+
 		if (Addr.equals("ERROR")) { // server has sent us a error
 
 			String Pname = GetNext();
@@ -993,7 +993,7 @@ RiskUtil.printStackTrace(e);
 
 			//if (StringT.hasMoreTokens()) {
 
-			input=GetNext();
+			String input=GetNext();
 			output="";
 
 			if (game.getState()==RiskGame.STATE_NEW_GAME) {

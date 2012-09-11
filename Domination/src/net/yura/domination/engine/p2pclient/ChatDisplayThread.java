@@ -19,10 +19,10 @@ public class ChatDisplayThread extends Thread {
    Risk risk; 
    BufferedReader inChat = null;
 
-    ChatDisplayThread (Risk r, BufferedReader in) 
-    { 
-       risk = r;
-       inChat = in; 
+    ChatDisplayThread (Risk r, BufferedReader in) { 
+        super("ChatDisplayThread");
+        risk = r;
+        inChat = in; 
     }
 
     public void run() {
@@ -47,6 +47,9 @@ public class ChatDisplayThread extends Thread {
 
 	    if ("Stream closed".equals( e.getMessage() ) ) { badexit=false; }
 
+            else {
+                System.out.println("badexit "+e);
+            }
        }
 
 	//System.out.println("Display Thread Finishing");
