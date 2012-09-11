@@ -28,13 +28,11 @@ public class ChatDisplayThread extends Thread {
     public void run() {
 	//System.out.println("Start DisplayThread ");
 	String str;
-	boolean badexit=true;
+	//boolean badexit=true;
 
 	try {
-               while ((str = inChat.readLine()) != null) 
-               {
-                       if (str.length() > 0)
-                       {
+               while ((str = inChat.readLine()) != null) {
+                       if (str.length() > 0) {
                            risk.parserFromNetwork( str );
                        }
                }
@@ -45,16 +43,13 @@ public class ChatDisplayThread extends Thread {
 	    //e.getMessage());
 	    //RiskUtil.printStackTrace(e);
 
-	    if ("Stream closed".equals( e.getMessage() ) ) { badexit=false; }
+	    //if ("Stream closed".equals( e.getMessage() ) ) { badexit=false; }
 
-            else {
-                System.out.println("badexit "+e);
-            }
        }
 
 	//System.out.println("Display Thread Finishing");
 
-	if (badexit) { risk.kickedOff(); }
+	risk.disconnected();
 
     } 
 } 

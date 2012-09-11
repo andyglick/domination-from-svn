@@ -336,13 +336,10 @@ public class Risk extends Thread {
 
 				//if (StringT.hasMoreTokens()==false) {
 
-                                    if ( onlinePlayClient != null ) {
-                                        onlinePlayClient.close();
-                                        onlinePlayClient = null;
-                                    }
-
                                     closeGame();
+
                                     controller.sendMessage( resb.getString( "core.close.closed") , false, false );
+                                    setHelp();
                                     getInput();
 				//}
 				//else {
@@ -352,7 +349,6 @@ public class Risk extends Thread {
 			}
                         else if ( onlinePlayClient == null ) {
                                 inGameParser( myAddress+" "+message );
-
                         }
                         else {
                                 // send to network
@@ -2462,25 +2458,15 @@ RiskUtil.printStackTrace(e);
             }
 	}
 
-	public synchronized void kickedOff() {
+	public void disconnected() {
 
 		//System.out.print("Got kicked off the server!\n");
+                closeGame();
 
-                game = null;
+                controller.sendMessage(resb.getString( "core.kicked.error.disconnected"),false,false);
+                setHelp();
+                getInput();
 
-                if (onlinePlayClient!=null) {
-                    onlinePlayClient.close();
-                    onlinePlayClient = null;
-                }
-
-		// does not work from here
-		closeBattle();
-
-		controller.closeGame();
-		controller.sendMessage(resb.getString( "core.kicked.error.disconnected"),false,false);
-
-		setHelp();
-		getInput();
 	}
 
 	protected void closeBattle() {
@@ -2794,23 +2780,26 @@ RiskUtil.printStackTrace(e);
 
 	}
 
-        private void closeGame() {
+        private synchronized void closeGame() {
 
-            // does not work from here
-            closeBattle();
-
-            controller.closeGame();
-
-            game = null;
+            if ( onlinePlayClient != null ) {
+                onlinePlayClient.close();
+                onlinePlayClient = null;
+            }
+            
+            if (game!=null) {
+                // does not work from here
+                closeBattle();
+                controller.closeGame();
+                game = null;
+            }
 
         }
 
 
 	public void newMemoryGame(RiskGame g) {
 
-		if (game != null) {
-                    closeGame();
-                }
+                closeGame();
 
                 try {
                         // make a copy
