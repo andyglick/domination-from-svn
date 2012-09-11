@@ -61,38 +61,38 @@ public class ChatServerThread extends Thread {
 			String hello = inChat.readLine(); // "10 myID#123456 default.map"
 			int index = hello.indexOf(' ');
 			String version = hello.substring(0,index);
-			hello = hello.substring(index+1);
-                        index = hello.indexOf(' ');
-                        id = hello.substring(0,index);
-			String map = hello.substring(index+1);
                         
-			if (!RiskGame.getDefaultMap().equals( map )) {
+                        if (!RiskGame.NETWORK_VERSION.equals(version)) {
 
-				outChat.println( "server choosemap "+RiskGame.getDefaultMap() );
+                            outChat.println( "ERROR version missmatch, server: "+RiskGame.NETWORK_VERSION+", and client: "+version );
 
-			}
+                        }
+                        else {
 
-			if (version.equals(RiskGame.NETWORK_VERSION)) {
+                            hello = hello.substring(index+1);
+                            index = hello.indexOf(' ');
+                            id = hello.substring(0,index);
+                            String map = hello.substring(index+1);
+                        
+                            if (!RiskGame.getDefaultMap().equals( map )) {
+                                    outChat.println( "server choosemap "+RiskGame.getDefaultMap() );
+                            }
 
-				// Create a separate thread to handle the incomming socket data      
-				myReaderThread = new ChatReader(inChat, myChatArea, myIndex);
-				myReaderThread.start();
+                            // Create a separate thread to handle the incomming socket data      
+                            myReaderThread = new ChatReader(inChat, myChatArea, myIndex);
+                            myReaderThread.start();
 
-				// meanwhile, this thread will wait for new chatArea data and when
-				// received, it will be dispersed to the connected client. 
+                            // meanwhile, this thread will wait for new chatArea data and when
+                            // received, it will be dispersed to the connected client. 
 
-				do  {
-					outputLine = myChatArea.waitForString(myIndex);
-					if (outputLine != null)
-						outChat.println(outputLine);
-				}
-				while (outputLine != null);  
-			}
-			else {
+                            do  {
+                                    outputLine = myChatArea.waitForString(myIndex);
+                                    if (outputLine != null)
+                                            outChat.println(outputLine);
+                            }
+                            while (outputLine != null);  
 
-				outChat.println( "ERROR version missmatch, server: "+RiskGame.NETWORK_VERSION+", and client: "+version );
-
-			}
+                        }
 
 			// seems to get stuck if called here
 			//inChat.close();
