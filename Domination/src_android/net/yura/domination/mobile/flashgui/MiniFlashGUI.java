@@ -160,7 +160,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
             else if ("online".equals(actionCommand)) {
                 
-            	net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient(myrisk);
+            	net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myrisk) );
                 
                 Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
                 mapFrame.setContentPane( lobby.getRoot() );
