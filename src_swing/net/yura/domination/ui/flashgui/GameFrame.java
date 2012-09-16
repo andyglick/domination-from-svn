@@ -286,27 +286,27 @@ public class GameFrame extends JFrame implements KeyListener {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-			int[] colorss = colors;
+			int[] cols = colors;
 
-			for (int c=0; c<colorss.length; c++) {
+			for (int c=0; c<cols.length; c++) {
 
-				Color col = new Color( colorss[c] );
+				Color col = new Color( cols[c] );
 
 				g.setColor( new Color(col.getRed(),col.getGreen(),col.getBlue(), 100) );
 
 				if (c==0) {
 					g.fillArc(8, 89, 24 , 24, 90, 180);
-					g.fillRect( 20 , 89 , (getWidth()-173)-(24*(colorss.length-c)) , 24);
+					g.fillRect( 20 , 89 , (getWidth()-173)-(24*(cols.length-c)) , 24);
 				}
 				else {
-					g.fillRect( (getWidth()-177)-(24*(colorss.length-c)) , 89 , 24 , 24);
+					g.fillRect( (getWidth()-177)-(24*(cols.length-c)) , 89 , 24 , 24);
 				}
 
 			}
 
 			if (gameStatus!=null) {
 
-				g.setColor( new Color( RiskUtil.getTextColorFor( colors[0] ) ) );
+				g.setColor( new Color( RiskUtil.getTextColorFor( cols[0] ) ) );
 				g.setFont( new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11) );
 				g.drawString(gameStatus, 22, 105);
 			}
@@ -621,22 +621,22 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	public void setGameStatus(String state) {
 
-		gameStatus=state;
-
+                int[] cols = null;
 		if (state!=null) {
-
 			// the colors for the bottom display r collected here
-			colors = myrisk.getPlayerColors();
-
+			cols = myrisk.getPlayerColors();
+                        if (cols.length == 0) { cols = null; }
 		}
-		else {
 
-			colors = new int[] { RiskUtil.GRAY };
-
+		if (cols==null) {
+			cols = new int[] { RiskUtil.GRAY };
 		}
+
+
+		gameStatus=state;
+                colors = cols;
 
 		repaint();
-
 	}
 
 	public void needInput(int s) {
