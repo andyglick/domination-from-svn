@@ -8,12 +8,18 @@ import net.yura.mobile.gui.components.Component;
 
 public class ImageManager {
 
-    public static final WeakHashMap images = new WeakHashMap();
-    
-    public static void put(Object key,LazyIcon icon) {
+    public final WeakHashMap images = new WeakHashMap();
+    public final int w,h;
+
+    public ImageManager(int width,int height) {
+        w=width;
+        h=height;
+    }
+
+    public void put(Object key,LazyIcon icon) {
         images.put(key, icon);
     }
-    public static LazyIcon get(Object key) {
+    public LazyIcon get(Object key) {
         LazyIcon icon = (LazyIcon)images.get(key);
         // if we found it, it may be using a different key, just to make sure, put it back with this key
         if (icon!=null) {
@@ -22,13 +28,16 @@ public class ImageManager {
         return icon;
     }
 
-    public static LazyIcon newIcon(Object key,int w,int h) {
+    /**
+     * limitation: a key can ONLY have 1 size of icon for it
+     */
+    public LazyIcon newIcon(Object key) {
         LazyIcon icon = new LazyIcon( w,h );
         put(key, icon);
         return icon;
     }
 
-    public static void gotImg(Object key, Image img) {
+    public void gotImg(Object key, Image img) {
         LazyIcon icon = get( key );
         if (icon!=null) {
             if (img!=null) {

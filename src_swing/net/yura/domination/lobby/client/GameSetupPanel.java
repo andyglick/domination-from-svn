@@ -3,15 +3,20 @@ package net.yura.domination.lobby.client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -34,9 +39,11 @@ import javax.swing.JSpinner;
 import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.SpinnerNumberModel;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.NewGameFrame;
+import net.yura.lobby.model.Game;
 
 /**
  * <p> New Game Frame for FlashGUI </p>
@@ -86,9 +93,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	 * @param r The Risk Parser used for playing the game
 	 * @param t States whether this game is local
 	 */
-	public GameSetupPanel(JDialog da,String myname) {
-
-		dialog = da;
+	public GameSetupPanel() {
 
 		setLayout(null);
 
@@ -308,7 +313,7 @@ resb = TranslationBundle.getBundle();
 		//help.addActionListener( this );
 		//help.setBounds(335, 529, 30 , 30 ); // should be 528
 
-		gamename = new JTextField(myname);
+		gamename = new JTextField();
 		gamename.setBounds(310, 530, 150 , 25 ); // should be 528
 		add(gamename);
 
@@ -325,6 +330,100 @@ resb = TranslationBundle.getBundle();
 
 	}
 
+        private String newGameOptions;
+	//private String mapsurl;
+	private RiskMap[] maps;
+        
+        public Game showDialog(Window parent,String serveroptions, String myname) {
+            
+                gamename.setText( myname+"'s "+RiskUtil.GAME_NAME+" Game" );
+            
+                if (dialog == null) {
+
+                        // TODO parent is passed in each time but is only used the first time
+                        if (parent instanceof Frame) {
+                            dialog = new JDialog((Frame)parent,"Game Options",true);
+                        }
+                        else {
+                            dialog = new JDialog((Dialog)parent,"Game Options",true);
+                        }
+
+			// @todo:
+			// do noting on close
+			// when close then send event to gsp
+
+			dialog.setContentPane(this);
+			dialog.setResizable(false);
+			dialog.pack();
+
+		}
+
+
+		if (serveroptions!=null && !serveroptions.equals(newGameOptions) ) {
+
+			newGameOptions = serveroptions;
+
+			String[] split = newGameOptions.split(",");
+
+			maps = new RiskMap[split.length];
+
+			for (int c=0;c<split.length;c++) {
+				maps[c] = getRiskMap(split[c]);
+			}
+
+			setMaps(maps);
+
+			final javax.swing.JList list = getList();
+
+			new Thread() {
+				public void run() {
+					for (int c=0;c<maps.length;c++) {
+						maps[c].loadInfo();
+						if (c==0) {
+							setSelected(c);
+						}
+						list.repaint();
+					}
+				}
+
+			}.start();
+		}
+
+
+		reset();
+
+		dialog.setVisible(true);
+
+		String op = getOptions();
+
+		if (op!=null) { return new Game( getGameName(), op, getNumberOfHumanPlayers() ); }
+
+		return null;
+
+        }
+
+        private static Map MapMap;
+        public static RiskMap getRiskMap(String name) {
+
+		//Risk.setupMapsDir(applet);
+
+		if (MapMap==null) { MapMap = new HashMap(); }
+
+		RiskMap themap = (RiskMap)MapMap.get(name);
+
+		if (themap==null) {
+
+			themap = new RiskMap(name);
+
+			MapMap.put(name,themap);
+
+		}
+
+		return themap;
+
+	}
+        
+        
 	public void setMaps(final RiskMap[] maps) {
 
 		list.setListData(maps);

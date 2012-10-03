@@ -21,7 +21,7 @@ public class GameRenderer extends DefaultListCellRenderer {
 
         game = (Game)value;
         
-        setIcon( lobby.myrisk.getIconForGame(game) );
+        setIcon( lobby.game.getIconForGame(game) );
 
         return c;
     }

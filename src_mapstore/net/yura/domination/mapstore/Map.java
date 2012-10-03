@@ -182,4 +182,8 @@ public class Map {
         return name; // this is used in the list for the keyboard quick jump
     }
 
+//    protected void finalize() throws Throwable {
+//        System.out.println("dropping "+this);
+//    }
+
 }

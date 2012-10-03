@@ -1,13 +1,14 @@
 package net.yura.domination.mobile;
 
 import java.io.IOException;
-import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import android.graphics.ColorMatrix;
 import collisionphysics.BallWorld;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
+import java.util.ArrayList;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
@@ -510,11 +511,11 @@ public class PicturePanel extends ImageView implements MapPanel {
                     
                         int old = g2.getGraphics().getStrokeWidth();
                         g2.getGraphics().setStrokeWidth( stroke );
-                        Vector players = game.getPlayers();
+                        List players = game.getPlayers();
 
                         for (int c=0; c< players.size() ; c++) {
 
-                                Country capital = ((Player)players.elementAt(c)).getCapital();
+                                Country capital = ((Player)players.get(c)).getCapital();
 
 				if ( capital !=null ) {
 					
@@ -535,7 +536,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                         g2.drawArc( x-r , y-r , BALL_SIZE, BALL_SIZE , 0, 360);
 
-                                        g.setARGBColor( ((Player)players.elementAt(c)).getColor() );
+                                        g.setARGBColor( ((Player)players.get(c)).getColor() );
 
                                         int size = BALL_SIZE + (stroke*2);
                                         g2.drawArc( x-(size/2) , y-(size/2) , size, size, 0, 360);
@@ -700,16 +701,16 @@ public class PicturePanel extends ImageView implements MapPanel {
                 Graphics zg = tempimg.getGraphics();
                 zg.drawImage(img ,0 ,0, 0 );
 
-                Vector b=null;
+                List allConnectedEmpires=null;
 
                 if (view == VIEW_CONNECTED_EMPIRE) {
 
-                        Vector players = game.getPlayers();
+                        List players = game.getPlayers();
 
-                        b = new Vector();
+                        allConnectedEmpires = new ArrayList();
 
                         for (int c=0; c<players.size(); c++) {
-                                b.addAll( game.getConnectedEmpire( (Player)players.elementAt(c) ) );
+                                allConnectedEmpires.addAll( game.getConnectedEmpire( (Player)players.get(c) ) );
                         }
                 }
 
@@ -743,12 +744,12 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         val = GRAY;
                                 }
                                 else {
-                                        Vector neighbours = ((Country)game.getCountryInt( c+1 )).getNeighbours();
+                                        List neighbours = ((Country)game.getCountryInt( c+1 )).getNeighbours();
                                         int threat=0; // max of about 6
 
                                         for (int j = 0; j < neighbours.size() ; j++) {
 
-                                                if ( ((Country)neighbours.elementAt(j)).getOwner() != player ) {
+                                                if ( ((Country)neighbours.get(j)).getOwner() != player ) {
                                                         threat++;
                                                 }
 
@@ -771,11 +772,11 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         val = LIGHT_GRAY;
                                 }
                                 else {
-                                        Vector cards = ((Player)game.getCurrentPlayer()).getCards();
+                                        List cards = ((Player)game.getCurrentPlayer()).getCards();
 
                                         for (int j = 0; j < cards.size() ; j++) {
 
-                                                if ( ((Card)cards.elementAt(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
+                                                if ( ((Card)cards.get(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
                                                         val = BLUE;
                                                 }
 
@@ -814,7 +815,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         val = LIGHT_GRAY;
 
                                 }
-                                else if ( b.contains( thecountry ) ) {
+                                else if ( allConnectedEmpires.contains( thecountry ) ) {
 
                                         val = ((Player)thecountry.getOwner()).getColor();
 

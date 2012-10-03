@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.OutputStream;
 import javax.swing.border.EmptyBorder;
-import java.util.HashMap;
-import javax.swing.JDialog;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -22,11 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
+import javax.swing.Icon;
+import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
 import net.yura.domination.ui.flashgui.GameFrame;
@@ -35,8 +35,10 @@ import net.yura.lobby.client.LobbyClientGUI;
 import net.yura.lobby.client.ResBundle;
 import net.yura.lobby.client.TurnBasedAdapter;
 
-public class ClientGameRisk extends TurnBasedAdapter {
+public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
+        private final static Logger logger = Logger.getLogger( ClientGameRisk.class.getName() );
+    
 	private final static String product;
 	private final static String version = "0.2";
 
@@ -90,122 +92,27 @@ public class ClientGameRisk extends TurnBasedAdapter {
 	// game setup
 	//##################################################################################
 
-	private String newGameOptions;
-
-	//private String mapsurl;
-	private RiskMap[] maps;
-
-	private JDialog dialog;
 	private GameSetupPanel gsp;
-
-	private HashMap MapMap;
-
 
 	public Game newGameDialog(Frame parent, String serveroptions,String myname) { // String serveroptions is a list of maps
 
-
-		if (dialog == null) {
-
-			dialog = new JDialog(parent,"Game Options",true);
-
-			gsp = new GameSetupPanel(dialog,myname+"'s "+RiskUtil.GAME_NAME+" Game");
-
-			// @todo:
-			// do noting on close
-			// when close then send event to gsp
-
-			dialog.setContentPane(gsp);
-			dialog.setResizable(false);
-			dialog.pack();
-
-		}
-
-
-		if (serveroptions!=null && !serveroptions.equals(newGameOptions) ) {
-
-			newGameOptions = serveroptions;
-
-			String[] split = newGameOptions.split(",");
-
-			maps = new RiskMap[split.length];
-
-			for (int c=0;c<split.length;c++) {
-
-				maps[c] = getRiskMap(split[c]);
-
-			}
-
-			gsp.setMaps(maps);
-
-			final javax.swing.JList list = gsp.getList();
-
-			new Thread() {
-
-				public void run() {
-
-
-					for (int c=0;c<maps.length;c++) {
-
-						maps[c].loadInfo();
-
-						if (c==0) {
-							gsp.setSelected(c);
-						}
-
-						list.repaint();
-					}
-
-
-				}
-
-			}.start();
-
-
-		}
-
-
-
-		gsp.reset();
-
-		dialog.setVisible(true);
-
-		String op = gsp.getOptions();
-
-		if (op!=null) { return new Game( gsp.getGameName(), op, gsp.getNumberOfHumanPlayers() ); }
-
-		return null;
-
+            if (gsp==null) {
+                gsp = new GameSetupPanel();
+            }
+            
+            return gsp.showDialog(parent, serveroptions, myname);
 	}
 
-	public ImageIcon getIcon(String options) {
+        public ImageIcon getIcon(String options) {
+	//public Icon getIcon(String options) {
 
-		String choosemap = options.split("\\n")[3];
-
-		RiskMap iconedmap = getRiskMap( choosemap.substring( 10 ,choosemap.length() ) );
+		RiskMap iconedmap = GameSetupPanel.getRiskMap( RiskUtil.getMapNameFromLobbyStartGameOption(options) );
+                
+                // TODO this is a long task and should NOT be done in the caller thread
 		iconedmap.loadInfo();
 
+                // TODO return some sort of icon placeholder, then load full icon later on
 		return iconedmap.getSmallIcon();
-
-	}
-
-	public RiskMap getRiskMap(String name) {
-
-		//Risk.setupMapsDir(applet);
-
-		if (MapMap==null) { MapMap = new HashMap(); }
-
-		RiskMap themap = (RiskMap)MapMap.get(name);
-
-		if (themap==null) {
-
-			themap = new RiskMap(name);
-
-			MapMap.put(name,themap);
-
-		}
-
-		return themap;
-
 	}
 
 	//##################################################################################
@@ -224,7 +131,6 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 		if (frame==null) {
 
-
 			myrisk = new Risk();
 
 			makeNewGameFrame();
@@ -232,7 +138,6 @@ public class ClientGameRisk extends TurnBasedAdapter {
 		}
 
 		nameLabel.setText(name);
-
 	}
 
 	private void makeNewGameFrame() {
@@ -382,21 +287,16 @@ public class ClientGameRisk extends TurnBasedAdapter {
 
 	// this NEEDS to call leaveGame();
 	public void closegame() {
-
                 // simulate a normal ui command into the game
 		myrisk.parser("closegame");
-
 	}
 
 	public void resignPlayer() {
-
 		myrisk.resignPlayer();
 	}
 
 	public void blockInput() {
-
 		frame.blockInput();
-
 	}
 
 	public void gameString(String message) {
@@ -404,111 +304,34 @@ public class ClientGameRisk extends TurnBasedAdapter {
 		System.out.println("\tGOT: "+message);
 
 		myrisk.parserFromNetwork(message);
-
 	}
 
 	public void gameObject(Object object) {
-
 		Map map = (Map)object;
-                String command = (String)map.get("command");
-
-                if ("game".equals(command)) {
-                
-                    String address = (String)map.get("playerId");
-                    RiskGame game = (RiskGame)map.get("game");
-                    ClientRisk lrisk = new ClientRisk(this,myrisk);
-
-                    myrisk.createGame( address , game, lrisk );
-
-                }
-                else if ("rename".equals(command)) {
-                    
-                        String myName = lgml.whoAmI();
-
-                        String oldName = (String)map.get("oldName");
-                        String newName = (String)map.get("newName");
-                        
-                        myrisk.renamePlayer(oldName, newName);
-                        if (myName.equals(newName)) {
-                            myrisk.joinAs(newName);
-                        }
-                }
-                else {
-                    throw new RuntimeException("unknown command "+command);
-                }
+                myrisk.lobbyMessage(map, lgml.whoAmI(), this);
 	}
 
+        /**
+         * this is called when a player of this game logs in mid-game
+         */
 	public void renamePlayer(String oldser,String newuser) {
-            
 	    myrisk.renamePlayer(oldser,newuser);
-
 	}
 
-/*
-	public static void main(String[] argv) throws Exception { // TESTING METHOD!!!!
+        // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
+        // WMWMWMWMWMWMWMWMWMWMWMWMWMW OnlineRisk MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
+        // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
 
+        public void sendUserCommand(String messagefromgui) {
+            sendGameMessage(messagefromgui);
+        }
 
-		// server sends
-		// GameId = 1
-		// GameName = Risk // maybe NOT
-		// JarFile = Risk.jar // or a full URL
-		// LobbyGame = risk.lobby.LobbyGameRisk
-		// gameOptions = list of maps that can be used
+        public void sendGameCommand(String mtemp) {
+            // this should not get called
+            logger.warning("ignore GameCommand "+mtemp );
+        }
 
-		// create a new LobbyGame
-
-		String name = "risk.lobby.LobbyGameRisk";
-		Class myclass = Class.forName( name );
-		LobbyGame lobbygame = (LobbyGame)myclass.newInstance();
-		lobbygame.addLobbyGameMoveListener( new LobbyGameMoveListener() );
-
-		//selected gametype Risk
-		// clicked new game
-		// need to make a new game string
-		String newGameOptionString = lobbygame.newGameDialog( null , 
-
-			"http://jrisk.sourceforge.net/applet/maps/\n"+
-			"http://jrisk.sourceforge.net/images/maps/\n"+
-			"board.map aa.jpg Risk Board\n" +
-			"board.map board.jpg Risk Board\n" +
-		//	"board.map chutes.jpg Risk Board\n" +
-		//	"board.map conquest.jpg Risk Board\n" +
-		//	"board.map cow.jpg Risk Board\n" +
-		//	"board.map europass.jpg Risk Board\n" +
-		//	"board.map fortress.jpg Risk Board\n" +
-		//	"board.map france.jpg Risk Board\n" +
-		//	"board.map geoscape.jpg Risk Board\n" +
-			"risk2.map risk2.jpg Risk II"
-
-
-		); // getParent
-
-		System.out.println("GOT START GAME OPTIONS: "+newGameOptionString);
-
-
-
-		// send it to the server
-
-		// sever informs lobbs that new game is made
-
-		// people can join
-
-		// player who made it is autojoined and the game is removed from the list if everyone leaves
-
-		// lobby sends...
-
-
-		// game starts when it fills up
-//		lobbygame.joinGame(game_id_from_server , newGameOptionString + playerinfo);
-
-		// Risk object is onyl now created
-		// options are passed to it
-		// game starts
-
-
-
-		// spectator comes in
-
-	}
-*/
+        public void close() {
+            leaveGame();
+        }
 }

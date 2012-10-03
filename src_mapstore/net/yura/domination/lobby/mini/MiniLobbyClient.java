@@ -4,14 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.microedition.lcdui.Image;
-
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.client.LobbyClient;
 import net.yura.lobby.client.LobbyCom;
@@ -28,25 +23,24 @@ import net.yura.mobile.util.Properties;
 
 public class MiniLobbyClient implements LobbyClient,ActionListener {
 
-    static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
+    private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
     XULLoader loader;
     List list;
 
     Connection mycom;
-    MiniLobbyGame myrisk;
+    MiniLobbyGame game;
 
     String myusername;
     GameType theGameType;
     String openGameId;
     
-    public MiniLobbyClient(MiniLobbyGame risk) {
-        myrisk = risk;
-        myrisk.addLobbyGameMoveListener(this);
+    public MiniLobbyClient(MiniLobbyGame lobbyGame) {
+        game = lobbyGame;
+        game.addLobbyGameMoveListener(this);
 
         try {
-            
-            Properties resBundle = myrisk.getProperties();
+            Properties resBundle = game.getProperties();
             
             loader = XULLoader.load( Midlet.getResourceAsStream("/ms_lobby.xml") , this, resBundle);
         }
@@ -125,7 +119,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         else if ("create".equals(actionCommand)) {
         
-            myrisk.openGameSetup(theGameType);
+            game.openGameSetup(theGameType);
             
         }
         else if ("close".equals(actionCommand)) {
@@ -144,6 +138,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     
     public void closeGame() {
         mycom.closeGame(openGameId);
+    }
+    
+    public void createNewGame(Game game) {
+        mycom.createNewGame(game);
     }
     
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
@@ -185,7 +183,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         for (int c=0;c<gametypes.size();c++) {
             GameType gametype = (GameType)gametypes.get(c);
         
-            if (myrisk.isMyGameType(gametype) ) {
+            if (game.isMyGameType(gametype) ) {
                 theGameType = gametype;
                 
                 mycom.getGames( gametype );
@@ -236,7 +234,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 //paused=true;
             }
             else {
-                myrisk.stringForGame(string);
+                game.stringForGame(string);
             }
         }
         else if (message instanceof byte[]) {
@@ -244,7 +242,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 ByteArrayInputStream in = new ByteArrayInputStream( (byte[])message );
                 ObjectInputStream oin = new ObjectInputStream(in);
                 Object object = oin.readObject();
-                myrisk.objectForGame(object);
+                game.objectForGame(object);
             }
             catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -255,16 +253,18 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    public void renamePlayer(String oldname, String newname,int newtype) {
+        game.renamePlayer(oldname,newname);
+    }
+
     // chat
     public void serverMessage(String message) { }
     public void privateMessage(String fromwho, String message) { }
     public void incomingChat(String roomid, String fromwho, String message) { }
     public void addPlayer(String roomid, Player player) { }
     public void removePlayer(String roomid, String player) { }
-    public void renamePlayer(String oldname, String newname,int newtype) { }
     public void addMainRoom(String roomid) { }
     public void setUserInfo(String user,java.util.List info) { }
     public void newMainRoomJoined(String id) { }
-
 
 }

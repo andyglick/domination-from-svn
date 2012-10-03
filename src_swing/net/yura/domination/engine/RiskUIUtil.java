@@ -5,6 +5,7 @@
 
 package net.yura.domination.engine;
 
+import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,6 +32,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -46,8 +48,11 @@ import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.lobby.mini.MiniLobbyClient;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
+import net.yura.lobby.model.Game;
+import net.yura.lobby.model.GameType;
 
 /**
  *
@@ -376,9 +381,9 @@ public class RiskUIUtil {
 	}
 
 
-        private static Vector getFileList(final String a) {
+        private static List getFileList(final String a) {
 
-            Vector namesvector = new Vector();
+            List namesvector = new Vector();
 
             if (checkForNoSandbox()) {
                 
@@ -394,7 +399,7 @@ public class RiskUIUtil {
                 File [] mapsList = file.listFiles( filter );
                 if (mapsList!=null) { // there is no reason at all this should ever be null, but sometimes it is?!
                     for (int c=0;c<mapsList.length;c++) {
-                        namesvector.addElement( mapsList[c].getName() );
+                        namesvector.add( mapsList[c].getName() );
                     }
                 }
 
@@ -405,7 +410,7 @@ public class RiskUIUtil {
                     for (int c=0;c<mapsList.length;c++) {
                         String name = mapsList[c].getName();
                         if (!namesvector.contains(name)) {
-                            namesvector.addElement( name );
+                            namesvector.add( name );
                         }
                     }
                 }
@@ -437,7 +442,7 @@ public class RiskUIUtil {
         public static String getNewMap(Frame f) {
             try {
                 if (checkForNoSandbox()) {
-                    Vector mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
+                    List mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
                     // try and start new map chooser,
                     // on fail revert to using the old one
                     MapChooserSwingWrapper ch = new MapChooserSwingWrapper(mapsList);
@@ -488,9 +493,9 @@ public class RiskUIUtil {
 
 	public static String getNewFileInSandbox(Frame f,String a) {
 
-            Vector namesvector = getFileList(a);
+            List namesvector = getFileList(a);
 
-            JComboBox combobox = new JComboBox( namesvector );
+            JComboBox combobox = new JComboBox( RiskUtil.asVector(namesvector) );
 
             // Messages
             Object[] message = new Object[] {
@@ -944,6 +949,38 @@ public class RiskUIUtil {
 		}
 
 	}
+        
+        public static void runMiniLobby(Risk risk) {
+            
+            MiniLobbyRisk mlgame = new MiniLobbyRisk(risk) {
+
+                private net.yura.domination.lobby.client.GameSetupPanel gsp;
+                public void openGameSetup(GameType gameType) {
+
+                        // TODO how do i get the mini lobby main Swing window
+                        //EmptyMidlet midlet = (EmptyMidlet)Midlet.getMidlet();
+                        //ME4SEPanel panel = midlet.getParent();
+                        Container container = javax.microedition.midlet.ApplicationManager.getInstance().awtContainer;
+
+                        if (gsp==null) {
+                            gsp = new net.yura.domination.lobby.client.GameSetupPanel();
+                        }
+
+                        Game result = gsp.showDialog( (java.awt.Window)javax.swing.SwingUtilities.getAncestorOfClass(java.awt.Window.class, container) , gameType.getOptions(), lobby.whoAmI() );
+
+                        if (result!=null) {
+                            lobby.createNewGame(result);
+                        }
+
+                }
+                
+            };
+            
+            MiniLobbyClient mlc = new MiniLobbyClient( mlgame );
+            
+            
+            
+        }
 
         private static File getFile(URL url) {
 

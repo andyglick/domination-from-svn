@@ -1,8 +1,8 @@
 package net.yura.domination.mobile.flashgui;
 
-import java.io.InputStream;
-import java.util.Vector;
-import javax.microedition.lcdui.Image;
+import java.util.Arrays;
+import java.util.List;
+import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
@@ -25,11 +25,10 @@ import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Spinner;
+import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
-import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
-import net.yura.domination.ImageManager.LazyIcon;
 import net.yura.mobile.gui.components.Window;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
@@ -71,6 +70,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
             }
             else if ("manual".equals(actionCommand)) {
+
+                //WebView webView = new WebView( AndroidMeActivity.DEFAULT_ACTIVITY );
+                //webView.loadUrl("file:///android_asset/help/index.htm");
+                //AndroidMeActivity.DEFAULT_ACTIVITY.setContentView(webView);
+
                 MiniUtil.openHelp();
             }
             else if ("about".equals(actionCommand)) {
@@ -93,10 +97,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 ButtonGroup GameType = (ButtonGroup)newgame.getGroups().get("GameType");
                 ButtonGroup CardType = (ButtonGroup)newgame.getGroups().get("CardType");
 
-                Button autoplaceall = (Button)newgame.find("autoplaceall");
+                //Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
 
-                Vector players = myrisk.getGame().getPlayers();
+                java.util.List players = myrisk.getGame().getPlayers();
 
                 if (players.size() >= 2 && players.size() <= RiskGame.MAX_PLAYERS ) {
 
@@ -120,16 +124,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
             else if ("choosemap".equals(actionCommand)) {
 
-
-                //WebView webView = new WebView( AndroidMeActivity.DEFAULT_ACTIVITY );
-                //webView.loadUrl("file:///android_asset/help/index.htm");
-                //AndroidMeActivity.DEFAULT_ACTIVITY.setContentView(webView);
-
-
-
                 MapListener al = new MapListener();
 
-                MapChooser mapc = new MapChooser(al, MiniUtil.getFileList("map") );
+                MapChooser mapc = new MapChooser(al, allowedMaps==null?MiniUtil.getFileList("map"):Arrays.asList(allowedMaps), localgame );
                 al.mapc = mapc;
 
                 Frame mapFrame = new Frame( resb.getProperty("newgame.choosemap") );
@@ -160,7 +157,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
             else if ("online".equals(actionCommand)) {
                 
-            	net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myrisk) );
+                MiniLobbyRisk mlr = new MiniLobbyRisk(myrisk) {
+                    public void openGameSetup(net.yura.lobby.model.GameType gameType) {
+                        
+                        openNewGame(false, gameType.getOptions().split(",") );
+                        ((TextComponent)newgame.find("GameName")).setText( lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
+                    }
+                };
+                
+            	net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( mlr );
                 
                 Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
                 mapFrame.setContentPane( lobby.getRoot() );
@@ -247,9 +252,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
             // we want to always be at the bottom of the stack
             // so move anything bellow us to be above us
-            Vector windows = getDesktopPane().getAllFrames();
+            List windows = getDesktopPane().getAllFrames();
             for (int c=1;c<windows.size();c++) {
-                getDesktopPane().setSelectedFrame((Window)windows.elementAt(0));
+                getDesktopPane().setSelectedFrame((Window)windows.get(0));
             }
             
         }
@@ -257,13 +262,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
 
     // ================================================ GAME SETUP
-
-    public void openNewGame(boolean islocalgame) {
+    private String[] allowedMaps;
+    public void openNewGame(boolean islocalgame,String[] allowedMaps) {
 
         // clean up
         chooser = null;
         
         localgame = islocalgame;
+        this.allowedMaps = allowedMaps;
 
         newgame = getPanel("/newgame.xml");
 
@@ -285,6 +291,9 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         if (localgame) {
             RiskUtil.loadPlayers( myrisk ,getClass());
         }
+        else {
+            newgame.find("GameName").setVisible(true);
+        }
 
         // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
         DesktopPane.invokeLater( new Runnable() {
@@ -300,7 +309,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
                 setContentPane( new ScrollPane( newgame.getRoot() ) );
 
-                //getDesktopPane().setSelectedFrame(MiniFlashGUI.this);
+                // bring this window to front, in case we have a mini lobby window open too
+                getDesktopPane().setSelectedFrame(MiniFlashGUI.this);
                 
                 revalidate();
                 repaint();
@@ -334,12 +344,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     public void updatePlayers() {
 
-        Vector players = myrisk.getGame().getPlayers();
+        java.util.List players = myrisk.getGame().getPlayers();
 
         int[] count = new int[compTypes.length];
 
         for (int c=0;c<players.size();c++) {
-            int type = ((Player)players.elementAt(c)).getType();
+            int type = ((Player)players.get(c)).getType();
             for (int a=0;a<compTypes.length;a++) {
                 if (type == compTypes[a]) {
                     count[a]++;
@@ -377,10 +387,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         }
         
         if (localgame) {
-            Vector players = myrisk.getGame().getPlayers();
+            List players = myrisk.getGame().getPlayers();
             int count=0;
             for (int c=0;c<players.size();c++) {
-                int ptype = ((Player)players.elementAt(c)).getType();
+                int ptype = ((Player)players.get(c)).getType();
                 if (ptype == type) {
                     count++;
                 }
@@ -389,7 +399,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
             if (newval<count) {
                 for (int c=players.size()-1;c>=0;c--) {
-                    Player p = (Player)players.elementAt(c);
+                    Player p = (Player)players.get(c);
                     if (p.getType() == type) {
                         myrisk.parser("delplayer " + p.getName());
                         break;
@@ -399,7 +409,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             else if (newval>count) {
                 if (players.size() == RiskGame.MAX_PLAYERS) {
                     for (int c=players.size()-1;c>=0;c--) {
-                        Player p = (Player)players.elementAt(c);
+                        Player p = (Player)players.get(c);
                         if (p.getType()!=type) {
                             p.setType( type );
                             updatePlayers();
@@ -414,10 +424,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                         boolean badname=false;
                         boolean badcolor=false;
                         for (int a=0;a<players.size();a++) {
-                            if (Risk.names[c].equals(((Player)players.elementAt(a)).getName())) {
+                            if (Risk.names[c].equals(((Player)players.get(a)).getName())) {
                                 badname = true;
                             }
-                            if (RiskUtil.getColor(Risk.colors[c])==((Player)players.elementAt(a)).getColor()) {
+                            if (RiskUtil.getColor(Risk.colors[c])==((Player)players.get(a)).getColor()) {
                                 badcolor = true;
                             }
                             if (badname&&badcolor) {
@@ -449,7 +459,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
 
     public void showMapPic(RiskGame p) {
-
+/*
         InputStream in=null;
         
         String prv = p.getPreviewPic();
@@ -480,13 +490,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         else {
             label.setIcon( null );
         }
-
+*/
+        // crazy 1 liner
+        ((Label)newgame.find("MapImg")).setIcon( MapChooser.getLocalIconForMap( MapChooser.createMap( p.getMapFile() ) ) );
+        
         revalidate();
         repaint();
-    }
-    
-    public static int adjustSizeToDensityFromMdpi(int size) {
-        return XULLoader.adjustSizeToDensity( (int)(size * 0.75 +0.5) );
     }
 
     public void showCardsFile(String c, boolean hasMission) {

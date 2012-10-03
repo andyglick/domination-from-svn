@@ -20,7 +20,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import javax.swing.JPanel;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -417,11 +418,11 @@ public class PicturePanel extends JPanel implements MapPanel {
                     
                         Stroke old = g2.getStroke();
 			g2.setStroke(new BasicStroke( stroke ));
-			Vector players = game.getPlayers();
+			List players = game.getPlayers();
 
 			for (int c=0; c< players.size() ; c++) {
                             
-                                Country capital = ((Player)players.elementAt(c)).getCapital();
+                                Country capital = ((Player)players.get(c)).getCapital();
 
 				if ( capital !=null ) {
 					
@@ -443,7 +444,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 					ellipse.setFrame( x-r , y-r , BALL_SIZE-1, BALL_SIZE-1);
 					g2.draw(ellipse);
 
-					g2.setColor( new Color( ((Player)players.elementAt(c)).getColor() ) );
+					g2.setColor( new Color( ((Player)players.get(c)).getColor() ) );
 
 					Ellipse2D ellipse2 = new Ellipse2D.Double();
                                         int size = BALL_SIZE + (stroke*2);
@@ -600,16 +601,16 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		{ Graphics zg = tempimg.getGraphics(); zg.drawImage(original ,0 ,0 ,this); zg.dispose(); }
 
-		Vector b=null;
+		List allConnectedEmpires=null;
 
 		if (view == VIEW_CONNECTED_EMPIRE) {
 
-			Vector players = game.getPlayers();
+			List players = game.getPlayers();
 
-			b = new Vector();
+			allConnectedEmpires = new ArrayList();
 
 			for (int c=0; c<players.size(); c++) {
-				b.addAll( game.getConnectedEmpire( (Player)players.elementAt(c) ) );
+				allConnectedEmpires.addAll( game.getConnectedEmpire( (Player)players.get(c) ) );
 			}
 		}
 
@@ -643,12 +644,12 @@ public class PicturePanel extends JPanel implements MapPanel {
 					val = Color.gray;
 				}
 				else {
-					Vector neighbours = ((Country)game.getCountryInt( c+1 )).getNeighbours();
+					List neighbours = ((Country)game.getCountryInt( c+1 )).getNeighbours();
 					int threat=0; // max of about 6
 
 					for (int j = 0; j < neighbours.size() ; j++) {
 
-						if ( ((Country)neighbours.elementAt(j)).getOwner() != player ) {
+						if ( ((Country)neighbours.get(j)).getOwner() != player ) {
 							threat++;
 						}
 
@@ -671,11 +672,11 @@ public class PicturePanel extends JPanel implements MapPanel {
 					val = Color.lightGray;
 				}
 				else {
-					Vector cards = ((Player)game.getCurrentPlayer()).getCards();
+					List cards = ((Player)game.getCurrentPlayer()).getCards();
 
 					for (int j = 0; j < cards.size() ; j++) {
 
-						if ( ((Card)cards.elementAt(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
+						if ( ((Card)cards.get(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
 							val = Color.blue;
 						}
 
@@ -714,7 +715,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 					val = Color.LIGHT_GRAY;
 
 				}
-				else if ( b.contains( thecountry ) ) {
+				else if ( allConnectedEmpires.contains( thecountry ) ) {
 
 					val = new Color( ((Player)thecountry.getOwner()).getColor() );
 
