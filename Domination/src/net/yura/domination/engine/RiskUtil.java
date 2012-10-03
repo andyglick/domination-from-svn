@@ -84,6 +84,21 @@ public class RiskUtil {
             return streamOpener.loadGameFile(file);
         }
 
+        /**
+         * option string looks like this:
+         * 
+         *   0
+         *   2
+         *   2
+         *   choosemap luca.map
+         *   startgame domination increasing
+         */
+        public static String getMapNameFromLobbyStartGameOption(String options) {
+            String[] lines = options.split( RiskUtil.quote("\n") );
+            String choosemap = lines[3];
+            return choosemap.substring( "choosemap ".length() );
+        }
+        
         public static void printStackTrace(Throwable ex) {
             java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
         }
@@ -354,7 +369,7 @@ return Color.white;
          * in the case of map files it will get the "name" "crd" "prv" "pic" "map" and any "comment"
          * and for cards it will have a "missions" that will contain the String[] of all the missions
          */
-	public static Hashtable loadInfo(String fileName,boolean cards) {
+	public static java.util.Map loadInfo(String fileName,boolean cards) {
 
             Hashtable info = new Hashtable();
 
@@ -461,7 +476,7 @@ return Color.white;
                         break;
                 }
                 catch(IOException ex) {
-                        System.out.println("Error trying to load: "+fileName);
+                        System.err.println("Error trying to load: "+fileName);
                         RiskUtil.printStackTrace(ex);
                         if (c < 5) { // retry
                                 try { Thread.sleep(1000); } catch(Exception ex2) { }
@@ -509,12 +524,15 @@ return Color.white;
                 }
             }
         }
-        
-        
-        
-        
-        
-        
+
+
+
+    public static Vector asVector(java.util.List list) {
+        return list instanceof Vector?(Vector)list:new Vector(list);
+    }
+
+
+
     public static String replaceAll(String string, String notregex, String replacement) {
         return string.replaceAll( quote(notregex) , quoteReplacement(replacement));
     }

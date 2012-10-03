@@ -28,7 +28,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     
     @Override
     public void newGame(boolean t) {
-        mainFrame.openNewGame(t);
+        mainFrame.openNewGame(t,null);
     }
 
     @Override

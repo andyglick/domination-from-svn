@@ -4,11 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.WeakHashMap;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
 import net.yura.domination.ImageManager;
@@ -32,7 +32,6 @@ import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.LookAndFeel;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.io.FileUtil;
-import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.ImageUtil;
 import net.yura.mobile.util.Properties;
@@ -43,26 +42,6 @@ import net.yura.swingme.core.CoreUtil;
  * @author Yura Mamyrin
  */
 public class MapChooser implements ActionListener,MapServerListener {
-
-    public Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
-
-    XULLoader loader;
-    ActionListener al;
-
-    static Cache repo;
-    static {
-        try {
-            repo = new Cache("net.yura.domination");
-        }
-        catch (Throwable ex) {
-            System.err.println("[MapChooser] no cache: "+ex);
-        }
-    }
-
-    MapServerClient client;
-
-    private Vector mapfiles;
-    List list;
 
     // Nathans server
     //public static final String SERVER_URL="http://maps.domination.yura.net/xml/"
@@ -78,6 +57,29 @@ public class MapChooser implements ActionListener,MapServerListener {
     public static final String SERVER_URL="http://maps.yura.net/";
     public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( Risk.RISK_VERSION );
     public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml&version="+Url.encode( Risk.RISK_VERSION );
+
+
+    // these are both weak caches, they only keep a object if someone else holds it or a key
+    private static ImageManager iconCache = new ImageManager( adjustSizeToDensityFromMdpi(150),adjustSizeToDensityFromMdpi(94) ); // 150x94
+    private static java.util.Map mapCache = new WeakHashMap();
+    private static Cache repo;
+    static {
+        try {
+            repo = new Cache("net.yura.domination");
+        }
+        catch (Throwable ex) {
+            System.err.println("[MapChooser] no cache: "+ex);
+        }
+    }
+    
+    private Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
+
+    private XULLoader loader;
+    private ActionListener al;
+    protected MapServerClient client;
+
+    private java.util.List mapfiles;
+    private List list;
 
     public static void loadThemeExtension() {
         try {
@@ -95,7 +97,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
     }
     
-    public MapChooser(ActionListener al,Vector mapfiles) {
+    public MapChooser(ActionListener al,java.util.List mapfiles,boolean mapStore) {
         this.al = al;
         this.mapfiles = mapfiles;
 
@@ -110,34 +112,40 @@ public class MapChooser implements ActionListener,MapServerListener {
         
         if (TabBar!=null) {
         
-            Vector buttons = TabBar.getComponents();
+            if (mapStore) {
+            
+                java.util.List buttons = TabBar.getComponents();
 
-            Icon on,off;
+                Icon on,off;
 
-            try {
-                on = new Icon("/ms_bar_on.png");
-                off = new Icon("/ms_bar_off.png");
+                try {
+                    on = new Icon("/ms_bar_on.png");
+                    off = new Icon("/ms_bar_off.png");
+                }
+                catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                int w = off.getIconWidth() / buttons.size();
+                for (int c=0;c<buttons.size();c++) {
+                    RadioButton b = (RadioButton)buttons.get(c);
+                    Icon oni = on.getSubimage(c*w, 0, w, off.getIconHeight());
+                    Icon offi = off.getSubimage(c*w, 0, w, off.getIconHeight());
+
+                    b.setIcon(offi);
+                    b.setSelectedIcon(oni);
+                    b.setRolloverIcon(offi);
+                    b.setRolloverSelectedIcon(oni);
+
+                    b.setToolTipText( b.getText() );
+
+                    b.setText("");
+                    b.setMargin(0);
+
+                }
             }
-            catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-
-            int w = off.getIconWidth() / buttons.size();
-            for (int c=0;c<buttons.size();c++) {
-                RadioButton b = (RadioButton)buttons.elementAt(c);
-                Icon oni = on.getSubimage(c*w, 0, w, off.getIconHeight());
-                Icon offi = off.getSubimage(c*w, 0, w, off.getIconHeight());
-
-                b.setIcon(offi);
-                b.setSelectedIcon(oni);
-                b.setRolloverIcon(offi);
-                b.setRolloverSelectedIcon(oni);
-
-                b.setToolTipText( b.getText() );
-
-                b.setText("");
-                b.setMargin(0);
-
+            else {
+                TabBar.setVisible(false);
             }
         }
 
@@ -167,46 +175,110 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     }
 
-    public Icon getIcon(Object key,String context,String iconUrl,int w,int h) {
-        Icon aicon = ImageManager.get( key );
+    public static Icon getLocalIconForMap(Map map) {
+        return getIconForMapOrCategory(map, null, map.getPreviewUrl(), null);
+    }
+    
+    /**
+     * @param key can be a Map or a Category
+     */
+    public static Icon getIconForMapOrCategory(Object key,String context,String iconUrl,MapServerClient c) {
+        Icon aicon = iconCache.get( key );
         if (aicon==null) {
-            aicon = ImageManager.newIcon(key,w,h);
-            loadImg( key, getURL(context, iconUrl)  );
+            aicon = iconCache.newIcon(key);
+
+            String url = getURL(context, iconUrl);
+
+            // if this is a remote file
+            if ( url.indexOf(':')>0 ) {
+                InputStream in = repo!=null?repo.get(url):null;
+                if (in!=null) {
+                    gotImg(key, in);
+                }
+                else {
+                    // can be null when shut down
+                    if (c!=null) c.makeRequest( url,null,key );
+                }
+            }
+            // if this is a locale file
+            else {
+                InputStream in=null;
+
+                //Map map = (Map)key;
+                //String mapName = map.getMapUrl();
+                //java.util.Map info = RiskUtil.loadInfo(mapName, false);
+                //String prv = (String)info.get("prv");
+                //if (prv!=null) {
+
+                if (url.startsWith("preview/")) {
+                    try {
+                        in = RiskUtil.openMapStream( url ); // "preview/"+prv
+                    }
+                    catch (Exception ex) {
+                        Logger.warn(ex);
+                    }
+                }
+                //if (in==null) {
+                //    String pic = (String)info.get("pic");
+
+                else {
+
+                    in = repo!=null?repo.get(url):null;
+
+                    if (in==null) {
+                        try {
+                            System.out.println("[MapChooser] ### Going to re-encode img: "+url);
+                            InputStream min = RiskUtil.openMapStream(url);
+                            Image img = MapChooser.createImage(min);                    
+                            img = ImageUtil.scaleImage(img, 150, 94);
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            ImageUtil.saveImage(img, out);
+                            img = null; // drop the small image as soon as we can
+                            byte[] bytes = out.toByteArray();
+                            out = null; // drop the OutputStream as soon as we can
+                            cache(url,bytes);
+                            // TODO we should only cache if we are sure it can be opened as a image
+                            in = new ByteArrayInputStream(bytes);
+                        }
+                        catch (Exception ex) {
+                            Logger.warn(ex);
+                        }
+                    }
+                }
+
+                if (in!=null) {
+                    gotImg(key, in);
+                }
+            }
+            
         }
         return aicon;
     }
     
-    public void loadImg(Object obj, String url) {
-        // if this is a remote file
-        if ( url.indexOf(':')>0 ) {
-            InputStream in = repo!=null?repo.get(url):null;
-            if (in!=null) {
-                publishImg(obj, in);
-            }
-            else {
-                MapServerClient c = client; // can be null when shut down
-                if (c!=null) c.makeRequest( url,null,obj );
-            }
+    private static void gotImg(Object obj,InputStream in) {
+        try {
+            Image img = MapChooser.createImage(in);
+            iconCache.gotImg(obj, img);
         }
-        // if this is a locale file
-        else {
-            InputStream in = getLocalePreviewImg(url);
-            if (in!=null) {
-                publishImg(obj, in);
-            }
+        catch (Exception ex) {
+            throw new RuntimeException("failed to decode img "+obj, ex);
         }
     }
 
-    public void gotImgFromServer(Object obj,String url, byte[] data) {
+    public static void gotImgFromServer(Object obj,String url, byte[] data,MapServerListener msl) {
         try {
-            publishImg(obj, new ByteArrayInputStream(data) );
+            gotImg(obj, new ByteArrayInputStream(data) );
+
+            if (msl!=null) {
+                msl.publishImg(obj);
+            }
         }
         catch (RuntimeException ex) {
             // there was some error with this image
             //ImageManager.gotImg(obj, null); // clear the lazy image, so we can try again
             // not needed as its a week ref and will clear soon enough anyway
 
-            System.out.println("error in publishImg with img: "+url);
+            System.err.println("error in image from server with url: "+url);
             throw ex;
         }
 
@@ -214,55 +286,10 @@ public class MapChooser implements ActionListener,MapServerListener {
         cache(url, data);
     }
 
-    private void publishImg(Object obj,InputStream in) {
-        try {
+    public void publishImg(Object key) {
             if (client!=null) { // if we have shut down, dont need to do anything
-                Image img = MapChooser.createImage(in);
-                ImageManager.gotImg(obj, img);
                 list.repaint();
             }
-        }
-        catch (Exception ex) {
-            throw new RuntimeException("failed to decode img "+obj, ex);
-        }
-    }
-
-    public static InputStream getLocalePreviewImg(String url) {
-            if ( url.startsWith("preview/") ) {
-                try {
-                    return RiskUtil.openMapStream(url);
-                }
-                catch (Exception ex) {
-                    Logger.warn(ex);
-                }
-            }
-            else {
-                InputStream in = repo!=null?repo.get(url):null;
-                if (in!=null) {
-                    return in;
-                }
-                else {
-                    try {
-                        System.out.println("[MapChooser] ### Going to re-encode img: "+url);
-                        InputStream min = RiskUtil.openMapStream(url);
-                        Image img = MapChooser.createImage(min);                    
-                        img = ImageUtil.scaleImage(img, 150, 94);
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        ImageUtil.saveImage(img, out);
-                        img = null; // drop the small image as soon as we can
-                        byte[] bytes = out.toByteArray();
-                        out = null; // drop the OutputStream as soon as we can
-                        cache(url,bytes);
-                        // TODO we should only cache if we are sure it can be opened as a image
-                        return new ByteArrayInputStream(bytes);
-                    }
-                    catch (Exception ex) {
-                        Logger.warn(ex);
-                    }
-                }
-            }
-            
-            return null;
     }
     
     private static void cache(String url,byte[] data) {
@@ -270,42 +297,61 @@ public class MapChooser implements ActionListener,MapServerListener {
             repo.put( url , data );
         }
     }
+    
+
+    public static int adjustSizeToDensityFromMdpi(int size) {
+        return XULLoader.adjustSizeToDensity( (int)(size * 0.75 +0.5) );
+    }
+
+    
 
     public static Map createMap(String file) {
         
-                Hashtable info = RiskUtil.loadInfo(file, false);
-
-                Map map = new Map();
-                map.setMapUrl( file );
-
-                String name = (String)info.get("name");
-                if (name==null) {
-                    if (file.toLowerCase().endsWith(".map")) {
-                        name = file.substring(0, file.length()-4);
-                    }
-                    else {
-                        name = file;
-                    }
-                }
-                map.setName(name);
-                map.setDescription( (String)info.get("comment") );
-
-                String prv = (String)info.get("prv");
-                if (prv!=null) {
-                    prv = "preview/"+prv;
-                    if (!fileExists(prv)) {
-                        prv=null;
-                    }
-                }
-
-                if (prv==null) {
-                    prv = (String)info.get("pic");
-                }
-                map.setPreviewUrl( prv );
-        
-                map.setVersion( (String)info.get("ver") );
-                
+        WeakReference wr = (WeakReference)mapCache.get(file);
+        if (wr!=null) {
+            Map map = (Map)wr.get();
+            if (map!=null) {
+                System.out.println("found in cache "+map);
                 return map;
+            }
+        }
+
+
+        java.util.Map info = RiskUtil.loadInfo(file, false);
+
+        Map map = new Map();
+        map.setMapUrl( file );
+
+        String name = (String)info.get("name");
+        if (name==null) {
+            if (file.toLowerCase().endsWith(".map")) {
+                name = file.substring(0, file.length()-4);
+            }
+            else {
+                name = file;
+            }
+        }
+        map.setName(name);
+        map.setDescription( (String)info.get("comment") );
+
+        String prv = (String)info.get("prv");
+        if (prv!=null) {
+            prv = "preview/"+prv;
+            if (!fileExists(prv)) {
+                prv=null;
+            }
+        }
+
+        if (prv==null) {
+            prv = (String)info.get("pic");
+        }
+        map.setPreviewUrl( prv );
+
+        map.setVersion( (String)info.get("ver") );
+                
+        mapCache.put(file, new WeakReference(map));
+                
+        return map;
         
     }
     
@@ -322,9 +368,9 @@ public class MapChooser implements ActionListener,MapServerListener {
         if ("local".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            Vector riskmaps = new Vector( mapfiles.size() );
+            java.util.List riskmaps = new java.util.Vector( mapfiles.size() );
             for (int c=0;c<mapfiles.size();c++) {
-                String file = (String)mapfiles.elementAt(c);
+                String file = (String)mapfiles.get(c);
 
                 // we create a Map object for every localy stored map
                 Map map = createMap(file);
@@ -363,7 +409,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("update".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            Vector mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            java.util.List mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
             
             Component updateAll = loader.find("updateAll");
             if (mapsToUpdate.isEmpty()) {
@@ -376,10 +422,10 @@ public class MapChooser implements ActionListener,MapServerListener {
             }
         }
         else if ("updateall".equals(actionCommand)) {
-            Vector mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            java.util.List mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
             synchronized(mapsToUpdate) {
                 for (int c=0;c<mapsToUpdate.size();c++) {
-                    click( (Map)mapsToUpdate.elementAt(c) );
+                    click( (Map)mapsToUpdate.get(c) );
                 }
             }
         }
@@ -460,7 +506,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             }
             else if ( mapfiles.contains(fileUID) ) {
 
-                Hashtable info = RiskUtil.loadInfo(fileUID, false);
+                java.util.Map info = RiskUtil.loadInfo(fileUID, false);
 
                 String ver = (String)info.get("ver");
 
@@ -563,19 +609,16 @@ public class MapChooser implements ActionListener,MapServerListener {
         return selectedMap;
     }
 
-    public void gotResultXML(String url,Task task) {
-        String method = task.getMethod();
+    public void gotResultXML(String url,String method,Object param) {
 
-
-        Object param = task.getObject();
         if ("categories".equals(method)) {
-            if (param instanceof Vector) {
-                setListData( url, (Vector)param );
+            if (param instanceof java.util.List) {
+                setListData( url, (java.util.List)param );
             }
         }
         else if ("maps".equals(method)) {
-            if (param instanceof Hashtable) {
-                Hashtable map = (Hashtable)param;
+            if (param instanceof java.util.Map) {
+                java.util.Map map = (java.util.Map)param;
 
                 map.get("search");
                 map.get("author");
@@ -584,7 +627,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                 map.get("offset");
                 map.get("total");
 
-                setListData( url, (Vector)map.get("maps") );
+                setListData( url, (java.util.List)map.get("maps") );
             }
         }
 
@@ -605,7 +648,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     public void downloadFinished(String download) {
 
         if ( !this.mapfiles.contains( download ) ) {
-            this.mapfiles.addElement( download );
+            this.mapfiles.add( download );
         }
 
         if (((Button)loader.find("updateButton")).isSelected() && MapUpdateService.getInstance().mapsToUpdate.isEmpty()) {
@@ -629,11 +672,11 @@ public class MapChooser implements ActionListener,MapServerListener {
         return url;
     }
     
-    private void setListData(String url,Vector items) {
+    private void setListData(String url,java.util.List items) {
 
         String context = getContext(url);
         ((MapRenderer)list.getCellRenderer()).setContext(context);
-        list.setListData( items==null?new Vector(0):items );
+        list.setListData( RiskUtil.asVector(items==null?Collections.EMPTY_LIST:items) );
         if (list.getSize()>0) {
             list.setSelectedIndex(-1);
             list.ensureIndexIsVisible(0);
@@ -644,7 +687,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         show( showNoMatch?"NoMatches":"ResultList" );
 
     }
-    
+
     private void show(String name) {
 
         Component loading = loader.find("Loading");

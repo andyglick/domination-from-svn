@@ -17,9 +17,14 @@ public interface MiniLobbyGame {
     public boolean isMyGameType(GameType gametype);
     public Icon getIconForGame(Game game);
     
+    /**
+     * callback mlc.createNewGame(Game)
+     */
     public void openGameSetup(GameType gameType);
     
     public void objectForGame(Object object);
     public void stringForGame(String message);
+
+    public void renamePlayer(String oldname, String newname);
 
 }

@@ -17,6 +17,8 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -1254,14 +1256,14 @@ RiskUtil.printStackTrace(e);
                                                             // do that autoplace thing
                                                             if ( game.getGameMode()==RiskGame.MODE_SECRET_MISSION || autoplaceall ) {
 
-                                                                    Vector a = game.shuffleCountries();
+                                                                    List a = game.shuffleCountries();
 
                                                                     StringBuffer outputb=new StringBuffer();
                                                                     for (int c=0; c< a.size() ; c++) {
                                                                             if (outputb.length()!=0 ) {
                                                                                 outputb.append(' ');
                                                                             }
-                                                                            outputb.append( ((Country)a.elementAt(c)).getColor() );
+                                                                            outputb.append( ((Country)a.get(c)).getColor() );
                                                                     }
 
                                                                     gameCommand(Addr, "PLACEALL", outputb.toString());
@@ -2830,9 +2832,31 @@ RiskUtil.printStackTrace(e);
 
                 unlimitedLocalMode = true;
 	}
-        
-        public void createGame(String a ,RiskGame b, OnlineRisk lobby) {
 
+
+
+        public void lobbyMessage(Map map,String myName,OnlineRisk lrisk) {
+            String command = (String)map.get("command");
+            if ("game".equals(command)) {
+                String address = (String)map.get("playerId");
+                RiskGame game = (RiskGame)map.get("game");
+                createGame( address, game, lrisk );
+            }
+            else if ("rename".equals(command)) {
+                // this type of rename is used for renaming resigned players to joined ones
+                // e.g. "TomResigned" to "Fred"
+                String oldName = (String)map.get("oldName");
+                String newName = (String)map.get("newName");
+                renamePlayer(oldName, newName);
+                if (myName.equals(newName)) {// if it is us that has joined
+                    joinAs(newName);
+                }
+            }
+            else {
+                throw new RuntimeException("unknown command "+command);
+            }
+        }
+        private void createGame(String a ,RiskGame b, OnlineRisk lobby) {
                 onlinePlayClient = lobby;
             
 		inbox.clear();
@@ -2847,7 +2871,7 @@ RiskUtil.printStackTrace(e);
                 getInput();
 	}
         
-       public void resignPlayer() {
+        public void resignPlayer() {
 		// need to stop asking this player for input
 		Vector players = game.getPlayers();
 		for (int c=0;c<players.size();c++) {
@@ -2858,7 +2882,7 @@ RiskUtil.printStackTrace(e);
 		}
 		closeBattle();
 	}
-       public void joinAs(String name) {
+        private void joinAs(String name) {
 		Vector players = game.getPlayers();
 		for (int c=0;c<players.size();c++) {
 			Player player = (Player)players.elementAt(c);

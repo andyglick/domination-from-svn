@@ -81,7 +81,7 @@ public class MapServerClient extends HTTPClient {
 //System.out.println("Got XML "+task);
 
             if (ch!=null) {
-                ch.gotResultXML(request.url,task);
+                ch.gotResultXML(request.url,task.getMethod(),task.getObject());
             }
         }
         else if (request.id == MAP_REQUEST_ID) {
@@ -90,10 +90,8 @@ public class MapServerClient extends HTTPClient {
 
         }
         else { // if (request.id == IMG_REQUEST_ID) {
-            
-            if (ch!=null) {
-                ch.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length) );
-            }
+
+            MapChooser.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length), ch );
         }
         //else {
         //    System.err.println("[MapServerClient] unknown id "+request.id);
@@ -248,7 +246,7 @@ Logger.info("Make Request: "+request);
                 out = RiskUtil.streamOpener.saveMapFile(saveToDiskName);
                 saveFile(is, out);
                 if (fileName.endsWith(".map")) {
-                    Hashtable info = RiskUtil.loadInfo(saveToDiskName, false);
+                    java.util.Map info = RiskUtil.loadInfo(saveToDiskName, false);
 
                     // {prv=ameroki.jpg, pic=ameroki_pic.png, name=Ameroki Map, crd=ameroki.cards, map=ameroki_map.gif, comment=map: ameroki.map blah... }
 

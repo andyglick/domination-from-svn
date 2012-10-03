@@ -1,12 +1,9 @@
 package net.yura.domination.mobile;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Enumeration;
-import java.util.Vector;
-import javax.microedition.lcdui.Image;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -71,14 +68,14 @@ public class MiniUtil {
         
     }
 
-    public static Vector getFileList(String string) {
-        Vector result = new Vector();
+    public static List getFileList(String string) {
+        List result = new java.util.Vector();
         
         Enumeration en = FileUtil.getDirectoryFiles(RiskMiniIO.mapsdir);
         while (en.hasMoreElements()) {
             String file = (String)en.nextElement();
             if (file.endsWith("."+string)) {
-                result.addElement( file );
+                result.add( file );
             }
         }
 
@@ -87,7 +84,7 @@ public class MiniUtil {
         for (int c=0;c<list.length;c++) {
             String file = list[c];
             if (file.endsWith("."+string) && !result.contains(file)) {
-                result.addElement( file );
+                result.add( file );
             }
         }        
         

@@ -2,7 +2,6 @@
 
 package net.yura.domination.engine.guishared;
 
-import java.util.Vector;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
@@ -11,6 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -59,13 +59,13 @@ public class StatsPanel extends JPanel {
 
 	BufferedImage tempgraph = new BufferedImage(getWidth(),getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB ); // spX, spY
 
-	Vector players = ((RiskGame)risk.getGame()).getPlayersStats();
+	List players = ((RiskGame)risk.getGame()).getPlayersStats();
 
 	int graphScale = 0;
         int maxTurns = 0;
 	for (int i = 0; i < players.size(); i++) {
 
-	    Player p = (Player)players.elementAt(i);
+	    Player p = (Player)players.get(i);
 
 	    int[] pstats= p.getStatistics(a);
 
@@ -165,7 +165,7 @@ public class StatsPanel extends JPanel {
 
 	//draw each player graph.
 	for (int i = 0; i < players.size(); i++) {
-	    drawPlayerGraph(a, (Player)players.elementAt(i) , g2);
+	    drawPlayerGraph(a, (Player)players.get(i) , g2);
 	}
 
 	g2.dispose();

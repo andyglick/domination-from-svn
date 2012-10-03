@@ -4,7 +4,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Vector;
+import java.util.List;
 import javax.swing.JDialog;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
@@ -20,7 +20,7 @@ public class MapChooserSwingWrapper implements ActionListener {
     ME4SEPanel wrapper;
     MapChooser chooser;
 
-    public MapChooserSwingWrapper(Vector files) {
+    public MapChooserSwingWrapper(List files) {
 
        // TMP TMP TMP
        try {
@@ -44,7 +44,7 @@ public class MapChooserSwingWrapper implements ActionListener {
 
         MapChooser.loadThemeExtension(); // loads extra things needed for map chooser
         
-        chooser = new MapChooser(this,files);
+        chooser = new MapChooser(this,files,true);
 
         wrapper.add( chooser.getRoot() );
     }

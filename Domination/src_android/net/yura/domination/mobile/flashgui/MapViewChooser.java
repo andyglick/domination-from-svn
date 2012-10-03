@@ -3,6 +3,8 @@ package net.yura.domination.mobile.flashgui;
 import java.util.Arrays;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
+import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.components.Button;
@@ -77,7 +79,7 @@ public class MapViewChooser extends Panel implements ActionListener {
             }
         }
         else {
-            ComboBox combo = new ComboBox( new java.util.Vector( Arrays.asList( options ) ) );
+            ComboBox combo = new ComboBox( RiskUtil.asVector( Arrays.asList( options ) ) );
             combo.setSelectedItem(currentOption);
             combo.workoutPreferredSize();
             combo.addActionListener(this);

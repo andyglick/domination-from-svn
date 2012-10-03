@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,8 +12,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
@@ -36,7 +34,7 @@ public class MapsTools {
     
     public static final String MAPS_XML_FILE = "maps.xml";
 
-    public static Vector loadMaps() {
+    public static List loadMaps() {
 
         try {
 
@@ -50,13 +48,13 @@ public class MapsTools {
                 Task task = (Task)access.load( new InputStreamReader(new FileInputStream(xml), "UTF-8") );
                 
                 // load big XML file
-                Vector maps = (Vector)task.getObject();
+                List maps = (List)task.getObject();
         
                 return maps;
             }
             else {
                 // only make a blank empty vector if there is no current file
-                return new Vector();
+                return new java.util.Vector();
             }
         }
         catch (Exception ex) {
@@ -66,7 +64,7 @@ public class MapsTools {
         
     }
     
-    public static void saveMaps(Vector maps) {
+    public static void saveMaps(List maps) {
         
         try {
             
@@ -86,22 +84,18 @@ public class MapsTools {
 
     }
     
-    public static void saveMapsHTML(Vector maps) {
-        
-        
-        
-        String a = "<div class='thumbnail'><a href=\"maps/haiti.zip\">"
-                + "<img src=\"images/maps/haiti.jpg\" border=\"1\" width=\"150\" height=\"94\"><br>"
-                + "29. Haiti Map</a><br> by Louis-Pierre Charbonneau </div>";
+//    public static void saveMapsHTML(Vector maps) {
+//        String a = "<div class='thumbnail'><a href=\"maps/haiti.zip\">"
+//                + "<img src=\"images/maps/haiti.jpg\" border=\"1\" width=\"150\" height=\"94\"><br>"
+//                + "29. Haiti Map</a><br> by Louis-Pierre Charbonneau </div>";
+//    }
 
-    }
-
-    public static Map findMap(Vector maps,String fileName) {
+    public static Map findMap(List maps,String fileName) {
 
         // find entry fot this map
         for (int c=0;c<maps.size();c++) {
 
-            Map map = (Map)maps.elementAt(c);
+            Map map = (Map)maps.get(c);
 
             if (fileName.equals( map.getMapUrl() )) {
 
@@ -155,9 +149,9 @@ public class MapsTools {
                     throw new RuntimeException("can not del "+zipFile);
                 }
                     
-                Hashtable info = RiskUtil.loadInfo( map.getMapUrl() , false);
+                java.util.Map info = RiskUtil.loadInfo( map.getMapUrl() , false);
 
-                Vector files = new Vector();
+                List files = new java.util.Vector();
                 files.add( map.getMapUrl() );
                 files.add( info.get("pic") );
                 files.add( info.get("map") );
@@ -276,14 +270,14 @@ public class MapsTools {
 
     }
 
-    public static Vector getCategories() {
+    public static List getCategories() {
         try {
             URLConnection conn = new URL( MapChooser.CATEGORIES_PAGE ).openConnection();
             XMLMapAccess access = new XMLMapAccess();
             InputStream in = conn.getInputStream();
             net.yura.mobile.io.ServiceLink.Task result = (net.yura.mobile.io.ServiceLink.Task)access.load( new UTF8InputStreamReader( in ) );
             in.close();
-            return (Vector)result.getObject();
+            return (List)result.getObject();
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);

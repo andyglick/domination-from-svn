@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -1195,7 +1196,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	}
 
-	public Vector getConnectedEmpire(Player p) {
+	public List getConnectedEmpire(Player p) {
 
 		Vector t = (Vector)p.getTerritoriesOwned().clone();
 
@@ -1229,13 +1230,13 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param n Vector of territories owned by a single player (non-volatile)
 	 * @param p The current player
 	 */
-	public void getConnectedEmpire(Vector t, Vector a, Vector n, Player p) {
+	public void getConnectedEmpire(List t, List a, List n, Player p) {
 
 		for (int i = 0; i < n.size() ; i++) {
 
-			if ( ((Country)n.elementAt(i)).getOwner() == p && t.contains( n.elementAt(i) ) ) {
+			if ( ((Country)n.get(i)).getOwner() == p && t.contains( n.get(i) ) ) {
 
-				Country country = (Country)n.elementAt(i);
+				Country country = (Country)n.get(i);
 				t.remove( country );
 				a.add( country );
 
@@ -2051,9 +2052,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 	/**
 	 * Shuffles the countries
 	 */
-	public Vector shuffleCountries() {
+	public List shuffleCountries() {
 
-		Vector oldCountries = new Vector(Arrays.asList( Countries ));
+                // we create a COPY of the Countries array, so that we do not mess up the real one
+		List oldCountries = new Vector( Arrays.asList( Countries ) );
 
 		//Vector newCountries = new Vector();
 		//while(oldCountries.size() > 0) {

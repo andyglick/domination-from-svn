@@ -1,10 +1,8 @@
 package net.yura.domination.mapstore;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.mobile.io.ServiceLink.Task;
 
 /**
  * @author Yura Mamyrin
@@ -31,11 +29,11 @@ public class GetMap implements MapServerListener {
         client.kill();
     }
 
-    public void gotResultXML(String url, Task task) {
-        Hashtable map = (Hashtable)task.getObject();
-        Vector maps = (Vector)map.get("maps");
+    public void gotResultXML(String url, String method, Object param) {
+        java.util.Map map = (java.util.Map)param;
+        List maps = (List)map.get("maps");
         if (maps.size()==1) {
-            Map themap = (Map)maps.elementAt(0);
+            Map themap = (Map)maps.get(0);
             client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
         }
         else {
@@ -65,8 +63,6 @@ public class GetMap implements MapServerListener {
         onError(string);
     }
 
-    public void gotImgFromServer(Object obj, String url, byte[] data) {
-        throw new UnsupportedOperationException("Not supported");
-    }
+    public void publishImg(Object param) { }
 
 }

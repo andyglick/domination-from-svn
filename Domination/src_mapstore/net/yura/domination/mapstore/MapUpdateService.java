@@ -26,7 +26,7 @@ public class MapUpdateService extends Observable {
     
     static MapUpdateService updateService;
     
-    Vector mapsToUpdate = new Vector();
+    List mapsToUpdate = new Vector();
 
     private MapUpdateService() { }
     public static MapUpdateService getInstance() {
@@ -46,11 +46,11 @@ public class MapUpdateService extends Observable {
         o.update(this, new Integer( mapsToUpdate.size() ) );
     }
 
-    public void init(Vector mapsUIDs,String url) {
-        Vector maps = new Vector();
+    public void init(List mapsUIDs,String url) {
+        List maps = new Vector();
         
         for (int c=0;c<mapsUIDs.size();c++) {
-            String uid = (String)mapsUIDs.elementAt(c);
+            String uid = (String)mapsUIDs.get(c);
             Map map = MapChooser.createMap(uid);
             maps.add( map );
             //client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",uid );
@@ -70,19 +70,19 @@ public class MapUpdateService extends Observable {
         }
     }
 
-    public void gotResultXML(String url, Task task,Vector maps) {
+    public void gotResultXML(String url, Task task,List maps) {
 
-        Hashtable map = (Hashtable)task.getObject();
-        Vector gotMaps = (Vector)map.get("maps");
+        java.util.Map map = (java.util.Map)task.getObject();
+        List gotMaps = (List)map.get("maps");
 
         //try { new net.yura.domination.mapstore.gen.XMLMapAccess().save(System.out, map); } catch (Exception ex) { RiskUtil.printStackTrace(ex); }
         
         for (int c=0;c<maps.size();c++) {
-            Map localMap = (Map)maps.elementAt(c);
+            Map localMap = (Map)maps.get(c);
             List theMaps = new ArrayList(1);
 
             for (int i=0;i<gotMaps.size();i++) {
-                Map themap = (Map)gotMaps.elementAt(i);
+                Map themap = (Map)gotMaps.get(i);
                 String mapUID = MapChooser.getFileUID( themap.getMapUrl() );
                 if (mapUID.equals( localMap.getMapUrl() )) { // we found the map
                     theMaps.add(themap);
@@ -105,10 +105,10 @@ public class MapUpdateService extends Observable {
     
     public void downloadFinished(String mapUID) {
         for (int c=0;c<mapsToUpdate.size();c++) {
-            Map map = (Map)mapsToUpdate.elementAt(c);
+            Map map = (Map)mapsToUpdate.get(c);
             String amapUID = MapChooser.getFileUID( map.getMapUrl() );
             if (mapUID.equals(amapUID)) {
-                mapsToUpdate.removeElementAt(c);
+                mapsToUpdate.remove(c);
                 notifyListeners();
                 return;
             }

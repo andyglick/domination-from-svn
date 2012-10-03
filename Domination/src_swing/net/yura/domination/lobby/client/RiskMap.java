@@ -1,17 +1,11 @@
 package net.yura.domination.lobby.client;
 
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.util.StringTokenizer;
-import java.util.Vector;
 import javax.swing.ImageIcon;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.util.Hashtable;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskMap {
 
@@ -72,13 +66,13 @@ public class RiskMap {
 
             if (!loaded) {
                 loaded=true;
-                Hashtable mapinfo = RiskUtil.loadInfo(fileName,false);
+                java.util.Map mapinfo = RiskUtil.loadInfo(fileName,false);
 
                 displayName = (String)mapinfo.get("name");
 
                 String cardsFile = (String)mapinfo.get("crd");
                 if (cardsFile!=null) {
-                    Hashtable cardsinfo = RiskUtil.loadInfo(cardsFile,true);
+                    java.util.Map cardsinfo = RiskUtil.loadInfo(cardsFile,true);
                     missions = (String[])cardsinfo.get("missions");
                 }
 

@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -582,7 +581,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     }
 
                     // load big XML file
-                    Vector maps = MapsTools.loadMaps();
+                    List maps = MapsTools.loadMaps();
                     
                     net.yura.domination.mapstore.Map map2 = MapsTools.findMap(maps,fileName);
                     
@@ -609,9 +608,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     JTextField mapName = new JTextField( map2.getName() );
                     JTextField authorEmail = new JTextField( map2.getAuthorId() ); // TODO using email as ID!!!
                     
-                    Vector categories = MapsTools.getCategories();
+                    final List categories = MapsTools.getCategories();
 
-                    JList list = new JList(categories);
+                    JList list = new JList( RiskUtil.asVector(categories) );
                     
                     String version = String.valueOf( myMap.getVersion() );
                     
@@ -1037,8 +1036,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		else {
 
-			Vector t = new Vector(Arrays.asList(myMap.getCountries()));
-			Vector a = new Vector();
+			List t = Arrays.asList(myMap.getCountries());
+			List a = new ArrayList();
 
 			Country country = ((Country)t.remove(0));
 			a.add( country );
@@ -1124,7 +1123,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		// missions checks:
 
-		Vector missions = myMap.getMissions();
+		List missions = myMap.getMissions();
 
 		if (missions.size()>0 && missions.size() <6) {
 
@@ -1134,7 +1133,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		for (int i = 0; i < missions.size(); i++) {
 
-			Mission m = (Mission)missions.elementAt(i);
+			Mission m = (Mission)missions.get(i);
 
                         if ("".equals( m.getDiscription() )) {
                             errors = errors + "\n* You have a mission with an empty Discription";
@@ -1252,11 +1251,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	    cardsBuffer.append("[cards]");
 	    cardsBuffer.append(n);
 
-	    Vector cards = myMap.getCards();
+	    List cards = myMap.getCards();
 
             for (int i = 0; i < cards.size(); i++) {
 
-                Card c = (Card)cards.elementAt(i);
+                Card c = (Card)cards.get(i);
 
 		cardsBuffer.append(c.getName());
 
@@ -1275,7 +1274,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	    }
 
-	    Vector missions = myMap.getMissions();
+	    List missions = myMap.getMissions();
 
 	    if (missions.size()>0) {
 
@@ -1289,7 +1288,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		for (int i = 0; i < missions.size(); i++) {
 
-			Mission m = (Mission)missions.elementAt(i);
+			Mission m = (Mission)missions.get(i);
 
 			if (m.getPlayer()!=null) {
 

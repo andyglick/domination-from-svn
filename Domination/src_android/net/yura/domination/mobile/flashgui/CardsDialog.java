@@ -10,6 +10,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
@@ -231,7 +232,7 @@ public class CardsDialog extends Frame implements ActionListener {
                         //g2.setColor( 0xFF000000 );
                         //g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
                     
-                        int imgSize = MiniFlashGUI.adjustSizeToDensityFromMdpi(50);
+                        int imgSize = MapChooser.adjustSizeToDensityFromMdpi(50);
                         
 			if (!(card.getName().equals(Card.WILDCARD))) {
 
