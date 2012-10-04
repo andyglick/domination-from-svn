@@ -103,8 +103,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             return gsp.showDialog(parent, serveroptions, myname);
 	}
 
-        public ImageIcon getIcon(String options) {
-	//public Icon getIcon(String options) {
+        public Icon getIcon(String options) {
 
 		RiskMap iconedmap = GameSetupPanel.getRiskMap( RiskUtil.getMapNameFromLobbyStartGameOption(options) );
                 
