@@ -326,8 +326,8 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
         }
 
         public void sendGameCommand(String mtemp) {
-            // this should not get called
-            logger.warning("ignore GameCommand "+mtemp );
+            // this happens for game commands on my go
+            logger.info("ignore GameCommand "+mtemp );
         }
 
         public void close() {
