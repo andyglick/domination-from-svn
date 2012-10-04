@@ -141,6 +141,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
     
     public void createNewGame(Game game) {
+        game.setType(theGameType); // we can only make a game of this type
         mycom.createNewGame(game);
     }
     

@@ -69,6 +69,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 	private JRadioButton fixed;
 	private JRadioButton increasing;
+        private JRadioButton italian;
 
 	private JCheckBox AutoPlaceAll;
 	private JCheckBox recycle;
@@ -261,10 +262,6 @@ resb = TranslationBundle.getBundle();
 		mission.addActionListener(this);
 
 
-		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
-		NewGameFrame.sortOutButton( AutoPlaceAll );
-		AutoPlaceAll.setBounds(380, 440, 120 , 25 );
-
 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
@@ -275,9 +272,9 @@ resb = TranslationBundle.getBundle();
 		NewGameFrame.sortOutButton( fixed );
 		fixed.setBounds(500,390,90,25);
 
-		recycle = new JCheckBox(resb.getString("newgame.recycle"));
-		NewGameFrame.sortOutButton( recycle );
-		recycle.setBounds(500, 440, 120 , 25 );
+                italian = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
+		NewGameFrame.sortOutButton( italian );
+		italian.setBounds(500,410,90,25);
 
 
 		GameTypeButtonGroup.add ( domination );
@@ -286,6 +283,7 @@ resb = TranslationBundle.getBundle();
 
 		CardTypeButtonGroup.add ( fixed );
 		CardTypeButtonGroup.add ( increasing );
+                CardTypeButtonGroup.add ( italian );
 
 
 		add(domination);
@@ -294,8 +292,15 @@ resb = TranslationBundle.getBundle();
 
 		add(fixed);
 		add(increasing);
+                add(italian);
 
+		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
+		NewGameFrame.sortOutButton( AutoPlaceAll );
+		AutoPlaceAll.setBounds(380, 440, 120 , 25 );
 
+		recycle = new JCheckBox(resb.getString("newgame.recycle"));
+		NewGameFrame.sortOutButton( recycle );
+		recycle.setBounds(500, 440, 120 , 25 );
 
 		add(AutoPlaceAll);
 		add(recycle);
