@@ -114,11 +114,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 //Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
 
-                if (localgame) {
-                    java.util.List players = myrisk.getGame().getPlayers();
-
-                    if (players.size() >= 2 && players.size() <= RiskGame.MAX_PLAYERS ) {
-            	
+                int numOfPlayers = getNoOfPlayers();
+                
+                if (numOfPlayers >= 2 && numOfPlayers <= RiskGame.MAX_PLAYERS ) {
+                
+                    if (localgame) {
                         RiskUtil.savePlayers(myrisk, getClass());
                         
                         myrisk.parser("startgame "+
@@ -129,30 +129,30 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                                 );
                     }
                     else {
-                            OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
-                    }
+                        
+                        String option = RiskUtil.createGameString(
+                    	    getNoPlayers(Player.PLAYER_AI_CRAP),
+                    	    getNoPlayers(Player.PLAYER_AI_EASY),
+                    	    getNoPlayers(Player.PLAYER_AI_HARD),
+                    	    getStartGameOption( GameType.getSelection().getActionCommand() ),
+                    	    getStartGameOption( CardType.getSelection().getActionCommand() ),
+                    	    autoplaceall.isSelected(),
+                    	    recycle.isSelected(),
+                    	    lobbyMapName);
+                        
+                        Game newGame = new Game(
+                    	    ((TextComponent)newgame.find("GameName")).getText(),
+                    	    option,
+                    	    getNoPlayers(Player.PLAYER_HUMAN)
+                        );
+                        
+                        lobby.createNewGame(newGame);
+                        
+                        openMainMenu(); // close the game setup screen
+                    }   
                 }
                 else {
-                    
-                    String option = RiskUtil.createGameString(
-                	    getNoPlayers(Player.PLAYER_AI_CRAP),
-                	    getNoPlayers(Player.PLAYER_AI_EASY),
-                	    getNoPlayers(Player.PLAYER_AI_HARD),
-                	    getStartGameOption( GameType.getSelection().getActionCommand() ),
-                	    getStartGameOption( CardType.getSelection().getActionCommand() ),
-                	    autoplaceall.isSelected(),
-                	    recycle.isSelected(),
-                	    lobbyMapName);
-                    
-                    Game newGame = new Game(
-                	    ((TextComponent)newgame.find("GameName")).getText(),
-                	    option,
-                	    getNoPlayers(Player.PLAYER_HUMAN)
-                    );
-                    
-                    lobby.createNewGame(newGame);
-                    
-                    openMainMenu(); // close the game setup screen
+                        OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
                 }
 
             }
@@ -212,6 +212,18 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
         }
 
+    	int getNoOfPlayers() {
+            if (localgame) {
+                return myrisk.getGame().getPlayers().size();
+            }
+            else {
+        	int count=0;
+        	for (int c=0;c<compTypes.length;c++) {
+        	    count = count + getNoPlayers(compTypes[c]);
+        	}
+        	return count;
+            }
+    	}
     	int getNoPlayers(int type) {
     	    for (int c=0;c<compTypes.length;c++) {
     		if (compTypes[c]==type) {
