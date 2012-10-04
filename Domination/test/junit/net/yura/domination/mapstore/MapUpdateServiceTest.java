@@ -5,6 +5,7 @@
 package net.yura.domination.mapstore;
 
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 import junit.framework.TestCase;
 import net.yura.domination.engine.RiskUIUtil;
@@ -50,7 +51,7 @@ public class MapUpdateServiceTest extends TestCase {
 
         RiskUIUtil.mapsdir = new File("./game/Domination/maps").toURI().toURL();
         
-        Vector mapsUIDs = new Vector();
+        List mapsUIDs = new Vector();
 
         // ALL THESE MAPS NEED TO ACTUALLY BE IN THE MAPS DIR
         mapsUIDs.add("RiskEurope.map");
@@ -70,7 +71,7 @@ public class MapUpdateServiceTest extends TestCase {
         MapUpdateService instance = MapUpdateService.getInstance();
         instance.init(mapsUIDs,"http://mapsqa.yura.net/maps?format=xml");
         
-        Vector result = instance.mapsToUpdate;
+        List result = instance.mapsToUpdate;
         
         Vector check = new Vector();
         check.add("ameroki.map");
@@ -79,7 +80,7 @@ public class MapUpdateServiceTest extends TestCase {
         
     }
 
-    private void testResultContains(Vector result, Vector check) {
+    private void testResultContains(List result, List check) {
         assertEquals( check.size(), result.size() );
         
         for (int c=0;c<check.size();c++) {
