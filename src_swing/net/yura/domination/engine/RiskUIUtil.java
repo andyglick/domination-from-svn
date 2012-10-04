@@ -882,7 +882,8 @@ public class RiskUIUtil {
                                 catch (Throwable th) { }
 			}
 
-		return canlobby;
+		//return canlobby;
+                return true;
 	}
 
         public static String getURL(String v) {
@@ -931,14 +932,13 @@ public class RiskUIUtil {
 				panel.setVisible(true);
 
 			}
-			else if (lobbyAppletURL!=null) {
+			//else if (lobbyAppletURL!=null) {
+                        else {
 
                                 // on older clients open URL
-				RiskUtil.openURL(new URL(lobbyAppletURL));
+				//RiskUtil.openURL(new URL(lobbyAppletURL));
 
-                                // TODO launch mini lobby
-                                //MiniLobbySwingWrapper lobby = new MiniLobbySwingWrapper(myrisk);
-                                //lobby.show( RiskUIUtil.findParentFrame(this) );
+                                runMiniLobby(risk);
 			}
 
 		}
@@ -952,34 +952,9 @@ public class RiskUIUtil {
         
         public static void runMiniLobby(Risk risk) {
             
-            MiniLobbyRisk mlgame = new MiniLobbyRisk(risk) {
+            MiniLobbySwingWrapper wrapper = new MiniLobbySwingWrapper(risk);
+            wrapper.show(null);
 
-                private net.yura.domination.lobby.client.GameSetupPanel gsp;
-                public void openGameSetup(GameType gameType) {
-
-                        // TODO how do i get the mini lobby main Swing window
-                        //EmptyMidlet midlet = (EmptyMidlet)Midlet.getMidlet();
-                        //ME4SEPanel panel = midlet.getParent();
-                        Container container = javax.microedition.midlet.ApplicationManager.getInstance().awtContainer;
-
-                        if (gsp==null) {
-                            gsp = new net.yura.domination.lobby.client.GameSetupPanel();
-                        }
-
-                        Game result = gsp.showDialog( (java.awt.Window)javax.swing.SwingUtilities.getAncestorOfClass(java.awt.Window.class, container) , gameType.getOptions(), lobby.whoAmI() );
-
-                        if (result!=null) {
-                            lobby.createNewGame(result);
-                        }
-
-                }
-                
-            };
-            
-            MiniLobbyClient mlc = new MiniLobbyClient( mlgame );
-            
-            
-            
         }
 
         private static File getFile(URL url) {

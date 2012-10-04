@@ -2596,7 +2596,7 @@ RiskUtil.printStackTrace(e);
                     }
 		}
 
-		Vector Players = g.getPlayers();
+		List Players = g.getPlayers();
 		boolean setup = g.NoEmptyCountries();
 
 		int num=0;
@@ -2604,8 +2604,8 @@ RiskUtil.printStackTrace(e);
 
 		for (int c=0; c< Players.size() ; c++) {
 
-			if ( ((Player)Players.elementAt(c)).getNoTerritoriesOwned() > 0 || setup==false ) { num++; }
-			if ( ((Player)Players.elementAt(c)) == g.getCurrentPlayer() ) { start=c; }
+			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || setup==false ) { num++; }
+			if ( ((Player)Players.get(c)) == g.getCurrentPlayer() ) { start=c; }
 
 		}
 
@@ -2615,7 +2615,7 @@ RiskUtil.printStackTrace(e);
 
 		for (int c=start; c< Players.size() ; c++) {
 
-			if ( ((Player)Players.elementAt(c)).getNoTerritoriesOwned() > 0 || setup==false ) { playerColors[ current ] = ((Player)Players.elementAt(c)).getColor() ; current++; }
+			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || setup==false ) { playerColors[ current ] = ((Player)Players.get(c)).getColor() ; current++; }
 			if ( current==num ) { break; }
 			if ( c==Players.size()-1 ) { c=-1; }
 
