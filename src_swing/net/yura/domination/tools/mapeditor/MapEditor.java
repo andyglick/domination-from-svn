@@ -52,6 +52,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -429,7 +430,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			rg.addPlayer(
 				Player.PLAYER_HUMAN,
 				"PLAYER"+c,
-				RiskUtil.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
+				ColorUtil.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
 				null
 			);
 
@@ -1399,7 +1400,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		buffer.append(" ");
 		buffer.append(c.getArmyValue());
 		buffer.append(" ");
-		buffer.append( RiskUtil.getStringForColor( c.getColor() ) );
+		buffer.append( ColorUtil.getStringForColor( c.getColor() ) );
 		buffer.append(n);
 
 	    }

@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -186,7 +187,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 					case 2: return continent.getName();
 					case 3: return new Integer( continent.getArmyValue() );
 					case 4: return new Integer( continent.getTerritoriesContained().size() );
-					case 5: return RiskUtil.getStringForColor( continent.getColor() );
+					case 5: return ColorUtil.getStringForColor( continent.getColor() );
 					default: throw new RuntimeException();
 
 				}
@@ -254,7 +255,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 				switch(col) {
 
 					case 0: return player.getName();
-					case 1: return RiskUtil.getStringForColor( player.getColor() );
+					case 1: return ColorUtil.getStringForColor( player.getColor() );
 					case 2: switch( player.getType() ) {
 
 							case Player.PLAYER_HUMAN: return "Human";

@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -306,7 +307,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			if (gameStatus!=null) {
 
-				g.setColor( new Color( RiskUtil.getTextColorFor( cols[0] ) ) );
+				g.setColor( new Color( ColorUtil.getTextColorFor( cols[0] ) ) );
 				g.setFont( new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11) );
 				g.drawString(gameStatus, 22, 105);
 			}
@@ -629,7 +630,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 
 		if (cols==null) {
-			cols = new int[] { RiskUtil.GRAY };
+			cols = new int[] { ColorUtil.GRAY };
 		}
 
 

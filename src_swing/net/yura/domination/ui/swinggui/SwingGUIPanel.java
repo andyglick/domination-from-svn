@@ -65,6 +65,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.SwingUtilities;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
@@ -84,7 +85,6 @@ import net.yura.domination.tools.mapeditor.MapEditor;
  * <p> Swing GUI Main Frame </p>
  * @author Yura Mamyrin
  */
-
 public class SwingGUIPanel extends JPanel implements ActionListener{
 
 	public final static String version = "2";
@@ -1110,9 +1110,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 				Continent continent = continents[c];
 
 				buffer.append("<tr style=\"background-color: ");
-				buffer.append(RiskUtil.getHexForColor(continent.getColor()));
+				buffer.append(ColorUtil.getHexForColor(continent.getColor()));
 				buffer.append("; color:");
-				buffer.append(RiskUtil.getHexForColor(RiskUtil.getTextColorFor(continent.getColor())));
+				buffer.append(ColorUtil.getHexForColor(ColorUtil.getTextColorFor(continent.getColor())));
 				buffer.append("\"><td>");
 				buffer.append(continent.getName());
 				buffer.append("</td><td> - </td><td>");
@@ -2385,7 +2385,7 @@ public void setNODDefender(int n) {}
 				g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
 			}
 
-			g.setColor( new Color( RiskUtil.getTextColorFor( colors[0] ) ) );
+			g.setColor( new Color( ColorUtil.getTextColorFor( colors[0] ) ) );
 
 			g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
 
@@ -2817,7 +2817,7 @@ public void setNODDefender(int n) {}
 			for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
 
 				data[cc-1][0] = myrisk.getRiskConfig("default.player"+cc+".name");
-				data[cc-1][1] = findColor( RiskUtil.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
+				data[cc-1][1] = findColor( ColorUtil.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
 				data[cc-1][2] = findType( Risk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
 
 			}

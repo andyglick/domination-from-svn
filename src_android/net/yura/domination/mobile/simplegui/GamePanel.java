@@ -1,5 +1,6 @@
 package net.yura.domination.mobile.simplegui;
 
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
@@ -128,7 +129,7 @@ public class GamePanel extends Panel {
                             g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
                     }
 
-                    g.setColor( RiskUtil.getTextColorFor( colors[0] ) );
+                    g.setColor( ColorUtil.getTextColorFor( colors[0] ) );
 
                     g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
 

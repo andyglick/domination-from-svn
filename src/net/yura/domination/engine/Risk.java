@@ -1065,7 +1065,7 @@ RiskUtil.printStackTrace(e);
 						// name.replaceAll(" ","")+"#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) )
 
 						int t=getType(type);
-						int color=RiskUtil.getColor( c );
+						int color=ColorUtil.getColor( c );
 
 						if ( color != 0 && t != -1 && !name.equals("") && (   (  unlimitedLocalMode && game.addPlayer(t, name, color, "LOCALGAME" ) ) || ( !unlimitedLocalMode && game.addPlayer(t, name, color, Addr)    )    ) ) {
 							//New player created, name: {0} color: {1}
