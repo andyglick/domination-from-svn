@@ -62,7 +62,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void showMapPic(RiskGame p) {
-        mainFrame.showMapPic(p);
+        mainFrame.showMapPic(p.getMapFile());
     }
 
     @Override
