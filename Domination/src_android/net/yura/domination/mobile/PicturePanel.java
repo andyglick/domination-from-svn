@@ -9,6 +9,7 @@ import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.ArrayList;
 import java.util.List;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
@@ -494,7 +495,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                                 g2.fillOval( x-r , y-r , BALL_SIZE, BALL_SIZE );
 
-                                g.setARGBColor( RiskUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
+                                g.setARGBColor( ColorUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
 
                                 int h = y -(font.getHeight()/2 -1);
                                 String noa=String.valueOf(t.getArmies());
@@ -532,7 +533,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                         }
                                         
                                         
-                                        g.setARGBColor( RiskUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
+                                        g.setARGBColor( ColorUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
 
                                         g2.drawArc( x-r , y-r , BALL_SIZE, BALL_SIZE , 0, 360);
 
@@ -945,11 +946,11 @@ public class PicturePanel extends ImageView implements MapPanel {
         
         public static ColorMatrix getMatrix(int color) {
             
-            float r = RiskUtil.getRed(color);
-            float g = RiskUtil.getGreen(color);
-            float b = RiskUtil.getBlue(color);
+            float r = ColorUtil.getRed(color);
+            float g = ColorUtil.getGreen(color);
+            float b = ColorUtil.getBlue(color);
             
-            float alpha = ((float)RiskUtil.getAlpha(color))/255f;
+            float alpha = ((float)ColorUtil.getAlpha(color))/255f;
             float alpha2 = 1 - alpha;
             
             ColorMatrix cm = new ColorMatrix();

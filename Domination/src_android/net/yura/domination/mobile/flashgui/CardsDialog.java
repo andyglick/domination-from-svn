@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
@@ -261,7 +262,7 @@ public class CardsDialog extends Frame implements ActionListener {
                                     int x = (getWidth()-w)/2;
                                     int y = getHeight()/2 - imgSize/2 - w/2;
                                     g.fillOval(x, y, w, w);
-                                    g.setColor( RiskUtil.getTextColorFor(ownerColor) );
+                                    g.setColor( ColorUtil.getTextColorFor(ownerColor) );
                                     g.drawString("+"+Player.noaFORcard, x, y);
                                 }
                                 

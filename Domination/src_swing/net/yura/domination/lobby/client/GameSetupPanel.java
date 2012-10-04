@@ -543,7 +543,7 @@ resb = TranslationBundle.getBundle();
 
 		options=null;
 	}
-
+        
 	/**
 	 * Actionlistener applies the correct command to the button pressed
 	 * @param e The ActionEvent Object
@@ -561,26 +561,18 @@ resb = TranslationBundle.getBundle();
 
 			if (sum >=2 && sum <= RiskGame.MAX_PLAYERS) {
 
-				String players = 
-				//a +"\n" +
-				"0\n" + // AI crap
-				c +"\n" +
-				d +"\n";
+                                int gameMode;
+                                int cardsMode;
+                            
+                                if (domination.isSelected()) gameMode = RiskGame.MODE_DOMINATION;
+                                else if (capital.isSelected()) gameMode = RiskGame.MODE_CAPITAL;
+                                else gameMode = RiskGame.MODE_SECRET_MISSION; // if (mission.isSelected())
 
+                                if (increasing.isSelected()) cardsMode = RiskGame.CARD_INCREASING_SET;
+                                else if (fixed.isSelected()) cardsMode = RiskGame.CARD_FIXED_SET;
+                                else cardsMode = RiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
 
-				String type="";
-
-				if (domination.isSelected()) type = "domination";
-				else if (capital.isSelected()) type = "capital";
-				else if (mission.isSelected()) type = "mission";
-
-				if (increasing.isSelected()) type += " increasing";
-				else if (fixed.isSelected()) type += " fixed";
-
-				if ( AutoPlaceAll.isSelected() ) type += " autoplaceall";
-				if ( recycle.isSelected() ) type += " recycle";
-
-				options = players+ "choosemap "+riskmap.getFileName() +"\nstartgame " + type;
+				options = RiskUtil.createGameString(0,c,d,gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
 
 				dialog.setVisible(false);
 

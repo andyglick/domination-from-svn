@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import java.util.Arrays;
 import java.util.List;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
@@ -427,7 +428,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                             if (Risk.names[c].equals(((Player)players.get(a)).getName())) {
                                 badname = true;
                             }
-                            if (RiskUtil.getColor(Risk.colors[c])==((Player)players.get(a)).getColor()) {
+                            if (ColorUtil.getColor(Risk.colors[c])==((Player)players.get(a)).getColor()) {
                                 badcolor = true;
                             }
                             if (badname&&badcolor) {

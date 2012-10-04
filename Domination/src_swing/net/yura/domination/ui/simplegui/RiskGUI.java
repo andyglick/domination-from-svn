@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
@@ -672,7 +673,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 				g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
 			}
 
-			g.setColor( new Color( RiskUtil.getTextColorFor( colors[0] ) ) );
+			g.setColor( new Color( ColorUtil.getTextColorFor( colors[0] ) ) );
 
 			g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
 

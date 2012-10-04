@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.MapTranslator;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -1522,7 +1523,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					String name = MapTranslator.getTranslatedMapName(id).replaceAll( "_", " ");
 
 					int noa=Integer.parseInt( st.nextToken() ); //System.out.print(noa+"\n"); // testing
-					int color=RiskUtil.getColor( st.nextToken() ); //System.out.print(color.toString()+"\n"); // testing
+					int color=ColorUtil.getColor( st.nextToken() ); //System.out.print(color.toString()+"\n"); // testing
 
 					if (color==0) {
 
@@ -1883,7 +1884,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             
                                             String name = p.getName();
                                             
-                                            String color = "color."+RiskUtil.getStringForColor( p.getColor() );
+                                            String color = "color."+ColorUtil.getStringForColor( p.getColor() );
                                             java.util.ResourceBundle trans = TranslationBundle.getBundle();
                                             try { // in Java 1.4 no if (trans.containsKey(color))
                                                 name = trans.getString(color)+" "+name;

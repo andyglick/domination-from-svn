@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.yura.domination.engine;
 
-import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
@@ -48,14 +42,10 @@ import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.lobby.mini.MiniLobbyClient;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
-import net.yura.lobby.model.Game;
-import net.yura.lobby.model.GameType;
 
 /**
- *
  * @author Yura Mamyrin
  */
 public class RiskUIUtil {
@@ -1082,7 +1072,7 @@ public class RiskUIUtil {
 	}
 
     public static Color getTextColorFor(Color color) {
-        return new Color( RiskUtil.getTextColorFor(color.getRGB()) );
+        return new Color( ColorUtil.getTextColorFor(color.getRGB()) );
     }
 
     public static void donate(Component parent) {

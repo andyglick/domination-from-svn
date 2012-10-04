@@ -5,6 +5,7 @@ import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.List;
 import javax.microedition.lcdui.Image;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -197,10 +198,10 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
         int textY = yMiddle-(fh/2);
         
-        g.setColor( RiskUtil.getTextColorFor(color1) );
+        g.setColor( ColorUtil.getTextColorFor(color1) );
         g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -font.getWidth(noa1)/2, textY );
 
-        g.setColor( RiskUtil.getTextColorFor(color2) );
+        g.setColor( ColorUtil.getTextColorFor(color2) );
         g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -font.getWidth(noa2)/2, textY );
 
         if (move > 0) {

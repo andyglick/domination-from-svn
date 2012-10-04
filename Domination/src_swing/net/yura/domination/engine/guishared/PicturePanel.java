@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -397,7 +398,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                                 //g.fillOval( t.getX()-r , t.getY()-r, (r*2), (r*2) );
 
-                                g2.setColor( new Color( RiskUtil.getTextColorFor( t.getOwner().getColor() ) ) );
+                                g2.setColor( new Color( ColorUtil.getTextColorFor( t.getOwner().getColor() ) ) );
 
                                 g2.setFont( getFont() );
                                 
@@ -438,7 +439,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                                             y = (int)ballWorld.balls[pos].y;
                                         }
 
-					g2.setColor( new Color( RiskUtil.getTextColorFor( capital.getOwner().getColor() ) ) );
+					g2.setColor( new Color( ColorUtil.getTextColorFor( capital.getOwner().getColor() ) ) );
 
 					Ellipse2D ellipse = new Ellipse2D.Double();
 					ellipse.setFrame( x-r , y-r , BALL_SIZE-1, BALL_SIZE-1);
