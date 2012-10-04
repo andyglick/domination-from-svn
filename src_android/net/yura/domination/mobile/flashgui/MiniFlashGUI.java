@@ -12,6 +12,7 @@ import net.yura.domination.mapstore.BadgeButton;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
+import net.yura.lobby.model.Game;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
@@ -49,7 +50,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     Button autoplaceall;
     private boolean localgame;
 
-
+    public MiniFlashGUI(Risk risk) {
+        myrisk = risk;
+        setMaximum(true);
+        
+        setBorder(GameActivity.marble);
+        setBackground( 0x00FFFFFF );
+    }
 
     @Override
     public void actionPerformed(String actionCommand) {
@@ -90,8 +97,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             else if ("start server".equals(actionCommand)) {
                 OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
             }
-            else if ("closegame".equals(actionCommand)) {
-                myrisk.parser("closegame");
+            else if ("closegame".equals(actionCommand)) { // user clicks back in game setup screen
+        	
+        	if (localgame) {
+        	    myrisk.parser("closegame");
+        	}
+        	else {
+        	    openMainMenu();
+        	}
             }
             else if ("startgame".equals(actionCommand)) {
 
@@ -101,25 +114,45 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 //Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
 
-                java.util.List players = myrisk.getGame().getPlayers();
+                if (localgame) {
+                    java.util.List players = myrisk.getGame().getPlayers();
 
-                if (players.size() >= 2 && players.size() <= RiskGame.MAX_PLAYERS ) {
-
-                    if (localgame) {
+                    if (players.size() >= 2 && players.size() <= RiskGame.MAX_PLAYERS ) {
+            	
                         RiskUtil.savePlayers(myrisk, getClass());
+                        
+                        myrisk.parser("startgame "+
+                                GameType.getSelection().getActionCommand()+" "+
+                                CardType.getSelection().getActionCommand()+
+                                ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
+                                ((recycle!=null&&recycle.isSelected()?" recycle":""))
+                                );
                     }
-
-                    myrisk.parser("startgame "+
-                            GameType.getSelection().getActionCommand()+" "+
-                            CardType.getSelection().getActionCommand()+
-                            ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
-                            ((recycle!=null&&recycle.isSelected()?" recycle":""))
-                            );
+                    else {
+                            OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
+                    }
                 }
                 else {
-
-                        OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
-
+                    
+                    String option = RiskUtil.createGameString(
+                	    getNoPlayers(Player.PLAYER_AI_CRAP),
+                	    getNoPlayers(Player.PLAYER_AI_EASY),
+                	    getNoPlayers(Player.PLAYER_AI_HARD),
+                	    getStartGameOption( GameType.getSelection().getActionCommand() ),
+                	    getStartGameOption( CardType.getSelection().getActionCommand() ),
+                	    autoplaceall.isSelected(),
+                	    recycle.isSelected(),
+                	    lobbyMapName);
+                    
+                    Game newGame = new Game(
+                	    ((TextComponent)newgame.find("GameName")).getText(),
+                	    option,
+                	    getNoPlayers(Player.PLAYER_HUMAN)
+                    );
+                    
+                    lobby.createNewGame(newGame);
+                    
+                    openMainMenu(); // close the game setup screen
                 }
 
             }
@@ -166,7 +199,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                     }
                 };
                 
-            	net.yura.domination.lobby.mini.MiniLobbyClient lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( mlr );
+            	lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( mlr );
                 
                 Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
                 mapFrame.setContentPane( lobby.getRoot() );
@@ -179,13 +212,53 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             }
         }
 
+    	int getNoPlayers(int type) {
+    	    for (int c=0;c<compTypes.length;c++) {
+    		if (compTypes[c]==type) {
+    		    Component comp = newgame.find(compsNames[c]);
+    		    if (comp!=null) {
+    			return ((Integer)((Spinner)comp).getValue()).intValue();
+    		    }
+    		    return 0;
+    		}
+    	    }
+    	    throw new RuntimeException("invalid type "+type);
+    	}
+    	int getStartGameOption(String newOption) {
+		if ( newOption.equals("domination") ) {
+		    return RiskGame.MODE_DOMINATION;
+		}
+		if ( newOption.equals("capital") ) {
+		    return RiskGame.MODE_CAPITAL;
+		}
+		if ( newOption.equals("mission") ) {
+		    return RiskGame.MODE_SECRET_MISSION;
+		}
+		if ( newOption.equals("increasing") ) {
+		    return RiskGame.CARD_INCREASING_SET;
+		}
+		if ( newOption.equals("fixed") ) {
+		    return RiskGame.CARD_FIXED_SET;
+		}
+		if ( newOption.equals("italianlike") ) {
+		    return RiskGame.CARD_ITALIANLIKE_SET;
+		}
+		throw new RuntimeException("unknown option "+newOption);
+    	}
+    
     class MapListener implements ActionListener {
         MapChooser mapc;
         public void actionPerformed(String arg0) {
             
             String name = mapc.getSelectedMap();
             if (name != null) {
+        	
+        	if (localgame) {
                     myrisk.parser("choosemap " + name );
+        	}
+        	else {
+        	    setLobbyMap(name);
+        	}
             }
             
             mapc.getRoot().getWindow().setVisible(false);
@@ -193,14 +266,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             mapc.destroy();
         }
     };
-
-    public MiniFlashGUI(Risk risk) {
-        myrisk = risk;
-        setMaximum(true);
-        
-        setBorder(GameActivity.marble);
-        setBackground( 0x00FFFFFF );
-        
+    
+    net.yura.domination.lobby.mini.MiniLobbyClient lobby;
+    String lobbyMapName;
+    void setLobbyMap(String name) {
+	lobbyMapName = name;
+	showMapPic(name);
     }
 
     private XULLoader getPanel(String xmlfile) {
@@ -242,6 +313,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                     setContentPane( newContentPane );
                     revalidate();
                     repaint();
+                    moveToBack();
                 }
             });
             
@@ -250,16 +322,18 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             setContentPane( newContentPane );
             revalidate();
             setVisible(true);
-
-            // we want to always be at the bottom of the stack
-            // so move anything bellow us to be above us
-            List windows = getDesktopPane().getAllFrames();
-            for (int c=1;c<windows.size();c++) {
-                getDesktopPane().setSelectedFrame((Window)windows.get(0));
-            }
-            
+            moveToBack();
         }
         
+    }
+    
+    private void moveToBack() {
+        // we want to always be at the bottom of the stack
+        // so move anything bellow us to be above us
+        List windows = getDesktopPane().getAllFrames();
+        for (int c=1;c<windows.size();c++) {
+            getDesktopPane().setSelectedFrame((Window)windows.get(0));
+        }
     }
 
     // ================================================ GAME SETUP
@@ -294,6 +368,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         }
         else {
             newgame.find("GameName").setVisible(true);
+            setLobbyMap( allowedMaps[0] );
         }
 
         // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
@@ -459,7 +534,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     }
 
-    public void showMapPic(RiskGame p) {
+    public void showMapPic(String mapFile) {
 /*
         InputStream in=null;
         
@@ -493,7 +568,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         }
 */
         // crazy 1 liner
-        ((Label)newgame.find("MapImg")).setIcon( MapChooser.getLocalIconForMap( MapChooser.createMap( p.getMapFile() ) ) );
+        ((Label)newgame.find("MapImg")).setIcon( MapChooser.getLocalIconForMap( MapChooser.createMap( mapFile ) ) );
         
         revalidate();
         repaint();

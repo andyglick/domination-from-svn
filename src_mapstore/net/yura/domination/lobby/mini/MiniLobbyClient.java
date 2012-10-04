@@ -61,7 +61,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
         mycom = new LobbyCom(uuid);
         mycom.addEventListener(this);
-        mycom.connect("heather", 1964);
+        mycom.connect("192.168.0.11", 1964);
         
     }
     
@@ -119,8 +119,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         else if ("create".equals(actionCommand)) {
         
-            game.openGameSetup(theGameType);
-            
+            if (theGameType!=null) {
+        	game.openGameSetup(theGameType);
+            }
+            else {
+        	logger.info("GameType is null, can not openGameSetup");
+            }
         }
         else if ("close".equals(actionCommand)) {
             mycom.disconnect();
