@@ -81,7 +81,8 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         lobby.sendGameMessage(messagefromgui);
     }
     public void sendGameCommand(String mtemp) {
-        logger.warning("ignore GameCommand "+mtemp );
+	// this happens for game commands on my go
+        logger.info("ignore GameCommand "+mtemp );
     }
     public void close() {
         lobby.closeGame();
