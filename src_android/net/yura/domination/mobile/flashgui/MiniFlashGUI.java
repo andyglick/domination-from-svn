@@ -50,6 +50,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     Button autoplaceall;
     private boolean localgame;
 
+    
+    // online play
+    net.yura.domination.lobby.mini.MiniLobbyClient lobby;
+    private String[] allowedMaps;
+    String lobbyMapName;
+    // end online play
+    
     public MiniFlashGUI(Risk risk) {
         myrisk = risk;
         setMaximum(true);
@@ -278,9 +285,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             mapc.destroy();
         }
     };
-    
-    net.yura.domination.lobby.mini.MiniLobbyClient lobby;
-    String lobbyMapName;
+
     void setLobbyMap(String name) {
 	lobbyMapName = name;
 	showMapPic(name);
@@ -349,7 +354,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
 
     // ================================================ GAME SETUP
-    private String[] allowedMaps;
     public void openNewGame(boolean islocalgame,String[] allowedMaps) {
 
         // clean up
