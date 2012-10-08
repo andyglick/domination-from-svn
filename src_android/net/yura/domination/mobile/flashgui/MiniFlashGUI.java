@@ -52,7 +52,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     
     // online play
-    net.yura.domination.lobby.mini.MiniLobbyClient lobby;
+    net.yura.lobby.mini.MiniLobbyClient lobby;
     private String[] allowedMaps;
     String lobbyMapName;
     // end online play
@@ -206,7 +206,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                     }
                 };
                 
-            	lobby = new net.yura.domination.lobby.mini.MiniLobbyClient( mlr );
+            	lobby = new net.yura.lobby.mini.MiniLobbyClient( mlr );
                 
                 Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
                 mapFrame.setContentPane( lobby.getRoot() );

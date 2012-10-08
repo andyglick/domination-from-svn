@@ -1,5 +1,7 @@
 package net.yura.domination.lobby.mini;
 
+import net.yura.lobby.mini.MiniLobbyClient;
+import net.yura.lobby.mini.MiniLobbyGame;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import net.yura.domination.engine.OnlineRisk;

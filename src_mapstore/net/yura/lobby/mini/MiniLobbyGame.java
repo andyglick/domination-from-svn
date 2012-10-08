@@ -1,4 +1,4 @@
-package net.yura.domination.lobby.mini;
+package net.yura.lobby.mini;
 
 import net.yura.lobby.model.Game;
 import net.yura.lobby.model.GameType;

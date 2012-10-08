@@ -4,7 +4,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
-import net.yura.domination.lobby.mini.MiniLobbyClient;
+import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.lobby.model.Game;
 import net.yura.lobby.model.GameType;
