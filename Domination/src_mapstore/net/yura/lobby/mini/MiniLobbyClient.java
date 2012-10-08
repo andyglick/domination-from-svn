@@ -1,4 +1,4 @@
-package net.yura.domination.lobby.mini;
+package net.yura.lobby.mini;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
