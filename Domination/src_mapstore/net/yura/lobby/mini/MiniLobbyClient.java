@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.UUID;
 import java.util.logging.Logger;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.client.LobbyClient;
 import net.yura.lobby.client.LobbyCom;
@@ -50,7 +51,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
         list = (List)loader.find("ResultList");
         list.setCellRenderer( new GameRenderer(this) );
-
+        list.setFixedCellHeight( MapChooser.adjustSizeToDensityFromMdpi(50) );
+        list.setFixedCellWidth(10); // will streach
         
         
         String uuid = getMyUUID();
