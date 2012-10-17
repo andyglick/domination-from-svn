@@ -508,8 +508,8 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_SELECT_CAPITAL: {
-                            noteText = resb.getProperty("game.note.happyok");
-                            goButtonText = resb.getProperty("game.button.go.ok");
+                            noteText = resb.getProperty("core.help.selectcapital");
+                            goButtonText = null;
                             break;
                     }
                     // for gameState 4 look in FlashRiskAdapter.java
@@ -517,18 +517,7 @@ public class GameActivity extends Frame implements ActionListener {
                     default: break;
             }
 
-            if (gobutton!=null) {
-                if (goButtonText!=null) {
-                        note.setFocusable(true);
-                        gobutton.setFocusable(true);
-                        gobutton.setText(goButtonText);
-                }
-                else {
-                        note.setFocusable(false);
-                        gobutton.setFocusable(false);
-                        gobutton.setText(" ");
-                }
-            }
+            setGoButtonText(goButtonText);
             
             note.setText(noteText==null?" ":noteText);
             
@@ -553,6 +542,21 @@ public class GameActivity extends Frame implements ActionListener {
             }
             
             repaint(); // SwingGUI has this here, if here then not needed in set status
+    }
+    
+    private void setGoButtonText(String goButtonText) {
+        if (gobutton!=null) {
+            if (goButtonText!=null) {
+                note.setFocusable(true);
+                gobutton.setFocusable(true);
+                gobutton.setText(goButtonText);
+            }
+            else {
+                note.setFocusable(false);
+                gobutton.setFocusable(false);
+                gobutton.setText(" ");
+            }
+        }
     }
     
    /**
@@ -687,7 +691,8 @@ public class GameActivity extends Frame implements ActionListener {
             }
         }
         else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
-            // do nothing ??
+            note.setText( resb.getProperty("game.note.happyok") );
+            setGoButtonText( resb.getProperty("game.button.go.ok") );
         }
 
     }
