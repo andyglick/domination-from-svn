@@ -55,6 +55,8 @@ public class GameActivity extends Frame implements ActionListener {
         marble = new BackgroundBorder( Midlet.createImage("/marble.jpg") );
     }
     
+    public static final String SAVE_EXTENSION = ".save";
+    
     Risk myrisk;
     PicturePanel pp;
     MapViewChooser mapViewControl;
@@ -345,7 +347,7 @@ public class GameActivity extends Frame implements ActionListener {
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     if ("ok".equals(actionCommand)) {
-                        String name = MiniUtil.getSaveGameDirURL() + saveText.getText() +".save";
+                        String name = MiniUtil.getSaveGameDirURL() + saveText.getText() + SAVE_EXTENSION;
                         go("savegame " + name );
                     }
                 }

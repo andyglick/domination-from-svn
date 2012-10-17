@@ -81,7 +81,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
                 String file = chooser.getSelectedFile();
                 chooser = null;
-                myrisk.parser("loadgame " + file );
+                
+                if (file.endsWith( GameActivity.SAVE_EXTENSION )) {
+                    myrisk.parser("loadgame " + file );
+                }
+                // else ignore file
 
             }
             else if ("manual".equals(actionCommand)) {
