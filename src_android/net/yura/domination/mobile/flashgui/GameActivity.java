@@ -621,11 +621,9 @@ public class GameActivity extends Frame implements ActionListener {
             AutoEndGo.setFocusable(false);
             AutoDefend.setFocusable(false);
 
-            gobutton.setText(" ");
-            gobutton.setFocusable(false);
-
+            setGoButtonText(null);
+            
             note.setText( resb.getString("game.pleasewait") );
-            note.setFocusable(false);
 
             gameState=0;
 
