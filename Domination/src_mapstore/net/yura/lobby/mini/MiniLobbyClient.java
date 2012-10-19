@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Logger;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.client.LobbyClient;
@@ -16,10 +19,12 @@ import net.yura.lobby.model.GameType;
 import net.yura.lobby.model.Player;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 
 public class MiniLobbyClient implements LobbyClient,ActionListener {
@@ -132,6 +137,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             mycom.disconnect();
             getRoot().getWindow().setVisible(false);
         }
+        else if ("filter".equals(actionCommand)) {
+            filter();
+        }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
@@ -201,28 +209,75 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    private static java.util.List games = Collections.synchronizedList( new ArrayList() );
     public void addOrUpdateGame(Game game) {
-        int index = list.indexOf(game);
+        int index = games.indexOf(game);
         if (index>=0) {
-            list.setElementAt(game, index);
+            games.set(index,game);
         }
         else {
-            list.addElement(game);
+            games.add(game);
         }
-        list.repaint();
-        
+        filter();
     }
 
     public void removeGame(String gameid) {
-        for (int c=0;c<list.getSize();c++) {
-            Game game = (Game)list.getElementAt(c);
+        Game found=null;
+        for (int c=0;c<games.size();c++) {
+            Game game = (Game)games.get(c);
             if ( gameid.equals(game.getGameId()) ) {
-                list.removeElementAt(c);
+                games.remove(c);
+                found = game;
                 break;
             }
         }
+        if (found!=null) {
+            list.removeElement(found);
+            // TODO revalidate window
+            list.repaint();
+        }
+    }
+
+    void filter() {
+        ComboBox box = (ComboBox)loader.find("listView");
+        list.setListData( RiskUtil.asVector( filter(games, ((Option)box.getSelectedItem()).getKey() ) ) );
+        // TODO revalidate window
         list.repaint();
     }
+    java.util.List filter(java.util.List list,String filter) {
+        // all
+        // my
+        // open
+        // running
+        synchronized(list) {
+            if ("all".equals(filter)) {
+                return new java.util.Vector(list);
+            }
+            java.util.List result = new java.util.Vector();
+            for (int c=0;c<list.size();c++) {
+                Game game = (Game)list.get(c);
+                if ("my".equals(filter)) {
+                    if (game.hasPlayer(myusername)) {
+                        result.add( game );
+                    }
+                }
+                else if ("open".equals(filter)) {
+                    if (game.getNumOfPlayers() < game.getMaxPlayers()) {
+                        // STATE_CAN_LEAVE or STATE_CAN_JOIN
+                        result.add( game );
+                    }
+                }
+                else if ("running".equals(filter)) {
+                    if (game.getNumOfPlayers() == game.getMaxPlayers()) {
+                        // STATE_CAN_PLAY or STATE_CAN_WATCH
+                        result.add( game );
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
 
     public void messageForGame(String gameid, Object message) {
         

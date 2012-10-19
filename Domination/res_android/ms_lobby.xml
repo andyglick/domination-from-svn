@@ -3,7 +3,12 @@
 <panel columns="1" weightx="1" weighty="1">
     <panel bottom="5" gap="5" left="5" name="TabBar" right="5" top="5" weightx="1">
         <button action="close" mnemonic="112" text="Cancel" type="cancel"/>
-        <combobox name="listView" weightx="1"/>
+        <combobox action="filter" name="listView" selected="0" start="9" text="All Games" weightx="1">
+            <choice name="all" text="All Games"/>
+            <choice name="my" text="My Games"/>
+            <choice name="open" text="Open Games"/>
+            <choice name="running" text="Running Games"/>
+        </combobox>
     </panel>
     <panel scrollable="true" weighty="1">
         <label alignment="center" i18n="true" name="Loading" property="valign=center" text="mapchooser.loading" visible="false" weightx="1" weighty="1"/>
