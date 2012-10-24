@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -20,6 +22,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
@@ -270,6 +273,11 @@ public class MapsTools {
 
     }
 
+    public static Map getOnlineMap(String uid) {
+        List maps = MapUpdateService.getMaps(MapChooser.MAP_PAGE,Arrays.asList( new String[] {uid} ));
+        return maps.size()>0 ? (Map)maps.get(0) : null;
+    }
+        
     public static List getCategories() {
         try {
             URLConnection conn = new URL( MapChooser.CATEGORIES_PAGE ).openConnection();
