@@ -581,23 +581,46 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         return;
                     }
 
-                    // load big XML file
-                    List maps = MapsTools.loadMaps();
-                    
+                    List maps = MapsTools.loadMaps(); // load big XML file
+
                     net.yura.domination.mapstore.Map map2 = MapsTools.findMap(maps,fileName);
-                    
-                    if (map2==null) {
-                        //map2 = new net.yura.domination.mapstore.Map();
-                        //map2.setMapUrl( fileName );
+
+                    // load info from server at start, as we can publish without this
+                    final List categories = MapsTools.getCategories();
+
+                    if (map2==null) { // we have never published this map before!
+
+                        // check if someone else has published a map with this name
+                        net.yura.domination.mapstore.Map map = MapsTools.getOnlineMap(fileName);
                         
+                        if (map!=null) {
+                            int result = JOptionPane.showConfirmDialog(this, "There is already a map with the filename "+fileName+" in the MapStore,\n"
+                                    + "is this a new version of that map?",null,JOptionPane.YES_NO_OPTION);
+
+                            // TODO some file names can still clash even if the main name does not "Bob Map.map" and "BobMap.map" will have the same cards file?!
+
+                            if (result==JOptionPane.NO_OPTION) {
+                                JOptionPane.showMessageDialog(this, "please pick a new name for your map.");
+                                save.doClick();
+                                return;
+                            }
+                        }
+
                         map2 = net.yura.domination.mapstore.MapChooser.createMap(fileName);
                         
                         map2.setDateAdded( String.valueOf( System.currentTimeMillis() ) ); // todays date
                         
-                        try {
-                            map2.setAuthorName( System.getProperty("user.name") );
+                        if (map!=null) {
+                            map2.setName( map.getName() );
+                            map2.setAuthorName( map.getAuthorName() );
+                            map2.setDescription( map.getDescription() );
                         }
-                        catch (Throwable th) { }
+                        else {
+                            try {
+                                map2.setAuthorName( System.getProperty("user.name") );
+                            }
+                            catch (Throwable th) { }
+                        }
                         
                         maps.add(map2);
                     }
@@ -608,13 +631,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                     JTextField mapName = new JTextField( map2.getName() );
                     JTextField authorEmail = new JTextField( map2.getAuthorId() ); // TODO using email as ID!!!
-                    
-                    final List categories = MapsTools.getCategories();
 
                     JList list = new JList( RiskUtil.asVector(categories) );
                     
                     String version = String.valueOf( myMap.getVersion() );
-                    
+
                     int result = showInputDialog(
                             new String[] {"Author's Full Name:","Email:","Map Name:","Description:","Categories:","version:"},
                             new JComponent[] {authorName,authorEmail,mapName,description,list, new JLabel( version )},
@@ -1037,7 +1058,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		else {
 
-			List t = Arrays.asList(myMap.getCountries());
+			List t = new ArrayList(Arrays.asList(myMap.getCountries()));
 			List a = new ArrayList();
 
 			Country country = ((Country)t.remove(0));

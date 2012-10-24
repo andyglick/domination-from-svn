@@ -3,11 +3,10 @@ package net.yura.domination.mapstore;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
@@ -26,7 +25,7 @@ public class MapUpdateService extends Observable {
     
     static MapUpdateService updateService;
     
-    List mapsToUpdate = new Vector();
+    List mapsToUpdate = new java.util.Vector();
 
     private MapUpdateService() { }
     public static MapUpdateService getInstance() {
@@ -47,14 +46,39 @@ public class MapUpdateService extends Observable {
     }
 
     public void init(List mapsUIDs,String url) {
-        List maps = new Vector();
+        
+        List gotMaps = getMaps(url, mapsUIDs);
         
         for (int c=0;c<mapsUIDs.size();c++) {
             String uid = (String)mapsUIDs.get(c);
-            Map map = MapChooser.createMap(uid);
-            maps.add( map );
-            //client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",uid );
+            List theMaps = new ArrayList(1);
+
+            for (int i=0;i<gotMaps.size();i++) {
+                Map themap = (Map)gotMaps.get(i);
+                String mapUID = MapChooser.getFileUID( themap.getMapUrl() );
+                if (mapUID.equals( uid )) { // we found the map
+                    theMaps.add(themap);
+                    // we do NOT break, just in case there is more then one
+                }
+            }
             
+            if (theMaps.size()==1) {
+                Map remoteMap = (Map)theMaps.get(0);
+                String ver = remoteMap.getVersion();
+                if (ver!=null && !"".equals(ver) && !"1".equals(ver) && !ver.equals( MapChooser.createMap(uid).getVersion() ) ) { // versions do not match, and update is needed
+                    mapsToUpdate.add(remoteMap);
+                    notifyListeners();
+                    //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
+                }
+            }
+            // else if 0 then we did not find it, or if more then 1 then some error has happened 
+        }
+    }
+    
+    public static List getMaps(String url,List mapsUIDs) {
+    
+        for (int c=0;c<mapsUIDs.size();c++) {
+            String uid = (String)mapsUIDs.get(c);
             url = url + (url.indexOf('?')<0?'?':'&') + Url.encode("mapfile")+"="+Url.encode(uid);
         }
         
@@ -63,43 +87,13 @@ public class MapUpdateService extends Observable {
         
         try {
             Task task = (Task)new XMLMapAccess().load( new InputStreamReader(new URL(url).openStream(),"UTF-8") );
-            gotResultXML(url, task, maps);
+
+            java.util.Map map = (java.util.Map)task.getObject();
+            return (List)map.get("maps");
         }
         catch (Throwable ex) {
             logger.log(Level.INFO, "error in getting map versions", ex);
-        }
-    }
-
-    public void gotResultXML(String url, Task task,List maps) {
-
-        java.util.Map map = (java.util.Map)task.getObject();
-        List gotMaps = (List)map.get("maps");
-
-        //try { new net.yura.domination.mapstore.gen.XMLMapAccess().save(System.out, map); } catch (Exception ex) { RiskUtil.printStackTrace(ex); }
-        
-        for (int c=0;c<maps.size();c++) {
-            Map localMap = (Map)maps.get(c);
-            List theMaps = new ArrayList(1);
-
-            for (int i=0;i<gotMaps.size();i++) {
-                Map themap = (Map)gotMaps.get(i);
-                String mapUID = MapChooser.getFileUID( themap.getMapUrl() );
-                if (mapUID.equals( localMap.getMapUrl() )) { // we found the map
-                    theMaps.add(themap);
-                    // we do NOT break, just in case there is more then one
-                }
-            }
-            
-            if (theMaps.size()==1) {
-                Map themap = (Map)theMaps.get(0);
-                String ver = themap.getVersion();
-                if (ver!=null && !"".equals(ver) && !"1".equals(ver) && !ver.equals( localMap.getVersion() ) ) { // versions do not match, and update is needed
-                    mapsToUpdate.add(themap);
-                    notifyListeners();
-                    //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
-                }
-            }
-            // else if 0 then we did not find it, or if more then 1 then some error has happened 
+            return Collections.EMPTY_LIST;
         }
     }
     
@@ -114,8 +108,6 @@ public class MapUpdateService extends Observable {
             }
         }
     }
-   
-    
 
     /**
      * TODO not sure where this method should be, but prob not here!!
