@@ -23,6 +23,7 @@ import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
@@ -41,13 +42,15 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     GameType theGameType;
     String openGameId;
     
+    private Properties resBundle;
+    
     public MiniLobbyClient(MiniLobbyGame lobbyGame) {
         game = lobbyGame;
         game.addLobbyGameMoveListener(this);
 
+        resBundle = game.getProperties();
+        
         try {
-            Properties resBundle = game.getProperties();
-            
             loader = XULLoader.load( Midlet.getResourceAsStream("/ms_lobby.xml") , this, resBundle);
         }
         catch(Exception ex) {
@@ -139,6 +142,23 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         else if ("filter".equals(actionCommand)) {
             filter();
+        }
+        else if ("login".equals(actionCommand)) {
+            // TODO
+        }
+        else if ("register".equals(actionCommand)) {
+            // TODO
+        }
+        else if ("setnick".equals(actionCommand)) {
+            final TextField saveText = new TextField();
+            saveText.setText( myusername );
+            OptionPane.showOptionDialog(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    if ("ok".equals(actionCommand)) {
+                        mycom.setNick( saveText.getText() );
+                    }
+                }
+            }, saveText, resBundle.getProperty("lobby.set-nick") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
         }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
