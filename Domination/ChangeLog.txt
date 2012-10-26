@@ -16,6 +16,12 @@ CURRENT VERSION:
 1.1.1.2
 
 	italian update by Marco Barbarino
+	when publishing maps, it checks to see if the map name is already taken
+
+	Android 19 more clear when selecting a capital
+		   only load .save game save files, do not even try to load others
+		   do not crash on "application/xml" mime type from server
+		   shows new line as a new line and not a [] in the MapStore
 
 1.1.1.1
 
@@ -25,8 +31,6 @@ CURRENT VERSION:
 	FlashGUI nullpointer in closegame double click fix
 	MapEditor will save a image added as a bmp as a png
 
-	Android 19 more clear when selecting a capital
-		   only load .save game save files, do not even try to load others
 	Android 18 nullpointer in getPlayerColors and android menu fixed
 	Android 17 warn exception in MapUpdateService does not spam logs
 		   nullpointer in getPlayerColors fixed
