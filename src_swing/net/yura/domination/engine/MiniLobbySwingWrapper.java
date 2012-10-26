@@ -63,7 +63,7 @@ public class MiniLobbySwingWrapper implements ActionListener {
 
     public void show(Frame parent) {
 
-        dialog = new JDialog(parent, "TODO title" , true);
+        dialog = new JDialog(parent, mlc.getTitle() , true);
         dialog.setDefaultCloseOperation( JDialog.DO_NOTHING_ON_CLOSE );
 
         dialog.addWindowListener(new WindowAdapter() {

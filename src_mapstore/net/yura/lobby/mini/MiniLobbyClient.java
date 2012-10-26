@@ -104,6 +104,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public Panel getRoot() {
         return ((Panel)loader.getRoot());
     }
+    public String getTitle() {
+        return resBundle.getProperty("lobby.windowtitle");
+    }
 
     public void actionPerformed(String actionCommand) {
         
