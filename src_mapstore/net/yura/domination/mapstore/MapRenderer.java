@@ -109,6 +109,10 @@ public class MapRenderer extends DefaultListCellRenderer {
                 line2 = (line2==null?"":line2+"\n")+description;
             }
 
+            if (line2!=null) {
+                line2 = getFirstLines(line2,4);
+            }
+            
             iconUrl = map.getPreviewUrl();
         }
         // else just do nothing
@@ -190,4 +194,16 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
     }
 
+    public static String getFirstLines(String input,int lines) {
+        int lastchar=0;
+        for (int c=0;c<lines;c++) {
+            int newline = input.indexOf('\n', lastchar);
+            if (newline<0) {
+                return input;
+            }
+            lastchar = newline+1;
+        }
+        return input.substring(0, lastchar-1);
+    }
+    
 }
