@@ -212,7 +212,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 
             	lobby = new net.yura.lobby.mini.MiniLobbyClient( mlr );
                 
-                Frame mapFrame = new Frame( resb.getProperty("lobby.windowtitle") );
+                Frame mapFrame = new Frame( lobby.getTitle() );
                 mapFrame.setContentPane( lobby.getRoot() );
                 mapFrame.setMaximum(true);
                 mapFrame.setVisible(true);
