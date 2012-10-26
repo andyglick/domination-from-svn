@@ -203,7 +203,7 @@ public class MapRenderer extends DefaultListCellRenderer {
             }
             lastchar = newline+1;
         }
-        return input.substring(0, lastchar-1);
+        return input.substring(0, lastchar-1)+"...";
     }
     
 }
