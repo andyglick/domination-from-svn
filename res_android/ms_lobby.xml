@@ -23,7 +23,8 @@
     </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
         <button action="create" text="Create" weightx="1"/>
-        <button action="login" text="Login" weightx="1"/>
-        <button action="register" text="Register" weightx="1"/>
+        <button action="login" text="Login" weightx="1" visible="false"/>
+        <button action="register" text="Register" weightx="1" visible="false"/>
+        <button action="setnick" text="Set Nickname" weightx="1"/>
     </panel>
 </panel>
