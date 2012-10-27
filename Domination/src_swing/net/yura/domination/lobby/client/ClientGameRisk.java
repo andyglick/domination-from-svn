@@ -330,7 +330,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             logger.info("ignore GameCommand "+mtemp );
         }
 
-        public void close() {
+        public void closeGame() {
             leaveGame();
         }
 }

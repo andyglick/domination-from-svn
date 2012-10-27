@@ -49,7 +49,7 @@ public class ChatClient implements OnlineRisk {
             outChat.println( mtemp );
         }
 
-        public void close() {
+        public void closeGame() {
             try {
                     outChat.close();
                     inChat.close();

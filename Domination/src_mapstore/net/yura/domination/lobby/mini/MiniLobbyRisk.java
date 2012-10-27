@@ -86,7 +86,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 	// this happens for game commands on my go
         logger.info("ignore GameCommand "+mtemp );
     }
-    public void close() {
+    public void closeGame() {
         lobby.closeGame();
     }
     

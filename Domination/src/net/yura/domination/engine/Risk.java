@@ -2785,7 +2785,7 @@ RiskUtil.printStackTrace(e);
         private synchronized void closeGame() {
 
             if ( onlinePlayClient != null ) {
-                onlinePlayClient.close();
+                onlinePlayClient.closeGame();
                 onlinePlayClient = null;
             }
             
