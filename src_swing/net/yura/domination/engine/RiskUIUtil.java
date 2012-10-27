@@ -435,8 +435,7 @@ public class RiskUIUtil {
                     List mapsList = getFileList( RiskFileFilter.RISK_MAP_FILES );
                     // try and start new map chooser,
                     // on fail revert to using the old one
-                    MapChooserSwingWrapper ch = new MapChooserSwingWrapper(mapsList);
-                    return ch.getNewMap(f);
+                    return SwingMEWrapper.showMapChooser(f, mapsList);
                 }
             }
             catch (Throwable th) {
@@ -942,8 +941,7 @@ public class RiskUIUtil {
         
         public static void runMiniLobby(Risk risk) {
             
-            MiniLobbySwingWrapper wrapper = new MiniLobbySwingWrapper(risk);
-            wrapper.show(null);
+            SwingMEWrapper.showLobby(null,risk);
 
         }
 
