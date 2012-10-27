@@ -1,5 +1,6 @@
 package net.yura.lobby.mini;
 
+import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.model.Game;
@@ -29,6 +30,10 @@ public class GameRenderer extends DefaultListCellRenderer {
         
         sicon.setIcon( lobby.game.getIconForGame(game) );
         setIcon(sicon);
+        
+        line2 = lobby.game.getGameDescription(game);
+        
+        setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
 
         return c;
     }

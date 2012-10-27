@@ -71,9 +71,18 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 
         return MapChooser.getLocalIconForMap(map);
     }
-    
-    
-    
+
+    public String getGameDescription(Game game) {
+        String options = game.getOptions();
+        String[] lines = options.split( RiskUtil.quote("\n") );
+        int ai=0;
+        for (int c=0;c<3;c++) {
+            ai = ai + Integer.parseInt(lines[c]);
+        }
+        return "AI:"+ai+" "+lines[4].substring( "startgame ".length() );
+    }
+
+
     
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMW OnlineRisk MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW

@@ -78,8 +78,6 @@ public class MapRenderer extends DefaultListCellRenderer {
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        
-        setVerticalTextPosition( Graphics.TOP );
 
         this.list = list;
         
@@ -91,7 +89,6 @@ public class MapRenderer extends DefaultListCellRenderer {
             Category category = (Category)value;
 
             setText( category.getName() );
-            setVerticalTextPosition( Graphics.VCENTER );
             
             iconUrl = category.getIconURL();
         }
@@ -117,6 +114,8 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
         // else just do nothing
 
+        setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
+        
         //iconUrl = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
         if (iconUrl!=null) {
