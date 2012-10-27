@@ -8,6 +8,6 @@ public interface OnlineRisk {
     public void sendUserCommand(String mtemp);
     public void sendGameCommand(String mtemp);
 
-    public void close();
+    public void closeGame();
 
 }
