@@ -16,7 +16,7 @@ public class GameRenderer extends DefaultListCellRenderer {
     MiniLobbyClient lobby;
     ScaledIcon sicon;
     Game game;
-    String line2;
+    String line2,part2;
     
     public GameRenderer(MiniLobbyClient l) {
         lobby = l;
@@ -32,9 +32,11 @@ public class GameRenderer extends DefaultListCellRenderer {
         setIcon(sicon);
         
         line2 = lobby.game.getGameDescription(game);
-        
+
         setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
 
+        part2 = game.getNumOfPlayers()+"/"+game.getMaxPlayers();
+        
         return c;
     }
 
@@ -54,18 +56,19 @@ public class GameRenderer extends DefaultListCellRenderer {
             case Game.STATE_CAN_WATCH: action = "Watch"; color=ColorUtil.WHITE; break;
             default: action = null; color=0; break;
         }
-        
+
+        int state = getCurrentState();
+        // if NOT focused or selected
+        if ( (state&Style.FOCUSED)==0 && (state&Style.SELECTED)==0 ) {
+            g.setColor( theme.getForeground(Style.DISABLED) );
+        }
+
         if (line2!=null) {
             Icon i = getIcon();
-
-            int state = getCurrentState();
-
-            // if NOT focused or selected
-            if ( (state&Style.FOCUSED)==0 && (state&Style.SELECTED)==0 ) {
-                g.setColor( theme.getForeground(Style.DISABLED) );
-            }
-
-            g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), padding + getFont().getHeight() + gap);
+            g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), getHeight()-font.getHeight()-padding);
+        }
+        if (part2!=null) {
+            g.drawString(part2, getWidth()-font.getWidth(part2)-padding, getHeight()-font.getHeight()-padding);
         }
 
         if (action!=null) {
@@ -73,10 +76,10 @@ public class GameRenderer extends DefaultListCellRenderer {
             int h = font.getHeight();
 
             g.setColor(color);
-            g.fillRoundRect(getWidth()-w-padding*3, (getHeight()-(h+padding*2))/2, w+padding*2, h+padding*2, 5, 5);
+            g.fillRoundRect(getWidth()-w-padding*3, padding, w+padding*2, h+padding*2, 5, 5);
 
             g.setColor( ColorUtil.getTextColorFor(color) );
-            g.drawString(action, getWidth()-w-padding*2, (getHeight()-h)/2);
+            g.drawString(action, getWidth()-w-padding*2, padding*2);
         }
         
     }
