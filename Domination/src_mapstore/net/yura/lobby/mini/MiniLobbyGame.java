@@ -16,6 +16,7 @@ public interface MiniLobbyGame {
 
     public boolean isMyGameType(GameType gametype);
     public Icon getIconForGame(Game game);
+    public String getGameDescription(Game game);
     
     /**
      * callback mlc.createNewGame(Game)
