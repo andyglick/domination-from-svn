@@ -871,8 +871,7 @@ public class RiskUIUtil {
                                 catch (Throwable th) { }
 			}
 
-		//return canlobby;
-                return true;
+		return canlobby;
 	}
 
         public static String getURL(String v) {
@@ -925,9 +924,8 @@ public class RiskUIUtil {
                         else {
 
                                 // on older clients open URL
-				//RiskUtil.openURL(new URL(lobbyAppletURL));
+				RiskUtil.openURL(new URL(lobbyAppletURL));
 
-                                runMiniLobby(risk);
 			}
 
 		}
@@ -938,12 +936,6 @@ public class RiskUIUtil {
 		}
 
 	}
-        
-        public static void runMiniLobby(Risk risk) {
-            
-            SwingMEWrapper.showLobby(null,risk);
-
-        }
 
         private static File getFile(URL url) {
 

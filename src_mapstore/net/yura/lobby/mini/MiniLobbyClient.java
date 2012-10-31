@@ -75,6 +75,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
     }
     
+    public void destroy() {
+        mycom.disconnect();
+    }
+    
     public static String getMyUUID() {
         
         java.util.Properties prop = new java.util.Properties();
@@ -140,7 +144,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             }
         }
         else if ("close".equals(actionCommand)) {
-            mycom.disconnect();
+            destroy();
             getRoot().getWindow().setVisible(false);
         }
         else if ("filter".equals(actionCommand)) {

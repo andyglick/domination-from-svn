@@ -211,6 +211,12 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 		addTab(gameTab);
 		addTab( new FX3DPanel(pp) );
+                try {
+                    addTab( new LobbyTab(myrisk) );
+                }
+                catch (Throwable th) {
+                    RiskUtil.printStackTrace(th); // midletrunner.jar could be missing
+                }
 		addTab(consoleTab);
 		addTab(statisticsTab);
                 try {
@@ -242,8 +248,10 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 				if (currentToolbar!=null) { remove(currentToolbar); }
 				currentToolbar = sgt.getToolBar();
 
-				currentToolbar.setOrientation( javax.swing.JToolBar.HORIZONTAL );
-				add( currentToolbar, java.awt.BorderLayout.NORTH );
+                                if (currentToolbar!=null) {
+                                    currentToolbar.setOrientation( javax.swing.JToolBar.HORIZONTAL );
+                                    add( currentToolbar, java.awt.BorderLayout.NORTH );
+                                }
 
                                 revalidate();
 				repaint();
