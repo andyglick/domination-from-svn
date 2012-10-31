@@ -28,4 +28,5 @@ public interface MiniLobbyGame {
 
     public void renamePlayer(String oldname, String newname);
 
+    void disconnected();
 }

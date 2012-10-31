@@ -179,6 +179,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     
     public void closeGame() {
         mycom.closeGame(openGameId);
+        openGameId = null;
     }
     
     public void createNewGame(Game game) {
@@ -199,7 +200,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         mycom.getGameTypes();
     }
 
-    public void disconnected() { }
+    public void disconnected() {
+        if (openGameId!=null) {
+            game.disconnected();
+            openGameId = null;
+        }
+    }
 
     public void connecting(String message) {
         logger.info(message);
