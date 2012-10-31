@@ -56,6 +56,10 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         myrisk.renamePlayer(oldname, newname);
     }
 
+    public void disconnected() {
+        myrisk.disconnected();
+    }
+
     
     
     
