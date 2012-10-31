@@ -34,6 +34,7 @@ Still needs to be done:
 
 	CORE:
 
+		game.ini should not be overridden by installing an update
 		add the new AI to the game from the masters project
 		**** save should be blocked in mustmove mode after a won battle, otherwise when its loaded it crashes
 		redo graph to use doubles instead of ints for scale
