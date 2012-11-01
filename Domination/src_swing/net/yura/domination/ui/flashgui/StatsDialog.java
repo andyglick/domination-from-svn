@@ -4,7 +4,6 @@ package net.yura.domination.ui.flashgui;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -17,7 +16,7 @@ import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
- * <p> Move Dialog for FlashGUI </p>
+ * <p> Statistics Dialog for FlashGUI </p>
  * @author Yura Mamyrin
  */
 
@@ -49,14 +48,19 @@ public class StatsDialog extends JDialog implements ActionListener {
 	/**
 	 * Initialises the GUI
 	 */
-	private void initGUI()
-	{
+	private void initGUI() {
+
 		resb = TranslationBundle.getBundle();
 
 		setTitle( resb.getString("swing.tab.statistics") );
 
-
-		graphPanel thisgraph = new graphPanel();
+		JPanel thisgraph = new JPanel();
+                thisgraph.setBorder( new FlashBorder(
+                        Back.getSubimage(100, 0, 740, 50),
+                        Back.getSubimage(0, 0, 50, 400),
+                        Back.getSubimage(100, 182, 740, 150),
+                        Back.getSubimage(50, 0, 50, 400)
+                        ) );
 
 		Dimension d = new Dimension(740, 600);
 		thisgraph.setPreferredSize(d);
@@ -70,8 +74,6 @@ public class StatsDialog extends JDialog implements ActionListener {
 
 
 
-		JButton statbutton;
-
 		int x=49;
 		int y=483;
 
@@ -80,63 +82,63 @@ public class StatsDialog extends JDialog implements ActionListener {
 
 		int s=1;
 
-		thisgraph.addButton("countries",x,y,w,h,s);
+		thisgraph.add(makeButton("countries",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("armies",x,y,w,h,s);
+		thisgraph.add(makeButton("armies",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("kills",x,y,w,h,s);
+		thisgraph.add(makeButton("kills",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("casualties",x,y,w,h,s);
+		thisgraph.add(makeButton("casualties",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("reinforcements",x,y,w,h,s);
+		thisgraph.add(makeButton("reinforcements",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("continents",x,y,w,h,s);
+		thisgraph.add(makeButton("continents",x,y,w,h,s));
 
 		x=49;
 		y=y+h;
 		s++;
 
-		thisgraph.addButton("empire",x,y,w,h,s);
+		thisgraph.add(makeButton("empire",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("attacks",x,y,w,h,s);
+		thisgraph.add(makeButton("attacks",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("retreats",x,y,w,h,s);
+		thisgraph.add(makeButton("retreats",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("victories",x,y,w,h,s);
+		thisgraph.add(makeButton("victories",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("defeats",x,y,w,h,s);
+		thisgraph.add(makeButton("defeats",x,y,w,h,s));
 
 		x=x+w;
 		s++;
 
-		thisgraph.addButton("attacked",x,y,w,h,s);
+		thisgraph.add(makeButton("attacked",x,y,w,h,s));
 
 
 
@@ -164,45 +166,23 @@ public class StatsDialog extends JDialog implements ActionListener {
 
 	}
 
-	/** Exit the Application */
-
 	/**
 	 * Closes the GUI
 	 */
 	private void exitForm() {
-
 		((GameFrame)getParent()).displayGraph();
-
 	}
+        
+        public JButton makeButton(String a, int x,int y,int w,int h,int s) {
 
-	class graphPanel extends JPanel {
+                JButton statbutton = new JButton(resb.getString("swing.toolbar."+a));
+                statbutton.setActionCommand(s+"");
+                statbutton.addActionListener( this );
+                statbutton.setBounds(x, y, w , h );
 
-		/**
-		 * Paints the graphic
-		 * @param g Graphics
-		 */
-		public void paintComponent(Graphics g) {
+                NewGameFrame.sortOutButton( statbutton, Back.getSubimage(x+100,y-433+165,w,h), Back.getSubimage(x+100,y-433,w,h), Back.getSubimage(x+100,y-433+66,w,h) );
 
-			g.drawImage(Back.getSubimage(0, 0, 50, 400), 0, 50, this);
-			g.drawImage(Back.getSubimage(50, 0, 50, 400), 690, 50, this);
-
-			g.drawImage(Back.getSubimage(100, 0, 740, 50), 0, 0, this);
-			g.drawImage(Back.getSubimage(100, 182, 740, 150), 0, 450, this);
-
-		}
-
-		public void addButton(String a, int x,int y,int w,int h,int s) {
-
-			JButton statbutton = new JButton(resb.getString("swing.toolbar."+a));
-			statbutton.setActionCommand(s+"");
-			statbutton.addActionListener( StatsDialog.this );
-			statbutton.setBounds(x, y, w , h );
-
-			NewGameFrame.sortOutButton( statbutton, Back.getSubimage(x+100,y-433+165,w,h), Back.getSubimage(x+100,y-433,w,h), Back.getSubimage(x+100,y-433+66,w,h) );
-
-			add(statbutton);
-		}
-
-	}
+                return statbutton;
+        }
 
 }
