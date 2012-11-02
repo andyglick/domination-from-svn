@@ -1,2 +1,2 @@
-appletviewer SwingGUI.htm
+appletviewer ../build/game/SwingGUI.htm
 pause

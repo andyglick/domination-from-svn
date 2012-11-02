@@ -2,8 +2,9 @@
 
 package net.yura.domination.ui.flashgui;
 
-
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -12,23 +13,29 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.RootPaneContainer;
 import javax.swing.event.MouseInputListener;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.guishared.AboutDialog;
-import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.lobby.mini.MiniLobbyClient;
+import net.yura.me4se.ME4SEPanel;
 
 /**
  * <p> Main Menu for FlashGUI </p>
@@ -74,13 +81,17 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	private Cursor hand;
 	private Cursor defaultCursor;
 
+        private Frame window;
+        private RootPaneContainer root;
+        
 	/**
 	 * Creates a new MainMenu
 	 * @param r the risk main program
 	 */
-	public MainMenu(Risk r,Frame gui) {
-
+	public MainMenu(Risk r,Frame gui,RootPaneContainer root) {
 		myrisk = r;
+                window = gui;
+                this.root = root;
 
 		fra = new FlashRiskAdapter(this, myrisk);
 
@@ -112,13 +123,15 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		lobby.setBounds(152,409,95,95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
 		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
-		lobby.setVisible(false);
+		//lobby.setVisible(false);
 
 		lobby.setForeground( Color.BLACK );
 		add(lobby);
 
 		hand = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 		defaultCursor = getCursor();
+                
+                showMainMenu();
 	}
 
 	/**
@@ -389,10 +402,11 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 				}
 				case MainMenu.BUTTON_LOBBY: {
 
-					if (showLobby) {
-
-						RiskUIUtil.runLobby(myrisk);
-					}
+//					if (showLobby) {
+//						RiskUIUtil.runLobby(myrisk);
+//					}
+                                        
+                                        showMiniLobby();
 
 					break;
 				}
@@ -638,6 +652,59 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		}
 
 	}
+        public void hide() {
+            window.setVisible(false);
+        }
+        public void show() {
+            window.setVisible(true);
+        }
+        
+        void showMainMenu() {
+            
+            root.setContentPane( this );
+            window.setTitle( TranslationBundle.getBundle().getString( "mainmenu.title"));
+            window.setResizable(false);
+            window.pack();
+        }
+        
+        void showMiniLobby() {
+            
+            final ME4SEPanel wrapper = new ME4SEPanel();
+            wrapper.getApplicationManager().applet = RiskUIUtil.applet;
+            
+            final MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
+            wrapper.add(mlc.getRoot());
+
+            final JButton back = new JButton("bak");
+            back.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mlc.destroy();
+                    showMainMenu();
+                }
+            });
+            
+            JPanel panel = new JPanel() {
+                public void doLayout() {
+                    wrapper.setBounds(50, 50, getWidth()-100, getHeight()-118);
+                    back.setBounds(60, getHeight()-58, 100, 30);
+                }
+            };
+            panel.add(wrapper);
+            panel.add(back);
+
+            BufferedImage img = RiskUIUtil.getUIImage(this.getClass(),"graph.jpg");
+            panel.setBorder( new FlashBorder(
+                        img.getSubimage(100, 0, 740, 50),
+                        img.getSubimage(0, 0, 50, 400),
+                        img.getSubimage(100, 332, 740, 68), //img.getSubimage(100, 282, 740, 50),
+                        img.getSubimage(50, 0, 50, 400)
+                    ) );
+            
+            root.setContentPane(panel);
+            window.setTitle( mlc.getTitle() );
+            window.setResizable(true);
+
+        }
 
 	/**
 	 * This runs the program
@@ -656,31 +723,18 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	public static MainMenu newMainMenuFrame(Risk r,int a) {
 
 		JFrame gui = new JFrame();
+                gui.setIconImage(Toolkit.getDefaultToolkit().getImage( AboutDialog.class.getResource("icon.gif") ));
 
-		final MainMenu mm = new MainMenu( r,gui );
+		final MainMenu mm = new MainMenu( r,gui,gui );
 
-		gui.setContentPane( mm );
-		gui.setIconImage(Toolkit.getDefaultToolkit().getImage( AboutDialog.class.getResource("icon.gif") ));
-		gui.setTitle( TranslationBundle.getBundle().getString( "mainmenu.title"));
-		gui.setResizable(false);
-		gui.pack();
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = gui.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		gui.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-
+                gui.setDefaultCloseOperation(a);
 		gui.addWindowListener(new java.awt.event.WindowAdapter() {
-
-			public void windowClosing(java.awt.event.WindowEvent evt) {
-
-				mm.exit();
-			}
+                    public void windowClosing(java.awt.event.WindowEvent evt) {
+                        mm.exit();
+                    }
 		});
 
-		gui.setDefaultCloseOperation(a);
-
+                RiskUIUtil.center(gui);
 		gui.setVisible(true);
 
 		return mm;

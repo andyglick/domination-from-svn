@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -370,6 +372,13 @@ public class RiskUIUtil {
 */
 	}
 
+        public static void center(Window window) {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            Dimension frameSize = window.getSize();
+            frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
+            frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
+            window.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+        }
 
         private static List getFileList(final String a) {
 

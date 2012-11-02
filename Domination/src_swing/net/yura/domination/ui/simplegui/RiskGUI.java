@@ -861,11 +861,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 		RiskGUI gui = new RiskGUI( new Risk() );
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = gui.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		gui.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+                RiskUIUtil.center(gui);
 		gui.setVisible(true);
 
 	}

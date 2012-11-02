@@ -39,24 +39,16 @@ public class FlashRiskAdapter implements RiskListener {
 	private int nogames;
 
         public FlashRiskAdapter(Risk r) {
-
 		myrisk = r;
 
 		myrisk.addRiskListener(this);
-
 
 		pp = new PicturePanel(myrisk);
 		gameFrame = new GameFrame(myrisk, pp);
 		battledialog = new BattleDialog(gameFrame, false, myrisk);
 		gameFrame.setBattleDialog(battledialog);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = battledialog.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		battledialog.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-
-
+                RiskUIUtil.center(battledialog);
 
 	}
 
@@ -294,13 +286,9 @@ public class FlashRiskAdapter implements RiskListener {
 
 		newgameframe.setup(localGame);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = newgameframe.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		newgameframe.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+                RiskUIUtil.center(newgameframe);
 
-		RiskUIUtil.findParentFrame(menu).setVisible(false);
+		menu.hide();
 
 		newgameframe.setVisible(true);
 		newgameframe.requestFocus();
@@ -342,17 +330,13 @@ public class FlashRiskAdapter implements RiskListener {
 
 		gameFrame.setup(s);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = gameFrame.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		gameFrame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+                RiskUIUtil.center(gameFrame);
 
 		if ( newgameframe.isVisible() ) {
 			newgameframe.setVisible(false);
 		}
 		else {
-			RiskUIUtil.findParentFrame(menu).setVisible(false);
+			menu.hide();
 		}
 
 		gameFrame.setVisible(true);
@@ -397,7 +381,7 @@ public class FlashRiskAdapter implements RiskListener {
 
 
 
-		RiskUIUtil.findParentFrame(menu).setVisible(true);
+		menu.show();
 
 
 

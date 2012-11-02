@@ -38,11 +38,7 @@ public class SwingGUIFrame {
 
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = gui.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		gui.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+                RiskUIUtil.center(gui);
 
 		try {
 
