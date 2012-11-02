@@ -8,6 +8,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.model.Game;
@@ -79,28 +80,13 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
 
 
     void createLobby() {
-        
-        mlc = new MiniLobbyClient( new MiniLobbyRisk(risk) {
-            private net.yura.domination.lobby.client.GameSetupPanel gsp;
-            public void openGameSetup(GameType gameType) {
-                if (gsp==null) {
-                    gsp = new net.yura.domination.lobby.client.GameSetupPanel();
-                }
-                Game result = gsp.showDialog( SwingUtilities.getWindowAncestor(LobbyTab.this) , gameType.getOptions(), lobby.whoAmI() );
-                if (result!=null) {
-                    lobby.createNewGame(result);
-                }
-            }
-        } );
-
+        mlc = SwingMEWrapper.makeMiniLobbyClient(risk, SwingUtilities.getWindowAncestor(this) );
         add( mlc.getRoot() );
-        
     }
     
     void closeLobby() {
         mlc.destroy();
         mlc = null;
-
         add( new Label("no lobby") );
     }
     

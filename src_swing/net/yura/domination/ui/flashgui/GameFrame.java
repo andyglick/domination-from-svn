@@ -449,22 +449,13 @@ public class GameFrame extends JFrame implements KeyListener {
 		graphbutton		.addKeyListener( this);
 		gobutton		.addKeyListener( this);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
 		cardsDialog = new CardsDialog(GameFrame.this, true, myrisk, pp);
 
-		Dimension frameSize = cardsDialog.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		cardsDialog.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-
+                RiskUIUtil.center(cardsDialog);
 
 		movedialog = new MoveDialog(this, false);
 
-		frameSize = movedialog.getSize();
-		frameSize.height = ((frameSize.height > screenSize.height) ? screenSize.height : frameSize.height);
-		frameSize.width = ((frameSize.width > screenSize.width) ? screenSize.width : frameSize.width);
-		movedialog.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+		RiskUIUtil.center(movedialog);
 
 		// #################################################################################
 		// sort out size and add to main panel

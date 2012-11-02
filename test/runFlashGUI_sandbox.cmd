@@ -1,2 +1,2 @@
-appletviewer FlashGUI.htm
+appletviewer ../build/game/FlashGUI.htm
 pause

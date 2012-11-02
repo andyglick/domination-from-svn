@@ -1,6 +1,7 @@
 package net.yura.domination.engine;
 
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -64,44 +65,19 @@ public class SwingMEWrapper {
         return result;
     }
 
-    public static void showLobby(Frame parent, Risk myrisk) {
-
-        final ME4SEPanel wrapper = new ME4SEPanel(); // this sets the theme to NimbusLookAndFeel
-        wrapper.getApplicationManager().applet = RiskUIUtil.applet;
-
-        MiniLobbyRisk mlgame = new MiniLobbyRisk(myrisk) {
-
-                private net.yura.domination.lobby.client.GameSetupPanel gsp;
-                public void openGameSetup(GameType gameType) {
-
-                        // TODO how do i get the mini lobby main Swing window
-                        //EmptyMidlet midlet = (EmptyMidlet)Midlet.getMidlet();
-                        //ME4SEPanel panel = midlet.getParent();
-                        //Container container = javax.microedition.midlet.ApplicationManager.getInstance().awtContainer;
-                        //(java.awt.Window)javax.swing.SwingUtilities.getAncestorOfClass(java.awt.Window.class, container)
-
-                        if (gsp==null) {
-                            gsp = new net.yura.domination.lobby.client.GameSetupPanel();
-                        }
-
-                        Game result = gsp.showDialog( SwingUtilities.getWindowAncestor(wrapper) , gameType.getOptions(), lobby.whoAmI() );
-
-                        if (result!=null) {
-                            lobby.createNewGame(result);
-                        }
-
+    public static MiniLobbyClient makeMiniLobbyClient(Risk risk,final Window window) {
+        return new MiniLobbyClient( new MiniLobbyRisk(risk) {
+            private net.yura.domination.lobby.client.GameSetupPanel gsp;
+            public void openGameSetup(GameType gameType) {
+                if (gsp==null) {
+                    gsp = new net.yura.domination.lobby.client.GameSetupPanel();
                 }
-                
-        };
-
-        MiniLobbyClient mlc = new MiniLobbyClient( mlgame );
-
-        wrapper.add( mlc.getRoot() );
-        
-        wrapper.showDialog(parent, mlc.getTitle() );
-
-        // WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT
-        // WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT
+                Game result = gsp.showDialog( window , gameType.getOptions(), lobby.whoAmI() );
+                if (result!=null) {
+                    lobby.createNewGame(result);
+                }
+            }
+        } );
     }
 
 }
