@@ -2,9 +2,7 @@
 
 package net.yura.domination.ui.flashgui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -42,17 +40,10 @@ import net.yura.me4se.ME4SEPanel;
  * @author Yura Mamyrin <yura@yura.net>
  * @author Christian Weiske <cweiske@cweiske.de>
  */
-
 public class MainMenu extends JPanel implements MouseInputListener, KeyListener {
 
 	private final static String version = "2";
-	private final static String product;
-
-	static {
-
-		product = "Flash GUI for " + RiskUtil.GAME_NAME;
-
-	}
+	private final static String product = "Flash GUI for " + RiskUtil.GAME_NAME;
 
 	private BufferedImage MenuImage;
 	private BufferedImage Server;
@@ -77,7 +68,6 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 	private java.util.ResourceBundle resBundle = TranslationBundle.getBundle();
 
-	private boolean showLobby;
 	private Cursor hand;
 	private Cursor defaultCursor;
 
@@ -162,10 +152,10 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	}
 
 
-		/**
-		 * Paints the panel
-		 * @param g The graphics
-		 */
+       /**
+        * Paints the panel
+        * @param g The graphics
+        */
 	public void paintComponent(Graphics g) {
 
 			g.drawImage( MenuImage ,0 ,0 ,400 ,550 ,0 ,0 ,400 ,550 ,this );
@@ -277,14 +267,11 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	//                     MouseListener Interface
 	//**********************************************************************
 
-	public void mouseClicked(MouseEvent e) {
-	}
+	public void mouseClicked(MouseEvent e) { }
 
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) { }
 
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) { }
 
 	/**
 	 * Works out what to do when the move has been presed
@@ -402,11 +389,12 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 				}
 				case MainMenu.BUTTON_LOBBY: {
 
-//					if (showLobby) {
+					if (lobby.isVisible()) {
+
 //						RiskUIUtil.runLobby(myrisk);
-//					}
-                                        
-                                        showMiniLobby();
+
+                                                showMiniLobby();
+                                        }
 
 					break;
 				}
@@ -645,8 +633,6 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		if (RiskUIUtil.getAddLobby(myrisk)) {
 
 			lobby.setVisible( true );
-
-			showLobby = true;
 
 			repaint();
 		}
