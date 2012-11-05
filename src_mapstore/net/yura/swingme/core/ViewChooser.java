@@ -1,29 +1,31 @@
-package net.yura.domination.mobile.flashgui;
+package net.yura.swingme.core;
 
 import java.util.Arrays;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.mapstore.MapChooser;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.layout.BorderLayout;
 import net.yura.mobile.gui.layout.BoxLayout;
 import net.yura.mobile.gui.layout.FlowLayout;
+import net.yura.mobile.gui.layout.Layout;
 import net.yura.mobile.util.Option;
 
 /**
- * @author Yura
+ * @author Yura Mamyrin
  */
-public class MapViewChooser extends Panel implements ActionListener {
+public class ViewChooser extends Panel implements ActionListener {
 
     Option[] options;
     ActionListener actionListener;
     String actionCommand;
+    boolean stretchCombo;
     
-    public MapViewChooser(Option[] pp) {
+    public ViewChooser(Option[] pp) {
         options = pp;
         
         Button test = new Button("test");
@@ -32,6 +34,9 @@ public class MapViewChooser extends Panel implements ActionListener {
         setPreferredSize(10, test.getHeightWithBorder()); // some small size, but we will strech
 
     }
+    public void setStretchCombo(boolean stretch) {
+        stretchCombo = stretch;
+    }
     
     public void addActionListener(ActionListener al) {
         actionListener = al;
@@ -39,11 +44,10 @@ public class MapViewChooser extends Panel implements ActionListener {
     public void setActionCommand(String com) {
         actionCommand = com;
     }
-    
-    @Override
+
     public void setSize(int width, int height) {
 
-        Option currentOption = getMapViewOption();
+        Option currentOption = getSelectedItem();
 
         int buttonsWidth = 0;
         Button[] buttons = new Button[options.length];
@@ -72,7 +76,8 @@ public class MapViewChooser extends Panel implements ActionListener {
         if (buttonsWidth <= width) {
             setLayout( new FlowLayout(Graphics.HCENTER,0) );
             ButtonGroup group = new ButtonGroup();
-            for (Button b: buttons) {
+            for (int c=0;c<buttons.length;c++) {
+                Button b = buttons[c];
                 group.add(b);
                 b.addActionListener(this);
                 add(b);
@@ -83,7 +88,7 @@ public class MapViewChooser extends Panel implements ActionListener {
             combo.setSelectedItem(currentOption);
             combo.workoutPreferredSize();
             combo.addActionListener(this);
-            setLayout( new BoxLayout(Graphics.HCENTER) );
+            setLayout( stretchCombo?(Layout)new BorderLayout():new BoxLayout(Graphics.HCENTER) );
             add(combo);
         }
 
@@ -94,7 +99,7 @@ public class MapViewChooser extends Panel implements ActionListener {
         actionListener.actionPerformed(actionCommand);
     }
     
-    Option getMapViewOption() {
+    public Option getSelectedItem() {
         
         List components = getComponents();
         if (components.isEmpty()) {
@@ -104,7 +109,8 @@ public class MapViewChooser extends Panel implements ActionListener {
             return (Option) ((ComboBox)components.get(0)).getSelectedItem();
         }
         else {
-            for (Button b: (List<Button>)components) {
+            for (int a=0;a<components.size();a++) {
+                Button b = (Button)components.get(a);
                 if (b.isSelected()) {
                     String id = b.getActionCommand();
                     for (int c=0;c<options.length;c++) {

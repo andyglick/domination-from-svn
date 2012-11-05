@@ -2,6 +2,7 @@
 
 package net.yura.domination.ui.flashgui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -109,13 +110,13 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		// (Risk.applet == null)?"mainmenu.online":"mainmenu.loading"
 
-		lobby = new JLabel( resBundle.getString("mainmenu.online"), new javax.swing.ImageIcon( this.getClass().getResource("earth.gif") ),JLabel.CENTER );
+		lobby = new JLabel( resBundle.getString("mainmenu.globe.playonline"), new javax.swing.ImageIcon( this.getClass().getResource("earth.gif") ),JLabel.CENTER );
 		lobby.setBounds(152,409,95,95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
 		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
 		//lobby.setVisible(false);
 
-		lobby.setForeground( Color.BLACK );
+		lobby.setForeground( Color.WHITE );
 		add(lobby);
 
 		hand = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
@@ -658,31 +659,24 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             final ME4SEPanel wrapper = new ME4SEPanel();
             wrapper.getApplicationManager().applet = RiskUIUtil.applet;
             
-            final MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
+            MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
             wrapper.add(mlc.getRoot());
 
-            final JButton back = new JButton("bak");
-            back.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    mlc.destroy();
+            mlc.addCloseListener(new net.yura.mobile.gui.ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    wrapper.destroy();
                     showMainMenu();
                 }
             });
-            
-            JPanel panel = new JPanel() {
-                public void doLayout() {
-                    wrapper.setBounds(50, 50, getWidth()-100, getHeight()-118);
-                    back.setBounds(60, getHeight()-58, 100, 30);
-                }
-            };
+
+            JPanel panel = new JPanel(new BorderLayout());
             panel.add(wrapper);
-            panel.add(back);
 
             BufferedImage img = RiskUIUtil.getUIImage(this.getClass(),"graph.jpg");
             panel.setBorder( new FlashBorder(
                         img.getSubimage(100, 0, 740, 50),
                         img.getSubimage(0, 0, 50, 400),
-                        img.getSubimage(100, 332, 740, 68), //img.getSubimage(100, 282, 740, 50),
+                        img.getSubimage(100, 350, 740, 50), //img.getSubimage(100, 332, 740, 68),
                         img.getSubimage(50, 0, 50, 400)
                     ) );
             
