@@ -20,6 +20,7 @@ import net.yura.lobby.model.Player;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.ComboBox;
+import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
@@ -27,6 +28,7 @@ import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
+import net.yura.swingme.core.ViewChooser;
 
 public class MiniLobbyClient implements LobbyClient,ActionListener {
 
@@ -62,6 +64,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         list.setFixedCellHeight( MapChooser.adjustSizeToDensityFromMdpi(50) );
         list.setFixedCellWidth(10); // will streach
         
+        ComboBox box = (ComboBox)loader.find("listView");
+        ViewChooser viewChooser = new ViewChooser( (Option[])box.getItems().toArray(new Option[box.getItemCount()]) );
+        loader.swapComponent("listView", viewChooser);
+        viewChooser.addActionListener(this);
+        viewChooser.setActionCommand("filter");
+        viewChooser.setStretchCombo(true);
+        viewChooser.setName(null);
         
         String uuid = getMyUUID();
         
@@ -73,6 +82,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         mycom.addEventListener(this);
         mycom.connect("192.168.0.11", 1964);
         
+    }
+    
+    ActionListener closeListener;
+    public void addCloseListener(ActionListener al) {
+        closeListener = al;
     }
     
     public void destroy() {
@@ -135,7 +149,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             }
         }
         else if ("create".equals(actionCommand)) {
-        
             if (theGameType!=null) {
         	game.openGameSetup(theGameType);
             }
@@ -143,9 +156,30 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         	logger.info("GameType is null, can not openGameSetup");
             }
         }
+        else if ("setnick".equals(actionCommand)) {
+            if (myusername!=null) {
+                final TextField saveText = new TextField();
+                saveText.setText( myusername );
+                OptionPane.showOptionDialog(new ActionListener() {
+                    public void actionPerformed(String actionCommand) {
+                        if ("ok".equals(actionCommand)) {
+                            mycom.setNick( saveText.getText() );
+                        }
+                    }
+                }, saveText, resBundle.getProperty("lobby.set-nick") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+            }
+            else {
+                logger.info("current username is null, can not set nick dialog");
+            }
+        }
         else if ("close".equals(actionCommand)) {
             destroy();
-            getRoot().getWindow().setVisible(false);
+            if (closeListener!=null) {
+                closeListener.actionPerformed( Frame.CMD_CLOSE );
+            }
+            else {
+                getRoot().getWindow().setVisible(false);
+            }
         }
         else if ("filter".equals(actionCommand)) {
             filter();
@@ -155,17 +189,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         else if ("register".equals(actionCommand)) {
             // TODO
-        }
-        else if ("setnick".equals(actionCommand)) {
-            final TextField saveText = new TextField();
-            saveText.setText( myusername );
-            OptionPane.showOptionDialog(new ActionListener() {
-                public void actionPerformed(String actionCommand) {
-                    if ("ok".equals(actionCommand)) {
-                        mycom.setNick( saveText.getText() );
-                    }
-                }
-            }, saveText, resBundle.getProperty("lobby.set-nick") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
         }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
@@ -272,7 +295,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     void filter() {
-        ComboBox box = (ComboBox)loader.find("listView");
+        ViewChooser box = (ViewChooser)loader.find("listView");
         list.setListData( RiskUtil.asVector( filter(games, ((Option)box.getSelectedItem()).getKey() ) ) );
         // TODO revalidate window
         list.repaint();

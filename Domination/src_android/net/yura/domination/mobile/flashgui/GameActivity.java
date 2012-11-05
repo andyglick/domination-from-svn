@@ -1,5 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
+import net.yura.swingme.core.ViewChooser;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +60,7 @@ public class GameActivity extends Frame implements ActionListener {
     
     Risk myrisk;
     PicturePanel pp;
-    MapViewChooser mapViewControl;
+    ViewChooser mapViewControl;
     Button note,gobutton,closebutton,savebutton,undobutton;
     
     String status;
@@ -176,7 +177,7 @@ public class GameActivity extends Frame implements ActionListener {
         options[5] = new Option( String.valueOf( PicturePanel.VIEW_CONNECTED_EMPIRE ) , resb.getProperty("game.tabs.connectedempire") );        
 
         
-        mapViewControl = new MapViewChooser(options);
+        mapViewControl = new ViewChooser(options);
         mapViewControl.addActionListener(this);
         mapViewControl.setActionCommand("mapViewChanged");
         
@@ -698,7 +699,7 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     public int getMapView() {
-        return Integer.parseInt( mapViewControl.getMapViewOption().getKey() );
+        return Integer.parseInt( mapViewControl.getSelectedItem().getKey() );
     }
     
     public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
