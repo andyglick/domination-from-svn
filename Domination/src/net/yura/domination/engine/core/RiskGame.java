@@ -1891,7 +1891,12 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             }
                                             catch (Exception ex) { }
                                             
-                                            description = RiskUtil.replaceAll(description, "PLAYER"+s1, name );
+                                            String key = "{PLAYER"+s1+"}";
+                                            if (description.indexOf(key) < 0) {
+                                                System.err.println("key: "+key+" not found in mission: "+description);
+                                            }
+                                            
+                                            description = RiskUtil.replaceAll(description, key, name );
                                         }
 
 					if ( s1 <= Players.size() ) { // || Players.size()==0 null but there for the map editor
