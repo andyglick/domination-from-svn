@@ -17,6 +17,9 @@ CURRENT VERSION:
 
 	italian update by Marco Barbarino
 	when publishing maps, it checks to see if the map name is already taken
+	missions translations update
+	russian update
+	when you update to a new version it does not replace the game.ini
 
 	Android 19 more clear when selecting a capital
 		   only load .save game save files, do not even try to load others
