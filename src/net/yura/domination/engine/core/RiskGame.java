@@ -1891,12 +1891,20 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             }
                                             catch (Exception ex) { }
                                             
-                                            String key = "{PLAYER"+s1+"}";
-                                            if (description.indexOf(key) < 0) {
-                                                System.err.println("key: "+key+" not found in mission: "+description);
+                                            String oldkey ="PLAYER"+s1;
+                                            String newkey = "{"+oldkey+"}";
+                                            if (description.indexOf(newkey) >= 0) {
+                                                // DefaultCards_XX.properties uses this format
+                                                description = RiskUtil.replaceAll(description, newkey, name );
                                             }
-                                            
-                                            description = RiskUtil.replaceAll(description, key, name );
+                                            else if (description.indexOf(oldkey) >= 0) {
+                                                // many maps still have this format for missions
+                                                description = RiskUtil.replaceAll(description, oldkey, name );
+                                            }
+                                            else {
+                                                System.err.println("newkey: "+newkey+" and oldkey: "+oldkey+" not found in mission: "+description);
+                                            }
+
                                         }
 
 					if ( s1 <= Players.size() ) { // || Players.size()==0 null but there for the map editor
