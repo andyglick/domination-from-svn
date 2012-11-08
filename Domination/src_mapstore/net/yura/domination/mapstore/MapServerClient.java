@@ -107,12 +107,21 @@ public class MapServerClient extends HTTPClient {
         makeRequest( string , params, XML_REQUEST_ID);
     }
 
+    // this stop imagees being fucked by operators
+    // http://benvallack.com/notebook/how-to-fix-poor-image-quality-compression-when-using-tmobile-web-n-walk-on-a-mac/
+    static final Hashtable headers = new Hashtable();
+    static {
+        headers.put("Cache-Control", "no-cache");
+        headers.put("Pragma", "no-cache");
+    }
+    
     void makeRequest(String url,Hashtable params,Object type) {
 
             Request request = new Request();
             request.url = url;
             request.params = params;
             request.id = type;
+            request.headers = headers;
 
 Logger.info("Make Request: "+request);
 
