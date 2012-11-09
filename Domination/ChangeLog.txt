@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		19
+	Android		20
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -21,6 +21,8 @@ CURRENT VERSION:
 	russian update
 	when you update to a new version it does not replace the game.ini
 
+	Android 20 maps not loading because of currupted download error fixed,
+		   (files were currupted because of operator transcoding)
 	Android 19 more clear when selecting a capital
 		   only load .save game save files, do not even try to load others
 		   do not crash on "application/xml" mime type from server

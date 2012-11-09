@@ -1,7 +1,9 @@
 package net.yura.domination.mobile.flashgui;
 
+import java.io.File;
 import net.yura.swingme.core.ViewChooser;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.microedition.lcdui.Graphics;
@@ -196,7 +198,7 @@ public class GameActivity extends Frame implements ActionListener {
         
         
         Panel mainWindow = new Panel( new BorderLayout() );
-        ScrollPane sp = new ScrollPane(pp) {
+        scroll = new ScrollPane(pp) {
             // a little hack as we set setClip to false
             @Override
             public void repaint() {
@@ -209,8 +211,8 @@ public class GameActivity extends Frame implements ActionListener {
 
 
         //sp.setMode( ScrollPane.MODE_FLOATING_SCROLLBARS );
-        sp.setClip(false);
-        mainWindow.add( sp );
+        scroll.setClip(false);
+        mainWindow.add( scroll );
         mainWindow.add(gamecontrol,Graphics.TOP);
         mainWindow.add( makeBottomPanel() ,Graphics.BOTTOM);
 
@@ -219,6 +221,8 @@ public class GameActivity extends Frame implements ActionListener {
         setContentPane(contentPane);
 
     }
+    
+    ScrollPane scroll;
     
     private Panel makeBottomPanel() {
         
@@ -294,25 +298,48 @@ public class GameActivity extends Frame implements ActionListener {
 
         Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?message=" + Url.encode( resb.getProperty("mainmenu.loading") ));
         
+        boolean retry=false;
+        boolean error = pp != scroll.getView();
+        
         try {
             pp.load();
+
+            // just in case last time we showed a error
+            if (error) {
+                scroll.removeAll();
+                scroll.add(pp);
+                scroll.revalidate();
+            }
         }
         catch (Throwable ex) { // ALL errors come here
             System.gc();
-            String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ") + mapFile;
-
-            logger.log( (ex instanceof OutOfMemoryError && !"luca.map".equals(mapFile) )?Level.INFO:Level.WARNING , text, ex);
-
-            Panel pparent = (Panel)pp.getParent();
-            pparent.removeAll();
+            String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ")+mapFile +" "+ex+(ex.getCause()!=null?" "+ex.getCause():"")+(error?" TWO ERRORS!!":"");
             
-            TextArea ta = new TextArea(text+" "+ex+(ex.getCause()!=null?" "+ex.getCause():"") );
+            TextArea ta = new TextArea(text);
             ta.setLineWrap(true);
             ta.setFocusable(false);
-            pparent.add(ta);
+
+            scroll.removeAll();
+            scroll.add(ta);
+            scroll.revalidate();
+
+            // this must have been a badly downloaded map, we must remove it
+            if (ex instanceof RuntimeException && ex.getMessage()!=null && ex.getMessage().startsWith("Error creating CountryImages")) {
+                // we should del the map file so that we can re-download it
+                File file = new File( MiniUtil.getSaveMapDir(), mapFile);
+                if (file.exists() && !error) {
+                    System.out.println("deleting file: "+file+" date: "+new Date(file.lastModified()) );
+                    file.delete();
+                    RiskUtil.streamOpener.getMap(mapFile,myrisk,null);
+                    retry=true;
+                }
+            }
+
+            // if there has been NO retry and it is NOT a OutOfMemoryError
+            logger.log( (retry || ex instanceof OutOfMemoryError) ?Level.INFO:Level.WARNING , text, ex);
         }
         finally {
-            Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
+            if (!retry) Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
         }
         
         mapViewControl.resetMapView();
