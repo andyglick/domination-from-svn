@@ -1,7 +1,9 @@
 package net.yura.domination.mapstore;
 
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,17 +79,32 @@ public class MapUpdateService extends Observable {
     
     public static List getMaps(String url,List mapsUIDs) {
     
+        StringBuffer payload=new StringBuffer();
+        
         for (int c=0;c<mapsUIDs.size();c++) {
             String uid = (String)mapsUIDs.get(c);
-            url = url + (url.indexOf('?')<0?'?':'&') + Url.encode("mapfile")+"="+Url.encode(uid);
+            if (payload.length()!=0) {
+                payload.append('&');
+            }
+            payload.append( Url.encode("mapfile") );
+            payload.append('=');
+            payload.append( Url.encode(uid) );
         }
-        
-        //client.makeRequestXML( url,null,null );
-        System.out.println("URL "+url);
-        
-        try {
-            Task task = (Task)new XMLMapAccess().load( new InputStreamReader(new URL(url).openStream(),"UTF-8") );
 
+// we print this just in case we get any errors so we know what we sent
+System.out.println("URL: "+url+" payload: "+payload);
+
+        try {
+            URLConnection conn = new URL(url).openConnection();
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write( payload.toString() );
+            wr.close();
+
+            Task task = (Task)new XMLMapAccess().load( new InputStreamReader(conn.getInputStream(),"UTF-8") );
+
+//System.out.println("got: "+task);
+            
             java.util.Map map = (java.util.Map)task.getObject();
             return (List)map.get("maps");
         }
