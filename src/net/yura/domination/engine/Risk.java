@@ -2183,15 +2183,22 @@ RiskUtil.printStackTrace(e);
         // TODO is this thread safe???
         public void setMap(String filename) throws Exception {
             
-            boolean yesmissions = game.setMapfile(filename);
+            if (game.getState()==RiskGame.STATE_NEW_GAME) {
+            
+                boolean yesmissions = game.setMapfile(filename);
 
-            setupPreview();
+                setupPreview();
 
-            controller.showCardsFile( game.getCardsFile() , yesmissions );
-            //New map file selected: "{0}" (cards have been reset to the default for this map)
-            String output= RiskUtil.replaceAll( resb.getString( "core.choosemap.mapselected"), "{0}", filename);
+                controller.showCardsFile( game.getCardsFile() , yesmissions );
+                //New map file selected: "{0}" (cards have been reset to the default for this map)
+                String output= RiskUtil.replaceAll( resb.getString( "core.choosemap.mapselected"), "{0}", filename);
 
-            controller.sendMessage(output, false , true);
+                controller.sendMessage(output, false , true);
+                
+            }
+            else {
+                controller.startGame(unlimitedLocalMode);
+            }
         }
         public void getMapError(String exception) {
             
