@@ -295,7 +295,13 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
                     }
                     catch (RuntimeException ex) {
-                        throw new RuntimeException( "Error creating CountryImages: c=" + c + " " + cci , ex);
+                        if ( cci.getWidth() < 0 || cci.getHeight() < 0) {
+                            throw new CountryNotFoundException("c=" + c + " " + cci);
+                        }
+                        else {
+                            // this wraps Caused by: java.lang.RuntimeException: Bitmap.createBitmap returned null for w=103 h=67 config=ARGB_8888 error=java.lang.OutOfMemoryError: Bitmap.createBitmap returned null
+                            throw new RuntimeException( "Error creating CountryImages: c=" + c + " " + cci , ex);
+                        }
                     }
                 }
 
@@ -304,6 +310,10 @@ public class PicturePanel extends ImageView implements MapPanel {
                 img = newImg;
                 tempimg = newTempimg;
                 map = newMap;
+        }
+        
+        public static class CountryNotFoundException extends RuntimeException {
+            public CountryNotFoundException(String msg) { super(msg); }
         }
 
         protected void paintBorder(Graphics2D g) {

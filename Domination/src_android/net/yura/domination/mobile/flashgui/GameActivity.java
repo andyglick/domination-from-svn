@@ -296,11 +296,11 @@ public class GameActivity extends Frame implements ActionListener {
         
         // ============================================ setup UI
 
-        Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?message=" + Url.encode( resb.getProperty("mainmenu.loading") ));
-        
         boolean retry=false;
         boolean error = pp != scroll.getView();
         
+        if (!error) Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?message=" + Url.encode( resb.getProperty("mainmenu.loading") ));
+
         try {
             pp.load();
 
@@ -324,7 +324,7 @@ public class GameActivity extends Frame implements ActionListener {
             scroll.revalidate();
 
             // this must have been a badly downloaded map, we must remove it
-            if (ex instanceof RuntimeException && ex.getMessage()!=null && ex.getMessage().startsWith("Error creating CountryImages")) {
+            if (ex instanceof PicturePanel.CountryNotFoundException) {
                 // we should del the map file so that we can re-download it
                 File file = new File( MiniUtil.getSaveMapDir(), mapFile);
                 if (file.exists() && !error) {
