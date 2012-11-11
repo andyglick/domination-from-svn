@@ -324,10 +324,10 @@ public class GameActivity extends Frame implements ActionListener {
             scroll.revalidate();
 
             // this must have been a badly downloaded map, we must remove it
-            if (ex instanceof PicturePanel.CountryNotFoundException) {
+            if (!error && ex instanceof PicturePanel.CountryNotFoundException) {
                 // we should del the map file so that we can re-download it
                 File file = new File( MiniUtil.getSaveMapDir(), mapFile);
-                if (file.exists() && !error) {
+                if (file.exists()) {
                     System.out.println("deleting file: "+file+" date: "+new Date(file.lastModified()) );
                     file.delete();
                     RiskUtil.streamOpener.getMap(mapFile,myrisk,null);
