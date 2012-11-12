@@ -34,7 +34,13 @@ public class RiskMiniIO implements RiskIO {
             return new FileInputStream(newFile);
         }
         catch (Exception ex) {
-            return FileUtil.getInputStreamFromFileConnector(mapsdir+name);
+            try {
+                return FileUtil.getInputStreamFromFileConnector(mapsdir+name);
+            }
+            catch (IOException ex2) {
+                ex.printStackTrace();
+                throw ex2;
+            }
         }
     }
 
