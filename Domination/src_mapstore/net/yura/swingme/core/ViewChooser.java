@@ -109,6 +109,8 @@ public class ViewChooser extends Panel implements ActionListener {
             return (Option) ((ComboBox)components.get(0)).getSelectedItem();
         }
         else {
+            // TODO looping through buttons to get selected one is not thread-safe
+            // would be better to get the selected button from the button group
             for (int a=0;a<components.size();a++) {
                 Button b = (Button)components.get(a);
                 if (b.isSelected()) {
@@ -118,6 +120,7 @@ public class ViewChooser extends Panel implements ActionListener {
                             return options[c];
                         }
                     }
+                    throw new RuntimeException("can not find option with id: "+id);
                 }
             }
             throw new RuntimeException("no button selected");
