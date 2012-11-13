@@ -3,7 +3,10 @@ package net.yura.domination.mobile.flashgui;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.lobby.mini.MiniLobbyRisk;
+import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.logging.Logger;
 
@@ -13,22 +16,41 @@ public class MiniFlashRiskAdapter implements RiskListener {
     private MiniFlashGUI mainFrame;
     private GameActivity gameFrame;
 
+    net.yura.lobby.mini.MiniLobbyClient lobby;
+    
     public MiniFlashRiskAdapter(Risk risk) {
         myRisk = risk;
         risk.addRiskListener( this );
     }
 
     
+    void openLobby() {
+    	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
+            public void openGameSetup(net.yura.lobby.model.GameType gameType) {
+        	mainFrame.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
+            }
+        } );
+        
+        Frame mapFrame = new Frame( lobby.getTitle() );
+        mapFrame.setContentPane( lobby.getRoot() );
+        mapFrame.setMaximum(true);
+        mapFrame.setVisible(true);
+    }
+    
+    void createLobbyGame(String name,String options,int numPlayers) {
+	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers) );
+    }
+    
     public void openMainMenu() {
         if (mainFrame==null) {
-            mainFrame = new MiniFlashGUI(myRisk);
+            mainFrame = new MiniFlashGUI(myRisk,this);
         }
         mainFrame.openMainMenu();
     }
     
     @Override
     public void newGame(boolean t) {
-        mainFrame.openNewGame(t,null);
+        mainFrame.openNewGame(t,null,null);
     }
 
     @Override

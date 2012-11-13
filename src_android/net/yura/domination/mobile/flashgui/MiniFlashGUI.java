@@ -49,16 +49,17 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     XULLoader newgame;
     Button autoplaceall;
     private boolean localgame;
-
+    
+    MiniFlashRiskAdapter controller;
     
     // online play
-    net.yura.lobby.mini.MiniLobbyClient lobby;
     private String[] allowedMaps;
     String lobbyMapName;
     // end online play
     
-    public MiniFlashGUI(Risk risk) {
+    public MiniFlashGUI(Risk risk,MiniFlashRiskAdapter controller) {
         myrisk = risk;
+        this.controller = controller;
         setMaximum(true);
         
         setBorder(GameActivity.marble);
@@ -141,23 +142,19 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                     }
                     else {
                         
-                        String option = RiskUtil.createGameString(
-                    	    getNoPlayers(Player.PLAYER_AI_CRAP),
-                    	    getNoPlayers(Player.PLAYER_AI_EASY),
-                    	    getNoPlayers(Player.PLAYER_AI_HARD),
-                    	    getStartGameOption( GameType.getSelection().getActionCommand() ),
-                    	    getStartGameOption( CardType.getSelection().getActionCommand() ),
-                    	    autoplaceall.isSelected(),
-                    	    recycle.isSelected(),
-                    	    lobbyMapName);
-                        
-                        Game newGame = new Game(
-                    	    ((TextComponent)newgame.find("GameName")).getText(),
-                    	    option,
-                    	    getNoPlayers(Player.PLAYER_HUMAN)
-                        );
-                        
-                        lobby.createNewGame(newGame);
+                        controller.createLobbyGame(
+                        	    ((TextComponent)newgame.find("GameName")).getText(),
+                        	    RiskUtil.createGameString(
+                                    	    getNoPlayers(Player.PLAYER_AI_CRAP),
+                                    	    getNoPlayers(Player.PLAYER_AI_EASY),
+                                    	    getNoPlayers(Player.PLAYER_AI_HARD),
+                                    	    getStartGameOption( GameType.getSelection().getActionCommand() ),
+                                    	    getStartGameOption( CardType.getSelection().getActionCommand() ),
+                                    	    autoplaceall.isSelected(),
+                                    	    recycle.isSelected(),
+                                    	    lobbyMapName),
+                        	    getNoPlayers(Player.PLAYER_HUMAN)
+                            );
                         
                         openMainMenu(); // close the game setup screen
                     }   
@@ -201,21 +198,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 }
             }
             else if ("online".equals(actionCommand)) {
-                
-                MiniLobbyRisk mlr = new MiniLobbyRisk(myrisk) {
-                    public void openGameSetup(net.yura.lobby.model.GameType gameType) {
-                        
-                        openNewGame(false, gameType.getOptions().split(",") );
-                        ((TextComponent)newgame.find("GameName")).setText( lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
-                    }
-                };
-                
-            	lobby = new net.yura.lobby.mini.MiniLobbyClient( mlr );
-                
-                Frame mapFrame = new Frame( lobby.getTitle() );
-                mapFrame.setContentPane( lobby.getRoot() );
-                mapFrame.setMaximum(true);
-                mapFrame.setVisible(true);
+
+        	controller.openLobby();
                 
             }
             else {
@@ -294,7 +278,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 	lobbyMapName = name;
 	showMapPic(name);
     }
-
+    
     private XULLoader getPanel(String xmlfile) {
 
         XULLoader loader;
@@ -358,7 +342,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
 
     // ================================================ GAME SETUP
-    public void openNewGame(boolean islocalgame,String[] allowedMaps) {
+    public void openNewGame(boolean islocalgame,String[] allowedMaps,String gameName) {
 
         // clean up
         chooser = null;
@@ -368,6 +352,12 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         newgame = getPanel("/newgame.xml");
 
+        if (gameName!=null) {
+            TextComponent tc = (TextComponent)newgame.find("GameName");
+            tc.setText( gameName );
+            tc.setVisible(true);
+        }
+        
         MapUpdateService.getInstance().addObserver( (BadgeButton)newgame.find("MapImg") );
         
         autoplaceall = (Button)newgame.find("autoplaceall");
@@ -387,7 +377,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             RiskUtil.loadPlayers( myrisk ,getClass());
         }
         else {
-            newgame.find("GameName").setVisible(true);
             setLobbyMap( allowedMaps[0] );
         }
 
