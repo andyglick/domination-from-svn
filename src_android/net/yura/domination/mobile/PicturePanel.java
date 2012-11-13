@@ -251,7 +251,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 if ( num != NO_COUNTRY ) {
 
                                     	// avoid arrayOutOfBounds, throw a real error with more info
-                                    	if (num>noc) { throw new RuntimeException("Strange color found: "+num+" ("+Integer.toHexString(pixels[x])+") countries: "+noc+" at: "+x+","+y ); }
+                                    	if (num>noc) { throw new CountryNotFoundException("Strange color found: "+num+" ("+Integer.toHexString(pixels[x])+") countries: "+noc+" at: "+x+","+y ); }
 
                                         cci = newCountryImages[num-1];
 
