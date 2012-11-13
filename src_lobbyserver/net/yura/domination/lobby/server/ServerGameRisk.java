@@ -230,6 +230,11 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		String playerid = playersMap.get(username);
 
+                // this person is NOT a player in the game, they must just be watching
+                if (playerid==null) {
+                    playerid="_watch_";
+                }
+                
 		System.out.println(username+" -> "+playerid);
 
                 HashMap map = new HashMap();
