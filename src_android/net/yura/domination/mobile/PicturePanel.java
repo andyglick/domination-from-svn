@@ -365,6 +365,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         g.drawImage(img,0,0);
 
+                        int c1=this.c1,c2=this.c2,cc=this.cc; // take local copy to be thread safe
+                        
                         if (c1 != NO_COUNTRY) {
                                 drawHighLightImage(g, countryImages[c1-1]);
                         }
