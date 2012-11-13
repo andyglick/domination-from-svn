@@ -129,17 +129,34 @@ public class Risk extends Thread {
 		catch (Exception ex) {
                     // can not find file, no problem
 		}
+                
+                myAddress = createRandomUniqueAddress();
+
+		RiskGame.setDefaultMapAndCards( riskconfig.getProperty("default.map") , riskconfig.getProperty("default.cards") );
+		port = Integer.parseInt( riskconfig.getProperty("default.port") );
+
+		battle = false;
+		replay = false;
+
+		controller = new RiskController();
+
+		inbox = new Vector();
+		this.start();
+
+	}
+
+        static String createRandomUniqueAddress() {
 
 		String randomString = "#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) );
 
 		try {
 			//if (RiskUtil.checkForNoSandbox()) {
                         try {
-				myAddress = InetAddress.getLocalHost().getHostName() + randomString;
+				return InetAddress.getLocalHost().getHostName() + randomString;
 			}
 			//else {
                         catch(Throwable th) {
-				myAddress = "sandbox" + randomString;
+				return "sandbox" + randomString;
 			}
 /*
 
@@ -181,22 +198,10 @@ public class Risk extends Thread {
 
 		}
 		catch (Exception e) { // if network has not been setup
-			myAddress = "nonet" + randomString;
+			return "nonet" + randomString;
 		}
-
-		RiskGame.setDefaultMapAndCards( riskconfig.getProperty("default.map") , riskconfig.getProperty("default.cards") );
-		port = Integer.parseInt( riskconfig.getProperty("default.port") );
-
-		battle = false;
-		replay = false;
-
-		controller = new RiskController();
-
-		inbox = new Vector();
-		this.start();
-
-	}
-
+        }
+        
 	/**
 	 * This gets the next token of the string tokenizer
 	 * @return String Returns the next token as a string
@@ -2794,6 +2799,9 @@ RiskUtil.printStackTrace(e);
             if ( onlinePlayClient != null ) {
                 onlinePlayClient.closeGame();
                 onlinePlayClient = null;
+
+                // in case lobby had set us some other address we reset it
+                myAddress = createRandomUniqueAddress();
             }
             
             if (game!=null) {
