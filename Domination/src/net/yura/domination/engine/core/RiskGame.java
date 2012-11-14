@@ -285,7 +285,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 				try {
 
-					loadCards();
+					loadCards(false);
 
 				}
 				catch (Exception e) {
@@ -1788,7 +1788,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param filename The cards filename
 	 * @throws Exception There was a error
 	 */
-	public void loadCards() throws Exception {
+	public void loadCards(boolean rawLoad) throws Exception {
 
 		StringTokenizer st=null;
 
@@ -1869,18 +1869,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 					Continent c3 = getMissionContinentfromString( s6 );
 
 					String missioncode=s1+"-"+noc+"-"+noa+"-"+s4+"-"+s5+"-"+s6;
-					String description=MapTranslator.getTranslatedMissionName(missioncode);
+					String description=rawLoad?null:MapTranslator.getTranslatedMissionName(missioncode);
 
 					if (description==null) {
-
 					    description="";
 					    while (st.hasMoreElements()) {
-							description = description +("".equals(description)?"":" ")+ st.nextToken();
+						description = description +("".equals(description)?"":" ")+ st.nextToken();
 					    }
-
 					}
 
-					if (p !=null) {
+					if (p!=null && !rawLoad) {
                                             
                                             String name = p.getName();
                                             
@@ -1907,7 +1905,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
                                         }
 
-					if ( s1 <= Players.size() ) { // || Players.size()==0 null but there for the map editor
+					if ( rawLoad || s1 <= Players.size() ) {
 
 						//System.out.print(description+"\n"); // testing
 						Mission mission = new Mission(p, noc, noa, c1, c2, c3, description);

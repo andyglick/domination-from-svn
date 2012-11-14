@@ -420,24 +420,16 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	public RiskGame makeNewMap() throws Exception {
-
 		RiskGame rg = new RiskGame();
 
-
-
 		for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
-
 			rg.addPlayer(
 				Player.PLAYER_HUMAN,
 				"PLAYER"+c,
 				ColorUtil.getColor( myrisk.getRiskConfig("default.player"+c+".color") ),
 				null
 			);
-
-
-
 		}
-
 		return rg;
 	}
 
@@ -481,7 +473,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				RiskGame map = makeNewMap();
 				map.setMapfile(name); // this is here just to update the cards option, also set the name and version
 				map.loadMap();
-				map.loadCards();
+				map.loadCards(true);
 
                                 InputStream in = RiskUtil.openMapStream(map.getImagePic());
                                 
