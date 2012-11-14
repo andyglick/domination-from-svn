@@ -37,9 +37,10 @@ public class RiskMiniIO implements RiskIO {
             try {
                 return FileUtil.getInputStreamFromFileConnector(mapsdir+name);
             }
-            catch (IOException ex2) {
-                ex.printStackTrace();
-                throw ex2;
+            catch (Exception ex2) {
+                IOException exception = new IOException( ex2.toString() );
+                exception.initCause(ex); // in android 1.6
+                throw exception;
             }
         }
     }
