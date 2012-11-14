@@ -18,10 +18,10 @@ CURRENT VERSION:
 	italian update by Marco Barbarino
 	when publishing maps, it checks to see if the map name is already taken
 	missions translations update
-	russian update
 	when you update to a new version it does not replace the game.ini
 	do not give 414 errors on really large numbers of maps
 	when loading a cards file into the map editor, the mission text for destroy a player is displayed incorrectly
+	Ukrainian added and russian updated by Oleksandra Spiegler
 
 	Android 20 maps not loading because of currupted download error fixed,
 		   (files were currupted because of operator transcoding)
