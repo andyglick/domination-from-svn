@@ -573,17 +573,8 @@ public class GameFrame extends JFrame implements KeyListener {
 	};
 
 	public void closeleave() {
-
 		if (graphOn) { graphdialog.setVisible(false); graphOn=false; }
-
-                RiskGame game = myrisk.getGame();
-                
-                if (game!=null && game.canContinue()) {
-                    go("continue");
-                }
-                else {
-                    go("closegame");
-                }
+                go("closegame");
 	}
 
 	public void repaintCountries() {
@@ -1097,8 +1088,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	/**
 	 * the user has clicked the "go" button
 	 */
-	private void goOn()
-	{
+	private void goOn() {
 		if (gameState==RiskGame.STATE_TRADE_CARDS) {
 			go("endtrade");
 		}
@@ -1117,7 +1107,13 @@ public class GameFrame extends JFrame implements KeyListener {
 			go("endgo");
 		}
 		else if (gameState==RiskGame.STATE_GAME_OVER) {
-			closeleave();
+                        RiskGame game = myrisk.getGame();
+                        if (game!=null && game.canContinue()) {
+                            go("continue");
+                        }
+                        else {
+                            closeleave();
+                        }
 		}
 		else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
                         int c1Id = pp.getC1();
