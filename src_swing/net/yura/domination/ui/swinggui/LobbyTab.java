@@ -2,6 +2,7 @@ package net.yura.domination.ui.swinggui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
@@ -9,10 +10,8 @@ import javax.swing.SwingUtilities;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.SwingMEWrapper;
-import net.yura.domination.lobby.mini.MiniLobbyRisk;
+import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.lobby.mini.MiniLobbyClient;
-import net.yura.lobby.model.Game;
-import net.yura.lobby.model.GameType;
 import net.yura.me4se.ME4SEPanel;
 import net.yura.mobile.gui.components.Label;
 
@@ -21,6 +20,8 @@ import net.yura.mobile.gui.components.Label;
  */
 public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
 
+    ResourceBundle resb = TranslationBundle.getBundle();
+    
     MiniLobbyClient mlc;
     Risk risk;
 
@@ -74,13 +75,14 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
         return null;
     }
     public String getName() {
-        return "Lobby";
+        return resb.getString("mainmenu.online");
     }
 
 
 
     void createLobby() {
         mlc = SwingMEWrapper.makeMiniLobbyClient(risk, SwingUtilities.getWindowAncestor(this) );
+        mlc.removeBackButton();
         add( mlc.getRoot() );
     }
     
@@ -89,5 +91,5 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
         mlc = null;
         add( new Label("no lobby") );
     }
-    
+
 }

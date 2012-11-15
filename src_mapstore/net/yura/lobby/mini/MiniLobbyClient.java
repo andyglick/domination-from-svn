@@ -19,6 +19,7 @@ import net.yura.lobby.model.GameType;
 import net.yura.lobby.model.Player;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.List;
@@ -82,6 +83,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         mycom.addEventListener(this);
         mycom.connect("192.168.0.11", 1964);
         
+    }
+    
+    public void removeBackButton() {
+        Button button = (Button)loader.find("BackButton");
+        button.setMnemonic(0);
+        button.setVisible(false);
     }
     
     ActionListener closeListener;
