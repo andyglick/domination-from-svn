@@ -24,23 +24,23 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
-import javax.swing.AbstractButton;
-import javax.swing.JOptionPane; // just needed for testing
 import java.util.ResourceBundle;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.text.PlainDocument;
-import javax.swing.text.Document;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -56,9 +56,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * @author Yura Mamyrin
  * @author Christian Weiske <cweiske@cweiske.de>
  */
-
-public class NewGameFrame extends JFrame implements ActionListener,MouseListener,KeyListener
-{
+public class NewGameFrame extends JFrame implements ActionListener,MouseListener,KeyListener {
 
 	private BufferedImage newgame;
 	private Risk myrisk;
@@ -126,86 +124,24 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	 * @param r The Risk Parser used for playing the game
 	 * @param t States whether this game is local
 	 */
-	public NewGameFrame(Risk r)
-	{
+	public NewGameFrame(Risk r) {
 		resb = TranslationBundle.getBundle();
-
 		myrisk=r;
-
 		newgame = RiskUIUtil.getUIImage(this.getClass(),"newgame.jpg");
-
 		initGUI();
-
 		setIconImage(Toolkit.getDefaultToolkit().getImage( AboutDialog.class.getResource("icon.gif") ));
-
 		setResizable(false);
-
 		pack();
 		chooseCards.requestFocus();
-
 	}
-
-	public void setup(boolean t) {
-
-		localgame=t;
-
-		// set title
-		if (localgame) {
-			setTitle(resb.getString("newgame.title.local"));
-			resetplayers.setVisible(true);
-		}
-		else {
-			setTitle(resb.getString("newgame.title.network"));
-			resetplayers.setVisible(false);
-		}
-
-		Component[] players = PlayersPanel.getComponents();
-
-		for (int c=0; c< players.length ; c++) {
-
-			PlayersPanel.remove(players[c]);
-
-		}
-
-		nothing.setVisible(false);
-
-		if (t) {
-                    RiskUtil.loadPlayers(myrisk,getClass());
-                }
-
-	}
-
-	static class LimitedDocument extends PlainDocument {
-
-		public void insertString(int offs, String str, AttributeSet a) throws javax.swing.text.BadLocationException {
-
-			if (str == null) {
-				return;
-			}
-
-			if ( (getLength() + str.length()) > 15 ) {
-
-				str = str.substring(0, str.length() - ((getLength() + str.length())-15) );
-				Toolkit.getDefaultToolkit().beep();
-
-			}
-
-			//System.out.print("inserting: "+str+"\n");
-
-			super.insertString(offs, str.replace('$','S') , a); // $ sign crashes the system?!
-		}
-	}
-
-	/** This method is called from within the constructor to initialize the form. */
 
 	/**
+         * This method is called from within the constructor to initialize the form.
 	 * Initialises the GUI
 	 */
-	private void initGUI()
-	{
+	private void initGUI() {
 
 		this.setFocusTraversalPolicy( new NewGameFrameFocusTraversalPolicy());
-
 
 		Colors = new MyColor[12];
 
@@ -285,7 +221,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		mission.setBounds(60, 410, 90 , 25 );
 		mission.addActionListener(this);
 
-
+                int col2w = 130;
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
 		sortOutButton( AutoPlaceAll );
@@ -293,21 +229,21 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
 		sortOutButton( recycle );
-		recycle.setBounds(160, 440, 100 , 25 );
+		recycle.setBounds(160, 440, col2w , 25 );
 
 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
 		sortOutButton( increasing );
-		increasing.setBounds(160,370,90,25);
+		increasing.setBounds(160,370,col2w,25);
 
 		fixed = new JRadioButton(resb.getString("newgame.cardmode.fixed"));
 		sortOutButton( fixed );
-		fixed.setBounds(160,390,90,25);
+		fixed.setBounds(160,390,col2w,25);
 
                 italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		sortOutButton( italianLike );
-		italianLike.setBounds(160,410,90,25);
+		italianLike.setBounds(160,410,col2w,25);
 
 		//AutoEndGo = new JCheckBox("Auto End Go");
 		//sortOutButton( AutoEndGo );
@@ -337,11 +273,9 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		resetplayers.addActionListener( this );
 
 		playerName = new JTextField(resb.getString("newgame.newplayername")) {
-
 			protected Document createDefaultModel() {
 				return new LimitedDocument();
 			}
-
 		};
 
 		playerName.setBorder(null);
@@ -353,7 +287,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
                 int typeX = 520;
                 int typeY = 330;
                 int typeGap = 20;
-                int typeW = 100;
+                int typeW = 160;
                 int typeH = 25;
                 
 		human = new JRadioButton(resb.getString("newgame.player.type.human"), true);
@@ -525,6 +459,57 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		};
 		nRemoveButtonPos = 8;
 	}//private void initGUI()
+
+	public void setup(boolean t) {
+
+		localgame=t;
+
+		// set title
+		if (localgame) {
+			setTitle(resb.getString("newgame.title.local"));
+			resetplayers.setVisible(true);
+		}
+		else {
+			setTitle(resb.getString("newgame.title.network"));
+			resetplayers.setVisible(false);
+		}
+
+		Component[] players = PlayersPanel.getComponents();
+
+		for (int c=0; c< players.length ; c++) {
+
+			PlayersPanel.remove(players[c]);
+
+		}
+
+		nothing.setVisible(false);
+
+		if (t) {
+                    RiskUtil.loadPlayers(myrisk,getClass());
+                }
+
+	}
+
+	static class LimitedDocument extends PlainDocument {
+
+		public void insertString(int offs, String str, AttributeSet a) throws javax.swing.text.BadLocationException {
+
+			if (str == null) {
+				return;
+			}
+
+			if ( (getLength() + str.length()) > 15 ) {
+
+				str = str.substring(0, str.length() - ((getLength() + str.length())-15) );
+				Toolkit.getDefaultToolkit().beep();
+
+			}
+
+			//System.out.print("inserting: "+str+"\n");
+
+			super.insertString(offs, str.replace('$','S') , a); // $ sign crashes the system?!
+		}
+	}
 
 	/**
 	 * Sets the game map
