@@ -21,7 +21,7 @@
         </panel>
     </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5" weightx="1">
-        <button action="close" mnemonic="112" text="lobby.back" type="cancel" weightx="1" visible="true" i18n="true"/>
+        <button action="close" mnemonic="112" text="lobby.back" type="cancel" weightx="1" visible="true" i18n="true" name="BackButton"/>
         <button action="create" text="Create Game" weightx="1"/>
         <button action="login" text="Login" weightx="1" visible="false"/>
         <button action="register" text="Register" weightx="1" visible="false"/>
