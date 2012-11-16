@@ -240,6 +240,9 @@ public class MapChooser implements ActionListener,MapServerListener {
                             // TODO we should only cache if we are sure it can be opened as a image
                             in = new ByteArrayInputStream(bytes);
                         }
+                        catch (OutOfMemoryError err) { // what can we do?
+                            Logger.info(err);
+                        }
                         catch (Exception ex) {
                             Logger.warn(ex);
                         }
