@@ -243,6 +243,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void error(String error) {
         logger.info(error);
+        OptionPane.showMessageDialog(null, error, "Error", OptionPane.ERROR_MESSAGE);
     }
 
     
