@@ -521,7 +521,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		else if (x >= 200 - xrel && x < 200 + xrel) {
 			B=BUTTON_LOBBY;
 		}
-		else if (x >= 0 && x < 115 && y >= (getHeight()-50) && y < getHeight() ) { // google: 115px × 50px
+		else if (x >= 0 && x < 115 && y >= (getHeight()-50) && y < getHeight() ) { // google: 115px x 50px
 			B=BUTTON_DONATE;
 		}
 

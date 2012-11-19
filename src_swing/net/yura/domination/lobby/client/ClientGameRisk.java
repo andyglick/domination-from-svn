@@ -300,7 +300,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
 	public void gameString(String message) {
 
-		System.out.println("\tGOT: "+message);
+		//System.out.println("\tGOT: "+message);
 
 		myrisk.parserFromNetwork(message);
 	}
