@@ -118,7 +118,7 @@
 	                <fileset dir="res/drawable-mdpi" includes="**/ms_*.*"/>
 		</copy>
 
-                <copy file="res_swing/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/Increment1GUI"/>
+                <copy file="res_swing/images/map.png" todir="${dir.build.classes}/net/yura/domination/ui/increment1gui"/>
 	</target>
 
 	<target name="distribution.jar"
