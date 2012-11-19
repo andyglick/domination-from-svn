@@ -161,7 +161,7 @@ public class RiskUIUtil {
 			return img;
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("error loading "+c+" "+name,e);
 		}
 
 	}
