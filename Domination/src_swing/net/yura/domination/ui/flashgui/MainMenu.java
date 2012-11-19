@@ -694,6 +694,8 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		RiskUIUtil.parseArgs(argv);
 
+                initGrasshopper();
+                
 		MainMenu mm = newMainMenuFrame( new Risk(),JFrame.EXIT_ON_CLOSE );
 
 		mm.addLobbyButton();
@@ -720,5 +722,33 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		return mm;
 
 	}
+        
+        private static void initGrasshopper() {
+            if (RiskUIUtil.checkForNoSandbox()) {
+                try {
+                    // Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+                    // HACK this will print any problems loading the Preferences before we start grasshopper
+                    java.util.prefs.Preferences.userRoot(); // returns java.util.prefs.WindowsPreferences
+                }
+                catch (Throwable th) { }
+
+                // catch everything in my PrintStream
+                try {
+                    net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,
+                            Risk.RISK_VERSION+" FlashGUI" // "(save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
+                            , TranslationBundle.getBundle().getLocale().toString());
+                }
+                catch(Throwable th) {
+                    System.out.println("Grasshopper not loaded");
+                }
+
+                try {
+                    net.yura.swingme.core.CoreUtil.setupLogging();
+                }
+                catch (Throwable th) {
+                    RiskUtil.printStackTrace(th);
+                }
+            }
+        }
 
 }
