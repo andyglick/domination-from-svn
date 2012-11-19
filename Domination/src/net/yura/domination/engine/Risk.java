@@ -2778,20 +2778,16 @@ RiskUtil.printStackTrace(e);
 	}
 
 	public void renamePlayer(String oldser,String newuser) {
-
 		Vector players = game.getPlayers();
-
 		for (int c=0;c<players.size(); c++) {
-
 			Player player = (Player)players.elementAt(c);
-
-			if ( player.getName().equals(oldser) ) {
-
+			if ( oldser.equals( player.getName() ) ) {
 				player.rename(newuser);
-
+                                break;
 			}
 		}
-
+                // as it may be our go, we should update the help string
+                setHelp();
 	}
 
         private synchronized void closeGame() {
