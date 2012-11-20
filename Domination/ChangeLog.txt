@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		20
+	Android		21
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -24,6 +24,9 @@ CURRENT VERSION:
 	fixed: in flashGUI closing the game when a game can be continued does not close the game
 	Ukrainian added and russian updated by Oleksandra Spiegler
 
+	Android 21 grasshopper update
+		   new languages - Ukrainian
+		   another maps not loading fix for color white corruption 
 	Android 20 maps not loading because of currupted download error fixed,
 		   (files were currupted because of operator transcoding)
 	Android 19 more clear when selecting a capital
