@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.2
+	Risk Game:	1.1.1.3
 	 * Save:	8
 	 * Network:	11
 
@@ -12,6 +12,10 @@ CURRENT VERSION:
 	Simple GUI:	1.1.1.1
 	Increment1GUI:	1.1.1.1
 	CommandLine:	1.0.4.1
+
+1.1.1.3
+
+	Brazilian Portuguese added by Ricardo Gomes Ponce
 
 1.1.1.2
 
