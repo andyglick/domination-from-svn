@@ -2,8 +2,6 @@
 
 package net.yura.domination.engine;
 
-import net.yura.domination.engine.p2pserver.ChatArea;
-import net.yura.domination.engine.p2pclient.ChatClient;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +28,8 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.p2pclient.ChatClient;
+import net.yura.domination.engine.p2pserver.ChatArea;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
@@ -2869,18 +2869,16 @@ RiskUtil.printStackTrace(e);
         }
         private void createGame(String a ,RiskGame b, OnlineRisk lobby) {
                 onlinePlayClient = lobby;
-            
-		inbox.clear();
-
-		Object g = game;
-
-		myAddress = a;
-		game = b;
-
-		if (g==null) { controller.startGame(unlimitedLocalMode); }
-
-                getInput();
+                myAddress = a;
+                setGame(b);
 	}
+        public void setGame(RiskGame b) {
+		inbox.clear();
+		Object g = game;
+		game = b;
+		if (g==null) { controller.startGame(unlimitedLocalMode); }
+                getInput();
+        }
         
         public void resignPlayer() {
 		// need to stop asking this player for input
