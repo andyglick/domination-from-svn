@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import net.yura.domination.engine.Risk;
@@ -278,19 +277,20 @@ public class ServerGameRisk extends TurnBasedGame {
 	public void stringFromPlayer(String username, String message) {
 		//System.out.print("\tGOTFROMCLIENT "+username+":"+message+"\n");
 		String address = getPlayerId(username);
+                Player player = myrisk.getGame().getCurrentPlayer();
 		//if (game.getCurrentPlayer()!=null) { System.out.print( "\t"+game.getCurrentPlayer().getAddress()+" "+address ); }
 		// game not started OR game IS started and it is there go
 		if (message.trim().equals("closegame")) {
-			throw new RuntimeException("CLOSEGAME NOT ALLOWED TO BE SENT TO CORE: "+username);
+			throw new RuntimeException("closegame not allowed to be sent to core: "+username);
 		}
-		else if (myrisk.getGame().getCurrentPlayer()!=null && myrisk.getGame().getCurrentPlayer().getAddress().equals( address )) {
-			// creates the players with the correct address
-			myrisk.addPlayerCommandToInbox(address , message);
+		if (player==null) {
+                        throw new RuntimeException("currentPlayer is null");
 		}
-		else {
-			throw new RuntimeException("CHEATING!!!!: "+username+" "+message+"\n");
-			//listoner.sendChatroomMessage(username+" is trying to cheat!");
-		}
+                if (!player.getAddress().equals( address )) {
+                        throw new RuntimeException("got command but it is not our go: "+username+" "+address+" "+message+" current player id: "+player.getAddress());
+                }
+
+		myrisk.addPlayerCommandToInbox(address , message);
 	}
 
 
