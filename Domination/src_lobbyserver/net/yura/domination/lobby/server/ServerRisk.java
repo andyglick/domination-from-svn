@@ -177,7 +177,7 @@ public class ServerRisk extends Risk {
 			synchronized(this) {
 
 				// dont go on if this is in catch all and dont run mode!!!!!
-				if( inbox.isEmpty() || (paused && game.getState()!=RiskGame.STATE_NEW_GAME ) ) {
+				while ( inbox.isEmpty() || (paused && game.getState()!=RiskGame.STATE_NEW_GAME ) ) {
 
 					waiting=true;
 

@@ -8,22 +8,22 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
-import net.yura.domination.engine.Risk;
-import net.yura.lobby.server.TurnBasedGame;
-import java.util.Iterator;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.lobby.server.TurnBasedGame;
 
 public class ServerGameRisk extends TurnBasedGame {
 
