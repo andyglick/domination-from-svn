@@ -1,8 +1,12 @@
 package net.yura.domination.lobby.server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import net.yura.domination.engine.Risk;
 import net.yura.lobby.server.TurnBasedGame;
@@ -87,7 +91,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
-	public void createNewGame(String startGameOptions, String[] players) {
+	public void startGame(String startGameOptions, String[] players) {
 
 		// sort them so if player bob was green last time, they r again
 		Arrays.sort(players);
@@ -163,7 +167,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		myrisk.addSetupCommandToInbox(options[4]); // start the game
 
-		// only return when the game is setup
+		// HACK: only return when the game is setup
 		while(!myrisk.getWaiting()) {
 
 			try { Thread.sleep(100); }
@@ -171,13 +175,36 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		}
 
+                myrisk.setPaued(false);
+                
 	}
 
-	public void startGame() {
+        public byte[] saveGameState() {
+            try {
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(bout);
+                out.writeObject(myrisk.getGame()); // TODO this is prob not very thread safe!!
+                out.flush();
+                out.close();
+                return bout.toByteArray();
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
-		myrisk.setPaued(false);
-
-	}
+	public void loadGame(byte[] gameData) {
+            try {
+                ByteArrayInputStream in = new ByteArrayInputStream(gameData);
+                ObjectInputStream oin = new ObjectInputStream(in);
+                RiskGame riskGame = (RiskGame)oin.readObject();
+                myrisk.setGame(riskGame);
+                myrisk.setPaued(false);
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+	}    
 
 	// this NEEDS to call gameFinished(winning player)
 	public void stopGame() {

@@ -43,7 +43,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     String myusername;
     GameType theGameType;
-    String openGameId;
+    int openGameId = -1;
     
     private Properties resBundle;
     
@@ -142,14 +142,14 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 int state = game.getState( whoAmI() );
                 switch (state) {
                     case Game.STATE_CAN_JOIN:
-                        mycom.joinGame(game.getGameId());
+                        mycom.joinGame(game.getId());
                         break;
                     case Game.STATE_CAN_LEAVE:
-                        mycom.leaveGame( game.getGameId() );
+                        mycom.leaveGame( game.getId() );
                         break;
                     case Game.STATE_CAN_PLAY:
                     case Game.STATE_CAN_WATCH:
-                        openGameId = game.getGameId();
+                        openGameId = game.getId();
                         mycom.playGame(game);
                         break;
                 }
@@ -209,7 +209,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     
     public void closeGame() {
         mycom.closeGame(openGameId);
-        openGameId = null;
+        openGameId = -1;
     }
     
     public void createNewGame(Game game) {
@@ -231,9 +231,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void disconnected() {
-        if (openGameId!=null) {
+        if (openGameId!=-1) {
             game.disconnected();
-            openGameId = null;
+            openGameId = -1;
         }
     }
 
@@ -285,11 +285,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         filter();
     }
 
-    public void removeGame(String gameid) {
+    public void removeGame(int gameid) {
         Game found=null;
         for (int c=0;c<games.size();c++) {
             Game game = (Game)games.get(c);
-            if ( gameid.equals(game.getGameId()) ) {
+            if ( gameid == game.getId() ) {
                 games.remove(c);
                 found = game;
                 break;
@@ -343,7 +343,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
 
-    public void messageForGame(String gameid, Object message) {
+    public void messageForGame(int gameid, Object message) {
+        
+        if (gameid!=openGameId) {
+            throw new RuntimeException("we got a message for game "+gameid+" but our game is "+openGameId);
+        }
         
         if (message instanceof String) {
             String string = (String)message;
@@ -386,11 +390,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     // chat
     public void serverMessage(String message) { }
     public void privateMessage(String fromwho, String message) { }
-    public void incomingChat(String roomid, String fromwho, String message) { }
-    public void addPlayer(String roomid, Player player) { }
-    public void removePlayer(String roomid, String player) { }
-    public void addMainRoom(String roomid) { }
+    public void incomingChat(int roomid, String fromwho, String message) { }
+    public void addPlayer(int roomid, Player player) { }
+    public void removePlayer(int roomid, String player) { }
+    public void addMainRoom(int roomid) { }
     public void setUserInfo(String user,java.util.List info) { }
-    public void newMainRoomJoined(String id) { }
+    public void newMainRoomJoined(int id) { }
 
 }
