@@ -29,9 +29,6 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	private ServerRisk myrisk;
 
-	private Map<String,String> playersMap;
-	private Map<String,String> inverseMap;
-
         static {
             final URL mapsdir;
             try {
@@ -78,26 +75,17 @@ public class ServerGameRisk extends TurnBasedGame {
         }
 
 	public ServerGameRisk() {
-
 		myrisk = new ServerRisk(this);
-
 		// POP UP DEBUG WINDOW
 		//Increment1Frame gui = new Increment1Frame( myrisk );
 		//RiskGUI gui = new RiskGUI( myrisk );
         	//gui.setVisible(true);
-
-		playersMap = new HashMap<String,String>();
-		inverseMap = new HashMap<String,String>();
-
 	}
 
 	public void startGame(String startGameOptions, String[] players) {
 
 		// sort them so if player bob was green last time, they r again
 		Arrays.sort(players);
-
-		playersMap.clear();
-		inverseMap.clear();
 
 		//System.out.println("\tNEW GAME STARTING FOR RISK: "+gameid);
 
@@ -131,9 +119,6 @@ public class ServerGameRisk extends TurnBasedGame {
 			String color = it.next();
 
 			String playerid = "player"+(c+1);
-
-			playersMap.put(players[c], playerid);
-			inverseMap.put(playerid, players[c]);
 
 			myrisk.addSetupCommandToInbox(playerid,"newplayer human "+color + " " + players[c]);
 
@@ -198,6 +183,14 @@ public class ServerGameRisk extends TurnBasedGame {
                 ByteArrayInputStream in = new ByteArrayInputStream(gameData);
                 ObjectInputStream oin = new ObjectInputStream(in);
                 RiskGame riskGame = (RiskGame)oin.readObject();
+                
+                String address=myrisk.getAddress();
+                List<Player> players = riskGame.getPlayers();
+                for (Player player:players) {
+                    if (player.getType()!=Player.PLAYER_HUMAN) {
+                        player.setAddress(address);
+                    }
+                }
                 myrisk.setGame(riskGame);
                 myrisk.setPaued(false);
             }
@@ -208,7 +201,6 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	// this NEEDS to call gameFinished(winning player)
 	public void stopGame() {
-
 		myrisk.setPaued(true);
 
 		RiskGame game = myrisk.getGame();
@@ -247,15 +239,13 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
 	public void destroyGame() {
-
 		myrisk.setKillFlag();
-
 	}
 
 
 	public void clientHasJoined(String username) {
 
-		String playerid = playersMap.get(username);
+		String playerid = getPlayerId(username);
 
                 // this person is NOT a player in the game, they must just be watching
                 if (playerid==null) {
@@ -272,60 +262,53 @@ public class ServerGameRisk extends TurnBasedGame {
 		sendObjectToClient(map, username );
 
 	}
+        
+        private String getPlayerId(String username) {
+            RiskGame game = myrisk.getGame();
+            List<Player> players = game.getPlayers();
+            for (Player player:players) {
+                if (player.getType()==Player.PLAYER_HUMAN && username.equals(player.getName())) {
+                    return player.getAddress();
+                }
+            }
+            return null;
+        }
 
 	// get message from the user
 	public void stringFromPlayer(String username, String message) {
-
 		//System.out.print("\tGOTFROMCLIENT "+username+":"+message+"\n");
-
-
-		String address = playersMap.get(username);
-
+		String address = getPlayerId(username);
 		//if (game.getCurrentPlayer()!=null) { System.out.print( "\t"+game.getCurrentPlayer().getAddress()+" "+address ); }
-
 		// game not started OR game IS started and it is there go
 		if (message.trim().equals("closegame")) {
-
 			throw new RuntimeException("CLOSEGAME NOT ALLOWED TO BE SENT TO CORE: "+username);
-
 		}
 		else if (myrisk.getGame().getCurrentPlayer()!=null && myrisk.getGame().getCurrentPlayer().getAddress().equals( address )) {
-
 			// creates the players with the correct address
 			myrisk.addPlayerCommandToInbox(address , message);
-
 		}
 		else {
-
 			throw new RuntimeException("CHEATING!!!!: "+username+" "+message+"\n");
-
 			//listoner.sendChatroomMessage(username+" is trying to cheat!");
-
 		}
-
 	}
 
 
 	public void doBasicGo(String username) {
-
-		String playerid = playersMap.get(username);
-
+		String playerid = getPlayerId(username);
 		// this check is already done
 		//if (myrisk.getGame().getCurrentPlayer().getAddress().equals(playerid)) {
-
 			myrisk.addPlayerCommandToInbox(playerid+"-doBasicGo", AIPlayer.getOutput(myrisk.getGame(),AIPlayer.aicrap) );
-
 		//}
 		// else something is going very wrong!!!!
 		// such as cheating
-
 	}
 
         private List<String> oldIds = new Vector();
         @Override
 	public void playerResigns(String username) {
 
-		String playerid = playersMap.get(username);
+		String playerid = getPlayerId(username);
 
 		//String currentAddress = myrisk.getGame().getCurrentPlayer().getAddress();
 
@@ -334,9 +317,6 @@ public class ServerGameRisk extends TurnBasedGame {
 			myrisk.resignPlayer( newName , playerid);
 
                         sendRename(username,newName);
-                        
-                        if (playersMap.remove(username)==null) { throw new RuntimeException(); }
-                        if (inverseMap.remove(playerid)==null) { throw new RuntimeException(); }
 
                         oldIds.add(playerid);
 		}
@@ -368,57 +348,23 @@ public class ServerGameRisk extends TurnBasedGame {
             }
             else {
                 String playerid = oldIds.remove(0);
-                playersMap.put(newuser,playerid);
-                inverseMap.put(playerid,newuser);
                 String oldName = myrisk.playerJoins(newuser,playerid);
-                
                 sendRename(oldName, newuser);
             }
-            
             // TODO
             //if paused and oldIds.isEmpty() now, we can kick off another game
         }
 
         @Override
 	public void renamePlayer(String oldser,String newuser) {
-
-	    synchronized(playersMap) {
-
-		String playerid = playersMap.get(oldser);
-
-		if (playerid!=null) {
-
-			playersMap.remove(oldser);
-
-			playersMap.put(newuser,playerid);
-
-			inverseMap.remove(playerid);
-
-			inverseMap.put(playerid,newuser);
-
-		}
-	    }
-
 	    myrisk.renamePlayer(oldser,newuser);
-
 	}
 
 
 	public void getInputFromSomeone() {
-
-		// trying to find what was null
-		System.out.println(inverseMap);
-		System.out.println(myrisk);
-		System.out.println(myrisk.getGame());
-		System.out.println(myrisk.getGame().getCurrentPlayer());
-		System.out.println(myrisk.getGame().getCurrentPlayer().getAddress());
-
-		String username = inverseMap.get( myrisk.getGame().getCurrentPlayer().getAddress() );
-
-		getInputFromClient(username);
-
+            Player player = myrisk.getGame().getCurrentPlayer();
+            String username = player.getType()==Player.PLAYER_HUMAN?player.getName():null;
+            getInputFromClient(username);
 	}
-
-
 
 }
