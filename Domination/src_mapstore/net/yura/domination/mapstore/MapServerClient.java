@@ -1,5 +1,6 @@
 package net.yura.domination.mapstore;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -69,7 +70,9 @@ public class MapServerClient extends HTTPClient {
 
         if (request.id == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
-            Task task = (Task)access.load( new UTF8InputStreamReader(is) );
+            
+            // on android BufferedInputStream makes it much fast, on desktop java does not really make a difference
+            Task task = (Task)access.load( new UTF8InputStreamReader(new BufferedInputStream(is)) );
 
             // HACK!!! there is a massive bug in Android where if you dont do a extra read after reading all the data
             // HACK!!! your next http request will fail! http://code.google.com/p/android/issues/detail?id=7786
