@@ -1,1 +1,1 @@
-java -cp @game.name@.jar net.yura.domination.ui.swinggui.SwingGUIFrame
+start javaw -cp @game.name@.jar net.yura.domination.ui.swinggui.SwingGUIFrame

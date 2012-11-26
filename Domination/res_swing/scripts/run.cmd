@@ -1,1 +1,1 @@
-java -jar @game.name@.jar
+start javaw -jar @game.name@.jar
