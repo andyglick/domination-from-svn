@@ -29,6 +29,7 @@ import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
+import net.yura.mobile.util.Url;
 import net.yura.swingme.core.ViewChooser;
 
 public class MiniLobbyClient implements LobbyClient,ActionListener {
@@ -387,14 +388,25 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         game.renamePlayer(oldname,newname);
     }
 
+
+
     // chat
-    public void serverMessage(String message) { }
-    public void privateMessage(String fromwho, String message) { }
-    public void incomingChat(int roomid, String fromwho, String message) { }
+    public void serverMessage(String message) {
+        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+    }
+    public void incomingChat(int roomid, String fromwho, String message) {
+        if (openGameId == roomid) {
+            Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+        }
+    }
+
     public void addPlayer(int roomid, Player player) { }
     public void removePlayer(int roomid, String player) { }
-    public void addMainRoom(int roomid) { }
+
+    public void privateMessage(String fromwho, String message) { }
     public void setUserInfo(String user,java.util.List info) { }
+
+    public void addMainRoom(int roomid) { }
     public void newMainRoomJoined(int id) { }
 
 }
