@@ -2464,6 +2464,11 @@ RiskUtil.printStackTrace(e);
                     skipUndo = true;
                     System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
                 }
+                catch (OutOfMemoryError e) {
+                    // what can we do :-(
+                    skipUndo = true;
+                    System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
+                }
                 catch (Throwable e) {
                     skipUndo = true;
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
