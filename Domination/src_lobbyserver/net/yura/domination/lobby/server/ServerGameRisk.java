@@ -283,6 +283,9 @@ public class ServerGameRisk extends TurnBasedGame {
 		if (message.trim().equals("closegame")) {
 			throw new RuntimeException("closegame not allowed to be sent to core: "+username);
 		}
+                if (message.trim().equals("undo")) {
+			throw new RuntimeException("undo not allowed to be sent to core: "+username);
+		}
 		if (player==null) {
                         throw new RuntimeException("currentPlayer is null");
 		}
