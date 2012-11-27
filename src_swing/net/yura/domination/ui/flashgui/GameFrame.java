@@ -156,8 +156,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		localGame = s;
 
-		if (localGame) { closebutton.setText(resb.getString("game.menu.close")); }
-		else { closebutton.setText(resb.getString("game.menu.leave")); }
+		closebutton.setText(resb.getString(localGame?"game.menu.close":"game.menu.leave"));
 
 		repaintCountries();
 
