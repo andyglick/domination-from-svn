@@ -2875,13 +2875,14 @@ RiskUtil.printStackTrace(e);
         private void createGame(String a ,RiskGame b, OnlineRisk lobby) {
                 onlinePlayClient = lobby;
                 myAddress = a;
+                unlimitedLocalMode = false;
                 setGame(b);
 	}
         public void setGame(RiskGame b) {
 		inbox.clear();
 		Object g = game;
 		game = b;
-		if (g==null) { controller.startGame(unlimitedLocalMode); }
+                controller.startGame(unlimitedLocalMode);// need to always call this as there may be a new map
                 getInput();
         }
         
