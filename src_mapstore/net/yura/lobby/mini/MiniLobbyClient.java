@@ -150,6 +150,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                         break;
                     case Game.STATE_CAN_PLAY:
                     case Game.STATE_CAN_WATCH:
+                        if (openGameId!=-1) {
+                            // TODO should we close the game in the UI?
+                            closeGame();
+                        }
                         openGameId = game.getId();
                         mycom.playGame(game);
                         break;
