@@ -257,6 +257,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void setUsername(String name, boolean guest) {
         myusername = name;
+        toast("You are logged in as: "+name);
     }
     public String whoAmI() {
             return myusername;
@@ -396,11 +397,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     // chat
     public void serverMessage(String message) {
-        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+        toast(message);
     }
     public void incomingChat(int roomid, String fromwho, String message) {
         if (openGameId == roomid) {
-            Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+            toast(message);
         }
     }
 
@@ -413,4 +414,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void addMainRoom(int roomid) { }
     public void newMainRoomJoined(int id) { }
 
+    static void toast(String message) {
+        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+    }
+    
 }
