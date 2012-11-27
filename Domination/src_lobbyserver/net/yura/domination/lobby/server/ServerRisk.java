@@ -111,6 +111,7 @@ public class ServerRisk extends Risk {
         
 	public synchronized void setKillFlag() {
 		killflag = true;
+                paused = false;
 		inbox.add(myAddress+" closegame");
 		notify();
 	}
@@ -169,10 +170,10 @@ public class ServerRisk extends Risk {
 		}
 
 		if (paused) {
-			System.out.println("\tRISKSETUP "+mem);
+			//System.out.println("\tRISKSETUP "+mem);
 		}
 		else {
-			System.out.println("\tRISKSEND "+mem);
+			//System.out.println("\tRISKSEND "+mem);
 			// send out to all clients
 			sgr.sendStringToAllClient(mem);
 		}
