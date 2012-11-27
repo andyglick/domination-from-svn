@@ -20,6 +20,7 @@ public class GameRenderer extends DefaultListCellRenderer {
     
     public GameRenderer(MiniLobbyClient l) {
         lobby = l;
+        setName("ListRendererCollapsed"); // get rid of any padding
         sicon = new ScaledIcon( MapChooser.adjustSizeToDensityFromMdpi(75),MapChooser.adjustSizeToDensityFromMdpi(47) );
     }
 
