@@ -198,49 +198,32 @@ public class ServerGameRisk extends TurnBasedGame {
             }
 	}    
 
-	// this NEEDS to call gameFinished(winning player)
-	public void stopGame() {
+	public String stopGame() {
 		myrisk.setPaued(true);
-
 		RiskGame game = myrisk.getGame();
-
 		if ( game.checkPlayerWon() ) {
-
-			gameFinished( game.getCurrentPlayer().getName() );
-
+			return game.getCurrentPlayer().getName();
 		}
 		else {
-
 			String name="???";
 			int best=-1;
-
 			List<Player> players = game.getPlayers();
-
 			for (int c=0;c<players.size();c++) {
-
 				Player player = players.get(c);
-
 				// player.getType() == Player.PLAYER_HUMAN &&
 				// if all resign then no humans left
 				if ( player.getNoTerritoriesOwned()>best) {
-
 					name = player.getName();
 					best = player.getNoTerritoriesOwned();
-
 				}
-
 			}
-
-			gameFinished(name);	
-
+			return name;
 		}
-
 	}
 
 	public void destroyGame() {
 		myrisk.setKillFlag();
 	}
-
 
 	public void clientHasJoined(String username) {
 
