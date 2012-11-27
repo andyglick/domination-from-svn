@@ -81,7 +81,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
         mycom = new LobbyCom(uuid);
         mycom.addEventListener(this);
-        mycom.connect("192.168.0.11", 1964);
+        mycom.connect("lobby.yura.net", 1964);
         
     }
     
