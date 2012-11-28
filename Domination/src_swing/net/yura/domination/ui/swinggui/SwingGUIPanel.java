@@ -1411,7 +1411,6 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 			add(guiGame, java.awt.BorderLayout.CENTER );
 
-                        SwingGUIPanel.this.blockInput();
                 }
             } );
 
@@ -2247,13 +2246,14 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				}
 			}
 
+                        blockInput();
 
 			// YURA: not sure why this needs to be here, used to work without it
 			pprepaintCountries();
 			gameTab.startGame();
 			statisticsTab.startGame();
 
-
+                        
 			SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
 		}
 
