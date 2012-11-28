@@ -170,7 +170,7 @@ public class CardsDialog extends JDialog {
 		note.setMaximumSize( noteSize );
 
 
-		JButton okButton = GameFrame.makeRiskButton(Cards.getSubimage(500, 420, 88, 31), Cards.getSubimage(630, 428, 88, 31), Cards.getSubimage(630, 459, 88, 31), Cards.getSubimage(500, 420, 88, 31), true);
+		JButton okButton = GameFrame.makeRiskButton(Cards.getSubimage(500, 420, 88, 31), Cards.getSubimage(630, 428, 88, 31), Cards.getSubimage(630, 459, 88, 31), Cards.getSubimage(500, 420, 88, 31));
 		okButton.setText(resb.getString("cards.done"));
 		okButton.setBounds(500, 420, 88, 31);
 
