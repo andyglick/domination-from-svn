@@ -1411,8 +1411,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 			add(guiGame, java.awt.BorderLayout.CENTER );
 
-                        // this is so close is not selected
-                        mapViewComboBox.grabFocus();
+                        SwingGUIPanel.this.blockInput();
                 }
             } );
 
