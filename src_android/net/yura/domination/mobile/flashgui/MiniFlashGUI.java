@@ -2,6 +2,8 @@ package net.yura.domination.mobile.flashgui;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.engine.Risk;
@@ -305,6 +307,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         XULLoader loader = getPanel("/mainmenu.xml");
 
+        Component onlineButton = loader.find("OnlineButton");
+        if (onlineButton!=null) {
+            onlineButton.setVisible( Locale.getDefault().equals(new Locale("en","GB")) );
+        }
+        
         final Panel newContentPane = new ScrollPane( loader.getRoot() );
         
         
