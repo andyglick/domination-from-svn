@@ -5,7 +5,6 @@ package net.yura.domination.ui.flashgui;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import net.yura.domination.engine.Risk;
@@ -284,13 +283,6 @@ public class FlashRiskAdapter implements RiskListener {
 		}
 		else {
 			menu.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		}
-
-		try {
-			pp.load();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 
 		gameFrame.setup(s);
