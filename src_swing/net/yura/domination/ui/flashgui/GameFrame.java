@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -473,6 +474,13 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	public void setup(boolean s) {
 
+            	try {
+			pp.load();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+            
 		gameState=0; // -1 or 0 means no input needed
 		mapView=PicturePanel.VIEW_CONTINENTS;
 

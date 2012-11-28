@@ -346,6 +346,12 @@ public class GameActivity extends Frame implements ActionListener {
         
         // ============================================ show
 
+        // disable all buttons at the start of the game
+        Button[] buttons = new Button[] {savebutton,AutoEndGo,AutoDefend,cardsbutton,missionbutton,undobutton,gobutton};
+        for (int c=0;c<buttons.length;c++) {
+            buttons[c].setFocusable(false);
+        }
+        
         setVisible(true);
     }
     
