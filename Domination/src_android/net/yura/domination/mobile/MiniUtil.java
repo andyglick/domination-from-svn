@@ -4,23 +4,24 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
-import net.yura.domination.mobile.flashgui.GameActivity;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.io.FileUtil;
-import net.yura.mobile.util.Properties;
 
 public class MiniUtil {
 
     public static void showAbout() {
-        
-        Properties resb = GameActivity.resb;
+
+        ResourceBundle resb = TranslationBundle.getBundle();
         
         int year = Calendar.getInstance().get(Calendar.YEAR);
         String copyright = resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
@@ -35,6 +36,7 @@ public class MiniUtil {
                 "<p>"+copyright+"</p>"+
                // "<p>"+ resb.getString("about.comments") +"</p>"+
                 "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
+                "<p>Locale: "+Locale.getDefault()+" me: "+resb.getLocale()+"</p>"+
                 "</html>";
 
         Button credits = new Button(resb.getString("about.tab.credits"));
@@ -63,7 +65,7 @@ public class MiniUtil {
                     OptionPane.showMessageDialog(null,"Unable to open info: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
                 }
             }
-        } ,text,resb.getProperty("about.title"), 0, OptionPane.INFORMATION_MESSAGE,
+        } ,text,resb.getString("about.title"), 0, OptionPane.INFORMATION_MESSAGE,
         null, new Button[] {credits,license,changelog,ok} , ok);
         
     }

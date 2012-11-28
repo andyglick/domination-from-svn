@@ -4,11 +4,9 @@
     <label alignment="center" icon="/logo.png"/>
     <button action="new game" i18n="true" mnemonic="78" text="mainmenu.newgame" weightx="1" property="plafname=MainButton"/>
     <button action="load game" i18n="true" mnemonic="76" text="mainmenu.loadgame" property="plafname=MainButton"/>
+    <button action="online" i18n="true" text="mainmenu.online" property="plafname=MainButton" name="OnlineButton"/>
     <button action="manual" i18n="true" mnemonic="72" text="mainmenu.help" property="plafname=MainButton"/>
     <button action="about" i18n="true" mnemonic="65" text="mainmenu.about" property="plafname=MainButton"/>
-
-    <button action="online" i18n="true" text="mainmenu.online" property="plafname=MainButton"/>
-
     <button action="donate" icon="/donate.gif" property="plafname=DonateButton"/>
     <button action="quit" i18n="true" mnemonic="27" text="mainmenu.quit" property="plafname=MainButton"/>
     <!--
