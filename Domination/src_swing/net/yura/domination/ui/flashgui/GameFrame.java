@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
@@ -139,26 +140,6 @@ public class GameFrame extends JFrame implements KeyListener {
 			setResizable(false);
 
 		}
-
-	}
-
-	public void setup(boolean s) {
-
-		gameState=0; // -1 or 0 means no input needed
-		mapView=PicturePanel.VIEW_CONTINENTS;
-
-		//gameStatus="";
-		setGameStatus(null);
-
-		note="";
-		setupDone=true;
-		//c1Id = -1;
-
-		localGame = s;
-
-		closebutton.setText(resb.getString(localGame?"game.menu.close":"game.menu.leave"));
-
-		repaintCountries();
 
 	}
 
@@ -364,35 +345,35 @@ public class GameFrame extends JFrame implements KeyListener {
 		int x=63;
 		int y=77;
 
-		graphbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h), true );
+		graphbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
 		graphbutton.setBounds(x-63, y-54, w , h );
 		graphbutton.addActionListener( buttonActionListener );
 		graphbutton.setToolTipText( resb.getString("game.button.statistics") );
 
 		x=x+w;
 
-		cardsbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h), false );
+		cardsbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
 		cardsbutton.setBounds(x-63, y-54, w , h );
 		cardsbutton.addActionListener( buttonActionListener );
 		cardsbutton.setToolTipText(resb.getString("game.button.cards"));
 
 		x=x+w;
 
-		missionbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h), false );
+		missionbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
 		missionbutton.setBounds(x-63, y-54, w , h );
 		missionbutton.addActionListener( buttonActionListener );
 		missionbutton.setToolTipText(resb.getString("game.button.mission"));
 
 		x=x+w;
 
-		undobutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h), false );
+		undobutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
 		undobutton.setBounds(x-63, y-54, w , h );
 		undobutton.addActionListener( buttonActionListener );
 		undobutton.setToolTipText(resb.getString("game.button.undo"));
 
 		x=x+w;
 
-		menubutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h), true );
+		menubutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
 		menubutton.setBounds(x-63, y-54, w , h );
 		menubutton.addActionListener( buttonActionListener );
 		menubutton.setToolTipText( resb.getString("game.button.menu") );
@@ -401,7 +382,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		w=115;
 		h=31;
-		gobutton = makeRiskButton(gameImg.getSubimage(663, 128, w, h), gameImg.getSubimage(412, 394, w, h), gameImg.getSubimage(296, 394, w, h), gameImg.getSubimage(180, 394, w, h), false );
+		gobutton = makeRiskButton(gameImg.getSubimage(663, 128, w, h), gameImg.getSubimage(412, 394, w, h), gameImg.getSubimage(296, 394, w, h), gameImg.getSubimage(180, 394, w, h) );
 		gobutton.addActionListener( buttonActionListener );
 
 		fpBottom.add(graphbutton);
@@ -488,6 +469,31 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		getContentPane().add( flashPanel );
 
+	}
+
+	public void setup(boolean s) {
+
+		gameState=0; // -1 or 0 means no input needed
+		mapView=PicturePanel.VIEW_CONTINENTS;
+
+		//gameStatus="";
+		setGameStatus(null);
+
+		note="";
+		setupDone=true;
+		//c1Id = -1;
+
+		localGame = s;
+
+		closebutton.setText(resb.getString(localGame?"game.menu.close":"game.menu.leave"));
+
+		repaintCountries();
+
+                // disable all buttons at the start of the game
+                AbstractButton[] buttons = new AbstractButton[] {savebutton,AutoEndGo,AutoDefend,cardsbutton,missionbutton,undobutton,gobutton};
+                for (int c=0;c<buttons.length;c++) {
+                    buttons[c].setEnabled(false);
+                }
 	}
 
 	ActionListener buttonActionListener = new ActionListener() {
@@ -1122,17 +1128,6 @@ public class GameFrame extends JFrame implements KeyListener {
 	}//private void goOn()
 
 
-
-        /**
-         * try not to use this method, the last boolean represents state and so should not be part of button creation
-         * @deprecated 
-         */
-	public static JButton makeRiskButton(Image gobutton1, Image gobutton2, Image gobutton3, Image gobutton4, boolean startstate) {
-		JButton button = makeRiskButton(gobutton1, gobutton2, gobutton3, gobutton4);
-		button.setEnabled(startstate);
-		return button;
-	}
-
 	public static JButton makeRiskButton(Image gobutton1, Image gobutton2, Image gobutton3, Image gobutton4) {
 		JButton button = new JButton();
 		NewGameFrame.sortOutButton( button, gobutton1, gobutton3, gobutton2 );
@@ -1201,22 +1196,20 @@ public class GameFrame extends JFrame implements KeyListener {
 	 * the game menu
 	 * which you get when pressing the "Menu" button
 	 */
-	class GameMenuPanel extends JPanel
-	{
+	class GameMenuPanel extends JPanel {
 
-		public GameMenuPanel()
-		{
+		public GameMenuPanel() {
 
 			setLayout(null);
 
 			int w=100;
 
-			savebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21), false );
+			savebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			savebutton.setText(resb.getString("game.menu.save"));
 			savebutton.setBounds(35, 50, w , 20 );
 			savebutton.addActionListener( buttonActionListener );
 
-			closebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21), true );
+			closebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 
 			closebutton.setBounds(35, 80, w , 20 );
 			closebutton.addActionListener( buttonActionListener );
@@ -1236,7 +1229,6 @@ public class GameFrame extends JFrame implements KeyListener {
 			AutoEndGo.addActionListener( buttonActionListener );
 			AutoEndGo.setBackground( Color.lightGray );
 
-			AutoEndGo.setEnabled(false);
 
 
 
@@ -1253,12 +1245,11 @@ public class GameFrame extends JFrame implements KeyListener {
 			AutoDefend.addActionListener( buttonActionListener );
 			AutoDefend.setBackground( Color.lightGray );
 
-			AutoDefend.setEnabled(false);
 
 
 
 
-			helpbutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21), true );
+			helpbutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			helpbutton.setText(resb.getString("game.menu.manual"));
 			helpbutton.setBounds(35, 170, w , 20 );
 			helpbutton.addActionListener( buttonActionListener );
@@ -1266,7 +1257,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 
 
-			resumebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21), true );
+			resumebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			resumebutton.setText(resb.getString("game.menu.closemenu"));
 			resumebutton.setBounds(35, 200, w , 20 );
 			resumebutton.addActionListener( buttonActionListener );
