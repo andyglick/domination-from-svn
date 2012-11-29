@@ -3,18 +3,15 @@ package net.yura.domination.mobile.flashgui;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import net.yura.domination.engine.ColorUtil;
-import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mapstore.BadgeButton;
-import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
-import net.yura.lobby.model.Game;
+import net.yura.domination.mobile.MiniUtil;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
@@ -30,10 +27,10 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.components.TextComponent;
+import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
-import net.yura.mobile.gui.components.Window;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
@@ -386,18 +383,15 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         else {
             setLobbyMap( allowedMaps[0] );
         }
+        
+        ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
 
         // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
         DesktopPane.invokeLater( new Runnable() {
             public void run() {
-                if (localgame) {
-                    setTitle(resb.getProperty("newgame.title.local"));
-                    //resetplayers.setVisible(true);
-                }
-                else {
-                    setTitle(resb.getProperty("newgame.title.network"));
-                    //resetplayers.setVisible(false);
-                }
+
+                setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
+                //resetplayers.setVisible(localgame?true:false);
 
                 setContentPane( new ScrollPane( newgame.getRoot() ) );
 

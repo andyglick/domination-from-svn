@@ -89,7 +89,7 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
     void closeLobby() {
         mlc.destroy();
         mlc = null;
-        add( new Label("no lobby") );
+        add( new Label("no lobby") ); // can throw when DesktopPane is null (open and close MapStore)
     }
 
 }
