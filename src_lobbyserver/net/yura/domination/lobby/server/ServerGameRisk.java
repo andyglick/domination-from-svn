@@ -273,7 +273,7 @@ public class ServerGameRisk extends TurnBasedGame {
                         throw new RuntimeException("currentPlayer is null");
 		}
                 if (!player.getAddress().equals( address )) {
-                        throw new RuntimeException("got command but it is not our go: "+username+" "+address+" "+message+" current player id: "+player.getAddress());
+                        throw new RuntimeException("got command but it is not our go: "+username+" "+address+" "+message+" current player: "+player.getName() );
                 }
 
 		myrisk.addPlayerCommandToInbox(address , message);
