@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		21
+	Android		22
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -16,6 +16,8 @@ CURRENT VERSION:
 1.1.1.3
 
 	Brazilian Portuguese added by Ricardo Gomes Ponce
+
+	Android 22 online multiplayer Beta for en_GB users
 
 1.1.1.2
 
