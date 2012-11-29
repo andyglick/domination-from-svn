@@ -304,7 +304,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         if (found!=null) {
             list.removeElement(found);
             getRoot().revalidate();
-            list.repaint();
+            getRoot().repaint();
         }
     }
 
@@ -312,7 +312,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         ViewChooser box = (ViewChooser)loader.find("listView");
         list.setListData( RiskUtil.asVector( filter(games, ((Option)box.getSelectedItem()).getKey() ) ) );
         getRoot().revalidate();
-        list.repaint();
+        getRoot().repaint();
     }
     java.util.List filter(java.util.List list,String filter) {
         // all
