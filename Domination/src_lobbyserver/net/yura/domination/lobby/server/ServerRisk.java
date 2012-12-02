@@ -1,5 +1,6 @@
 package net.yura.domination.lobby.server;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
@@ -59,34 +60,27 @@ public class ServerRisk extends Risk {
 	public void resignPlayer(String name,String Addr) {
 		if (game!=null) { // if its a actual player of the game that has left
 
-			//int count=0;
+                        // get all the players and make all with the ip of the leaver become nutral
+			List<Player> players = game.getPlayers();
+                        List<Player> leavers =  new ArrayList();
 
-			// get all the players and make all with the ip of the leaver become nutral
-			List<Player> leavers = game.getPlayers();
+			for (int c=0; c< players.size() ; c++) {
 
-			for (int c=0; c< leavers.size() ; c++) {
-
-				Player player = leavers.get(c);
+				Player player = players.get(c);
 
 				// AI will never have players addr for lobby game
 				if ( player.getAddress().equals(Addr) ) {
                                         player.rename( name );
 					player.setType( Player.PLAYER_AI_CRAP );
 					player.setAddress( myAddress );
+                                        leavers.add(player);
 				}
-
-				//if (player.getType() == Player.PLAYER_HUMAN) {
-
-				//	count++;
-
-				//}
-
 			}
 
-			//@todo this is wrong, just bot games wont work and otehr things wont
-			//if (count==0) {
-			// close everything (but this is wrong)
-			//}
+                        // if the person whos go it is has just left
+			if (leavers.contains(game.getCurrentPlayer())) {
+                            getInput();
+                        }
 
 		}
 
