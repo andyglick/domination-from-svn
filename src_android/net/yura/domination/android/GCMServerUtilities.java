@@ -9,17 +9,17 @@ import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.mobile.gui.Midlet;
 import android.content.Context;
 
-public class ServerUtilities implements AndroidLobbyClient {
+public class GCMServerUtilities implements AndroidLobbyClient {
 
     public static void register(Context context, String registrationId) {
         Connection con = getLobbyConnection();
-        con.addAndroidEventListener(new ServerUtilities(context));
+        con.addAndroidEventListener(new GCMServerUtilities(context));
         con.androidRegister(registrationId);
     }
 
     public static void unregister(Context context, String registrationId) {
         Connection con = getLobbyConnection();
-        con.addAndroidEventListener(new ServerUtilities(context));
+        con.addAndroidEventListener(new GCMServerUtilities(context));
         con.androidUnregister(registrationId);
     }
 
@@ -31,9 +31,8 @@ public class ServerUtilities implements AndroidLobbyClient {
         return null;
     }
 
-    Context context;
-
-    public ServerUtilities(Context context) {
+    private Context context;
+    public GCMServerUtilities(Context context) {
         this.context = context;
     }
     

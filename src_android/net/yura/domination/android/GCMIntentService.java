@@ -1,14 +1,12 @@
 package net.yura.domination.android;
 
 import java.util.logging.Logger;
-import net.yura.android.AndroidMeActivity;
-import net.yura.domination.R;
+import net.yura.mobile.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -25,14 +23,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String registrationId) {
         displayMessage(context,"Device registered: regId = "+registrationId);
-        ServerUtilities.register(context, registrationId);
+        GCMServerUtilities.register(context, registrationId);
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         displayMessage(context, "Device unregistered");
         if (GCMRegistrar.isRegisteredOnServer(context)) {
-            ServerUtilities.unregister(context, registrationId);
+            GCMServerUtilities.unregister(context, registrationId);
         } else {
             // This callback results from the call to unregister made on
             // ServerUtilities when the registration to the server failed.
@@ -42,7 +40,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     @Override
     protected void onMessage(Context context, Intent intent) {
-        String message = "Received message";
+	String msg = intent.getExtras().getString("message");
+        String message = msg==null?"Received message":msg;
         displayMessage(context, message);
         // notifies user
         generateNotification(context, message);
@@ -78,7 +77,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(icon, message, when);
         String title = context.getString(R.string.app_name);
-        Intent notificationIntent = new Intent(context, AndroidMeActivity.class);
+        Intent notificationIntent = new Intent(context, net.yura.android.AndroidMeActivity.class);
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -94,10 +93,11 @@ public class GCMIntentService extends GCMBaseIntentService {
     
     static void displayMessage(Context context,String text) {
         logger.info(text);
-        Toast.makeText(context, text, Toast.LENGTH_LONG);
     }
     
-    static void setup(Context context) {
+    public static void setup() {
+	Context context = net.yura.android.AndroidMeApp.getContext();
+	
         GCMRegistrar.checkDevice(context);
         GCMRegistrar.checkManifest(context);
         final String regId = GCMRegistrar.getRegistrationId(context);
@@ -109,13 +109,19 @@ public class GCMIntentService extends GCMBaseIntentService {
                 displayMessage(context,"Already registered");
             }
             else {
-                ServerUtilities.register(context, regId);
+                GCMServerUtilities.register(context, regId);
                 
-                // TODO if we FAIL as register() then call
+                // TODO if we FAIL at registering on our server then call
                 // GCMRegistrar.unregister(context);
                 // currently can not tell
             }
         }
     }
+    
+    public static void unregister() {
+	Context context = net.yura.android.AndroidMeApp.getContext();
+	GCMRegistrar.unregister(context);
+    }
+
     
 }
