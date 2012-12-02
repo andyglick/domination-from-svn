@@ -36,6 +36,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
+    private static final String LOBBY_SERVER = "lobby.yura.net";
+    //private static final String LOBBY_SERVER = "192.168.0.11";
+    
     XULLoader loader;
     List list;
 
@@ -82,7 +85,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
         mycom = new LobbyCom(uuid);
         mycom.addEventListener(this);
-        mycom.connect("lobby.yura.net", 1964);
+        mycom.connect(LOBBY_SERVER, 1964);
         
     }
     
@@ -232,6 +235,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void connected() {
+	
+	net.yura.domination.android.GCMIntentService.setup();
+	
         mycom.getGameTypes();
     }
 

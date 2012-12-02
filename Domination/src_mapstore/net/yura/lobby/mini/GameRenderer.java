@@ -72,15 +72,22 @@ public class GameRenderer extends DefaultListCellRenderer {
             g.drawString(part2, getWidth()-font.getWidth(part2)-padding, getHeight()-font.getHeight()-padding);
         }
 
+        int actionx=getWidth();
         if (action!=null) {
             int w = font.getWidth(action);
             int h = font.getHeight();
 
             g.setColor(color);
-            g.fillRoundRect(getWidth()-w-padding*3, padding, w+padding*2, h+padding*2, 5, 5);
+            actionx = getWidth()-w-padding*3;
+            g.fillRoundRect(actionx, padding, w+padding*2, h+padding*2, 5, 5);
 
             g.setColor( ColorUtil.getTextColorFor(color) );
             g.drawString(action, getWidth()-w-padding*2, padding*2);
+        }
+        if (lobby.whoAmI().equals( game.getWhosTurn() )) {
+            int wh = font.getHeight();
+            g.setColor(0xFFFF0000);
+            g.fillOval(actionx-wh-padding, (getHeight()-wh)/2, wh, wh);
         }
         
     }
