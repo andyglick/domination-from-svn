@@ -105,7 +105,16 @@ public class GCMIntentService extends GCMBaseIntentService {
           GCMRegistrar.register(context, SENDER_ID);
         }
         else {
-            displayMessage(context,"Already registered");
+            if (GCMRegistrar.isRegisteredOnServer(context)) {
+                displayMessage(context,"Already registered");
+            }
+            else {
+                ServerUtilities.register(context, regId);
+                
+                // TODO if we FAIL as register() then call
+                // GCMRegistrar.unregister(context);
+                // currently can not tell
+            }
         }
     }
     
