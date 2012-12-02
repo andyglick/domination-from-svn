@@ -2880,7 +2880,6 @@ RiskUtil.printStackTrace(e);
 	}
         public void setGame(RiskGame b) {
 		inbox.clear();
-		Object g = game;
 		game = b;
                 controller.startGame(unlimitedLocalMode);// need to always call this as there may be a new map
                 getInput();
