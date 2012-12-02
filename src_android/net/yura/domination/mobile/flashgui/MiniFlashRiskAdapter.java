@@ -16,7 +16,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     private MiniFlashGUI mainFrame;
     private GameActivity gameFrame;
 
-    net.yura.lobby.mini.MiniLobbyClient lobby;
+    public net.yura.lobby.mini.MiniLobbyClient lobby;
     
     public MiniFlashRiskAdapter(Risk risk) {
         myRisk = risk;
