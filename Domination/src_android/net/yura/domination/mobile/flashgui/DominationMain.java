@@ -39,6 +39,7 @@ public class DominationMain extends Midlet {
     }
     
     public Risk risk;
+    public MiniFlashRiskAdapter adapter;
     
     public DominationMain() {
 
@@ -147,7 +148,7 @@ public class DominationMain extends Midlet {
 
 
         risk = new Risk();
-        MiniFlashRiskAdapter adapter = new MiniFlashRiskAdapter(risk);
+        adapter = new MiniFlashRiskAdapter(risk);
 
         adapter.openMainMenu();
 

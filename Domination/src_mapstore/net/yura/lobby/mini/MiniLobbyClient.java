@@ -39,7 +39,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     XULLoader loader;
     List list;
 
-    Connection mycom;
+    public Connection mycom;
     MiniLobbyGame game;
 
     String myusername;
