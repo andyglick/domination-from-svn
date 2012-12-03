@@ -20,8 +20,11 @@ public class GCMActivity extends Activity {
             setup();
             //unregister();
 	}
-	catch (Throwable th) {
+	catch (UnsupportedOperationException th) {
 	    logger.log(Level.INFO, "gmc fail", th);
+	}
+	catch (Throwable th) {
+	    logger.log(Level.WARNING, "gmc fail", th);
 	}
         finish();
     }
