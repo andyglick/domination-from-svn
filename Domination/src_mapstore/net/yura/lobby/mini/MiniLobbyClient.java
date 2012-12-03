@@ -236,7 +236,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void connected() {
 	
-	net.yura.domination.android.GCMIntentService.setup();
+	Midlet.openURL("nativeNoResult://net.yura.domination.android.GCMActivity");
 	
         mycom.getGameTypes();
     }
