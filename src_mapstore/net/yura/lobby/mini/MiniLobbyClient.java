@@ -83,7 +83,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         
         
         
-        mycom = new LobbyCom(uuid);
+        mycom = new LobbyCom(uuid,lobbyGame.getAppName(),lobbyGame.getAppVersion());
         mycom.addEventListener(this);
         mycom.connect(LOBBY_SERVER, 1964);
         

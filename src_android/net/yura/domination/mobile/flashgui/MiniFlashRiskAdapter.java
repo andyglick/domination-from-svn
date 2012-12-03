@@ -29,6 +29,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
         	mainFrame.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
             }
+            public String getAppName() {
+                return "AndroidDomination";
+            }
+            public String getAppVersion() {
+                return DominationMain.version;
+            }
         } );
         
         Frame mapFrame = new Frame( lobby.getTitle() );

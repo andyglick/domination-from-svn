@@ -78,6 +78,12 @@ public class SwingMEWrapper {
                     lobby.createNewGame(result);
                 }
             }
+            public String getAppName() {
+                return "SwingDomination";
+            }
+            public String getAppVersion() {
+                return Risk.RISK_VERSION;
+            }
         } );
     }
 
