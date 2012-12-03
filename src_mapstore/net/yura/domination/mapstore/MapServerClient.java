@@ -4,9 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Midlet;
@@ -14,7 +19,6 @@ import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
-import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.SystemUtil;
 
 /**
@@ -22,6 +26,8 @@ import net.yura.mobile.util.SystemUtil;
  */
 public class MapServerClient extends HTTPClient {
 
+    public static final Logger logger = Logger.getLogger(MapServerClient.class.getName());
+    
     public static final Object XML_REQUEST_ID = "XML_REQUEST";
     public static final Object MAP_REQUEST_ID = "MAP_REQUEST";
     //public static final Object IMG_REQUEST_ID = new Object();
@@ -47,9 +53,12 @@ public class MapServerClient extends HTTPClient {
             return;
         }
 
+        Level level  = Level.WARNING;
+        if (ex instanceof UnknownHostException || (ex instanceof SocketException && ("Connection timed out".equals(ex.getMessage()) || "Connection reset by peer".equals(ex.getMessage())) ) ) {
+            level = Level.INFO;
+        }
         // print error to console
-        Logger.warn( "error: "+responseCode+" "+ex+" "+request+"\n"+headers );
-        if (ex!=null) { Logger.warn(ex); } else { Logger.dumpStack(); }
+        logger.log(level, "error: "+responseCode+" "+ex+" "+request+"\n"+headers, ex!=null?ex:new Exception());
 
         // show error dialog to the user
         if (ch!=null) {
@@ -126,7 +135,7 @@ public class MapServerClient extends HTTPClient {
             request.id = type;
             request.headers = headers;
 
-Logger.info("Make Request: "+request);
+logger.info("Make Request: "+request);
 
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby

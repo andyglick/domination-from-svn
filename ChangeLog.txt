@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		22
+	Android		23
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,12 @@ CURRENT VERSION:
 
 	Brazilian Portuguese added by Ricardo Gomes Ponce
 
+	Android 23 push notifications for online play
+		   Grasshopper update to send jpg and not png
+		   http.keepAlive=false android hack added
+		   savegame for / or \ in name fix
+		   nullpointer in desktoppane hack added
+		   do not spam logs with known MapServer connections errors
 	Android 22 online multiplayer Beta for en_GB users
 
 1.1.1.2
