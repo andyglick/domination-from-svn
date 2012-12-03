@@ -1,6 +1,7 @@
 package net.yura.domination.android;
 
-import java.util.logging.Logger;
+import static net.yura.domination.android.GCMActivity.SENDER_ID;
+import static net.yura.domination.android.GCMActivity.displayMessage;
 import net.yura.mobile.R;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,11 +11,10 @@ import android.content.Intent;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
+/**
+ * @see com.google.android.gcm.demo.app.GCMIntentService
+ */
 public class GCMIntentService extends GCMBaseIntentService {
-
-    static final Logger logger = Logger.getLogger(GCMIntentService.class.getName());
-
-    static final String SENDER_ID = "783159960229";
 
     public GCMIntentService() {
         super(SENDER_ID);
@@ -87,41 +87,5 @@ public class GCMIntentService extends GCMBaseIntentService {
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(0, notification);
     }
-    
-    
-    
-    
-    static void displayMessage(Context context,String text) {
-        logger.info(text);
-    }
-    
-    public static void setup() {
-	Context context = net.yura.android.AndroidMeApp.getContext();
-	
-        GCMRegistrar.checkDevice(context);
-        GCMRegistrar.checkManifest(context);
-        final String regId = GCMRegistrar.getRegistrationId(context);
-        if (regId.equals("")) {
-          GCMRegistrar.register(context, SENDER_ID);
-        }
-        else {
-            if (GCMRegistrar.isRegisteredOnServer(context)) {
-                displayMessage(context,"Already registered");
-            }
-            else {
-                GCMServerUtilities.register(context, regId);
-                
-                // TODO if we FAIL at registering on our server then call
-                // GCMRegistrar.unregister(context);
-                // currently can not tell
-            }
-        }
-    }
-    
-    public static void unregister() {
-	Context context = net.yura.android.AndroidMeApp.getContext();
-	GCMRegistrar.unregister(context);
-    }
 
-    
 }
