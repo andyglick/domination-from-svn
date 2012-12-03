@@ -14,7 +14,9 @@ public class GCMActivity extends Activity {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
         setup();
+	//unregister();
         finish();
     }
     
