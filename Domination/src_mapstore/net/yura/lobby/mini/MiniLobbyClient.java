@@ -356,42 +356,35 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
 
     public void messageForGame(int gameid, Object message) {
-        
-        if (gameid!=openGameId) {
-            throw new RuntimeException("we got a message for game "+gameid+" but our game is "+openGameId);
-        }
-        
-        if (message instanceof String) {
-            String string = (String)message;
-            if (string.startsWith("LOBBY_NEEDINPUT ")) {
-                // TODO
-                String who = string.substring(16, string.length() );
-                //playerlist.needInputFrom(who);
-                if (whoAmI().equals(who)) {
-                    //needinput = true;
+        if (gameid==openGameId) {
+            if (message instanceof String) {
+                String string = (String)message;
+                if (string.equals("LOBBY_GAMEOVER")) {
+                    // TODO
+                    //paused=true;
+                }
+                else {
+                    game.stringForGame(string);
                 }
             }
-            else if (string.equals("LOBBY_GAMEOVER")) {
-                // TODO
-                //paused=true;
+            else if (message instanceof byte[]) {
+                try {
+                    ByteArrayInputStream in = new ByteArrayInputStream( (byte[])message );
+                    ObjectInputStream oin = new ObjectInputStream(in);
+                    Object object = oin.readObject();
+                    game.objectForGame(object);
+                }
+                catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             else {
-                game.stringForGame(string);
-            }
-        }
-        else if (message instanceof byte[]) {
-            try {
-                ByteArrayInputStream in = new ByteArrayInputStream( (byte[])message );
-                ObjectInputStream oin = new ObjectInputStream(in);
-                Object object = oin.readObject();
-                game.objectForGame(object);
-            }
-            catch (Exception ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException("unknown object "+message);
             }
         }
         else {
-            throw new RuntimeException("unknown object "+message);
+            // this can happen if we close a game as we are getting a message for it
+            logger.info("we got a message for game "+gameid+" but our game is "+openGameId);
         }
     }
 
