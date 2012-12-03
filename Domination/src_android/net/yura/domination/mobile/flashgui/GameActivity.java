@@ -381,7 +381,9 @@ public class GameActivity extends Frame implements ActionListener {
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     if ("ok".equals(actionCommand)) {
-                        String name = MiniUtil.getSaveGameDirURL() + saveText.getText() + SAVE_EXTENSION;
+                        String fileName = saveText.getText();
+                        fileName = RiskUtil.replaceAll(RiskUtil.replaceAll(fileName, "/", "-"),"\\","-");
+                        String name = MiniUtil.getSaveGameDirURL() + fileName + SAVE_EXTENSION;
                         go("savegame " + name );
                     }
                 }

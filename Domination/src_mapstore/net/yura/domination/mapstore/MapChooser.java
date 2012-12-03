@@ -314,7 +314,6 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (wr!=null) {
             Map map = (Map)wr.get();
             if (map!=null) {
-                System.out.println("found in cache "+map);
                 return map;
             }
         }
