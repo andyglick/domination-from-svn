@@ -10,7 +10,7 @@ public class GCMActivity extends Activity {
 
     public static final String SENDER_ID = "783159960229";
     
-    static final Logger logger = Logger.getLogger(GCMIntentService.class.getName());
+    static final Logger logger = Logger.getLogger(GCMActivity.class.getName());
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
