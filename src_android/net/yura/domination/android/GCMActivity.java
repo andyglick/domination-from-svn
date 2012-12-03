@@ -1,5 +1,6 @@
 package net.yura.domination.android;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.android.gcm.GCMRegistrar;
 import android.app.Activity;
@@ -15,8 +16,13 @@ public class GCMActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-        setup();
-	//unregister();
+	try {
+            setup();
+            //unregister();
+	}
+	catch (Throwable th) {
+	    logger.log(Level.INFO, "gmc fail", th);
+	}
         finish();
     }
     
