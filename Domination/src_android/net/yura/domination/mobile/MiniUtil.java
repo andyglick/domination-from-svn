@@ -36,7 +36,7 @@ public class MiniUtil {
                 "<p>"+copyright+"</p>"+
                // "<p>"+ resb.getString("about.comments") +"</p>"+
                 "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
-                "<p>Locale: "+Locale.getDefault()+" me: "+resb.getLocale()+"</p>"+
+                "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
                 "</html>";
 
         Button credits = new Button(resb.getString("about.tab.credits"));
