@@ -13,32 +13,33 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane; // just needed for testing
 import java.util.ResourceBundle;
-import javax.swing.JTextArea;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-import javax.swing.JScrollPane;
-import javax.swing.JDialog;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.JSpinner;
-import javax.swing.Box;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -49,7 +50,6 @@ import net.yura.lobby.model.Game;
  * <p> New Game Frame for FlashGUI </p>
  * @author Yura Mamyrin
  */
-
 public class GameSetupPanel extends JPanel implements ActionListener {
 
 	private BufferedImage newgame;
@@ -318,9 +318,32 @@ resb = TranslationBundle.getBundle();
 		//help.addActionListener( this );
 		//help.setBounds(335, 529, 30 , 30 ); // should be 528
 
+                JPanel bottompanel = new JPanel();
+                bottompanel.setOpaque(false);
+                
+                bottompanel.add(new JLabel(resb.getString("newgame.label.name"))); // "Game Name:"
 		gamename = new JTextField();
-		gamename.setBounds(310, 530, 150 , 25 ); // should be 528
-		add(gamename);
+		bottompanel.add(gamename);
+
+                bottompanel.add(new JLabel(resb.getString("newgame.label.timeout"))); // "Turn Timeout:"
+                int hour = 60*60;
+                Timeout[] timeouts = new Timeout[] {
+                    new Timeout("1min",60),
+                    new Timeout("5min",60*5),
+                    new Timeout("10min",60*10),
+                    new Timeout("20min",60*20),
+                    new Timeout("30min",60*30),
+                    new Timeout("1hour",hour),
+                    new Timeout("2hours",hour*2),
+                    new Timeout("6hours",hour*6),
+                    new Timeout("12hours",hour*12),
+                    new Timeout("24hours",hour*24)
+                };
+		timeout = new JComboBox(timeouts);
+		bottompanel.add(timeout);
+                
+                bottompanel.setBounds(150, 525, 400 , 80 ); // should be 528
+                add(bottompanel);
 
 		start = new JButton(resb.getString("newgame.startgame"));
 		NewGameFrame.sortOutButton( start , newgame.getSubimage(544, 528, w, h) , newgame.getSubimage(700, 295, w, h) , newgame.getSubimage(700, 326, w, h) );
@@ -334,6 +357,21 @@ resb = TranslationBundle.getBundle();
 		list.setFixedCellHeight(33);
 
 	}
+        private JComboBox timeout;
+        class Timeout {
+            String name;
+            int time;
+            Timeout(String name,int time) {
+                this.name = resb.getString("newgame.timeout."+name);
+                this.time = time;
+            }
+            int getTime() {
+                return time;
+            }
+            public String toString() {
+                return name;
+            }
+        }
 
         private String newGameOptions;
 	//private String mapsurl;
@@ -401,7 +439,7 @@ resb = TranslationBundle.getBundle();
 
 		String op = getOptions();
 
-		if (op!=null) { return new Game( getGameName(), op, getNumberOfHumanPlayers() ); }
+		if (op!=null) { return new Game( getGameName(), op, getNumberOfHumanPlayers(), ((Timeout)timeout.getSelectedItem()).getTime() ); }
 
 		return null;
 
@@ -531,7 +569,7 @@ resb = TranslationBundle.getBundle();
 
 			g.drawString( "Number of Players", 440, 300);
 
-			g.drawString( "Game Name:", 240, 545);
+			//g.drawString( "Game Name:", 240, 545);
 
 			g.drawString( resb.getString("newgame.label.gametype"), 400, 365);
 			g.drawString( resb.getString("newgame.label.cardsoptions"), 515, 365);

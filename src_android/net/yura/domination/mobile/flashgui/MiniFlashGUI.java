@@ -18,6 +18,7 @@ import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
+import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
@@ -30,6 +31,7 @@ import net.yura.mobile.gui.components.TextComponent;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
@@ -152,7 +154,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                                     	    autoplaceall.isSelected(),
                                     	    recycle.isSelected(),
                                     	    lobbyMapName),
-                        	    getNoPlayers(Player.PLAYER_HUMAN)
+                        	    getNoPlayers(Player.PLAYER_HUMAN),
+                                    Integer.parseInt( ((Option)((ComboBox)newgame.find("TimeoutValue")).getSelectedItem()).getKey() )
                             );
                         
                         openMainMenu(); // close the game setup screen
@@ -360,6 +363,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             TextComponent tc = (TextComponent)newgame.find("GameName");
             tc.setText( gameName );
             tc.setVisible(true);
+            newgame.find("Timeout").setVisible(true);
         }
         
         MapUpdateService.getInstance().addObserver( (BadgeButton)newgame.find("MapImg") );
