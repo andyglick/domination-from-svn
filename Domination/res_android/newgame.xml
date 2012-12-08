@@ -27,6 +27,21 @@
         <checkbox action="fixed" group="CardType" i18n="true" text="newgame.cardmode.fixed" width="10"/>
         <checkbox action="italianlike" group="CardType" i18n="true" text="newgame.cardmode.italianlike" width="10"/>
     </panel>
+    <panel colspan="2" name="Timeout" visible="false">
+        <label i18n="true" text="newgame.label.timeout" weightx="1"/>
+        <combobox selected="0" editable="false" name="TimeoutValue">
+            <choice i18n="true" text="newgame.timeout.1min" name="60"/>
+            <choice i18n="true" text="newgame.timeout.5min" name="300"/>
+            <choice i18n="true" text="newgame.timeout.10min" name="600"/>
+            <choice i18n="true" text="newgame.timeout.20min" name="1200"/>
+            <choice i18n="true" text="newgame.timeout.30min" name="1800"/>
+            <choice i18n="true" text="newgame.timeout.1hour" name="3600"/>
+            <choice i18n="true" text="newgame.timeout.2hours" name="7200"/>
+            <choice i18n="true" text="newgame.timeout.6hours" name="21600"/>
+            <choice i18n="true" text="newgame.timeout.12hours" name="43200"/>
+            <choice i18n="true" text="newgame.timeout.24hours" name="86400"/>
+        </combobox>
+    </panel>
     <button action="closegame" i18n="true" name="cancelButton" text="newgame.cancel" type="cancel"/>
     <button action="startgame" i18n="true" name="startButton" text="newgame.startgame"/>
 </panel>

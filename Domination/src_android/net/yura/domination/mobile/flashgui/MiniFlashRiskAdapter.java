@@ -43,8 +43,8 @@ public class MiniFlashRiskAdapter implements RiskListener {
         mapFrame.setVisible(true);
     }
     
-    void createLobbyGame(String name,String options,int numPlayers) {
-	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers) );
+    void createLobbyGame(String name,String options,int numPlayers,int timeout) {
+	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
     }
     
     public void openMainMenu() {

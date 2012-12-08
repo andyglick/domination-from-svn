@@ -4,15 +4,19 @@ import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.model.Game;
+import net.yura.lobby.util.TimeoutUtil;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.components.TextArea;
 import net.yura.mobile.gui.plaf.Style;
+import net.yura.swingme.core.AnalogClock;
 
 public class GameRenderer extends DefaultListCellRenderer {
 
+    AnalogClock clock = new AnalogClock();
     MiniLobbyClient lobby;
     ScaledIcon sicon;
     Game game;
@@ -22,6 +26,10 @@ public class GameRenderer extends DefaultListCellRenderer {
         lobby = l;
         setName("ListRendererCollapsed"); // get rid of any padding
         sicon = new ScaledIcon( MapChooser.adjustSizeToDensityFromMdpi(75),MapChooser.adjustSizeToDensityFromMdpi(47) );
+        //int size = (int) (getFont().getHeight()*1.5);
+        int size = MapChooser.adjustSizeToDensityFromMdpi(25);
+        clock.setSize( size, size );
+        clock.setBackground(0x00FFFFFF);
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -32,7 +40,9 @@ public class GameRenderer extends DefaultListCellRenderer {
         sicon.setIcon( lobby.game.getIconForGame(game) );
         setIcon(sicon);
         
-        line2 = lobby.game.getGameDescription(game);
+        long time = game.getTimeout()*1000L;
+        clock.setTime(time);
+        line2 = TimeoutUtil.formatPeriod( time )+" "+ lobby.game.getGameDescription(game);
 
         setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
 
@@ -64,9 +74,21 @@ public class GameRenderer extends DefaultListCellRenderer {
             g.setColor( theme.getForeground(Style.DISABLED) );
         }
 
-        if (line2!=null) {
-            Icon i = getIcon();
-            g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), getHeight()-font.getHeight()-padding);
+        if (line2!=null) {            
+            Icon i = getIcon();            
+            int offsetx = padding + (i!=null?i.getIconWidth()+gap:0);
+            int offsety = getHeight()-clock.getHeight()-padding;
+            clock.setForeground( getForeground() );
+            g.translate(offsetx, offsety);
+            clock.paint(g);
+            g.translate(-offsetx, -offsety);
+
+            offsetx = offsetx + clock.getWidth()+padding;
+            offsety =  getHeight()-font.getHeight()-padding;
+
+            int space = getWidth()-offsetx-font.getWidth("10/10");            
+            String drawString = font.getWidth(line2)>space?line2.substring(0, TextArea.searchStringCharOffset(line2, font, space))+extension:line2;
+            g.drawString(drawString, offsetx, offsety);
         }
         if (part2!=null) {
             g.drawString(part2, getWidth()-font.getWidth(part2)-padding, getHeight()-font.getHeight()-padding);
