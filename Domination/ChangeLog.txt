@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		24
+	Android		25
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	Brazilian Portuguese added by Ricardo Gomes Ponce
 
+	Android 25 timeout for turn in multiplayer game
 	Android 24 lib missing in v23
 	Android 23 push notifications for online play
 		   Grasshopper update to send jpg and not png
