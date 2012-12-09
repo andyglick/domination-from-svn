@@ -325,8 +325,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                     int x = getImgX(s);
                     int y = getImgY(s);
 
-                    int w = (int) (img.getWidth() * s);
-                    int h = (int) (img.getHeight() * s);
+                    int w = (int) (imgW * s);
+                    int h = (int) (imgH * s);
                     
                     g.translate(x,y);
                     b.paintBorder(this, g,w,h);
