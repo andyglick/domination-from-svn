@@ -1,5 +1,8 @@
 package net.yura.lobby.mini;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.mapstore.MapChooser;
@@ -36,18 +39,25 @@ public class GameRenderer extends DefaultListCellRenderer {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         game = (Game)value;
-        
+
         sicon.setIcon( lobby.game.getIconForGame(game) );
         setIcon(sicon);
-        
+
         long time = game.getTimeout()*1000L;
-        clock.setTime(time);
-        line2 = TimeoutUtil.formatPeriod( time )+" "+ lobby.game.getGameDescription(game);
+        Calendar _now = Calendar.getInstance();
+        _now.setTimeZone( TimeZone.getTimeZone("GMT") );
+        _now.setTime( new Date(time) );
+        clock.setTime(_now);
+        clock.setVisible( time!=0 );
+        line2 = lobby.game.getGameDescription(game);
+        if (time!=0) {
+            line2 = TimeoutUtil.formatPeriod( time )+" "+ line2;
+        }
 
         setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
 
         part2 = game.getNumOfPlayers()+"/"+game.getMaxPlayers();
-        
+
         return c;
     }
 
@@ -77,15 +87,16 @@ public class GameRenderer extends DefaultListCellRenderer {
         if (line2!=null) {            
             Icon i = getIcon();            
             int offsetx = padding + (i!=null?i.getIconWidth()+gap:0);
-            int offsety = getHeight()-clock.getHeight()-padding;
-            clock.setForeground( getForeground() );
-            g.translate(offsetx, offsety);
-            clock.paint(g);
-            g.translate(-offsetx, -offsety);
+            if (clock.isVisible()) {
+                int offsety = getHeight()-clock.getHeight()-padding;
+                clock.setForeground( getForeground() );
+                g.translate(offsetx, offsety);
+                clock.paint(g);
+                g.translate(-offsetx, -offsety);
+                offsetx = offsetx + clock.getWidth()+padding;
+            }
 
-            offsetx = offsetx + clock.getWidth()+padding;
-            offsety =  getHeight()-font.getHeight()-padding;
-
+            int offsety=getHeight()-font.getHeight()-padding;
             int space = getWidth()-offsetx-font.getWidth("10/10");            
             String drawString = font.getWidth(line2)>space?line2.substring(0, TextArea.searchStringCharOffset(line2, font, space))+extension:line2;
             g.drawString(drawString, offsetx, offsety);
