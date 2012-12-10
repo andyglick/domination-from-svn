@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Frame;
 import java.awt.Color;
+import java.awt.Component;
 import javax.imageio.ImageIO;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -35,6 +36,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -49,6 +51,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
@@ -1164,7 +1167,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		if (errors.length() >0) {
 
-			JOptionPane.showMessageDialog(this,"There are errors in this map that need to be fixed before it can be used:"+errors);
+			showMessageDialog(this,"There are errors in this map that need to be fixed before it can be used:"+errors);
 
 			return false;
 
@@ -1173,6 +1176,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		return true;
 
 	}
+        
+        private void showMessageDialog(Component c, String string) {
+            System.out.println(string);
+            JOptionPane pane = new JOptionPane() {
+                public int getMaxCharactersPerLineCount() {
+                    return 100;
+                }
+            };
+            pane.setMessage(string);
+            JDialog dialog = pane.createDialog(c, UIManager.getString("OptionPane.messageDialogTitle") );
+            dialog.setVisible(true);
+        }
 
         public static String getExtension(File file) {
             String name = file.getName();
