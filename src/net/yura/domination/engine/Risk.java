@@ -2691,9 +2691,7 @@ RiskUtil.printStackTrace(e);
 	 * @return int Return the newCardState
 	 */
 	public int getNewCardState() {
-
 		return game.getNewCardState();
-
 	}
 
 	/**
@@ -2703,6 +2701,10 @@ RiskUtil.printStackTrace(e);
 	public RiskGame getGame() {
 		return game;
 	}
+        
+        public boolean getLocalGame() {
+            return unlimitedLocalMode;
+        }
 
 	/**
 	 * Get the name of the country from the game
