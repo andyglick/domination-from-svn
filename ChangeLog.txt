@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		25
+	Android		26
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -15,8 +15,11 @@ CURRENT VERSION:
 
 1.1.1.3
 
+	Online Mini Lobby added to FlashGUI and SwingGUI
 	Brazilian Portuguese added by Ricardo Gomes Ponce
 
+	Android 26 donate button fixed
+		   double click on online game fix
 	Android 25 timeout for turn in multiplayer game
 	Android 24 lib missing in v23
 	Android 23 push notifications for online play
