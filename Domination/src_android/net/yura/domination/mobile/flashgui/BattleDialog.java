@@ -47,6 +47,7 @@ public class BattleDialog extends Frame implements ActionListener {
 
         retreat.addActionListener(this);
         retreat.setActionCommand("retreat");
+        retreat.setMnemonic( KeyEvent.KEY_SOFTKEY2 );
         
         Panel controls = new Panel();
         controls.add(rollButton);
@@ -75,10 +76,15 @@ public class BattleDialog extends Frame implements ActionListener {
             go("roll "+nod);
         }
         else if ("retreat".equals( actionCommand )) {
-            go("retreat");
+            if (canRetreat) {
+                go("retreat");
+            }
+            else {
+                GameActivity.showClosePrompt(myrisk);
+            }
         }
     }
-    
+
     int[] att,def; // these are the dice results
     int noda,nodd; // these are the number of spinning dice
     int c1num,c2num;
@@ -148,14 +154,8 @@ public class BattleDialog extends Frame implements ActionListener {
         att=null;
         def=null;
 
-        if (canRetreat) {
-                retreat.setVisible(true);
-                retreat.setMnemonic( KeyEvent.KEY_SOFTKEY2 );
-                setTitle(resb.getProperty("battle.select.attack"));
-        }
-        else {
-                setTitle(resb.getProperty("battle.select.defend"));
-        }
+        setTitle(resb.getProperty(canRetreat?"battle.select.attack":"battle.select.defend"));
+        retreat.setVisible(canRetreat);
 
         revalidate();
         repaint();
@@ -187,7 +187,6 @@ public class BattleDialog extends Frame implements ActionListener {
     public void reset() {
         rollButton.setFocusable(false);
         retreat.setVisible(false);
-        retreat.setMnemonic( 0 );
         canRetreat=false;
         max=0;
         setTitle(resb.getProperty("battle.title"));

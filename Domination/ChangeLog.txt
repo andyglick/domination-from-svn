@@ -20,6 +20,9 @@ CURRENT VERSION:
 
 	Android 26 donate button fixed
 		   double click on online game fix
+		   do not crash on failed to send message for lobby
+		   allow user to close game even in battle mode
+		   notifications will make sound/vibrate/lights
 	Android 25 timeout for turn in multiplayer game
 	Android 24 lib missing in v23
 	Android 23 push notifications for online play

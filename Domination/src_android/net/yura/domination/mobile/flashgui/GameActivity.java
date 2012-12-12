@@ -292,7 +292,7 @@ public class GameActivity extends Frame implements ActionListener {
         String mapFile = myrisk.getGame().getMapFile();
         logger.log(Level.INFO, "Starting new game: {0}", mapFile);
 
-        closebutton.setText( getLeaveCloseText() );
+        closebutton.setText( getLeaveCloseText(localGame) );
         
         // ============================================ setup UI
 
@@ -411,13 +411,7 @@ public class GameActivity extends Frame implements ActionListener {
         }
         else if ("close".equals(actionCommand)) {
 
-                OptionPane.showOptionDialog(new ActionListener() {
-                public void actionPerformed(String actionCommand) {
-                    if ("ok".equals(actionCommand)) {
-                        go("closegame");
-                    }
-                }
-            }, resb.getProperty("game.areyousurequit"), getLeaveCloseText() , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+            showClosePrompt(myrisk);
 
         }
         else if ("mission".equals(actionCommand)) {
@@ -477,14 +471,24 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
     
-    String getLeaveCloseText() {
-        return resb.getProperty( localGame ? "game.menu.close" : "game.menu.leave");
+    public static void showClosePrompt(final Risk myrisk) {
+            OptionPane.showOptionDialog(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    if ("ok".equals(actionCommand)) {
+                        myrisk.parser("closegame");
+                    }
+                }
+            }, resb.getProperty("game.areyousurequit"), getLeaveCloseText( myrisk.getLocalGame() ) , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+    }
+    
+    static String getLeaveCloseText(boolean locagame) {
+        return resb.getProperty( locagame ? "game.menu.close" : "game.menu.leave");
     }
     
     void setGameStatus(String state) {
         status = state;
     }
-    
+
     /**
      * @see net.yura.domination.ui.flashgui.GameFrame#needInput(int)
      */
