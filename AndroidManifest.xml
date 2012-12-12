@@ -22,6 +22,9 @@
 	<permission android:name="net.yura.domination.permission.C2D_MESSAGE"/>
 	<uses-permission android:name="net.yura.domination.permission.C2D_MESSAGE"/>
 
+	<!-- online it says i should add this if i want it to vibrate with notifications, but in my own test i did not need it, strange -->
+	<uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> this is for AdMob -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     
