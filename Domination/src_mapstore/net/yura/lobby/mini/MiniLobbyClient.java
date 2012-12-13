@@ -396,12 +396,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
 
     // chat
-    public void serverMessage(String message) {
-        toast(message);
+    public void incomingChat(String fromwho,String message) {
+        showMessage(fromwho, message);
     }
     public void incomingChat(int roomid, String fromwho, String message) {
         if (openGameId == roomid) {
-            toast(message);
+            showMessage(fromwho, message);
         }
     }
 
@@ -411,9 +411,14 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void privateMessage(String fromwho, String message) { }
     public void setUserInfo(String user,java.util.List info) { }
 
-    public void addMainRoom(int roomid) { }
-    public void newMainRoomJoined(int id) { }
-
+    void showMessage(String fromwho,String message) {
+        if (fromwho!=null) {
+            toast(fromwho+": "+message);
+        }
+        else {
+            toast(message);
+        }
+    }
     static void toast(String message) {
         Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
     }
