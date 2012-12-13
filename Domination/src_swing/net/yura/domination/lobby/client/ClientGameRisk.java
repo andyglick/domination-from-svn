@@ -290,8 +290,14 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
 	// this NEEDS to call leaveGame();
 	public void closegame() {
-                // simulate a normal ui command into the game
+            // simulate a normal ui command into the game
+            if (myrisk.getGame()!=null) {
 		myrisk.parser("closegame");
+            }
+            else {
+                // we are here coz the game failed to open
+                leaveGame();
+            }
 	}
 
 	public void resignPlayer() {
