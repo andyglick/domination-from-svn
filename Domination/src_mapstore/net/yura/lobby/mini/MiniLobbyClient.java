@@ -405,6 +405,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    public void addPlayer(Player player) { }
+    public void removePlayer(String player) { }
     public void addPlayer(int roomid, Player player) { }
     public void removePlayer(int roomid, String player) { }
 
