@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -51,6 +53,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 	private AbstractTableModel continentsModel;
 	private AbstractTableModel cardsModel,cardsModel2;
 	private AbstractTableModel playersModel;
+        private AbstractTableModel gameInfo;
 
 	private PicturePanel pp;
 
@@ -282,6 +285,16 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		};
 
+                
+                gameInfo = new ObjectTableModel() {
+                    public Object getObject() {
+                        return myrisk.getGame();
+                    }
+		};
+                
+                
+                
+                
 		JTabbedPane views = new JTabbedPane();
 
 		views.add( "Countries" , new JScrollPane(new JTable(countriesModel)) );
@@ -289,11 +302,64 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		views.add( "Cards" , new JScrollPane(new JTable(cardsModel)) );
                 views.add( "Spent Cards" , new JScrollPane(new JTable(cardsModel2)) );
 		views.add( "Players" , new JScrollPane(new JTable(playersModel)) );
+                views.add( "Game" , new JScrollPane(new JTable(gameInfo)) );
 
 		setLayout( new BorderLayout() );
 		add( views );
 
 	}
+        
+        abstract class ObjectTableModel extends AbstractTableModel {
+            
+                private final String[] columnNames = { "Name", "Value" };
+                private Field[] fields;
+
+                public int getColumnCount() {
+                        return columnNames.length;
+                }
+
+                public int getRowCount() {
+                        Object game = getObject();
+                        if (game != null) {
+                            if (fields==null) {
+                                Field[] fs = game.getClass().getDeclaredFields();
+                                List result = new ArrayList();
+                                for (int c=0;c<fs.length;c++) {
+                                    if (!java.lang.reflect.Modifier.isStatic(fs[c].getModifiers())) {
+                                        fs[c].setAccessible(true);
+                                        result.add(fs[c]);
+                                    }
+                                }
+                                fields = (Field[])result.toArray(new Field[result.size()]);
+                            }
+                            return fields.length;
+                        }
+                        return 0;
+                }
+
+                public String getColumnName(int col) {
+                        return columnNames[col];
+                }
+
+                public Object getValueAt(int row, int col) {
+                        Object game = getObject();
+                        switch(col) {
+                                case 0: return fields[row].getName();
+                                case 1: {
+                                    try {
+                                        return String.valueOf( fields[row].get(game) );
+                                    }
+                                    catch (Exception ex){
+                                        return ex.toString();
+                                    }
+                                }
+                                default: throw new RuntimeException();
+                        }
+                }
+                
+                public abstract Object getObject();
+            
+        }
 
         abstract class CardsTableModel extends AbstractTableModel {
 
@@ -339,6 +405,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			cardsModel.fireTableDataChanged();
                         cardsModel2.fireTableDataChanged();
 			playersModel.fireTableDataChanged();
+                        gameInfo.fireTableDataChanged();
 
 			repaint();
 		}
