@@ -114,6 +114,10 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 		return iconedmap.getSmallIcon();
 	}
 
+        public String getGameDescription(String string) {
+            return RiskUtil.getGameDescriptionFromLobbyStartGameOption(string);
+        }
+
 	//##################################################################################
 	// in game client stuff
 	//##################################################################################

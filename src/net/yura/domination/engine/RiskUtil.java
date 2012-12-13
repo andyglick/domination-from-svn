@@ -124,6 +124,14 @@ public class RiskUtil {
             String choosemap = lines[3];
             return choosemap.substring( "choosemap ".length() );
         }
+        public static String getGameDescriptionFromLobbyStartGameOption(String options) {
+            String[] lines = options.split( RiskUtil.quote("\n") );
+            int ai=0;
+            for (int c=0;c<3;c++) {
+                ai = ai + Integer.parseInt(lines[c]);
+            }
+            return "AI:"+ai+" "+lines[4].substring( "startgame ".length() );
+        }
 
         public static void printStackTrace(Throwable ex) {
             java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
@@ -489,6 +497,5 @@ public class RiskUtil {
                     System.out.println("File copied from " + src + " to " + dest);
             }
     }
-    
-    
+
 }
