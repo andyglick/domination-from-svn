@@ -54,6 +54,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 	private AbstractTableModel cardsModel,cardsModel2;
 	private AbstractTableModel playersModel;
         private AbstractTableModel gameInfo;
+        private AbstractTableModel commands;
 
 	private PicturePanel pp;
 
@@ -292,7 +293,39 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                     }
 		};
                 
-                
+                commands = new AbstractTableModel() {
+
+			private final String[] columnNames = { "No", "Command"};
+
+			public int getColumnCount() {
+				return columnNames.length;
+			}
+
+			public int getRowCount() {
+				RiskGame game = myrisk.getGame();
+				if (game != null) {
+					Vector players = game.getCommands();
+					if (players != null) {
+						return players.size();
+					}
+				}
+				return 0;
+  			}
+
+			public String getColumnName(int col) {
+				return columnNames[col];
+			}
+
+			public Object getValueAt(int row, int col) {
+				Object command = myrisk.getGame().getCommands().elementAt(row);
+				switch(col) {
+					case 0: return String.valueOf( row );
+					case 1: return String.valueOf(command);
+					default: throw new RuntimeException();
+				}
+			}
+
+		};
                 
                 
 		JTabbedPane views = new JTabbedPane();
@@ -303,6 +336,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                 views.add( "Spent Cards" , new JScrollPane(new JTable(cardsModel2)) );
 		views.add( "Players" , new JScrollPane(new JTable(playersModel)) );
                 views.add( "Game" , new JScrollPane(new JTable(gameInfo)) );
+                views.add( "Commands" , new JScrollPane(new JTable(commands)) );
 
 		setLayout( new BorderLayout() );
 		add( views );
@@ -406,6 +440,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                         cardsModel2.fireTableDataChanged();
 			playersModel.fireTableDataChanged();
                         gameInfo.fireTableDataChanged();
+                        commands.fireTableDataChanged();
 
 			repaint();
 		}
