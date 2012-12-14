@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		26
+	Android		27
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,7 +17,10 @@ CURRENT VERSION:
 
 	Online Mini Lobby added to FlashGUI and SwingGUI
 	Brazilian Portuguese added by Ricardo Gomes Ponce
+	much more info added to the Testing tab in SwingGUI
 
+	Android 27 do not allow someone to make a mission online game with a map that does not have missions
+		   display lobby chat messages more correctly
 	Android 26 donate button fixed
 		   double click on online game fix
 		   do not crash on failed to send message for lobby
