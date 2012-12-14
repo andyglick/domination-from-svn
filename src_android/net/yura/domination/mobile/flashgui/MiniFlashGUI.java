@@ -279,6 +279,11 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     void setLobbyMap(String name) {
 	lobbyMapName = name;
 	showMapPic(name);
+        java.util.Map mapinfo = RiskUtil.loadInfo(name,false);
+        String cardsFile = (String)mapinfo.get("crd");
+        java.util.Map cardsinfo = RiskUtil.loadInfo(cardsFile,true);
+        String[] missions = (String[])cardsinfo.get("missions");
+        showCardsFile(cardsFile, missions.length > 0);
     }
     
     private XULLoader getPanel(String xmlfile) {
