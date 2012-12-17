@@ -1394,7 +1394,8 @@ RiskUtil.printStackTrace(e);
 				    if ( unlimitedLocalMode ) {
 
 					try {
-						if (Undo!=null && Undo.size()!=0) {
+                                                // can not undo when defending yourself as it is not really your go
+						if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
 
 							ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
 							game = (RiskGame)in.readObject();
@@ -2267,7 +2268,7 @@ RiskUtil.printStackTrace(e);
                                 }
                         }
                         // if someone retreats
-                        else if ( game.getState()==RiskGame.STATE_ATTACKING ) {
+                        else if (game.getState()!=RiskGame.STATE_ROLLING && game.getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
                                 closeBattle();
                         }
 
