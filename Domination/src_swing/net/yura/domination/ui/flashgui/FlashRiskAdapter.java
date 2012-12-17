@@ -158,7 +158,7 @@ public class FlashRiskAdapter implements RiskListener {
 		Country country1 = myrisk.getGame().getCountryInt( c1num);
 		Country country2 = myrisk.getGame().getCountryInt( c2num);
 
-		Color color1 = new Color( myrisk.getCurrentPlayerColor() );
+		Color color1 = new Color( myrisk.getColorOfOwner( c1num ) );
 		Color color2 = new Color( myrisk.getColorOfOwner( c2num ) );
 
 		battledialog.setup(c1num, c2num, c1img, c2img, country1, country2, color1 ,color2);

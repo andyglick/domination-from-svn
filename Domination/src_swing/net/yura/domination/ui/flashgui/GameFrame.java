@@ -751,7 +751,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		//	gobutton.setEnabled(false);
 		//}
 
-		if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+		//if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
 
 			cardsbutton.setEnabled(true);
 			missionbutton.setEnabled(true);
@@ -771,7 +771,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			AutoDefend.setBackground( Color.white );
 			AutoDefend.setSelected( myrisk.getAutoDefend() );
 
-		}
+		//}
 
 		repaint(); // SwingGUI has this here, if here then not needed in set status
 
