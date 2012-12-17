@@ -7,9 +7,12 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.guishared.StatsPanel;
@@ -26,6 +29,7 @@ public class StatsDialog extends JDialog implements ActionListener {
 	private Risk myrisk;
 	private StatsPanel graph;
 	private java.util.ResourceBundle resb;
+        private ButtonGroup group;
 
 	public StatsDialog(Frame parent, boolean modal, Risk r) {
 
@@ -70,8 +74,7 @@ public class StatsDialog extends JDialog implements ActionListener {
 		thisgraph.setLayout(null);
 
 
-
-
+                group = new ButtonGroup();
 
 
 		int x=49;
@@ -82,7 +85,9 @@ public class StatsDialog extends JDialog implements ActionListener {
 
 		int s=1;
 
-		thisgraph.add(makeButton("countries",x,y,w,h,s));
+                AbstractButton button1 = makeButton("countries",x,y,w,h,s);
+                button1.setSelected(true);
+		thisgraph.add(button1);
 
 		x=x+w;
 		s++;
@@ -150,21 +155,31 @@ public class StatsDialog extends JDialog implements ActionListener {
 		getContentPane().add(thisgraph);
 
 		addWindowListener(
-				new java.awt.event.WindowAdapter() {
-					public void windowClosing(java.awt.event.WindowEvent evt) {
-						exitForm();
-					}
-				}
+                    new java.awt.event.WindowAdapter() {
+                        public void windowClosing(java.awt.event.WindowEvent evt) {
+                            exitForm();
+                        }
+                    }
 		);
 
 	}
 
 	public void actionPerformed(ActionEvent a) {
-
-		graph.repaintStats( Integer.parseInt( a.getActionCommand() ) );
-		graph.repaint();
-
+            showGraph( Integer.parseInt( a.getActionCommand() ) );
 	}
+
+        public void setVisible(boolean b) {
+            super.setVisible(b);
+            
+            if (b) {
+                showGraph( Integer.parseInt( group.getSelection().getActionCommand() ) );
+            }
+        }
+        
+        public void showGraph(int type) {
+		graph.repaintStats( type );
+		graph.repaint();            
+        }
 
 	/**
 	 * Closes the GUI
@@ -173,12 +188,13 @@ public class StatsDialog extends JDialog implements ActionListener {
 		((GameFrame)getParent()).displayGraph();
 	}
         
-        public JButton makeButton(String a, int x,int y,int w,int h,int s) {
+        private AbstractButton makeButton(String a, int x,int y,int w,int h,int s) {
 
-                JButton statbutton = new JButton(resb.getString("swing.toolbar."+a));
+                AbstractButton statbutton = new JToggleButton(resb.getString("swing.toolbar."+a));
                 statbutton.setActionCommand(s+"");
                 statbutton.addActionListener( this );
                 statbutton.setBounds(x, y, w , h );
+                group.add(statbutton);
 
                 NewGameFrame.sortOutButton( statbutton, Back.getSubimage(x+100,y-433+165,w,h), Back.getSubimage(x+100,y-433,w,h), Back.getSubimage(x+100,y-433+66,w,h) );
 

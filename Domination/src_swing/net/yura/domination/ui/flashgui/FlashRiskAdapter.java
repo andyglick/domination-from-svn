@@ -224,9 +224,7 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param w
 	 */
 	public void showDice(int n, boolean w) {
-
 		nod=n;
-
 	}
 
 	/**
@@ -235,9 +233,7 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param s If you can place armies
 	 */
 	public void armiesLeft(int l, boolean s) {
-
 		gameFrame.armiesLeft(l, s);
-
 	}
 
 	/**
@@ -354,9 +350,7 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param s The server's state
 	 */
 	public void serverState(boolean s) {
-
 		menu.setServerRunning(s);
-
 	}
 
 	/**
@@ -377,9 +371,7 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param c The name of the cards file
 	 */
 	public void showCardsFile(String c, boolean m) {
-
 		newgameframe.setCards(c, m);
-
 	}
 
 	/**
@@ -390,9 +382,7 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param ip The player ip
 	 */
 	public void addPlayer(int type, String name, int color, String ip) {
-
 		newgameframe.addPlayer(type, name, new Color( color ), ip);
-
 	}
 
 	/**
@@ -400,28 +390,11 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param name Name of the player to be deleted
 	 */
 	public void delPlayer(String name) {
-
 		newgameframe.delPlayer(name);
-
 	}
-
-	/**
-	 * Sets move slider
-	 * @param mustMove The number of armies that must be moved
-	 * @param c1num The number of armies on country A
-	 * @param c2num The number of armies on country B
-	 */
-	public void setSlider(int mustMove, int c1num, int c2num) {
-
-		gameFrame.openMove(mustMove, c1num, c2num, false);
-
-	}
-
 
 	public GameFrame getGameFrame() {
-
 		return gameFrame;
-
 	}
 
 }

@@ -2138,10 +2138,8 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 			gameState=s;
 
-			if ((gameState != -1) && (gameState != 0) && (gameState != 10) && (gameState != 4)) {
-
+			if (gameState != -1 && gameState!=RiskGame.STATE_NEW_GAME) {
 				gameTab.getInput();
-
 			}
 
 			if (gameState == RiskGame.STATE_NEW_GAME) {
@@ -2172,6 +2170,13 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "roll");
 			}
 			else if (gameState == RiskGame.STATE_BATTLE_WON) {
+                            
+                                int min = myrisk.getGame().getMustMove();
+                            	int max = myrisk.hasArmiesInt( myrisk.getGame().getAttacker().getColor() ) -1;
+                                slider.setMaximum(max);
+                                slider.setMinimum(min);
+                                slider.setValue(min);
+                            
 				inGameCards.show(inGameInput, "move");
 			}
 			else if (gameState == RiskGame.STATE_FORTIFYING) {
@@ -2264,13 +2269,6 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			gameTab.closeGame();
 			statisticsTab.closeGame();
 			System.gc();
-		}
-
-		public void setSlider(int min, int c1num, int c2num) {
-			int max = myrisk.hasArmiesInt( c1num ) -1;
-			slider.setMaximum(max);
-			slider.setMinimum(min);
-			slider.setValue(min);
 		}
 
 		public void armiesLeft(int l, boolean s) {

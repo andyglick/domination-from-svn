@@ -793,14 +793,12 @@ RiskUtil.printStackTrace(e);
 				}
 				else {
 
-					Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
-
-					if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
-
-						//controller.setSlider(result[4], result[5]);
-						controller.setSlider(result[4], ((Country)game.getAttacker()).getColor(), ((Country)game.getDefender()).getColor() );
-
-					}
+//                                      // not needed any more
+//					Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
+//
+//					if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
+//						controller.setSlider( game.getMustMove(), game.getAttacker().getColor(), game.getDefender().getColor() );
+//					}
 
 					output=output + System.getProperty("line.separator") + resb.getString( "core.dice.defeated") + " ";
 
@@ -1489,11 +1487,11 @@ RiskUtil.printStackTrace(e);
 						filename = filename + " " + GetNext();
 					}
 
-					if (battle) {
-						output=resb.getString( "core.save.error.unable"); // TODO better error message, can not save during battle
-                                                showMessageDialog(output);
-                                        }
-                                        else {
+//					if (battle) {
+//						output=resb.getString( "core.save.error.unable"); // TODO better error message, can not save during battle
+//                                                showMessageDialog(output);
+//                                        }
+//                                        else {
                                             try {
                                                 game.saveGame(filename);
                                                 output=resb.getString( "core.save.saved");
@@ -1505,7 +1503,7 @@ RiskUtil.printStackTrace(e);
                                                 output=resb.getString( "core.save.error.unable")+" "+ex;
                                                 showMessageDialog(output);
                                             }
-					}
+//					}
 
 				    }
 				    else {
