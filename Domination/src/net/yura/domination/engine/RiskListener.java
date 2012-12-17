@@ -20,7 +20,7 @@ public interface RiskListener {
     public void closeGame();
     //public void setSlider(int min, int c1num, int c2num);
     public void armiesLeft(int l, boolean s);
-    public void showDice(int n, boolean w);
+    //public void showDice(int n, boolean w);
     public void showMapPic(RiskGame p);
     public void showCardsFile(String c, boolean hasMission);
     public void serverState(boolean s);

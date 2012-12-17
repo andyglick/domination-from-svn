@@ -204,22 +204,22 @@ public class RiskController {
         }
     }
 
-    public void showDice(int n, boolean w) {
-
-        Object[] arrLocal;
-
-	synchronized (this) {
-            arrLocal = obs.toArray();
-        }
-
-	try {
-            for (int i = arrLocal.length-1; i>=0; i--)
-                ((RiskListener)arrLocal[i]).showDice(n,w);
-	}
-        catch(Exception ex) {
-            RiskUtil.printStackTrace(ex);
-        }
-    }
+//    public void showDice(int n, boolean w) {
+//
+//        Object[] arrLocal;
+//
+//	synchronized (this) {
+//            arrLocal = obs.toArray();
+//        }
+//
+//	try {
+//            for (int i = arrLocal.length-1; i>=0; i--)
+//                ((RiskListener)arrLocal[i]).showDice(n,w);
+//	}
+//        catch(Exception ex) {
+//            RiskUtil.printStackTrace(ex);
+//        }
+//    }
 
     public void showMapPic(RiskGame p) {
 

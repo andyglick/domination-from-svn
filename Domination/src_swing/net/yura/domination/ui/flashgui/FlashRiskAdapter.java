@@ -30,7 +30,6 @@ public class FlashRiskAdapter implements RiskListener {
 	private BattleDialog battledialog;
 	protected PicturePanel pp;
 
-	private int nod;
 	private int nogames;
 
         public FlashRiskAdapter(Risk r) {
@@ -128,12 +127,12 @@ public class FlashRiskAdapter implements RiskListener {
 
 			if (s == RiskGame.STATE_ROLLING) {
 
-				battledialog.needInput(nod, true);
+				battledialog.needInput(myrisk.getGame().getNoAttackDice(), true);
 
 			}
 			else if (s == RiskGame.STATE_DEFEND_YOURSELF) {
 
-				battledialog.needInput(nod, false);
+				battledialog.needInput(myrisk.getGame().getNoDefendDice(), false);
 
 			}
 			//else { // this will update the state in the gameframe
@@ -216,15 +215,6 @@ public class FlashRiskAdapter implements RiskListener {
 
 		}
 
-	}
-
-	/**
-	 * Shows the dice
-	 * @param n number of defenders
-	 * @param w
-	 */
-	public void showDice(int n, boolean w) {
-		nod=n;
 	}
 
 	/**
