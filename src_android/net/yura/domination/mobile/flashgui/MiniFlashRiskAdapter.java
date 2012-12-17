@@ -61,6 +61,10 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void closeGame() {
+        if (move!=null) {
+            move.setVisible(false);
+        }
+
         if (gameFrame!=null) {
             gameFrame.setVisible(false);
             gameFrame = null;
@@ -112,6 +116,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     // ========================= in game ==============================
 
+    MoveDialog move;
     int nod;
     @Override
     public void needInput(int s) {
@@ -124,6 +129,24 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 battle.needInput(nod, false);
                 break;
             case RiskGame.STATE_BATTLE_WON:
+                RiskGame game = myRisk.getGame();
+                int min = game.getMustMove();
+                int c1num = game.getAttacker().getColor();
+                int c2num = game.getDefender().getColor();
+                if (move==null) {
+                    move = new MoveDialog(myRisk) {
+                        @Override
+                        public void setVisible(boolean b) {
+                            super.setVisible(b);
+                            if (!b) {
+                                move=null;
+                            }
+                        }
+                    };
+                }
+                Image c1img = gameFrame.pp.getCountryImage(c1num);
+                Image c2img = gameFrame.pp.getCountryImage(c2num);
+                move.setupMove(min, c1num, c2num, c1img, c2img, false);
                 move.setVisible(true);
                 break;
         }
@@ -207,27 +230,6 @@ public class MiniFlashRiskAdapter implements RiskListener {
             if (battle.isVisible() ) {
                     battle.setNODDefender(n);
             }
-    }
-
-    MoveDialog move;
-    @Override
-    public void setSlider(int min, int c1num, int c2num) {
-        if (move==null) {
-            move = new MoveDialog(myRisk) {
-                @Override
-                public void setVisible(boolean b) {
-                    super.setVisible(b);
-                    if (!b) {
-                        move=null;
-                    }
-                }
-            };
-        }
-        
-        Image c1img = gameFrame.pp.getCountryImage(c1num);
-        Image c2img = gameFrame.pp.getCountryImage(c2num);
-        
-        move.setupMove(min, c1num, c2num, c1img, c2img, false);
     }
 
     @Override

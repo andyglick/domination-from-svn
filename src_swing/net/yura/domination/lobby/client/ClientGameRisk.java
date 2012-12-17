@@ -236,13 +236,6 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
 			public void startGame(boolean s) {
 
-				try {
-					pp.load();
-				}
-				catch (Exception e) {
-					RiskUtil.printStackTrace(e);
-				}
-
 				gameFrame.setup(s);
 
 				gameFrame.setVisible(true);

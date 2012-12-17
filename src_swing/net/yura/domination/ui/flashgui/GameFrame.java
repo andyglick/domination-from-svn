@@ -716,6 +716,8 @@ public class GameFrame extends JFrame implements KeyListener {
 			}
 			case RiskGame.STATE_BATTLE_WON: {
 
+                                RiskGame game = myrisk.getGame();
+                                openMove(game.getMustMove(), game.getAttacker().getColor(), game.getDefender().getColor(), false);
 				movedialog.setVisible(true);
 
 				break;

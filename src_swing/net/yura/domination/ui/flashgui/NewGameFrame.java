@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -1131,10 +1132,12 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	public static void sortOutButton(AbstractButton button, Image button1, Image button2, Image button3) {
 
 		button.setIcon( new ImageIcon( button1 ) );
-		button.setSelectedIcon( button.getIcon());
-		button.setRolloverIcon( new ImageIcon( button2 ) );
-		button.setPressedIcon( new ImageIcon( button3 ) );
-
+                button.setRolloverIcon( new ImageIcon( button2 ) );
+                Icon down = new ImageIcon( button3 );
+                button.setRolloverSelectedIcon( down );
+                button.setSelectedIcon( down );
+                button.setPressedIcon( down );
+                
 		button.setMargin(new Insets(0,0,0,0));
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
@@ -1261,33 +1264,34 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
  * Makes the button highlighted when they have focus
  * and resets the image if they loose it
  */
-class ImageButtonFocusListener implements FocusListener
-{
+class ImageButtonFocusListener implements FocusListener {
 	AbstractButton button;
+        Icon defaultIcon;
 	ImageButtonFocusListener(AbstractButton button) {
 		this.button = button;
 	}
-	public void focusGained( FocusEvent event )
-	{
+	public void focusGained( FocusEvent event ) {
 		if (button.getIcon() == null) {
 			//no icon, so change the bg color
 			//button.setBackground( Color.WHITE );
 			//button.setContentAreaFilled( true);
-		} else {
-			button.setIcon( button.getRolloverIcon());
+		}
+                else {
+                        defaultIcon = button.getIcon();
+			button.setIcon( button.getRolloverIcon() );
 		}
 	}
 
-	public void focusLost( FocusEvent event )
-	{
+	public void focusLost( FocusEvent event ) {
 		//this works only because we set the selected icon
 		//to the same as the normal icon
 		if (button.getSelectedIcon() == null) {
 			//no icon, so reset bg color
 			//button.setBackground( null);
 			//button.setContentAreaFilled( false);
-		} else {
-			button.setIcon( button.getSelectedIcon());
+		}
+                else {
+			button.setIcon( defaultIcon );
 		}
 	}
 }//class ImageButtonFocusListener
