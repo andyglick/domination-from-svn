@@ -2095,35 +2095,6 @@ RiskUtil.printStackTrace(e);
 
 			//} // this was the end of "if there is somthing to pass" but not needed any more
 
-
-
-			if (game != null ) {
-
-				//System.out.print("oldstate = " +oldState+" newstate = " +game.getState()+"\n");
-
-				if (game.getState()==RiskGame.STATE_ROLLING && battle==false) {
-
-					Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
-					Player defendingPlayer = ((Country)game.getDefender()).getOwner();
-
-					if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
-
-						controller.openBattle( ((Country)game.getAttacker()).getColor() , ((Country)game.getDefender()).getColor() );
-						battle=true;
-					}
-
-				}
-
-				// if someone retreats
-				else if ( game.getState()==RiskGame.STATE_ATTACKING ) {
-
-					closeBattle();
-
-				}
-
-			}
-
-
 		}// end of parse of normal command
 
 		// give a output if there is one
@@ -2284,6 +2255,23 @@ RiskUtil.printStackTrace(e);
 		}
 		// work out what to do next
 		else if ( game!=null && game.getCurrentPlayer()!=null && game.getState()!=RiskGame.STATE_GAME_OVER ) {// if player type is human or neutral or ai
+
+
+
+                        if ((game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) && !battle) {
+                                Player attackingPlayer = game.getAttacker().getOwner();
+                                Player defendingPlayer = game.getDefender().getOwner();
+                                if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
+                                        controller.openBattle( game.getAttacker().getColor() , game.getDefender().getColor() );
+                                        battle=true;
+                                }
+                        }
+                        // if someone retreats
+                        else if ( game.getState()==RiskGame.STATE_ATTACKING ) {
+                                closeBattle();
+                        }
+
+
 
 			if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
 				controller.sendMessage( RiskUtil.replaceAll(resb.getString( "core.input.newarmies"), "{0}", ((Player)game.getCurrentPlayer()).getExtraArmies() + "") , false, false);
