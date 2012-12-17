@@ -775,14 +775,11 @@ RiskUtil.printStackTrace(e);
 						if (n > 3) { n=3; }
 						output=output + RiskUtil.replaceAll(resb.getString( "core.dice.attackagain"), "{0}", "" + n);
 
-						Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
-
-						if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
-
-							controller.showDice(n, true);
-
-						}
-
+//						Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
+//
+//						if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
+//							controller.showDice(n, true);
+//						}
 
 					}
 					else {
@@ -1798,23 +1795,23 @@ RiskUtil.printStackTrace(e);
 							country2=null;
 						}
 
-						int a[]=game.attack(country1, country2);
+						boolean a=game.attack(country1, country2);
 
-						if ( a[0]==1 ) {
+						if ( a ) {
 							//Attack {0} ({1}) with {2} ({3}). (You can use up to {4} dice to attack)
 							output = RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.attack.attacking")
 										, "{0}", country2.getName()) // Display
 										, "{1}", "" + country2.getArmies())
 										, "{2}", country1.getName()) // Display
 										, "{3}", "" + country1.getArmies())
-										, "{4}", "" + a[1]);
+										, "{4}", "" + game.getNoAttackDice() );
 
-							Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
-
-							if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
-
-								controller.showDice(a[1], true);
-							}
+//							Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
+//
+//							if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
+//
+//								controller.showDice(a[1], true);
+//							}
 
 						}
 						else { output=resb.getString( "core.attack.error.unable"); }
@@ -1849,22 +1846,18 @@ RiskUtil.printStackTrace(e);
 
 							}
 
-							int n=((Country)game.getDefender()).getArmies();
-
-
-							if (n > game.getMaxDefendDice() ) { n= game.getMaxDefendDice() ; }
-
+                                                        int n = game.getNoDefendDice();
 
 							//Rolled attacking dice, {0} defend yourself! (you can use up to {1} dice to defend)
 							output = RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.roll.rolled")
 										, "{0}", ((Player)game.getCurrentPlayer()).getName())
 										, "{1}", "" + n);
 
-							Player defendingPlayer = ((Country)game.getDefender()).getOwner();
-
-							if ( showHumanPlayerThereInfo(defendingPlayer) ) {
-								controller.showDice(n, false);
-							}
+//							Player defendingPlayer = ((Country)game.getDefender()).getOwner();
+//
+//							if ( showHumanPlayerThereInfo(defendingPlayer) ) {
+//								controller.showDice(n, false);
+//							}
 
 						}
 						else { output=resb.getString( "core.roll.error.unable"); }

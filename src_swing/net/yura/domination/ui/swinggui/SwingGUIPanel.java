@@ -2167,6 +2167,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "attack");
 			}
 			else if (gameState == RiskGame.STATE_ROLLING) {
+                                showDice(myrisk.getGame().getNoAttackDice(), true);
 				inGameCards.show(inGameInput, "roll");
 			}
 			else if (gameState == RiskGame.STATE_BATTLE_WON) {
@@ -2195,6 +2196,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "capital");
 			}
 			else if (gameState == RiskGame.STATE_DEFEND_YOURSELF) {
+                                showDice(myrisk.getGame().getNoDefendDice(), false);
 				inGameCards.show(inGameInput, "defend");
 			}
 

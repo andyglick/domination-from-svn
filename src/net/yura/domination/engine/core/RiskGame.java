@@ -838,12 +838,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param t2 Defending country
 	 * @return int[] Returns an array which determines if the player is allowed to roll dice
 	 */
-	public int[] attack(Country t1, Country t2) {
+	public boolean attack(Country t1, Country t2) {
 
-		int[] result = new int[3];
-		result[0]=0;
-		result[1]=0;
-		result[2]=0;
+		boolean result=false;
 
 		if (gameState==STATE_ATTACKING) {
 
@@ -860,22 +857,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 				currentPlayer.currentStatistic.addAttack();
 				((Player)t2.getOwner()).currentStatistic.addAttacked();
 
-				result[0]=1;
-
-				if ( t1.getArmies() > 4 ) { result[1]=3; }
-				else { result[1]=t1.getArmies()-1; }
-
-				if ( t2.getArmies() > maxDefendDice ) { result[2]=maxDefendDice; }
-				else { result[2]=t2.getArmies(); }
+				result=true;
 
 				attacker=t1;
 				defender=t2;
 
 				gameState=STATE_ROLLING;
 				//System.out.print("Attacking "+t2.getName()+" ("+t2.getArmies()+") with "+t1.getName()+" ("+t1.getArmies()+").\n"); // testing
-
 			}
-
 		}
 		return result;
 	}
@@ -2709,5 +2698,14 @@ System.out.print(str+"]\n");
 	    }
 	}
 	return 0xff000000 | (r << 16) | (g << 8) | (b << 0);
+    }
+
+    public int getNoAttackDice() {
+        if ( attacker.getArmies() > 4 ) { return 3; }
+        else { return attacker.getArmies()-1; }
+    }
+    public int getNoDefendDice() {
+        if ( defender.getArmies() > maxDefendDice ) { return maxDefendDice; }
+        else { return defender.getArmies(); }
     }
 }

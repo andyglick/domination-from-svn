@@ -117,16 +117,15 @@ public class MiniFlashRiskAdapter implements RiskListener {
     // ========================= in game ==============================
 
     MoveDialog move;
-    int nod;
     @Override
     public void needInput(int s) {
 
         switch(s) {
             case RiskGame.STATE_ROLLING:
-                battle.needInput(nod, true);
+                battle.needInput(myRisk.getGame().getNoAttackDice(), true);
                 break;
             case RiskGame.STATE_DEFEND_YOURSELF:
-                battle.needInput(nod, false);
+                battle.needInput(myRisk.getGame().getNoDefendDice(), false);
                 break;
             case RiskGame.STATE_BATTLE_WON:
                 RiskGame game = myRisk.getGame();
@@ -230,11 +229,6 @@ public class MiniFlashRiskAdapter implements RiskListener {
             if (battle.isVisible() ) {
                     battle.setNODDefender(n);
             }
-    }
-
-    @Override
-    public void showDice(int n, boolean w) {
-        nod=n;
     }
 
     @Override
