@@ -751,31 +751,27 @@ public class GameFrame extends JFrame implements KeyListener {
 		//	gobutton.setEnabled(false);
 		//}
 
-		//if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+                cardsbutton.setEnabled(true);
+                missionbutton.setEnabled(true);
 
-			cardsbutton.setEnabled(true);
-			missionbutton.setEnabled(true);
+                if (localGame) {
 
-			if (localGame) {
+                    if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+                        undobutton.setEnabled(true);
+                    }
+                    savebutton.setEnabled(true);
 
-			    undobutton.setEnabled(true);
-			    savebutton.setEnabled(true);
+                }
 
-			}
+                AutoEndGo.setEnabled(true);
+                AutoEndGo.setBackground( Color.white );
+                AutoEndGo.setSelected( myrisk.getAutoEndGo() );
 
-			AutoEndGo.setEnabled(true);
-			AutoEndGo.setBackground( Color.white );
-			AutoEndGo.setSelected( myrisk.getAutoEndGo() );
-
-			AutoDefend.setEnabled(true);
-			AutoDefend.setBackground( Color.white );
-			AutoDefend.setSelected( myrisk.getAutoDefend() );
-
-		//}
+                AutoDefend.setEnabled(true);
+                AutoDefend.setBackground( Color.white );
+                AutoDefend.setSelected( myrisk.getAutoDefend() );
 
 		repaint(); // SwingGUI has this here, if here then not needed in set status
-
-
 	}
 
 	public void armiesLeft(int l, boolean s) {
