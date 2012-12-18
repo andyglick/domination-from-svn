@@ -2155,9 +2155,12 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
                                 tradeCards.endtrade.setVisible( myrisk.getGame().canEndTrade() );
                                 
+                                armiesLeft( myrisk.getGame().getCurrentPlayer().getExtraArmies() , myrisk.getGame().NoEmptyCountries() );
 				inGameCards.show(inGameInput, "tradeCards");
 			}
 			else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+                            
+                                armiesLeft( myrisk.getGame().getCurrentPlayer().getExtraArmies() , myrisk.getGame().NoEmptyCountries() );
 				inGameCards.show(inGameInput, "placeArmies");
 			}
 			else if (gameState == RiskGame.STATE_ATTACKING) {
@@ -2275,7 +2278,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			System.gc();
 		}
 
-		public void armiesLeft(int l, boolean s) {
+		private void armiesLeft(int l, boolean s) {
 			armies.setText( resbundle.getString("core.input.armiesleft").replaceAll("\\{0\\}", "" + l));
 
 			if (s) {
@@ -2286,7 +2289,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			}
 		}
 
-		public void showDice(int n, boolean w) {
+		private void showDice(int n, boolean w) {
 
 			JPanel p;
 

@@ -167,6 +167,13 @@ public class BattleDialog extends Frame implements ActionListener {
         this.c2num = c2num;
         this.c1img = c1img;
         this.c2img = c2img;
+        
+        att=null;
+        def=null;
+
+        noda=0;
+        nodd=0;
+
         reset();
     }
     

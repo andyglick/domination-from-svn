@@ -187,22 +187,22 @@ public class RiskController {
 //        }
 //    }
 
-    public void armiesLeft(int l, boolean s) {
-
-        Object[] arrLocal;
-
-	synchronized (this) {
-            arrLocal = obs.toArray();
-        }
-
-	try {
-            for (int i = arrLocal.length-1; i>=0; i--)
-                ((RiskListener)arrLocal[i]).armiesLeft(l,s);
-	}
-        catch(Exception ex) {
-            RiskUtil.printStackTrace(ex);
-        }
-    }
+//    public void armiesLeft(int l, boolean s) {
+//
+//        Object[] arrLocal;
+//
+//	synchronized (this) {
+//            arrLocal = obs.toArray();
+//        }
+//
+//	try {
+//            for (int i = arrLocal.length-1; i>=0; i--)
+//                ((RiskListener)arrLocal[i]).armiesLeft(l,s);
+//	}
+//        catch(Exception ex) {
+//            RiskUtil.printStackTrace(ex);
+//        }
+//    }
 
 //    public void showDice(int n, boolean w) {
 //
