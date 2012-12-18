@@ -1306,7 +1306,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		if (localGame) {
 			gSaveGame.setEnabled(true);
 			gmSaveGame.setEnabled(true);
-			Undo.setEnabled(true);
+                        if (myrisk.getGame().getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
+                            Undo.setEnabled(true);
+                        }
 			gmReplay.setEnabled(true);
 		}
 
