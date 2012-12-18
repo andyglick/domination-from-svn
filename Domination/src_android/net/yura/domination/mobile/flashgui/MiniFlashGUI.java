@@ -312,10 +312,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
         XULLoader loader = getPanel("/mainmenu.xml");
 
-        Component onlineButton = loader.find("OnlineButton");
-        if (onlineButton!=null) {
-            onlineButton.setVisible( Locale.getDefault().equals(new Locale("en","GB")) );
-        }
+        //Component onlineButton = loader.find("OnlineButton");
+        //if (onlineButton!=null) {
+        //    onlineButton.setVisible( Locale.getDefault().equals(new Locale("en","GB")) );
+        //}
         
         final Panel newContentPane = new ScrollPane( loader.getRoot() );
         

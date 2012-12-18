@@ -21,6 +21,9 @@ CURRENT VERSION:
 
 	Android 27 do not allow someone to make a mission online game with a map that does not have missions
 		   display lobby chat messages more correctly
+		   fixed: entering a game half way through a attack, either roll or move armes is not working
+		   online play works for everyone
+		   fixed: nullpointer in MapStore after updateall if select is clicked
 	Android 26 donate button fixed
 		   double click on online game fix
 		   do not crash on failed to send message for lobby
