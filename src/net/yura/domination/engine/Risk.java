@@ -117,6 +117,8 @@ public class Risk extends Thread {
 		riskconfig.setProperty("default.map", RiskGame.getDefaultMap() );
 		riskconfig.setProperty("default.cards", RiskGame.getDefaultCards() );
 
+                riskconfig.setProperty("ai.wait", "500" );
+                
                 for (int c=0;c<names.length;c++) {
                     riskconfig.setProperty("default.player"+(c+1)+".type",types[c]);
                     riskconfig.setProperty("default.player"+(c+1)+".color",colors[c]);
@@ -129,6 +131,8 @@ public class Risk extends Thread {
 		catch (Exception ex) {
                     // can not find file, no problem
 		}
+                
+                AIPlayer.setWait( Integer.parseInt( riskconfig.getProperty("ai.wait") ) );
                 
                 myAddress = createRandomUniqueAddress();
 
