@@ -165,11 +165,6 @@ public class MiniFlashRiskAdapter implements RiskListener {
         }
     }
 
-    @Override
-    public void armiesLeft(int extraArmies, boolean noEmptyCountries) {
-        // not used, we use getters now to get this info
-    }
-
     BattleDialog battle;
     @Override
     public void openBattle(int c1num, int c2num) {
