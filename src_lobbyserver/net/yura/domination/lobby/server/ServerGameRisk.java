@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Vector;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
@@ -71,6 +73,15 @@ public class ServerGameRisk extends TurnBasedGame {
                     throw new UnsupportedOperationException("can not add maps to server");
                 }
             };
+            
+            try {
+                GameSettings settings = new GameSettings();
+                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                mbs.registerMBean(settings, new ObjectName("net.yura.domination:type=GameSettings") );
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
 	public ServerGameRisk() {
@@ -290,7 +301,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		// such as cheating
 	}
 
-        private List<String> oldIds = new Vector();
+        private List<String> oldIds = new java.util.Vector();
         @Override
 	public void playerResigns(String username) {
 
