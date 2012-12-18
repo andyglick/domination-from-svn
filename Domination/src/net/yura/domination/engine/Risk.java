@@ -2100,6 +2100,9 @@ RiskUtil.printStackTrace(e);
 
 			//} // this was the end of "if there is somthing to pass" but not needed any more
 
+                        updateBattleState();
+                        
+                        
 		}// end of parse of normal command
 
 		// give a output if there is one
@@ -2263,18 +2266,7 @@ RiskUtil.printStackTrace(e);
 
 
 
-                        if ((game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) && !battle) {
-                                Player attackingPlayer = game.getAttacker().getOwner();
-                                Player defendingPlayer = game.getDefender().getOwner();
-                                if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
-                                        controller.openBattle( game.getAttacker().getColor() , game.getDefender().getColor() );
-                                        battle=true;
-                                }
-                        }
-                        // if someone retreats
-                        else if (game.getState()!=RiskGame.STATE_ROLLING && game.getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
-                                closeBattle();
-                        }
+                        updateBattleState();
 
 
 
@@ -2472,10 +2464,23 @@ RiskUtil.printStackTrace(e);
 
 	}
 
+        private void updateBattleState() {
+            if ((game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) && !battle) {
+                    Player attackingPlayer = game.getAttacker().getOwner();
+                    Player defendingPlayer = game.getDefender().getOwner();
+                    if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
+                            controller.openBattle( game.getAttacker().getColor() , game.getDefender().getColor() );
+                            battle=true;
+                    }
+            }
+            // if someone retreats
+            else if (game.getState()!=RiskGame.STATE_ROLLING && game.getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
+                    closeBattle();
+            }
+        }
+        
 	protected void closeBattle() {
-
 		if ( battle ) { controller.closeBattle(); battle=false; }
-
 	}
 
 	/**
