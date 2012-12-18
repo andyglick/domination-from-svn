@@ -218,15 +218,6 @@ public class FlashRiskAdapter implements RiskListener {
 	}
 
 	/**
-	 * Checks if there are armies left
-	 * @param l Number of armies left
-	 * @param s If you can place armies
-	 */
-	public void armiesLeft(int l, boolean s) {
-		gameFrame.armiesLeft(l, s);
-	}
-
-	/**
 	 * Starts the game
 	 * @param localGame If the game is a local game
 	 */

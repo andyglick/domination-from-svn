@@ -59,7 +59,6 @@ public class GameFrame extends JFrame implements KeyListener {
 	private boolean localGame;
 	private int gameState;
 	private String note;
-	private boolean setupDone;
 
 	private JButton cardsbutton;
 	private JButton missionbutton;
@@ -488,7 +487,6 @@ public class GameFrame extends JFrame implements KeyListener {
 		setGameStatus(null);
 
 		note="";
-		setupDone=true;
 		//c1Id = -1;
 
 		localGame = s;
@@ -652,18 +650,15 @@ public class GameFrame extends JFrame implements KeyListener {
                                 if (myrisk.getGame().canEndTrade()) {
                                     goButtonText = resb.getString("game.button.go.endtrade");
                                 }
+                                note = getArmiesLeftText();
 				break;
 			}
 			case RiskGame.STATE_PLACE_ARMIES: {
-
-				if (setupDone==false) {
-
+				if ( !myrisk.getGame().NoEmptyCountries() ) {
 					goButtonText = resb.getString("game.button.go.autoplace");
-
 				}
-
+                                note = getArmiesLeftText();
 				break;
-
 			}
 			case RiskGame.STATE_ATTACKING: {
 
@@ -774,12 +769,10 @@ public class GameFrame extends JFrame implements KeyListener {
 		repaint(); // SwingGUI has this here, if here then not needed in set status
 	}
 
-	public void armiesLeft(int l, boolean s) {
-
-		note = resb.getString("game.note.armiesleft").replaceAll( "\\{0\\}", "" + l);
-		setupDone = s;
-
-	}
+        public String getArmiesLeftText() {
+                int l = myrisk.getGame().getCurrentPlayer().getExtraArmies();
+                return RiskUtil.replaceAll( resb.getString("game.note.armiesleft"),"{0}", String.valueOf(l));
+        }
 
 	/**
 	 * checks if the coordinates are in one of the
