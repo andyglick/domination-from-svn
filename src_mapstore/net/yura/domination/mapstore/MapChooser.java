@@ -675,19 +675,11 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
     
     private void setListData(String url,java.util.List items) {
-
         String context = getContext(url);
         ((MapRenderer)list.getCellRenderer()).setContext(context);
         list.setListData( RiskUtil.asVector(items==null?Collections.EMPTY_LIST:items) );
-        if (list.getSize()>0) {
-            list.setSelectedIndex(-1);
-            list.ensureIndexIsVisible(0);
-        }
-
         boolean showNoMatch = items!=null && items.isEmpty();
-        
         show( showNoMatch?"NoMatches":"ResultList" );
-
     }
 
     private void show(String name) {
@@ -697,6 +689,11 @@ public class MapChooser implements ActionListener,MapServerListener {
         Component allUpToDate = loader.find("AllUpToDate");
         Component error = loader.find("Error");
 
+        list.setSelectedIndex(-1);
+        if (list.getSize()>0) {
+            list.ensureIndexIsVisible(0);
+        }
+        
         list.setVisible( "ResultList".equals(name) );
         noMatches.setVisible( "NoMatches".equals(name) );
         allUpToDate.setVisible( "AllUpToDate".equals(name) );
