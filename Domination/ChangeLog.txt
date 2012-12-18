@@ -18,6 +18,7 @@ CURRENT VERSION:
 	Online Mini Lobby added to FlashGUI and SwingGUI
 	Brazilian Portuguese added by Ricardo Gomes Ponce
 	much more info added to the Testing tab in SwingGUI
+	game.ini has ai.wait property that can be changed
 
 	Android 27 do not allow someone to make a mission online game with a map that does not have missions
 		   display lobby chat messages more correctly
