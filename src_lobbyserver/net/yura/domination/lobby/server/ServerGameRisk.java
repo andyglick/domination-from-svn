@@ -305,7 +305,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
                         int aliveHumans=0;
                         for (Player player:(List<Player>)myrisk.getGame().getPlayers()) {
-                            if (player.getType()==Player.PLAYER_HUMAN && player.getNoTerritoriesOwned() > 0 ) {
+                            if (player.getType()==Player.PLAYER_HUMAN && (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) ) {
                                 aliveHumans++;
                             }
                         }
@@ -351,7 +351,12 @@ public class ServerGameRisk extends TurnBasedGame {
             }
             else {
                 String playerid = oldIds.remove(0);
-                String oldName = myrisk.playerJoins(newuser,playerid);
+                Player player = myrisk.findEmptySpot();
+                if (player==null) {
+                    throw new RuntimeException("no AI CRAP found in game");
+                }
+                String oldName = player.getName();
+                myrisk.renamePlayer(oldName, newuser, playerid, Player.PLAYER_HUMAN);
                 sendRename(oldName,newuser,playerid,Player.PLAYER_HUMAN);
             }
             // TODO

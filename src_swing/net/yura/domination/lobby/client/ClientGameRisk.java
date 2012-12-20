@@ -293,6 +293,10 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             }
 	}
 
+        public boolean hasSpaceToJoin() {
+            return myrisk.findEmptySpot() != null;
+        }
+        
         /**
          * this is called when I resign from a game
          */
