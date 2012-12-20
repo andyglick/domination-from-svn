@@ -24,6 +24,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.lobby.server.LobbySession;
 import net.yura.lobby.server.TurnBasedGame;
 
 public class ServerGameRisk extends TurnBasedGame {
@@ -124,39 +125,27 @@ public class ServerGameRisk extends TurnBasedGame {
 		Iterator<String> it = colorString.iterator();
 
 		for (int c=0;c<players.length;c++) {
-
 			it.hasNext();
 			String color = it.next();
-
 			String playerid = "player"+(c+1);
-
 			myrisk.addSetupCommandToInbox(playerid,"newplayer human "+color + " " + players[c]);
-
 		}
 
 		for (int c=0;c<aicrap;c++) {
-
-
 			it.hasNext();
 			String color = it.next();
-
 			myrisk.addSetupCommandToInbox("newplayer ai crap "+color + " CrapBot" + (c+1));
-
 		}
 
 		for (int c=0;c<aieasy;c++) {
-
 			it.hasNext();
 			String color = it.next();
-
 			myrisk.addSetupCommandToInbox("newplayer ai easy "+color + " EasyBot" + (c+1));
 		}
 
 		for (int c=0;c<aihard;c++) {
-
 			it.hasNext();
 			String color = it.next();
-
 			myrisk.addSetupCommandToInbox("newplayer ai hard "+color + " HardBot" + (c+1));
 		}
 
@@ -164,14 +153,11 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		// HACK: only return when the game is setup
 		while(!myrisk.getWaiting()) {
-
 			try { Thread.sleep(100); }
 			catch(InterruptedException e){}
-
 		}
 
                 myrisk.setPaued(false);
-                
 	}
 
         public byte[] saveGameState() {
@@ -209,27 +195,27 @@ public class ServerGameRisk extends TurnBasedGame {
             }
 	}    
 
-	public String stopGame() {
+	private String stopGame() {
 		myrisk.setPaued(true);
+
 		RiskGame game = myrisk.getGame();
 		if ( game.checkPlayerWon() ) {
 			return game.getCurrentPlayer().getName();
 		}
-		else {
-			String name="???";
-			int best=-1;
-			List<Player> players = game.getPlayers();
-			for (int c=0;c<players.size();c++) {
-				Player player = players.get(c);
-				// player.getType() == Player.PLAYER_HUMAN &&
-				// if all resign then no humans left
-				if ( player.getNoTerritoriesOwned()>best) {
-					name = player.getName();
-					best = player.getNoTerritoriesOwned();
-				}
-			}
-			return name;
-		}
+
+                String name="???";
+                int best=-1;
+                List<Player> players = game.getPlayers();
+                for (int c=0;c<players.size();c++) {
+                        Player player = players.get(c);
+                        // player.getType() == Player.PLAYER_HUMAN &&
+                        // if all resign then no humans left
+                        if ( player.getNoTerritoriesOwned()>best) {
+                                name = player.getName();
+                                best = player.getNoTerritoriesOwned();
+                        }
+                }
+                return name;
 	}
 
 	public void destroyGame() {
@@ -311,11 +297,21 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		if (playerid != null) {
                         String newName = username+"-Resigned";
-			myrisk.resignPlayer( newName , playerid);
+			myrisk.renamePlayer(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
 
-                        sendRename(username,newName);
+                        sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
 
                         oldIds.add(playerid);
+
+                        int aliveHumans=0;
+                        for (Player player:(List<Player>)myrisk.getGame().getPlayers()) {
+                            if (player.getType()==Player.PLAYER_HUMAN && player.getNoTerritoriesOwned() > 0 ) {
+                                aliveHumans++;
+                            }
+                        }
+                        if (aliveHumans==0) {
+                            gameFinished( stopGame() );
+                        }
 		}
                 else {
                     throw new RuntimeException("can not resign player "+username+" they are not in this game");
@@ -330,12 +326,22 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
-        private void sendRename(String oldName,String newName) {
+        private void sendRename(String oldName,String newName,String newAddress,int newType) {
             HashMap map = new HashMap();
             map.put("command", "rename");
             map.put("oldName", oldName);
             map.put("newName", newName);
-            sendObjectToAllClient(map);
+            map.put("newAddress", newAddress);
+            map.put("newType", newType);
+            for (LobbySession session: getAllClients()) {
+                String username = session.getUsername();
+                String playerid = getPlayerId(username);
+                if (playerid==null) {
+                    playerid="_watch_";
+                }
+                map.put("playerId", playerid);
+                sendObjectToClient(map,username);
+            }
         }
         
         @Override
@@ -346,7 +352,7 @@ public class ServerGameRisk extends TurnBasedGame {
             else {
                 String playerid = oldIds.remove(0);
                 String oldName = myrisk.playerJoins(newuser,playerid);
-                sendRename(oldName, newuser);
+                sendRename(oldName,newuser,playerid,Player.PLAYER_HUMAN);
             }
             // TODO
             //if paused and oldIds.isEmpty() now, we can kick off another game
