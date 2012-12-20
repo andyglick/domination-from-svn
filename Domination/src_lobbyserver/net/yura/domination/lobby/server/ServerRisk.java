@@ -56,23 +56,6 @@ public class ServerRisk extends Risk {
 		inbox.add(a+" "+b);
 		notify();
 	}
-
-	public String playerJoins(String name, String Addr) {
-            if (game!=null) {
-                List<Player> players = game.getPlayers();
-                for (int c=0; c< players.size() ; c++) {
-                    Player player = players.get(c);
-                    if ( player.getType() == Player.PLAYER_AI_CRAP ) {
-                        String oldName = player.getName();
-                        player.rename(name);
-                        player.setType( Player.PLAYER_HUMAN );
-                        player.setAddress( Addr );
-                        return oldName;
-                    }
-                }
-            }
-            throw new RuntimeException("no AI CRAP found in game");
-	}
         
 	public synchronized void setKillFlag() {
 		killflag = true;

@@ -2900,4 +2900,19 @@ RiskUtil.printStackTrace(e);
                         }
 		}
         }
+        
+	public Player findEmptySpot() {
+            if (game!=null) {
+                List players = game.getPlayers();
+                for (int c=0; c< players.size() ; c++) {
+                    Player player = (Player)players.get(c);
+                    if ( player.getType() == Player.PLAYER_AI_CRAP && (player.getExtraArmies() > 0 || player.getNoTerritoriesOwned() > 0)) {
+                        return player;
+                    }
+                }
+            }
+            return null;
+	}
+        
+        
 }
