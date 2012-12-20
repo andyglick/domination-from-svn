@@ -1,27 +1,27 @@
 package net.yura.domination.lobby.client;
 
-import java.awt.Frame;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
-import java.io.OutputStream;
-import javax.swing.border.EmptyBorder;
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.BorderFactory;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.Locale;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
@@ -30,10 +30,10 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
 import net.yura.domination.ui.flashgui.GameFrame;
-import net.yura.lobby.model.Game;
 import net.yura.lobby.client.LobbyClientGUI;
 import net.yura.lobby.client.ResBundle;
 import net.yura.lobby.client.TurnBasedAdapter;
+import net.yura.lobby.model.Game;
 
 public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
