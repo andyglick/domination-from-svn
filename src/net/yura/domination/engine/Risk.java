@@ -2479,7 +2479,7 @@ RiskUtil.printStackTrace(e);
             }
         }
         
-	protected void closeBattle() {
+	public void closeBattle() {
 		if ( battle ) { controller.closeBattle(); battle=false; }
 	}
 
@@ -2846,54 +2846,58 @@ RiskUtil.printStackTrace(e);
             String command = (String)map.get("command");
             if ("game".equals(command)) {
                 String address = (String)map.get("playerId");
-                RiskGame game = (RiskGame)map.get("game");
-                createGame( address, game, lrisk );
+                RiskGame thegame = (RiskGame)map.get("game");
+                
+                onlinePlayClient = lrisk;
+                myAddress = address;
+                unlimitedLocalMode = false;
+                setGame(thegame);
             }
             else if ("rename".equals(command)) {
                 // this type of rename is used for renaming resigned players to joined ones
                 // e.g. "TomResigned" to "Fred"
+
+                myAddress = (String)map.get("playerId");
+
                 String oldName = (String)map.get("oldName");
                 String newName = (String)map.get("newName");
-                renamePlayer(oldName, newName);
-                if (myName.equals(newName)) {// if it is us that has joined
-                    joinAs(newName);
-                }
+                String newAddress = (String)map.get("newAddress");
+                int newType = ((Integer)map.get("newType")).intValue();
+
+                renamePlayer(oldName,newName,newAddress,newType);
             }
             else {
                 throw new RuntimeException("unknown command "+command);
             }
         }
-        private void createGame(String a ,RiskGame b, OnlineRisk lobby) {
-                onlinePlayClient = lobby;
-                myAddress = a;
-                unlimitedLocalMode = false;
-                setGame(b);
-	}
+
         public void setGame(RiskGame b) {
 		inbox.clear();
 		game = b;
                 controller.startGame(unlimitedLocalMode);// need to always call this as there may be a new map
                 getInput();
         }
-        
-        public void resignPlayer() {
-		// need to stop asking this player for input
-		Vector players = game.getPlayers();
-		for (int c=0;c<players.size();c++) {
-			Player player = (Player)players.elementAt(c);
-			if (player.getAddress().equals(myAddress)) {
-				player.setAddress("resignedplayer");
+
+        public void renamePlayer(String name,String newName, String newAddress,int newType) {
+		if (game!=null) { // if its a actual player of the game that has left
+                        // get all the players and make all with the ip of the leaver become nutral
+			List players = game.getPlayers();
+                        Player leaver=null;
+			for (int c=0; c< players.size() ; c++) {
+				Player player = (Player)players.get(c);
+				// AI will never have players addr for lobby game
+				if ( player.getName().equals(name) ) {
+                                        player.rename( newName );
+					player.setType( newType );
+					player.setAddress( newAddress );
+                                        leaver=player;
+                                        break;
+				}
 			}
+                        // if the person whos go it is has just left
+			if (leaver == game.getCurrentPlayer()) {
+                            getInput();
+                        }
 		}
-		closeBattle();
-	}
-        private void joinAs(String name) {
-		Vector players = game.getPlayers();
-		for (int c=0;c<players.size();c++) {
-			Player player = (Player)players.elementAt(c);
-			if (player.getName().equals(name)) {
-				player.setAddress( myAddress );
-			}
-		}
-       }
+        }
 }

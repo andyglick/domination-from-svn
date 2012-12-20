@@ -140,13 +140,23 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void actionPerformed(String actionCommand) {
         
         if ("listSelect".equals(actionCommand)) {
-            List list = (List)loader.find("ResultList");
-            Game game = (Game)list.getSelectedValue();
+            final Game game = (Game)list.getSelectedValue();
             if (game!=null) {
                 int state = game.getState( whoAmI() );
                 switch (state) {
                     case Game.STATE_CAN_JOIN:
-                        mycom.joinGame(game.getId());
+                        if (game.getMaxPlayers() == game.getNumOfPlayers()-1){
+                            OptionPane.showConfirmDialog(new ActionListener() {
+                                public void actionPerformed(String actionCommand) {
+                                    if ("ok".equals(actionCommand)) {
+                                        mycom.joinGame(game.getId());
+                                    }
+                                }
+                            }, "This game will start if you join!", "Are you sure?", OptionPane.OK_CANCEL_OPTION);
+                        }
+                        else {
+                            mycom.joinGame(game.getId());
+                        }
                         break;
                     case Game.STATE_CAN_LEAVE:
                         mycom.leaveGame( game.getId() );

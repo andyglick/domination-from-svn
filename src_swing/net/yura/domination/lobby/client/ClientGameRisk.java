@@ -293,11 +293,11 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             }
 	}
 
-	public void resignPlayer() {
-		myrisk.resignPlayer();
-	}
-
+        /**
+         * this is called when I resign from a game
+         */
 	public void blockInput() {
+                myrisk.closeBattle();
 		frame.blockInput();
 	}
 
