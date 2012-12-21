@@ -193,29 +193,6 @@ public class ServerGameRisk extends TurnBasedGame {
             catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-	}    
-
-	private String stopGame() {
-		myrisk.setPaued(true);
-
-		RiskGame game = myrisk.getGame();
-		if ( game.checkPlayerWon() ) {
-			return game.getCurrentPlayer().getName();
-		}
-
-                String name="???";
-                int best=-1;
-                List<Player> players = game.getPlayers();
-                for (int c=0;c<players.size();c++) {
-                        Player player = players.get(c);
-                        // player.getType() == Player.PLAYER_HUMAN &&
-                        // if all resign then no humans left
-                        if ( player.getNoTerritoriesOwned()>best) {
-                                name = player.getName();
-                                best = player.getNoTerritoriesOwned();
-                        }
-                }
-                return name;
 	}
 
 	public void destroyGame() {
@@ -310,7 +287,7 @@ public class ServerGameRisk extends TurnBasedGame {
                             }
                         }
                         if (aliveHumans==0) {
-                            gameFinished( stopGame() );
+                            gameFinished( whoHasMostPoints() );
                         }
 		}
                 else {
@@ -373,6 +350,26 @@ public class ServerGameRisk extends TurnBasedGame {
             Player player = myrisk.getGame().getCurrentPlayer();
             String username = player.getType()==Player.PLAYER_HUMAN?player.getName():null;
             getInputFromClient(username);
+	}
+        
+        private String whoHasMostPoints() {
+		RiskGame game = myrisk.getGame();
+		if ( game.checkPlayerWon() ) {
+			return game.getCurrentPlayer().getName();
+		}
+                String name="???";
+                int best=-1;
+                List<Player> players = game.getPlayers();
+                for (int c=0;c<players.size();c++) {
+                        Player player = players.get(c);
+                        // player.getType() == Player.PLAYER_HUMAN &&
+                        // if all resign then no humans left
+                        if ( player.getNoTerritoriesOwned()>best) {
+                                name = player.getName();
+                                best = player.getNoTerritoriesOwned();
+                        }
+                }
+                return name;
 	}
 
 }

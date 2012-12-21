@@ -6,7 +6,11 @@ import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
+import net.yura.lobby.model.Game;
+import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
+import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.logging.Logger;
 
@@ -45,6 +49,26 @@ public class MiniFlashRiskAdapter implements RiskListener {
     
     void createLobbyGame(String name,String options,int numPlayers,int timeout) {
 	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
+    }
+    void addExtraButtons(Menu menu) {
+        if (lobby.amAPlayer() ) {
+            Button button = new Button("Resign");
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    lobby.resign();
+                }
+            });
+            menu.add(button);
+        }
+//        else if ( myRisk.findEmptySpot() != null ) {
+//            Button button = new Button("Join");
+//            button.addActionListener(new ActionListener() {
+//                public void actionPerformed(String actionCommand) {
+//                    lobby.join();
+//                }
+//            });
+//            menu.add(button);
+//        }
     }
     
     public void openMainMenu() {
@@ -109,7 +133,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
             mainFrame = null;
         }
         if (gameFrame==null) {
-            gameFrame = new GameActivity(myRisk);
+            gameFrame = new GameActivity(myRisk,this);
         }
         gameFrame.startGame(s);
     }

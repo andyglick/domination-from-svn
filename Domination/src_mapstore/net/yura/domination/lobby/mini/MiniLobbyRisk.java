@@ -1,7 +1,5 @@
 package net.yura.domination.lobby.mini;
 
-import net.yura.lobby.mini.MiniLobbyClient;
-import net.yura.lobby.mini.MiniLobbyGame;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import net.yura.domination.engine.OnlineRisk;
@@ -10,6 +8,8 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.lobby.mini.MiniLobbyClient;
+import net.yura.lobby.mini.MiniLobbyGame;
 import net.yura.lobby.model.Game;
 import net.yura.lobby.model.GameType;
 import net.yura.mobile.gui.Icon;
