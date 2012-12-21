@@ -71,8 +71,13 @@ public class GameActivity extends Frame implements ActionListener {
     private CheckBox AutoEndGo,AutoDefend;
     private Button cardsbutton,missionbutton;
 
-    public GameActivity(Risk risk) {
+    Menu menu;
+    private int gameOptionSize;
+    MiniFlashRiskAdapter controller;
+
+    public GameActivity(Risk risk,MiniFlashRiskAdapter controller) {
         myrisk = risk;
+        this.controller = controller;
         setMaximum(true);
 
         setUndecorated(true);
@@ -126,7 +131,7 @@ public class GameActivity extends Frame implements ActionListener {
         helpbutton.setActionCommand("help");
         
         
-        Menu menu = new Menu();
+        menu = new Menu();
         menu.setMnemonic(KeyEvent.KEY_SOFTKEY1);
         menu.setActionCommand("menu");
         menu.addActionListener(this);
@@ -138,6 +143,8 @@ public class GameActivity extends Frame implements ActionListener {
         menu.add( AutoEndGo );
         menu.add( AutoDefend );
         //menu.add( helpbutton );
+        
+        gameOptionSize = menu.getItemCount();
         
         // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
@@ -364,14 +371,14 @@ public class GameActivity extends Frame implements ActionListener {
             pp.repaint();
         }
         else if ("menu".equals(actionCommand)) {
-            
             	if (myrisk.getGame().getCurrentPlayer()!=null) {
-
 			AutoEndGo.setSelected( myrisk.getAutoEndGo() );
 			AutoDefend.setSelected( myrisk.getAutoDefend() );
-
 		}
-            
+                while (menu.getItemCount() > gameOptionSize) {
+                    menu.remove( (Component)menu.getComponents().lastElement() );
+                }
+                controller.addExtraButtons(menu);
         }
         else if ("save".equals(actionCommand)) {
             
