@@ -6,8 +6,8 @@ import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
-import net.yura.lobby.model.Game;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Menu;
@@ -52,7 +52,8 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
     void addExtraButtons(Menu menu) {
         if (lobby!=null && lobby.amAPlayer()) {
-            Button button = new Button("Resign");
+            Button button = new Button( GameActivity.resb.getString("lobby.resign") );
+            button.setIcon( new Icon("/ic_menu_exit.png") );
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     lobby.resign();
