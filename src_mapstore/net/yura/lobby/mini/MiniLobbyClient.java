@@ -36,8 +36,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
-    //private static final String LOBBY_SERVER = "lobby.yura.net";
-    private static final String LOBBY_SERVER = "192.168.0.2";
+    private static final String LOBBY_SERVER = "lobby.yura.net";
+    //private static final String LOBBY_SERVER = "192.168.0.2";
     
     XULLoader loader;
     List list;
