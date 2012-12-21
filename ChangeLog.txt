@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		27
+	Android		28
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	much more info added to the Testing tab in SwingGUI
 	game.ini has ai.wait property that can be changed
 
+	Android 28 can resign from a online game
 	Android 27 do not allow someone to make a mission online game with a map that does not have missions
 		   display lobby chat messages more correctly
 		   fixed: entering a game half way through a attack, either roll or move armes is not working

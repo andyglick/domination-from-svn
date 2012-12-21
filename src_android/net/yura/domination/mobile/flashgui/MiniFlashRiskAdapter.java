@@ -51,7 +51,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
     }
     void addExtraButtons(Menu menu) {
-        if (lobby.amAPlayer() ) {
+        if (lobby!=null && lobby.amAPlayer()) {
             Button button = new Button("Resign");
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
