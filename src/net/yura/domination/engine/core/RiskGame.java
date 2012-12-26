@@ -423,6 +423,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 			return "";
 		}
 	}
+	
+	public boolean isCapturedCountry() {
+		return capturedCountry;
+	}
 
 	/**
 	 * Ends a player's go
@@ -2613,6 +2617,10 @@ System.out.print(str+"]\n");
 
 	public int getNoCards() {
 		return Cards.size();
+	}
+	
+	public boolean isRecycleCards() {
+		return recycleCards;
 	}
 
 	/**
