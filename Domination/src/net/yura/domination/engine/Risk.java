@@ -897,7 +897,7 @@ RiskUtil.printStackTrace(e);
 
 				((Player)game.getCurrentPlayer()).giveCard( card );
 
-				if ( showHumanPlayerThereInfo( game.getCurrentPlayer() ) ) {
+				if ( showHumanPlayerThereInfo() ) {
 
 					String cardName;
 
@@ -1521,7 +1521,7 @@ RiskUtil.printStackTrace(e);
 
 					// only show to the right player!
 
-					if ( showHumanPlayerThereInfo( game.getCurrentPlayer() ) ) {
+					if ( showHumanPlayerThereInfo() ) {
 						output = resb.getString( "core.showmission.mission") + " " + getCurrentMission();
 					}
 					else { output=resb.getString( "core.showmission.error"); }
@@ -1576,7 +1576,7 @@ RiskUtil.printStackTrace(e);
 			else if (input.equals("showcards")) {
 				if (StringT.hasMoreTokens()==false) {
 
-					if ( showHumanPlayerThereInfo( game.getCurrentPlayer() ) ) {
+					if ( showHumanPlayerThereInfo() ) {
 
 						Vector c = ((Player)game.getCurrentPlayer()).getCards();
 
@@ -2027,7 +2027,7 @@ RiskUtil.printStackTrace(e);
 
 						if ( t != null && game.setCapital(t) ) {
 
-							if ( showHumanPlayerThereInfo( game.getCurrentPlayer() ) ) {
+							if ( showHumanPlayerThereInfo() ) {
 
 								output=RiskUtil.replaceAll(resb.getString( "core.capital.selected"), "{0}", t.getName()); // Display
 							}
@@ -2215,10 +2215,12 @@ RiskUtil.printStackTrace(e);
 	 * return true ONLY if info of this Player p should be disclosed to this computer
 	 */
 	private boolean showHumanPlayerThereInfo(Player p) {
-
 		return (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) );
-
 	}
+        
+        public boolean showHumanPlayerThereInfo() {
+            return showHumanPlayerThereInfo( game.getCurrentPlayer() );
+        }
 
 	/**
 	 * Method that deals with an end of a player's turn
