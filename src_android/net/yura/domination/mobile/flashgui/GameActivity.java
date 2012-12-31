@@ -354,7 +354,7 @@ public class GameActivity extends Frame implements ActionListener {
         // ============================================ show
 
         // disable all buttons at the start of the game
-        Button[] buttons = new Button[] {savebutton,AutoEndGo,AutoDefend,cardsbutton,missionbutton,undobutton,gobutton};
+        Button[] buttons = new Button[] {savebutton,AutoEndGo,AutoDefend,cardsbutton,undobutton,gobutton};
         for (int c=0;c<buttons.length;c++) {
             buttons[c].setFocusable(false);
         }
@@ -432,13 +432,17 @@ public class GameActivity extends Frame implements ActionListener {
                     new Element("p",
                             status
                     ),
-                    new Element("p",
-                            new Element("b",
-                                    missionTitle
-                            ),
-                            new Element("br"),
-                            mission
-                    )
+                    myrisk.showHumanPlayerThereInfo()? 
+                        new Element("p",
+                                new Element("b",
+                                        missionTitle
+                                ),
+                                new Element("br"),
+                                mission
+                        ):
+                        new Element("p",
+                            resb.getString("game.pleasewaitnetwork") // "game.pleasewait"
+                        )
             );
 
             OptionPane.showMessageDialog(null, toString(html) , resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
@@ -574,7 +578,6 @@ public class GameActivity extends Frame implements ActionListener {
 
             if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
                     cardsbutton.setFocusable(true);
-                    missionbutton.setFocusable(true);
 
                     if (localGame) {
                         undobutton.setFocusable(true);
@@ -664,7 +667,6 @@ public class GameActivity extends Frame implements ActionListener {
     public void noInput() {
 
             cardsbutton.setFocusable(false);
-            missionbutton.setFocusable(false);
             undobutton.setFocusable(false);
             savebutton.setFocusable(false);
             AutoEndGo.setFocusable(false);
