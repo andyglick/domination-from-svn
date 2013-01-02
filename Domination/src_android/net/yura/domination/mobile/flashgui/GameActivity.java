@@ -595,7 +595,9 @@ public class GameActivity extends Frame implements ActionListener {
             
             repaint(); // SwingGUI has this here, if here then not needed in set status
             
-            toast(status);
+            if (isFocused()) {
+                toast(status);
+            }
     }
     
     private void setGoButtonText(String goButtonText) {
@@ -764,7 +766,7 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     static void toast(String message) {
-        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message)+"&duration=SHORT");
     }
 
 }
