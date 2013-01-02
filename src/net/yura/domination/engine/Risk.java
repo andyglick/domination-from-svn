@@ -1062,11 +1062,6 @@ RiskUtil.printStackTrace(e);
 							name = name + GetNext();
 							if ( StringT.hasMoreElements() ) { name = name + " "; }
 						}
-						name = name.replaceAll("\\$","").replaceAll("\\\\","").replaceAll(" +"," ");
-
-						// YURA:LOBBY CHANGE
-						// ( ( chatSocket != null && game.addPlayer(t, name, color, Addr) ) || ( chatSocket == null && game.addPlayer(t, name, color, "all") ) )
-						// name.replaceAll(" ","")+"#"+String.valueOf( Math.round(Math.random()*Long.MAX_VALUE) )
 
 						int t=getType(type);
 						int color=ColorUtil.getColor( c );
