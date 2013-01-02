@@ -12,6 +12,7 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
+import net.yura.mobile.gui.components.CheckBox;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.layout.XULLoader;
@@ -27,7 +28,7 @@ public class BattleDialog extends Frame implements ActionListener {
     Risk myrisk;
     Sprite red_dice,blue_dice;
     Random r = new Random();
-    Button rollButton,retreat;
+    Button rollButton,retreat,kill;
 
     public BattleDialog(Risk a) {
         myrisk = a;
@@ -40,19 +41,24 @@ public class BattleDialog extends Frame implements ActionListener {
         setBackground(0xAA000000);
 
         rollButton = new Button(resb.getProperty("battle.roll"));
-        retreat = new Button( resb.getProperty("battle.retreat") );
-        
         rollButton.addActionListener(this);
         rollButton.setActionCommand("fight");
 
+        kill = new CheckBox( resb.getProperty("battle.annihilate") );
+        kill.setName( rollButton.getName() );
+        kill.addActionListener(this);
+        kill.setActionCommand("kill");
+
+        retreat = new Button( resb.getProperty("battle.retreat") );
         retreat.addActionListener(this);
         retreat.setActionCommand("retreat");
         retreat.setMnemonic( KeyEvent.KEY_SOFTKEY2 );
-        
+
         Panel controls = new Panel();
         controls.add(rollButton);
+        controls.add(kill);
         controls.add(retreat);
-        
+
         Panel contentPane = getContentPane();
         contentPane.setLayout( new MoveDialog.DialogLayout( getImageAreaHeight() ) );
         contentPane.add(controls);
@@ -71,9 +77,15 @@ public class BattleDialog extends Frame implements ActionListener {
         return XULLoader.adjustSizeToDensity(135);
     }
 
+    @Override
     public void actionPerformed(String actionCommand) {
         if ("fight".equals( actionCommand )) {
             go("roll "+nod);
+        }
+        else if ("kill".equals( actionCommand )) {
+            if (kill.isSelected()) {
+                go("roll "+max);
+            }
         }
         else if ("retreat".equals( actionCommand )) {
             if (canRetreat) {
@@ -91,7 +103,7 @@ public class BattleDialog extends Frame implements ActionListener {
     Image c1img,c2img;
     boolean ani,canRetreat;
     int nod,max;
-    //@Override
+    @Override
     public void run() throws InterruptedException {
 
         while(ani) {
@@ -156,10 +168,14 @@ public class BattleDialog extends Frame implements ActionListener {
 
         setTitle(resb.getProperty(canRetreat?"battle.select.attack":"battle.select.defend"));
         retreat.setVisible(canRetreat);
+        kill.setVisible(canRetreat);
 
         revalidate();
         repaint();
-
+        
+        if (canRetreat && kill.isSelected()) {
+            go("roll "+max);
+        }
     }
 
     void setup(int c1num, int c2num,Image c1img,Image c2img) {
@@ -174,6 +190,8 @@ public class BattleDialog extends Frame implements ActionListener {
         noda=0;
         nodd=0;
 
+        kill.setSelected(false);
+        
         reset();
     }
     
@@ -194,6 +212,7 @@ public class BattleDialog extends Frame implements ActionListener {
     public void reset() {
         rollButton.setFocusable(false);
         retreat.setVisible(false);
+        kill.setVisible(false);
         canRetreat=false;
         max=0;
         setTitle(resb.getProperty("battle.title"));
