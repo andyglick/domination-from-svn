@@ -506,9 +506,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 			}
 
-			//System.out.print("inserting: "+str+"\n");
-
-			super.insertString(offs, str.replace('$','S') , a); // $ sign crashes the system?!
+                        super.insertString(offs, str, a);
 		}
 	}
 
