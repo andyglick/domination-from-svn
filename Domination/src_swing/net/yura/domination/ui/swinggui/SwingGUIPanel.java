@@ -2841,7 +2841,7 @@ public void setNODDefender(int n) {}
 				public String getColumnName(int column) {return names[column];}
 				public Class getColumnClass(int c) {return getValueAt(0, c).getClass();}
 				public boolean isCellEditable(int row, int col) { return localGame; }
-				public void setValueAt(Object aValue, int row, int column) { if(column==0) { aValue = ((String)aValue).replace('$','S'); if( ((String)aValue).length() > 15 ) { aValue = ((String)aValue).substring(0,15); } } super.setValueAt(aValue,row,column); } // if(column==0 && ((String)aValue).indexOf('$')!=-1 ) { return; } else { }
+				public void setValueAt(Object aValue, int row, int column) { if(column==0) { if( ((String)aValue).length() > 15 ) { aValue = ((String)aValue).substring(0,15); } } super.setValueAt(aValue,row,column); } // if(column==0 && ((String)aValue).indexOf('$')!=-1 ) { return; } else { }
 			};
 
 			players = new JTable( dataModel );
