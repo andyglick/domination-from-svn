@@ -227,11 +227,12 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
 		sortOutButton( AutoPlaceAll );
 		AutoPlaceAll.setBounds(60, 440, 100 , 25 );
+                AutoPlaceAll.setSelected( "true".equals(myrisk.getRiskConfig("default.autoplaceall")) );
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
 		sortOutButton( recycle );
 		recycle.setBounds(160, 440, col2w , 25 );
-
+                recycle.setSelected( "true".equals(myrisk.getRiskConfig("default.recyclecards")) );
 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);

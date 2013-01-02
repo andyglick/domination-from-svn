@@ -19,6 +19,7 @@ CURRENT VERSION:
 	Brazilian Portuguese added by Ricardo Gomes Ponce
 	much more info added to the Testing tab in SwingGUI
 	game.ini has ai.wait property that can be changed
+	other game.ini properties work fully now
 
 	Android 29 can view hint at any point
 	Android 28 can resign from a online game
