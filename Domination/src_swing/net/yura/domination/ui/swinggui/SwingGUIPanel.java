@@ -3214,10 +3214,12 @@ public void setNODDefender(int n) {}
 			AutoPlaceAll = new JCheckBox(resbundle.getString("newgame.autoplace"));
 			GameOptionsButtons.add( AutoPlaceAll );
 			AutoPlaceAll.setOpaque(false);
+                        AutoPlaceAll.setSelected( "true".equals(myrisk.getRiskConfig("default.autoplaceall")) );
 
 			recycle = new JCheckBox(resbundle.getString("newgame.recycle"));
 			GameOptionsButtons.add( recycle );
 			recycle.setOpaque(false);
+                        recycle.setSelected( "true".equals(myrisk.getRiskConfig("default.recyclecards")) );
 
 			JButton startGame = new JButton(resbundle.getString("newgame.startgame"));
 

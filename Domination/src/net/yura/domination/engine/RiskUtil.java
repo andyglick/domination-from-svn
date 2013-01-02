@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Properties;

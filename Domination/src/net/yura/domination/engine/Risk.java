@@ -116,9 +116,10 @@ public class Risk extends Thread {
 		riskconfig.setProperty("default.host","localhost");
 		riskconfig.setProperty("default.map", RiskGame.getDefaultMap() );
 		riskconfig.setProperty("default.cards", RiskGame.getDefaultCards() );
-
+                riskconfig.setProperty("default.autoplaceall","false");
+                riskconfig.setProperty("default.recyclecards","true");
                 riskconfig.setProperty("ai.wait", String.valueOf(AIPlayer.getWait()) );
-                
+
                 for (int c=0;c<names.length;c++) {
                     riskconfig.setProperty("default.player"+(c+1)+".type",types[c]);
                     riskconfig.setProperty("default.player"+(c+1)+".color",colors[c]);
