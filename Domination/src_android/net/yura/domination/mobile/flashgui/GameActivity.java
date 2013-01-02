@@ -1,7 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.io.File;
-import net.yura.swingme.core.ViewChooser;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.logging.Level;
@@ -44,6 +43,7 @@ import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 import net.yura.mobile.util.Url;
 import net.yura.swingme.core.CoreUtil;
+import net.yura.swingme.core.ViewChooser;
 
 /**
  * @author Yura
@@ -594,6 +594,8 @@ public class GameActivity extends Frame implements ActionListener {
             }
             
             repaint(); // SwingGUI has this here, if here then not needed in set status
+            
+            toast(status);
     }
     
     private void setGoButtonText(String goButtonText) {
@@ -759,6 +761,10 @@ public class GameActivity extends Frame implements ActionListener {
                 pp.repaint();
             }
         }
+    }
+
+    static void toast(String message) {
+        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
     }
 
 }
