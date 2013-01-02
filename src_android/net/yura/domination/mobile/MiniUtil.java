@@ -11,6 +11,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
+import net.yura.grasshopper.BugUIInfo;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
@@ -37,6 +38,7 @@ public class MiniUtil {
                // "<p>"+ resb.getString("about.comments") +"</p>"+
                 "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
                 "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
+                "<p>"+BugUIInfo.getLookAndFeel()+"</p>"+
                 "</html>";
 
         Button credits = new Button(resb.getString("about.tab.credits"));

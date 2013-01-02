@@ -23,6 +23,7 @@ CURRENT VERSION:
 
 	Android 29 can view hint at any point
 		   annihilate button added to battle dialog
+		   show tooltip at start of go
 	Android 28 can resign from a online game
 	Android 27 do not allow someone to make a mission online game with a map that does not have missions
 		   display lobby chat messages more correctly
