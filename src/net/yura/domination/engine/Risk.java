@@ -75,7 +75,7 @@ public class Risk extends Thread {
 	}
 
         public static final String[] types = new String[] { "human","ai easy","ai easy","ai easy","ai hard","ai hard" };
-        public static final String[] names = new String[] { RiskUtil.GAME_NAME+"Player","bob","fred","ted","yura","lala"};
+        public static final String[] names = new String[] { "player","bob","fred","ted","yura","lala"};
         public static final String[] colors = new String[] { "green","blue","red","cyan","magenta","yellow"};
 
 	public Risk() {
