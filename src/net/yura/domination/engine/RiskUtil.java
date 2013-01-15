@@ -415,6 +415,9 @@ public class RiskUtil {
         return string.replaceAll( quote(notregex) , quoteReplacement(replacement));
     }
 
+    /**
+     * @see java.util.regex.Pattern#quote(java.lang.String)
+     */
     public static String quote(String s) {
         int slashEIndex = s.indexOf("\\E");
         if (slashEIndex == -1)
@@ -434,6 +437,9 @@ public class RiskUtil {
         return sb.toString();
     }
 
+    /**
+     * @see java.util.regex.Matcher#quoteReplacement(java.lang.String)
+     */
     public static String quoteReplacement(String s) {
         if ((s.indexOf('\\') == -1) && (s.indexOf('$') == -1))
             return s;
