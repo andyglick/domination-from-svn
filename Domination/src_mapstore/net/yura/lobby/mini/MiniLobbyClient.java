@@ -76,19 +76,18 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         viewChooser.setActionCommand("filter");
         viewChooser.setStretchCombo(true);
         viewChooser.setName(null);
-        
+
         String uuid = getMyUUID();
-        
-        
-        
-        
-        
+
+
+
+
+
         mycom = new LobbyCom(uuid,lobbyGame.getAppName(),lobbyGame.getAppVersion());
         mycom.addEventListener(this);
         mycom.connect(LOBBY_SERVER, 1964);
-        
     }
-    
+
     public void removeBackButton() {
         Button button = (Button)loader.find("BackButton");
         button.setMnemonic(0);
@@ -296,7 +295,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    private static java.util.List games = Collections.synchronizedList( new ArrayList() );
+    private java.util.List games = Collections.synchronizedList( new ArrayList() );
     public void addOrUpdateGame(Game game) {
         int index = games.indexOf(game);
         if (index>=0) {

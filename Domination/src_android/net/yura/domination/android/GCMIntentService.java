@@ -2,7 +2,7 @@ package net.yura.domination.android;
 
 import static net.yura.domination.android.GCMActivity.SENDER_ID;
 import static net.yura.domination.android.GCMActivity.displayMessage;
-import net.yura.mobile.R;
+import net.yura.domination.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
