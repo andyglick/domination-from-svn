@@ -10,19 +10,19 @@ import java.util.Map;
  */
 public class ColorUtil {
 
-        public static final int BLACK = 0xFF000000;
-        public static final int WHITE = 0xFFFFFFFF;
-        public final static int LIGHT_GRAY = 0xFFC0C0C0;
-        public final static int GRAY = 0xFF808080;
-        public final static int DARK_GRAY = 0xFF404040;
-        public final static int RED = 0xFFFF0000;
-        public final static int PINK = 0xFFFFAFAF;
-        public final static int ORANGE = 0xFFFFC800;
-        public final static int YELLOW = 0xFFFFFF00;
-        public final static int GREEN = 0xFF00FF00;
-        public final static int MAGENTA = 0xFFFF00FF;
-        public final static int CYAN = 0xFF00FFFF;
-        public final static int BLUE = 0xFF0000FF;
+        public static final int BLACK       = 0xFF000000,
+                                WHITE       = 0xFFFFFFFF,
+                                LIGHT_GRAY  = 0xFFC0C0C0,
+                                GRAY        = 0xFF808080,
+                                DARK_GRAY   = 0xFF404040,
+                                RED         = 0xFFFF0000,
+                                PINK        = 0xFFFFAFAF,
+                                ORANGE      = 0xFFFFC800,
+                                YELLOW      = 0xFFFFFF00,
+                                GREEN       = 0xFF00FF00,
+                                MAGENTA     = 0xFFFF00FF,
+                                CYAN        = 0xFF00FFFF,
+                                BLUE        = 0xFF0000FF;
 
 	static Map intToString = new HashMap();
 	static Map stringToInt = new HashMap();

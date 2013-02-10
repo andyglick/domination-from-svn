@@ -1158,11 +1158,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                         Player p = m.getPlayer();
 			if (p !=null && m.getDiscription().indexOf( p.getName() ) == -1) {
-
 				errors = errors + "\n* You have a mission that is to destroy "+p.getName()+", yet you do NOT have the text \""+p.getName()+"\" in the description.";
-
 			}
 
+                        if (m.getNoofcountries() > 0 && m.getNoofarmies() <= 0) {
+                            errors = errors + "\n* You have a mission with impossible option: occupy "+m.getNoofcountries()+" countries with "+m.getNoofarmies()+" troops";
+                        }
 		}
 
 		if (errors.length() >0) {
