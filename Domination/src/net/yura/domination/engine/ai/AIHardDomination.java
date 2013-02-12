@@ -26,7 +26,7 @@ import net.yura.domination.engine.core.RiskGame;
  * TODO:
  * fear reprisals
  */
-public class AIHard extends AIEasy {
+public class AIHardDomination extends AIEasy {
 	
 	static class PlayerState implements Comparable {
 		Player p;

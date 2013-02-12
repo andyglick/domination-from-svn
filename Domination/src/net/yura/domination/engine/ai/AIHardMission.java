@@ -13,7 +13,7 @@ import net.yura.domination.engine.core.Player;
  * @author SE Group D
  * TODO infer the other missions
  */
-public class AIHardMission extends AIHard {
+public class AIHardMission extends AIHardDomination {
 
 	protected List getBorder(GameState gs) {
 		List result = super.getBorder(gs);

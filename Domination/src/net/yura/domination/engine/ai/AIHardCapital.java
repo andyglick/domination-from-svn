@@ -16,7 +16,7 @@ import net.yura.domination.engine.core.Player;
  * <p> Class for AIHardPlayer </p>
  * @author SE Group D
  */
-public class AIHardCapital extends AIHard {
+public class AIHardCapital extends AIHardDomination {
 	
 	/**
 	 * Adds the best defended capital to the border when there is a threat
