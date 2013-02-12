@@ -25,6 +25,7 @@ public class Country implements Serializable {
 	private int y;
 
 	private String idString; // used by the map editor
+	private transient Vector crossContinentNeighbours;
 
 	/**
 	 * Creates a country object
@@ -91,6 +92,20 @@ public class Country implements Serializable {
 		return neighbours;
 
 	}
+	
+	public Vector getCrossContinentNeighbours() {
+		if (crossContinentNeighbours == null) {
+			Vector c = new Vector();
+			for (int i = 0; i < this.neighbours.size(); i++) {
+				Country other = (Country)this.neighbours.get(i);
+				if (other.getContinent() != this.continent) {
+					c.add(other);
+				}
+			}
+			this.crossContinentNeighbours = c;
+		}
+		return crossContinentNeighbours;
+	}
 
 	/**
 	 * Returns the country name
@@ -129,6 +144,7 @@ public class Country implements Serializable {
 	 * @param t
 	 */
 	public void addNeighbour(Country t) {
+		this.crossContinentNeighbours = null;
 		neighbours.add(t);
 	}
 

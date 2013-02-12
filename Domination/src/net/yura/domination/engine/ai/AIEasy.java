@@ -2,171 +2,134 @@
 
 package net.yura.domination.engine.ai;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
 
 /**
  * <p> Class for AIEasyPlayer </p>
+ * 
+ * Uses a simplistic attack/reenforcement approach -
+ *   look across all territories (in random order) and try to place/attack the most enemy positions as possible.
+ * 
+ * This AI does not use any strategic logic.
+ * 
  * @author Yura Mamyrin
  */
-
 public class AIEasy extends AICrap {
 
-    protected class Attack {
-	Country source;
-	Country destination;
-
-	public Attack(Country s, Country d){
-	    source=s;
-	    destination=d;
-	}
-	public String toString(){
-	    if (source == null || destination == null) { return ""; }
-	    return "attack " + source.getColor() + " " + destination.getColor();
-	}
-
+    
+    /**
+     * Finds all countries that can be attacked from.
+     * @param p player object
+     * @param attack true if this is durning attack, which requires the territority to have 2 or more armies
+     * @return a Vector of countries, never null
+     */
+    public List findAttackableTerritories(Player p, boolean attack) {
+    	List countries = p.getTerritoriesOwned();
+    	List result = new ArrayList();
+    	for (int i=0; i<countries.size(); i++) {
+    		Country country = (Country)countries.get(i);
+    		if ((!attack || country.getArmies() > 1) && !ownsNeighbours(p, country)) {
+				result.add(country);
+    		}
+    	}
+    	return result;
     }
-
+    
+    
+    
     public String getPlaceArmies() {
-
 		if ( game.NoEmptyCountries()==false ) {
 		    return "autoplace";
 		}
-		else {
-		    Vector t = player.getTerritoriesOwned();
-		    Vector n;
-		    String name=null;
-			name = findAttackableTerritory(player);
-			if ( name == null ) {
-			return "placearmies " + ((Country)t.elementAt(0)).getColor() +" "+player.getExtraArmies()  ;
-		    }
-
-		    if (game.getSetup() ) {
-			return "placearmies " + name +" "+player.getExtraArmies() ;
-		    }
-
-		    return "placearmies " + name +" 1";
-
-		}
-
-    }
-
-    public String getAttack() {
-	//Vector t = player.getTerritoriesOwned();
-	Vector outputs = new Vector();
-	Attack move;
-
-	/*  // Extract method: findAttackableNeighbors() 
-	Vector n;
-	for (int a=0; a< t.size() ; a++) {
-	    if ( ((Country)t.elementAt(a)).getArmies() > 1 ) {
-		n = ((Country)t.elementAt(a)).getNeighbours();
-		for (int b=0; b< n.size() ; b++) {
-		    if ( ((Country)n.elementAt(b)).getOwner() != player ) {
-			outputs.add( "attack " + ((Country)t.elementAt(a)).getColor() + " " + ((Country)n.elementAt(b)).getColor() );
-		    }
-		}
+	    List t = player.getTerritoriesOwned();
+	    List n = findAttackableTerritories(player, false);
+	    List copy = new ArrayList(n);
+	    Country c = null;
+	    if (n.isEmpty() || t.size() == 1) {
+	    	c = (Country)t.get(0);
+		    return getPlaceCommand(c, player.getExtraArmies());
 	    }
-	}  */
-	outputs = findAttackableNeighbors(player.getTerritoriesOwned(),0);
-	if (outputs.size() > 0) {
-		move = (Attack) outputs.elementAt( (int)Math.round(Math.random() * (outputs.size()-1) ) );
-		//System.out.println(player.getName() + ": "+ move.toString());    //TESTING
-		return move.toString();
-		//return (String)outputs.elementAt( (int)Math.round(Math.random() * (outputs.size()-1) ) );
-	}
-	return "endattack";
+	    if (n.size() == 1) {
+	    	c = (Country)n.get(0);
+	    	return getPlaceCommand(c, player.getExtraArmies());
+	    }
+	    HashSet toTake = new HashSet();
+	    Country fallback = null;
+	    int additional = 1;
+		while (!n.isEmpty()) {
+			c = (Country)n.remove( r.nextInt(n.size()) );
+			List cn = c.getNeighbours();
+			for (int i = 0; i < cn.size(); i++) {
+				Country other = (Country)cn.get(i);
+				if (other.getOwner() == player || toTake.contains(other)) {
+					continue;
+				}
+				int diff = c.getArmies() - 2 - (3*other.getArmies()/2 + other.getArmies()%2);
+				if (diff >= 0) {
+					toTake.add(other);
+					continue;
+				}
+				if (-diff <= player.getExtraArmies()) {
+					return getPlaceCommand(c, -diff);
+				}
+				if (fallback == null) {
+					fallback = c;
+					additional = Math.max(1, -diff);
+				}
+			}
+		}
+		if (fallback == null) {
+			fallback = randomCountry(copy);
+		}
+		return getPlaceCommand(fallback, additional);
     }
 
+	public String getAttack() {
+		List v = findAttackableTerritories(player, true);
+		
+		while (!v.isEmpty()) {
+			Country c = (Country)v.remove( r.nextInt(v.size()) );
+			List n = c.getNeighbours();
+			for (int i = 0; i < n.size(); i++) {
+				Country other = (Country)n.get(i);
+				if (other.getOwner() != player && c.getArmies() - 1 > other.getArmies()) {
+					return "attack " + c.getColor() + " " + other.getColor();
+				}
+			}
+		}
+		
+		return "endattack";
+	}
 
-
+	/**
+	 * Rolls the max as long as the attack is favorable (attack is greater than defense), but will keep rolling if we're breaking a continent or eliminating.
+	 */
     public String getRoll() {
-	    int n=((Country)game.getAttacker()).getArmies() - 1;
-	    if (n > 3) {
-		    return "roll "+3;
+	    int n=game.getAttacker().getArmies() - 1;
+	    if (n < 3 && n <= game.getDefender().getArmies() && game.getDefender().getContinent().getOwner() == null && game.getDefender().getOwner().getTerritoriesOwned().size() != 1) {
+	    	return "retreat";
 	    }
-	    return "roll "+n;
+	    return "roll " + Math.min(3, n);
+    }
+    
+    @Override
+    public String getBattleWon() {
+    	if (player.getCapital() == game.getAttacker()) {
+    		return "move " + game.getMustMove(); 
+    	}
+    	return super.getBattleWon();
     }
 
-
-    /******************
-     * Helper Methods *
-     ******************/
-
-    /************
-     * @name findAttackableNeighbors
-     * @param t Vector of teritories
-     * @param ratio - threshold of attack to defence armies to filter out
-     * @return a Vector of possible attacks for a given list of territories
-     * 	where the ratio of source/target armies is above ratio
-     **************/
-    public Vector findAttackableNeighbors(Vector t, double ratio){
-	Vector output = new Vector();
-	Vector n=new Vector();
-    	Country source,target;
-	if (ratio<0) { ratio = 0;}
-	for (int a=0; a< t.size() ; a++) {
-	    source=(Country)t.elementAt(a);
-	    if ( source.getOwner() == player && source.getArmies() > 1 ) {
-		n = source.getNeighbours();
-		for (int b=0; b< n.size() ; b++) {
-		    target=(Country)n.elementAt(b);
-		    if ( target.getOwner() != player && 
-			( (double)(source.getArmies()/target.getArmies()) > ratio) 
-		      	) {     // simplify logic
-			//output.add( "attack " + source.getColor() + " " + target.getColor() );
-			output.add(new Attack(source,target));
-		    }
-		}
-	    }
+    public int tradeCombinationsToScan() {
+    	return 10000;
+    }
+    
+	protected String getPlaceCommand(Country country, int armies) {
+		return "placearmies " + country.getColor() + " " + (!game.getSetup()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
 	}
-	return output;
-    }
-
-    /************
-     * @name findAttackableNeighbors
-     * @param t Vector of teritories
-     * @param ratio - threshold of attack to defence armies to filter out
-     * @return a Vector of possible attacks for a given list of territories
-     * 	where the ratio of source/target armies is above ratio
-     **************/
-    public Vector getPossibleAttacks(Vector t){
-	Vector output = new Vector();
-	Vector n=new Vector();
-    	Country source,target;
-	for (int a=0; a< t.size() ; a++) {
-	    source=(Country)t.elementAt(a);
-	    if ( source.getOwner() == player && source.getArmies() > 1 ) {
-		n = source.getNeighbours();
-		for (int b=0; b< n.size() ; b++) {
-		    target=(Country)n.elementAt(b);
-		    if ( target.getOwner() != player ) {     // simplify logic
-			//output.add( "attack " + source.getColor() + " " + target.getColor() );
-			output.add(new Attack(source,target));
-		    }
-		}
-	    }
-	}
-	return output;
-    }
-
-    /*******************
-     * @name filterAttacks
-     * @param options - Vector of Attacks
-     * @param advantage - how much of an absolute advantage to have
-     * @return Vector of attacks with specified advantage
-     *******************/
-
-    public Vector filterAttacks(Vector options, int advantage){
-	Attack temp = null;
-	Vector moves = new Vector();
-	for(int j=0; j<options.size(); j++){
-		temp=(Attack)options.get(j);
-		if ( ( ((Country)temp.source).getArmies() - ((Country)temp.destination).getArmies()) > advantage) {
-			moves.add(temp);
-		}
-	}
-	return moves;
-    }
 
 }

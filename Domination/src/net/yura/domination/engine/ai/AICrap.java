@@ -2,18 +2,19 @@
 
 package net.yura.domination.engine.ai;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 
 /**
- * <p> Class for AIEasyPlayer </p>
+ * THIS IS NOT A REAL AI, THIS IS WHAT A HUMAN PLAYER THAT HAS RESIGNED FROM A GAME BECOMES
+ * SO THAT OTHER PLAYERS CAN CARRY ON PLAYING, THIS AI NEVER ATTACKS ANYONE, JUST FOLLOWS RULES
  * @author Yura Mamyrin
  */
-
 public class AICrap {
 
     protected Random r = new Random(); // this was always static
@@ -21,144 +22,104 @@ public class AICrap {
     protected RiskGame game;
     protected Player player;
 
-
     public String getBattleWon() {
-
 	return "move all";
-
     }
 
     public String getTacMove() {
-
 	return "nomove";
-
     }
 
-    public String getTrade() {
+	public String getTrade() {
 
-	  Vector cards = player.getCards();
+		List cards = player.getCards();
 
-	  if (cards.size() >= 3 && !( game.getTradeCap()==true && cards.size() < 5 ) ) {
-
-	    Card card1=null, card2=null, card3=null;
-
-	    for (int a=0; a< cards.size() ; a++) {
-		if (card1 != null && card2 != null && card3 != null) { break; }
-		card1 = (Card)cards.elementAt(a);
-
-		for (int b=(a+1); b< cards.size() ; b++) {
-		    if (card1 != null && card2 != null && card3 != null) { break; }
-		    card2 = (Card)cards.elementAt(b);
-
-		    for (int c=(b+1); c< cards.size() ; c++) {
-			if (card1 != null && card2 != null && card3 != null) { break; }
-			card3 = (Card)cards.elementAt(c);
-
-			if ( game.checkTrade(card1, card2, card3) ) { break; }
-			else { card3=null; }
-
-		    }
+		if (cards.size() < 3) {
+			return "endtrade";
 		}
-	    }
 
+		Card[] result = game.getBestTrade(cards, tradeCombinationsToScan());
 
-	    if (card3 != null) {
+		if (result != null) {
+			String output = "trade ";
+			output = getCardName(result[0], output);
+			output = output + " ";
+			output = getCardName(result[1], output);
+			output = output + " ";
+			output = getCardName(result[2], output);
+			return output;
+		}
 
-		String output = "trade ";
+		return "endtrade";
+	}
 
-		  if (card1.getName().equals("wildcard")) { output = output + card1.getName(); }
-		  else { output = output + ((Country)card1.getCountry()).getColor(); }
+	/**
+	 * @return a bounding factor for the number of trades to scan
+	 */
+	public int tradeCombinationsToScan() {
+		return 1;
+	}
 
-		output = output+" ";
-
-		  if (card2.getName().equals("wildcard")) { output = output + card2.getName(); }
-		  else { output = output + ((Country)card2.getCountry()).getColor(); }
-
-		output = output+" ";
-
-		  if (card3.getName().equals("wildcard")) { output = output + card3.getName(); }
-		  else { output = output + ((Country)card3.getCountry()).getColor(); }
-
+	private String getCardName(Card card1, String output) {
+		if (card1.getName().equals("wildcard")) {
+			output = output + card1.getName();
+		} else {
+			output = output + card1.getCountry().getColor();
+		}
 		return output;
-
-	    }
-
-	    return "endtrade";
-	  }
-
-	  return "endtrade";
-
-    }
+	}
 
     public String getPlaceArmies() {
-
 		if ( game.NoEmptyCountries()==false ) {
 		    return "autoplace";
 		}
-		else {
-		    Vector t = player.getTerritoriesOwned();
-		    Vector n;
-		    String name=null;
-		    Random rand = new Random();
-//			if (game.getSetup())
-//				return "placearmies " + ((Country)t.elementAt(rand.nextInt(t.size()))).getColor() +" "+player.getExtraArmies();
-//			else 
-				return "placearmies " + ((Country)t.elementAt(rand.nextInt(t.size()))).getColor() +" 1";
-		}
-
+		return "placearmies " + randomCountry(player.getTerritoriesOwned()).getColor() +" 1";
     }
 
     public String getAttack() {
-
 	return "endattack";
-
     }
 
     public String getRoll() {
-
 	return "retreat";
-
     }
 
     public String getCapital() {
-
-	    Vector t = player.getTerritoriesOwned();
-	    return "capital " + ((Country)t.elementAt( r.nextInt(t.size()) )).getColor();
-
+	    return "capital " + randomCountry(player.getTerritoriesOwned()).getColor();
+    }
+    
+    public Country randomCountry(List countries) {
+    	if (countries.isEmpty()) {
+    		return null;
+    	}
+    	return (Country)countries.get( r.nextInt(countries.size()) );
     }
 
-
 	public String getAutoDefendString() {
-
-	    int n=((Country)game.getDefender()).getArmies();
-
-            if (n > game.getMaxDefendDice()) {
-                return "roll "+game.getMaxDefendDice();
-            }
-
-	    return "roll "+n;
+	    int n=game.getDefender().getArmies();
+        return "roll "+Math.min(game.getMaxDefendDice(), n);
 	}
-
+    
     /**
-     * Attempts to find the first territory that can be used to attack from
-     * @param p player object
-     * @return Sring name is a move to attack from any space they can (that has less than 500 armies)
-     * else returns null
+     * Checks whether a country owns its neighbours
+     * @param p player object, c Country object
+     * @return boolean True if the country owns its neighbours, else returns false
      */
-    public String findAttackableTerritory(Player p) {
-    	Vector countries = p.getTerritoriesOwned();
-    	
-    	for (int i=0; i<countries.size(); i++) {
-    		Vector neighbors = ((Country)countries.elementAt(i)).getNeighbours();
-    		for (int j=0; j<neighbors.size(); j++) {
-    			if (((Country)neighbors.elementAt(j)).getOwner() != p) {
-    				if ((p.getCapital() != null && ((Country)countries.elementAt(i)).getColor() != p.getCapital().getColor()) || p.getCapital() == null)
-    					return ((Country)countries.elementAt(i)).getColor()+"";
-    			}
-    		}
-    	}
-    	
-    	return null;
+    public boolean ownsNeighbours(Player p, Country c) {
+        List neighbours = c.getNeighbours();
+
+        for (int i=0; i<neighbours.size(); i++) {
+           if ( ((Country) neighbours.get(i)).getOwner() != p) {
+        	   return false;
+           }
+        }
+
+        return true;
+    }
+    
+    public void setPlayer(RiskGame game) {
+    	this.game = game;
+    	this.player = game.getCurrentPlayer();
     }
 
 }
