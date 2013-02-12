@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.MapTranslator;
@@ -139,6 +140,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	private int attackerDice;
 	private int defenderDice;
+	
+	private transient int battleRounds;
 
 	private String ImagePic;
 	private String ImageMap;
@@ -633,39 +636,61 @@ transient - A keyword in the Java programming language that indicates that a fie
     }
 
 	public boolean canTrade() {
-
-		Vector cards = currentPlayer.getCards();
-		Card card1=null, card2=null, card3=null;
-
-		if (setup == Players.size() && cards.size() >= 3 ) { // ie the initial setup has been compleated and there are 3 cards or more
-
-			for (int a=0; a< cards.size() ; a++) {
-				if (card1 != null && card2 != null && card3 != null) { break; }
-				card1 = (Card)cards.elementAt(a);
-
-				for (int b=(a+1); b< cards.size() ; b++) {
-					if (card1 != null && card2 != null && card3 != null) { break; }
-					card2 = (Card)cards.elementAt(b);
-
-					for (int c=(b+1); c< cards.size() ; c++) {
-						if (card1 != null && card2 != null && card3 != null) { break; }
-						card3 = (Card)cards.elementAt(c);
-
-						if ( checkTrade(card1, card2, card3) ) { break; }
-						else { card3=null; }
-
+		return getBestTrade(currentPlayer.getCards(), 0) != null;
+	}
+	
+	/**
+	 * Find the best (highest) trade where the tradesToScan helps bound the search. 
+	 * tradesToScan is not honored exactly as we'll always search to find at least one
+	 * initial match.  
+	 * @param cards
+	 * @param tradesToScan
+	 * @return
+	 */
+	public Card[] getBestTrade(List cards, int tradesToScan) {
+		Card[] result = new Card[3];
+		int bestValue = 0;
+		Card[] bestResult = new Card[3];
+		int orig = tradesToScan;
+		for (int a = 0; a < cards.size() - 2; a++) {
+			result[0] = (Card) cards.get(a);
+			for (int b = (a + 1); b < cards.size() - 1; b++) {
+				result[1] = (Card) cards.get(b);
+				for (int c = (b + 1); c < cards.size(); c++) {
+					result[2] = (Card) cards.get(c);
+					tradesToScan--;
+					int value = getTradeAbsValue( result[0].getName(), result[1].getName(), result[2].getName(), getCardMode());
+					if (value == 0) {
+						if (tradesToScan < 0 && bestValue > 0) {
+							return bestResult;
+						}
+						continue;
+					}
+					//dynamic programming if there are a lot of cards
+					if (cards.size() > 5 && orig > 0) {
+						Vector remainingCards = new Vector(cards);
+						for (int i = 0; i < result.length; i++) {
+							remainingCards.remove(result[i]);
+						}
+						Card[] next = getBestTrade(remainingCards, orig/100);
+						if (next != null) {
+							value += getTradeAbsValue( next[0].getName(), next[1].getName(), next[2].getName(), getCardMode());
+						}
+					}
+					if (value > bestValue) {
+						bestValue = value;
+						System.arraycopy(result, 0, bestResult, 0, result.length);
+					}
+					if (tradesToScan < 0) {
+						return bestResult;
 					}
 				}
 			}
 		}
-
-		if (card3 == null) {
-			return false;
+		if (bestValue == 0) {
+			return null;
 		}
-		else {
-			return true;
-		}
-
+		return bestResult;
 	}
 
 	public int getNewCardState() {
@@ -865,7 +890,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 				attacker=t1;
 				defender=t2;
-
+				battleRounds = 0;
 				gameState=STATE_ROLLING;
 				//System.out.print("Attacking "+t2.getName()+" ("+t2.getArmies()+") with "+t1.getName()+" ("+t1.getArmies()+").\n"); // testing
 			}
@@ -948,6 +973,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public int getDefenderDice() {
 		return defenderDice;
 	}
+	
+	/**
+	 * Get the number of rolls that have taken place in the current attack
+	 * @return
+	 */
+	public int getBattleRounds() {
+		return battleRounds;
+	}
 
 	/**
 	 * Rolls the defenders dice
@@ -966,7 +999,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		result[5]=0; // max move
 
 		if (gameState==STATE_DEFEND_YOURSELF) { // if we were in the defending phase
-
+			battleRounds++;
 			// battle away!
 			for (int c=0; c< Math.min(attackerResults.length, defenderResults.length) ; c++) {
 

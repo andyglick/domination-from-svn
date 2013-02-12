@@ -94,7 +94,7 @@
 
 		<!-- compile the classes -->
 		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**"
-		source="1.4" target="1.4" classpath="${dir.libs}"/>
+		source="1.5" target="1.5" classpath="${dir.libs}"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.classes}" filtering="true">
@@ -386,7 +386,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<mkdir dir="${dir.build.lobby.client.classes}"/>
 
 		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.lobby.client.classes}" includes="net/yura/domination/lobby/client/**"
-		source="1.4" target="1.4" classpath="${dir.libs}"/>
+		source="1.5" target="1.5" classpath="${dir.libs}"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.client.classes}" filtering="true">

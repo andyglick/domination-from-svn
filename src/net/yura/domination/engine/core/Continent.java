@@ -21,6 +21,7 @@ public class Continent implements Serializable {
 	private int color;
 	private int armyValue;
 	private Vector territoriesContained = new Vector();
+	private transient Vector borderCountries;
 
 	/**
 	 * Creates a continent object
@@ -104,6 +105,22 @@ public class Continent implements Serializable {
 	 * otherwise false if the player does not own the all the territories
 	 */
 	public boolean isOwned(Player p) {
+		for (int c=0; c< territoriesContained.size() ; c++) {
+
+			if ( ((Country)territoriesContained.elementAt(c)).getOwner() != p ) {
+				return false;
+			}
+
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks the percent of countries the player owns within a continent
+	 * @param p player object
+	 * @return the percentage
+	 */
+	public int getNumberOwned(Player p) {
 
 		int ownedByPlayer=0;
 
@@ -114,14 +131,7 @@ public class Continent implements Serializable {
 			}
 
 		}
-
-		if ( ownedByPlayer==territoriesContained.size() ) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
+		return ownedByPlayer;
 	}
 
 	/*****
@@ -130,15 +140,32 @@ public class Continent implements Serializable {
 	 *  else null if no one owns the continent
 	 ****/
 	public Player getOwner(){
-		Player owner;
-		owner = ((Country)territoriesContained.elementAt(0)).getOwner();
-		for (int c=1; c< territoriesContained.size() ; c++) {
+		Player owner = ((Country)territoriesContained.elementAt(0)).getOwner();
+		for (int c=1; c< territoriesContained.size() && owner != null ; c++) {
 			if ( ((Country)territoriesContained.elementAt(c)).getOwner() != owner ) {
 				owner = null;
-				break;
 			}
 		}
 		return owner;
+	}
+	
+	public Vector getBorderCountries() {
+		if (borderCountries == null) {
+			Vector b = new Vector(2);
+			for (int i = 0; i < territoriesContained.size(); i++) {
+				Country country = (Country) territoriesContained.get(i);
+				Vector w = country.getNeighbours();
+				for (int k = 0; k < w.size(); k++) {
+					if (((Country) w.elementAt(k)).getContinent() != this) {
+						/* This is a territory to protect from */
+						b.add(country);
+						break;
+					}
+				}
+			}
+			this.borderCountries = b; 
+		}
+		return this.borderCountries;
 	}
 
 	/**
@@ -154,6 +181,7 @@ public class Continent implements Serializable {
 	 * @param t the country object
 	 */
 	public void addTerritoriesContained(Country t) {
+		this.borderCountries = null;
 		territoriesContained.add(t);
 	}
 

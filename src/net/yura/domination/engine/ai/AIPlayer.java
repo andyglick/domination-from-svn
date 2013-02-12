@@ -77,8 +77,7 @@ public class AIPlayer {
 
 	public static String getOutput(RiskGame game,AICrap usethisAI) {
 
-		usethisAI.game = game;
-		usethisAI.player = game.getCurrentPlayer();
+		usethisAI.setPlayer(game);
 
 		String output=null;
 

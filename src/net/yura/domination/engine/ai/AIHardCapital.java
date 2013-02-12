@@ -2,7 +2,12 @@
 
 package net.yura.domination.engine.ai;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -11,630 +16,214 @@ import net.yura.domination.engine.core.Player;
  * <p> Class for AIHardPlayer </p>
  * @author SE Group D
  */
-
 public class AIHardCapital extends AIHard {
-
-	public String getPlaceArmies() {
-
-		String output;
-
-		    if ( game.NoEmptyCountries()==false ) {
-
-			Continent[] cont = game.getContinents();
-
-			/* ai attempts to gain control of a continent during initial placement */
-
-			int territorynum = 0;
-			int check = -1;
-			String name=null;
-			int val = -1;
-
-			for (int i=0; i<cont.length; i++) {
-			    Vector ct = new Vector();
-			    Continent co = cont[i];
-			    ct = co.getTerritoriesContained();
-
-			    for (int j=0; j<ct.size(); j++) {
-			        if ( ((Country)ct.elementAt(j)).getOwner() == player ) { territorynum++; }
-			    }
-
-			    if (check <= territorynum) {
-				check = territorynum;
-				val = i;
-			    }
-			    territorynum = 0;
-			}
-
-			/* ..pick country from that continent */
-			boolean picked = false;
-			if (check > 0) {
-			    Continent co = cont[val];
-			    Vector ct = co.getTerritoriesContained();
-
-			    for (int j=0; j<ct.size(); j++) {
-				if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
-				    name=((Country)ct.elementAt(j)).getColor()+"";
-				    picked = true;
-				    break;
-				}
-			    }
-			}
-
-			if (picked == false) {
-			    Continent co = cont[val];
-			    Vector ct = co.getTerritoriesContained();
-
-			    for (int j=0; j<ct.size(); j++) {
-				if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
-				    name=((Country)ct.elementAt(j)).getColor()+"";
-
-// YURA: no idea what this block does but it crashes with:
-// choosemap CRO.map, startgame capital italianlike
-//				    Vector v = ((Country)ct.elementAt(j)).getNeighbours();
-//				    for (int k=0; k<ct.size(); k++) {
-//					if (((Country)v.elementAt(k)).getOwner() != player) {
-//					    name=((Country)ct.elementAt(j)).getColor()+"";
-//					    break;
-//					}
-//				    }
-				}
-			    }
-			}
-
-			String str = expandBase(player.getTerritoriesOwned());
-			if( str != null )
-                            name = str;
-
-                        String s = blockOpponent(player);
-                        if( s != null )
-                            name = s;
-
-		        if (name == null)
-			    output = "autoplace";
-
-		        else
-			    output = "placearmies " + name +" 1";
-		    }
-		    else {
-
-			Vector pt = player.getTerritoriesOwned();
-
-			String name=null;
-			Country capital = player.getCapital();
-			if (capital == null)
-			    capital = findCapital();
-
-			for (int a=0; a< pt.size() ; a++) {
-
-			    if ( ownsNeighbours( (Country)pt.elementAt(a)) == false && ((Country)pt.elementAt(a)).getArmies() <= 11 ) {
-                                name=((Country)pt.elementAt(a)).getColor()+"";
-                                break;
-                            }
-
-		            if ( name != null ) { break; }
-
-			}
-
-			String st = attackCapital();
-			if( st != null ) 
-                            name = st;
-
-                        String s = keepBlocking(player);
-                        if( s != null ) 
-                            name = s;
-
-                        String f = freeContinent(player);
-                        if( f != null ) 
-                            name = f;
-
-			String str = reinforceBase(capital);
-			if (str != null)
-			    name = str;
-
-		    if (name == null)
-		    	name = findAttackableTerritory(player);
-		    
-			if ( name == null ) 
-		    	output = "placearmies " + ((Country)pt.elementAt(0)).getColor() +" "+player.getExtraArmies();
-
-//Removed so that it will add armies one at a time, thus reinforcing the base until it has enough defense
-//at which time it will place in other territories as well.  Re-added so that it would not take forever
-//for the computer to place armies. Re-removed after seeing that the time is neglibile.
-		    else if (game.getSetup() ) 
-			    output = "placearmies " + name +" "+player.getExtraArmies();
-
-		    else
-			    output = "placearmies " + name +" 1";
-		    }
-
-		return output;
-
-	}
-
-
-	public String getAttack() {
-
-		String output=null;
-		boolean attackFromCap = player.getCapital().getArmies() > addEnemies(player.getCapital())*2+5; 
-		    boolean chosen = false;
-		    Continent[] cont = game.getContinents();
-		Vector t = player.getTerritoriesOwned();
-		Vector n;
-		Vector options = new Vector();
-		    for (int a=0; a< t.size(); a++) {
-		        if ( ((Country)t.elementAt(a)).getArmies() > 1 ) {
-			    if ( (Country)t.elementAt(a) != player.getCapital() ||
-			    	attackFromCap ) {
-				n = ((Country)t.elementAt(a)).getNeighbours();
-
-				/* attack ratio set to 50% of attack force */
-
-				int ratio = ((Country)t.elementAt(a)).getArmies();
-				for (int b=0; b< n.size() ; b++) {
-				    if ( ((Country)n.elementAt(b)).getOwner() != player && ((Country)n.elementAt(b)).getArmies() + (ratio / 2) < ratio) {
-					//output= "attack " + ((Country)t.elementAt(a)).getColor() + " " + ((Country)n.elementAt(b)).getColor();
-				    	 Vector attack = new Vector();
-			        	 attack.add(((Country)t.elementAt(a)).getColor()+"");
-			        	 attack.add((Country)n.elementAt(b));
-			        	 options.add(attack);
-				    }
-				}
-			    }
-		        }
-		    }
-		    Player[] playersGreatestToLeast = OrderPlayers(player);
-	    	outer: for (int j=0; j<playersGreatestToLeast.length; j++) {
-	    		for (int i=0; i<options.size(); i++) {
-		    		if ( ((Country) ((Vector)options.get(i)).get(1)).getOwner().equals(playersGreatestToLeast[j])  ) {
-		    			output = "attack " + ((String) ((Vector)options.get(i)).get(0)) + " " + ((Country) ((Vector)options.get(i)).get(1)).getColor();
-		    			break outer;
-		    		}
-		    	}
-		    }
-
-		    /* attempt to attack continent which is almost all owned, if scenario is there */
-
-		    int count = 0;
-		    Country attackfrom = null;
-                    boolean complex = false;
-
-                    for (int i=0; i<cont.length; i++) {
-
-			if ( mostlyOwned( cont[i] ) == true) {
-
-			    n = cont[i].getTerritoriesContained();
-
-			    for (int j=0; j<n.size(); j++) {
-		    	
-				if ( ((Country)n.elementAt(j)).getArmies() > count
-				    && ((Country)n.elementAt(j)).getOwner() == player
-				    && ((Country)n.elementAt(j)) != player.getCapital()) {
-					count = ((Country)n.elementAt(j)).getArmies();
-					attackfrom = (Country)n.elementAt(j);
-				}
-			    }
-
-			    for (int b=0; b< n.size() ; b++) {
-				if ( ((Country)n.elementAt(b)).getOwner() != player && (((Country)n.elementAt(b)).getArmies()+1) < count && attackfrom.isNeighbours((Country)n.elementAt(b)) == true) {
-				    output= "attack " + attackfrom.getColor() + " " + ((Country)n.elementAt(b)).getColor();
-				    complex = true;
-				    break;
-				}
-			    }
-			}
-		    }
-
-		    // else attempt to attack continent with the greatest territories owned, that has yet to be conquered.
-
-		    if (complex == false) {
-			int value = 0;
-			Continent choice = null;
-
-			for (int i=0; i<cont.length; i++) {
-
-			    if ( cont[i].isOwned(player) == false) {
-
-				n = cont[i].getTerritoriesContained();
-
-				int check = 0;
-				for (int j=0; j<n.size(); j++) {
-				     if ( ((Country)n.elementAt(j)).getOwner() == player && (((Country)n.elementAt(j)) != player.getCapital() || attackFromCap))
-					check++;
-				}
-
-				if (check > value)
-				    choice = cont[i];
-			    }
-			}
-
-			if (choice !=null) {
-
-                            //System.out.println(choice.getName()); TESTING
-			    n = ((Continent)choice).getTerritoriesContained();
-
-			    for (int j=0; j<n.size(); j++) {
-
-				if ( ((Country)n.elementAt(j)).getArmies() > count
-				    && ((Country)n.elementAt(j)).getOwner() == player
-				    && (((Country)n.elementAt(j)) != player.getCapital() || attackFromCap)) {
-				    count = ((Country)n.elementAt(j)).getArmies();
-				    attackfrom = (Country)n.elementAt(j);
-				}
-			    }
-
-			    for (int b=0; b< n.size() ; b++) {
-				if ( ((Country)n.elementAt(b)).getOwner() != player && (((Country)n.elementAt(b)).getArmies()+1) < count && attackfrom.isNeighbours((Country)n.elementAt(b)) == true ) {
-				    output= "attack " + attackfrom.getColor() + " " + ((Country)n.elementAt(b)).getColor();
-                                    break;
-				}
-			    }
-			}
-		    }
-
-            Vector continentsToBreak = GetContinentsToBreak(player);
-            String tmp = null;
-            
-            //Attempt to find a path to the continent - distance of 1, then 2, then 3 away.
-            if (continentsToBreak != null) {
-         	   outer: for (int q=1; q<4; q++) { 
-         		   for (int i=0; i<continentsToBreak.size(); i++) {
-             		   for (int j=0; j<t.size(); j++) {
-             			   Vector tNeighbors = ((Country)t.get(j)).getNeighbours();
-             			   for (int k=0; k<tNeighbors.size(); k++) {
-             				   if (((Country)t.get(j)).getArmies()-1 > ((Country)tNeighbors.get(k)).getArmies() &&
-             						   ShortPathToContinent((Continent)continentsToBreak.get(i), (Country)t.get(j), (Country)tNeighbors.get(k), q)  &&
-             						  (((Country)t.get(j)).getColor() != player.getCapital().getColor() || attackFromCap)) {
-             					   tmp = "attack " + ((Country)t.get(j)).getColor() + " " + ((Country)tNeighbors.get(k)).getColor();
-             					   break outer;
-             				   }
-             						   
-             			   }
-             		   }
-             	   }
-         	   }
-            }
-            if (tmp != null)
-         	   output = tmp;
-		    
-		    
-		    
-		    // check to see if there are any players to eliminate
-
-		    Vector players = game.getPlayers();
-                    Vector cankill = new Vector();
-
-                    for (int i=0; i<players.size(); i++) {
-			if (( (Player) players.elementAt(i)).getNoTerritoriesOwned() < 3 && ( (Player) players.elementAt(i)) != player)
-			    cankill.addElement((Player) players.elementAt(i));
-                    }
-
-		    if (cankill.size() > 0) {
-			for (int i=0; i<cankill.size(); i++) {
-			Vector territories = ((Player) cankill.elementAt(i)).getTerritoriesOwned();
-			for (int j=0; j<territories.size(); j++) {
-
-			    Vector neighbours = ((Country)territories.elementAt(j)).getNeighbours();
-                            for (int k=0; k<neighbours.size(); k++) {
-				if (((Country) neighbours.elementAt(k)).getOwner() == player
-				    && (((Country)territories.elementAt(j)).getArmies() + 1 < ((Country) neighbours.elementAt(k)).getArmies())
-				    && ((Country) neighbours.elementAt(k) != player.getCapital() || attackFromCap)
-				    &&  ((Country) neighbours.elementAt(k)).isNeighbours((Country)territories.elementAt(j))) {
-				    output= "attack " + ((Country) neighbours.elementAt(k)).getColor() + " " + ((Country)territories.elementAt(j)).getColor();
-                                    //System.out.println("eliminate: " + output); TESTING
-                                    break;
-				}
-			    }
-			}
-		    }
-		}
-
-
-		if ( output==null ) {
-		    output="endattack";
-		}
-
-		return output;
-
-	}
-
-
-	public String getBattleWon() {
-
-		String output;
-
-		   /* Attempt to safeguard critical areas when moving armies to won country */
-
-		   Country attacker = game.getAttacker();
-		   Continent continent = attacker.getContinent();
-		   //If attacking from the capital, try to leave enough defense.
-		   if (attacker.getColor() == player.getCapital().getColor()) {
-			   if (attacker.getArmies() >= addEnemies(player.getCapital())*2 + 3)
-				   output = "move " + (attacker.getArmies() - (addEnemies(player.getCapital())*2 + 1));
-			   else 
-				   output = "move " + (attacker.getArmies()-1);
-		   }
-		   else if (continent.isOwned(player) == true || mostlyOwned(continent) == true) {
-
-		       /* Set 50% security limit */
-		       if (attacker.getArmies() > 6)
-		   	   output = "move " + (attacker.getArmies()-1);
-
-		       else if (attacker.getArmies() > 3 && attacker.getArmies() <= 6)
-			   output = "move " + (attacker.getArmies()-1);
-
-		       else
-			   output = "move all";
-                   }
-		   else {
-		      output="move all";
-		   }
-
-		return output;
-
-	}
-
-
-
-	public String getCapital() {
-
-		return "capital " + findCapital().getColor();
-
-	}
-
+	
 	/**
-	 * Returns the number of armies in most fortified neighbor.  If player owns all of the countries around it,
-	 * return 1, because there is still a potential for a threat
-	 * @param Country c which is the country that you want to know the enemies of the given player that are around
-	 * @return int with the number of Enemies around or 1, whichever is higher.
+	 * Adds the best defended capital to the border when there is a threat
 	 */
-	public int addEnemies(Country c) {
-
-		int nearbyEnemies = 0;
-		//Country cap = player.getCapital();
-		Country[] countries = game.getCountries();
-		for (int j=0; j<countries.length; j++) {
-			if (countries[j].isNeighbours(c) && countries[j].getOwner() != player)
-				if (countries[j].getArmies() > nearbyEnemies)
-					nearbyEnemies = countries[j].getArmies();
+	protected List getBorder(GameState gs) {
+		List border = super.getBorder(gs);
+		if (gs.commonThreat == null) {
+			return border;
 		}
-		return nearbyEnemies == 0 ? 1 : nearbyEnemies;
+		int attack = (int)gs.commonThreat.attackValue/(gs.orderedPlayers.size() + 1);
+		int minNeeded=Integer.MAX_VALUE;
+		Country priority = null;
+		for (Iterator i = gs.capitals.iterator(); i.hasNext();) {
+			Country c = (Country) i.next();
+			if (c.getOwner() != player) {
+				continue;
+			}
+			int additional = Math.max(attack - c.getArmies(), additionalTroopsNeeded(c, gs));
+			if (additional <= 0) {
+				return border;
+			}
+			if (additional < minNeeded) {
+				minNeeded = additional;
+				priority = c;
+			}
+		}
+		if (priority != null) {
+			border.add(0, priority);
+		}
+		return border;
 	}
 	
 	/**
-	 * Checks if the player's capital has enough armies and checks if its neighbours has enough armies
-	 * @param capital The capital country
-	 * @return String Returns the name of the capital
+	 * Overrides the planning behavior to consider taking capital logic
 	 */
-	public String reinforceBase(Country capital) {
-	 String str = null;
-	 boolean foundCap = false;
-	 Vector players = game.getPlayers();
-	 //Reinforce base if there are not 3 times the number of surrounding enemies present.
-	 for (int i=0; i<players.size(); i++) {
-	    Player p2 = (Player) players.elementAt(i);
-	    Country cap = p2.getCapital();
-	    if (p2 == player)
-		cap = capital;
-	    if (cap != null && cap.getOwner() == player) {
-	    	if (cap.getArmies() < addEnemies(player.getCapital())*2 && cap.getArmies() < 50) {
-		        str = cap.getColor()+"";
-			    foundCap = true;
-			    break;
-	    	}
-	    }
-	 }
-
-	 if (foundCap == false) {
-	    boolean found = false;
-	    for (int i=0; i<players.size(); i++) {
-		Player p2 = (Player) players.elementAt(i);
-		Country cap = p2.getCapital();
-		if (p2 == player)
-		    cap = capital;
-		if (cap != null && cap.getOwner() == player) {
-		    Vector v = cap.getNeighbours();
-		    for (int j=0; j<v.size(); j++) {
-			Country c = (Country) v.elementAt(j);
-			if (c.getOwner() == player && c.getArmies() < 4) {
-			    str = c.getColor()+"";
-			    found = true;
-			    break;
+	protected String plan(boolean attack, List attackable,
+			GameState gameState, Map targets) {
+		if (game.getSetup()) {
+			Map owned = new HashMap();
+			for (Iterator i = gameState.capitals.iterator(); i.hasNext();) {
+				Country c = (Country) i.next();
+				Integer count = (Integer)owned.get(c.getOwner());
+				if (count == null) {
+					count = Integer.valueOf(1);
+				} else {
+					count = Integer.valueOf(count.intValue() + 1);
+				}
+				owned.put(c.getOwner(), count);
 			}
-		    }
+			double num = gameState.capitals.size();
+			Integer myowned = (Integer) owned.get(player);
+			//offensive planning
+			if (myowned != null && myowned.intValue()/num >= .5) {
+				String result = planCapitalMove(attack, attackable, gameState, targets, null, true);
+				if (result != null) {
+					return result;
+				}
+			}
+			//defensive planning
+			for (Iterator i = owned.entrySet().iterator(); i.hasNext();) {
+				Map.Entry e = (Map.Entry) i.next();
+				Integer numOwned = (Integer) e.getValue();
+				Player other = (Player) e.getKey();
+				if (other == player || numOwned/num < .5) {
+					continue;
+				}
+				//see what the danger level is
+				int primaryDefense = 0;
+				for (Iterator j = gameState.capitals.iterator(); j.hasNext();) {
+					Country c = (Country) j.next();
+					if (c.getOwner() != other) {
+						primaryDefense+=c.getArmies();
+					}
+				}
+				for (int j = 0; j < gameState.orderedPlayers.size(); j++) {
+					PlayerState ps = (PlayerState) gameState.orderedPlayers.get(j);
+					if (ps.p == other) {
+						if (gameState.commonThreat == null && gameState.orderedPlayers.size() > 1 && ps.attackValue > (ps.p.getType() == Player.PLAYER_HUMAN?3:4)*primaryDefense) {
+							gameState.commonThreat = ps;
+							if (!gameState.targetPlayers.contains(ps.p)) {
+								gameState.targetPlayers = new ArrayList(gameState.targetPlayers);
+								gameState.targetPlayers.add(ps.p);
+							}
+						}
+						if (ps.attackValue > 2*primaryDefense) {
+							//can we take one - TODO: coordinate with break continent
+							String result = planCapitalMove(attack, attackable, gameState, targets, (Player) e.getKey(), false);
+							if (result != null) {
+								return result;
+							}
+						}
+						break;
+					}
+				}
+				break;
+			}
+		} else if (r.nextInt(game.getPlayers().size()) == 0) {
+			//defend the capital more - ensures that when playing with a small number of players
+			//the initial capital should be well defended
+			Country c = findCapital();
+			return getPlaceCommand(c, 1);
 		}
-		if (found == true)
-		    break;
-    	    }
-         }
-         return str;
+		return super.plan(attack, attackable, gameState, targets);
 	}
-
+	
+	/**
+	 * Plans to take one (owned by the target player) or all of the remaining capitals.
+	 */
+	private String planCapitalMove(boolean attack, List attackable,
+			GameState gameState, Map targets, Player target, boolean allOrNone) {
+		int remaining = player.getExtraArmies();
+		List toAttack = new ArrayList();
+		for (Iterator i = gameState.capitals.iterator(); i.hasNext();) {
+			Country c = (Country) i.next();
+			if (c.getOwner() == player || (target != null && target != c.getOwner())) {
+				continue;
+			}
+			AttackTarget at = (AttackTarget) targets.get(c);
+			if (at == null) {
+				if (allOrNone) {
+					return null;
+				}
+				continue;
+			}
+			if (at.remaining < 1) {
+				remaining += at.remaining;
+				if (remaining < 1 && allOrNone) {
+					return null;
+				}
+				if (!attack && !allOrNone) {
+					toAttack.add(at);
+				}
+			} else if (attack) {
+				toAttack.add(at);
+			} else {
+				return null; //should be taken
+			}
+		}	
+		if (!toAttack.isEmpty()) {
+			if (allOrNone) {
+				Collections.sort(toAttack); //hardest first
+			} else {
+				Collections.sort(toAttack, Collections.reverseOrder()); 
+			}
+			AttackTarget at = (AttackTarget)toAttack.get(0);
+			int route = findBestRoute(attackable, gameState, attack, null, at, (Player)gameState.targetPlayers.get(0), targets);
+			Country start = (Country) attackable.get(route);
+			if (attack) {
+				return getAttack(targets, at, route, start);
+			}
+			return getPlaceCommand(start, -at.remaining + 1);
+		}
+		return null;
+	}
 
 	/**
-	 * get the best capital position for the current player
-	 *
+	 * Overrides the default battle won behavior to defend capitals more
 	 */
-	public Country findCapital() {
-
-		// TODO someone needs to document how this is working!
-
-		Vector pt = player.getTerritoriesOwned();
-		Country country = null;
-		int difference1 = Integer.MAX_VALUE;
-		int difference2 = Integer.MAX_VALUE;
-
-		for (int i=0; i<pt.size(); i++) {
-
-			int count = 0;
-			Country c1 = (Country) pt.elementAt(i);
-			Vector v = c1.getNeighbours();
-
-			for (int j=0; j<v.size(); j++) {
-				Country c2 = (Country) v.elementAt(j);
-				if (c2.getOwner() == player) {
-					count++;
-				}
-			}
-
-			int diff1 = v.size() - count;
-			int diff2 = addEnemies(c1) - c1.getArmies();
-
-			if (diff1 <= difference1 && diff2 <= difference2) {
-
-				difference1 = diff1;
-				difference2 = diff2;
-
-				country = c1;
-			}
-			// count = 0; // ??? wtf is this for ???
+	protected String getBattleWon(GameState gameState) {
+		if (gameState.commonThreat == null) {
+			return super.getBattleWon(gameState);
 		}
-
-//		Country country = pt.size() > 0 ? (Country)pt.get(0) : null;
-//		for (int i=0; i<pt.size(); i++) {
-//			Country tmp = (Country)pt.get(i);
-//			if (tmp.getArmies() > country.getArmies())
-//				country = tmp;
-//		}
-		return country;
-
+		if (gameState.capitals.contains(game.getAttacker())) {
+			int needed = additionalTroopsNeeded(game.getAttacker(), gameState);
+			if (needed > 0) {
+				return "move " + game.getMustMove();
+			}
+			return "move " + Math.max(game.getMustMove(), -needed/2 - getMinPlacement());
+		}
+		if (gameState.capitals.contains(game.getDefender())
+				&& (ownsNeighbours(player, game.getAttacker()) || !ownsNeighbours(player, game.getDefender()))) {
+			return "move all";
+		}
+		return super.getBattleWon(gameState);
+	}
+	
+	public String getCapital() {
+		return "capital " + findCapital().getColor();
+	}
+	
+	/**
+	 * Searches for the country with the lowest (best) score as the capital.
+	 */
+	protected Country findCapital() {
+		int score = Integer.MAX_VALUE;
+		Country result = null;
+		List v = player.getTerritoriesOwned();
+		for (int i = 0; i < v.size(); i++) {
+			Country c = (Country)v.get(i);
+			int val = scoreCountry(c);
+			val -= c.getArmies()/game.getPlayers().size();
+			if (val < score || (val == score && r.nextBoolean())) {
+				score = val;
+				result = c;
+			}
+		}
+		return result;
+	}
+	
+	protected double getContinentValue(Continent co) {
+		double value = super.getContinentValue(co);
+		if (!game.getSetup()) {
+			//blunt the affect of continent modification so that we'll mostly consider
+			//contiguous countries
+			return Math.sqrt(value);
+		}
+		return super.getContinentValue(co);
 	}
 
-    /**
-     * Checks through the enemy's capital and finds a neighbouring territory owned by the reinforcing player
-     * @return String Returns the name of the reinforcing territory
-     */
-    public String attackCapital() {
-	String str = null;
-	Vector players = game.getPlayers();
-	Country capital = null;
-	for (int i=0; i<players.size(); i++) {
-	    Player p2 = (Player) players.elementAt(i);
-	    capital = p2.getCapital();
-	    if (capital != null && capital.getOwner() != player)
-	    	break;
-    	}
-    	if (capital != null) {
-	    Vector v = capital.getNeighbours();
-	    for (int i=0; i<v.size(); i++) {
-		Country c = (Country) v.elementAt(i);
-		if (c.getOwner() == player && c.isNeighbours(capital)) {
-		    str = c.getColor()+"";
-		    break;
-	        }
-	    }
-        }
-        return str;
-    }
-
-    /**
-     * Checks through the player's current owned territories and picks a neighbour if it is free
-     * @param pt The player's territories
-     * @return String Returns the name of the country if found, returns null otherwise
-     */
-    public String expandBase(Vector pt) {
-        String str = null;
-	boolean found = false;
-	for (int i=0; i<pt.size(); i++) {
-	    Country c1 = (Country) pt.elementAt(i);
-	    Vector v = c1.getNeighbours();
-	    for (int j=0; j<v.size(); j++) {
-		Country c2 = (Country) v.elementAt(j);
-		if (c2.getOwner() == null) {
-		    str = c2.getColor()+"";
-		    found = true;
-		    break;
-	        }
-            }
-	    if (found == true)
-	        break;
-        }
-        return str;
-    }
-
-    public String getRoll() {
-
-		String output;
-
-		int n=((Country)game.getAttacker()).getArmies() - 1;
-
-
-		/* Only roll for as long as while attacking player has more armies than defending player */
-		int m=((Country)game.getDefender()).getArmies();
-
-		if (((Country)game.getAttacker()).getColor() == player.getCapital().getColor()) {
-			if (player.getCapital().getArmies() > addEnemies(player.getCapital())*2+5)
-				output = "roll "+3;
-			else
-				output = "retreat";
-		} 
-		else if (n > 3 && n > m) {
-		    output= "roll "+3;
-		}
-		else if (n <= 3 && n > m) {
-		    output= "roll "+n;
-		}
-		else {
-		    output= "retreat";
-		}
-
-		return output;
-
-    }
-
-    public String getTacMove() {
-
-		String output=null;
-
-		    /* reinforces armies from less critical to more critical areas */
-
-		    Vector t = player.getTerritoriesOwned();
-		    Vector n;
-		    boolean possible = false;
-                    int difference = 0;
-                    Country sender = null;
-                    Country receiver = null;
-                    Country temp = null;
-                    int highest = 1;
-
-		    for (int a=0; a<t.size(); a++) {
-
-			Country country = ((Country)t.elementAt(a));
-			difference  = country.getArmies();
-			if (difference > highest && country.getColor() != player.getCapital().getColor())  {
-			    highest = difference;
-			    sender = country;
-			}
-		    }
-
-		    if (sender != null)  {
-
-			receiver = check1(sender);
-
-			if (receiver == null) {
-			    n = sender.getNeighbours();
-			    for (int i=0; i<n.size(); i++) {
-				temp = (Country) n.elementAt(i);
-				if (temp.getOwner() == player) {
-				    possible = check2(temp);
-				}
-				if (possible == true)  { receiver = temp; break; }
-			    }
-			}
-		    }
-
-		    if (receiver != null && receiver != sender) {
-			output= "movearmies " + ((Country)sender).getColor() + " " + ((Country)receiver).getColor() + " " + (((Country)sender).getArmies()-1);
-			//System.out.println(((Country)sender).getName()); TESTING
-			//System.out.println(((Country)receiver).getName()); TESTING
-		    }
-
-		    if ( output == null ) {
-			output = "nomove";
-		    }
-
-		return output;
-
-    }
-
-    
 }
