@@ -8,7 +8,7 @@ public class AIPlayer {
 
 	public static AICrap aicrap = new AICrap();
 	private static AIEasy aieasy = new AIEasy();
-	private static AIEasy aihard = new AIHard();
+	private static AIEasy aihard = new AIHardDomination();
 	private static AIEasy aihardc = new AIHardCapital();
 	private static AIEasy aihardm = new AIHardMission();
 
