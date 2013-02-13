@@ -4,6 +4,7 @@ package net.yura.domination.engine.core;
 
 //import java.awt.Color;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -98,6 +99,10 @@ public class Player implements Serializable {
 
 	return thing;
     }
+    
+    public List<Statistic> getStatistics() {
+		return Statistics;
+	}
 
     public int getNoArmies() {
 

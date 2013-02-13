@@ -14,19 +14,19 @@ public class Statistic implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     // RISK II Statistics
-    //  0 countries;
-    //  1 armies;
-    //  2 kills;
-    //  3 casualties;
-    //  4 reinforcements;
-    //  5 continents;
-    //  6 conectedEmpire;
-    //  7 attacks;
+    public static final int countries = 0;
+    public static final int armies = 1;
+    public static final int kills = 2;
+    public static final int casualties = 3;
+    public static final int reinforcements = 4;
+    public static final int continents = 5;
+    public static final int conectedEmpire = 6;
+    public static final int attacks = 7;
 
-    //  8 retreats;
-    //  9 countriesWon;
-    // 10 countriesLost;
-    // 11 attacked;
+    public static final int retreats = 8;
+    public static final int countriesWon = 9;
+    public static final int countriesLost = 10;
+    public static final int attacked = 11;
 
     // in the rest of the game they are knows as num + 1
 

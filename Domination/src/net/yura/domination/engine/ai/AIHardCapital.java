@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -21,16 +22,16 @@ public class AIHardCapital extends AIHardDomination {
 	/**
 	 * Adds the best defended capital to the border when there is a threat
 	 */
-	protected List getBorder(GameState gs) {
-		List border = super.getBorder(gs);
+	protected List<Country> getBorder(GameState gs) {
+		List<Country> border = super.getBorder(gs);
 		if (gs.commonThreat == null) {
 			return border;
 		}
 		int attack = (int)gs.commonThreat.attackValue/(gs.orderedPlayers.size() + 1);
 		int minNeeded=Integer.MAX_VALUE;
 		Country priority = null;
-		for (Iterator i = gs.capitals.iterator(); i.hasNext();) {
-			Country c = (Country) i.next();
+		for (Iterator<Country> i = gs.capitals.iterator(); i.hasNext();) {
+			Country c = i.next();
 			if (c.getOwner() != player) {
 				continue;
 			}
@@ -52,13 +53,13 @@ public class AIHardCapital extends AIHardDomination {
 	/**
 	 * Overrides the planning behavior to consider taking capital logic
 	 */
-	protected String plan(boolean attack, List attackable,
-			GameState gameState, Map targets) {
+	protected String plan(boolean attack, List<Country> attackable,
+			GameState gameState, Map<Country, AttackTarget> targets) {
 		if (game.getSetup()) {
-			Map owned = new HashMap();
-			for (Iterator i = gameState.capitals.iterator(); i.hasNext();) {
-				Country c = (Country) i.next();
-				Integer count = (Integer)owned.get(c.getOwner());
+			Map<Player, Integer> owned = new HashMap<Player, Integer>();
+			for (Iterator<Country> i = gameState.capitals.iterator(); i.hasNext();) {
+				Country c = i.next();
+				Integer count = owned.get(c.getOwner());
 				if (count == null) {
 					count = Integer.valueOf(1);
 				} else {
@@ -67,7 +68,7 @@ public class AIHardCapital extends AIHardDomination {
 				owned.put(c.getOwner(), count);
 			}
 			double num = gameState.capitals.size();
-			Integer myowned = (Integer) owned.get(player);
+			Integer myowned = owned.get(player);
 			//offensive planning
 			if (myowned != null && myowned.intValue()/num >= .5) {
 				String result = planCapitalMove(attack, attackable, gameState, targets, null, true);
@@ -76,34 +77,34 @@ public class AIHardCapital extends AIHardDomination {
 				}
 			}
 			//defensive planning
-			for (Iterator i = owned.entrySet().iterator(); i.hasNext();) {
-				Map.Entry e = (Map.Entry) i.next();
-				Integer numOwned = (Integer) e.getValue();
-				Player other = (Player) e.getKey();
+			for (Iterator<Map.Entry<Player, Integer>> i = owned.entrySet().iterator(); i.hasNext();) {
+				Map.Entry<Player, Integer> e = i.next();
+				Integer numOwned = e.getValue();
+				Player other = e.getKey();
 				if (other == player || numOwned/num < .5) {
 					continue;
 				}
 				//see what the danger level is
 				int primaryDefense = 0;
-				for (Iterator j = gameState.capitals.iterator(); j.hasNext();) {
-					Country c = (Country) j.next();
+				for (Iterator<Country> j = gameState.capitals.iterator(); j.hasNext();) {
+					Country c = j.next();
 					if (c.getOwner() != other) {
 						primaryDefense+=c.getArmies();
 					}
 				}
 				for (int j = 0; j < gameState.orderedPlayers.size(); j++) {
-					PlayerState ps = (PlayerState) gameState.orderedPlayers.get(j);
+					PlayerState ps = gameState.orderedPlayers.get(j);
 					if (ps.p == other) {
-						if (gameState.commonThreat == null && gameState.orderedPlayers.size() > 1 && ps.attackValue > (ps.p.getType() == Player.PLAYER_HUMAN?3:4)*primaryDefense) {
+						if (gameState.commonThreat == null && gameState.orderedPlayers.size() > 1 && ps.attackValue > (ps.strategic?3:4)*primaryDefense) {
 							gameState.commonThreat = ps;
 							if (!gameState.targetPlayers.contains(ps.p)) {
-								gameState.targetPlayers = new ArrayList(gameState.targetPlayers);
+								gameState.targetPlayers = new ArrayList<Player>(gameState.targetPlayers);
 								gameState.targetPlayers.add(ps.p);
 							}
 						}
 						if (ps.attackValue > 2*primaryDefense) {
 							//can we take one - TODO: coordinate with break continent
-							String result = planCapitalMove(attack, attackable, gameState, targets, (Player) e.getKey(), false);
+							String result = planCapitalMove(attack, attackable, gameState, targets, e.getKey(), false);
 							if (result != null) {
 								return result;
 							}
@@ -125,16 +126,16 @@ public class AIHardCapital extends AIHardDomination {
 	/**
 	 * Plans to take one (owned by the target player) or all of the remaining capitals.
 	 */
-	private String planCapitalMove(boolean attack, List attackable,
-			GameState gameState, Map targets, Player target, boolean allOrNone) {
+	private String planCapitalMove(boolean attack, List<Country> attackable,
+			GameState gameState, Map<Country, AttackTarget> targets, Player target, boolean allOrNone) {
 		int remaining = player.getExtraArmies();
-		List toAttack = new ArrayList();
-		for (Iterator i = gameState.capitals.iterator(); i.hasNext();) {
-			Country c = (Country) i.next();
+		List<AttackTarget> toAttack = new ArrayList<AttackTarget>();
+		for (Iterator<Country> i = gameState.capitals.iterator(); i.hasNext();) {
+			Country c = i.next();
 			if (c.getOwner() == player || (target != null && target != c.getOwner())) {
 				continue;
 			}
-			AttackTarget at = (AttackTarget) targets.get(c);
+			AttackTarget at = targets.get(c);
 			if (at == null) {
 				if (allOrNone) {
 					return null;
@@ -161,9 +162,9 @@ public class AIHardCapital extends AIHardDomination {
 			} else {
 				Collections.sort(toAttack, Collections.reverseOrder()); 
 			}
-			AttackTarget at = (AttackTarget)toAttack.get(0);
-			int route = findBestRoute(attackable, gameState, attack, null, at, (Player)gameState.targetPlayers.get(0), targets);
-			Country start = (Country) attackable.get(route);
+			AttackTarget at = toAttack.get(0);
+			int route = findBestRoute(attackable, gameState, attack, null, at, gameState.targetPlayers.get(0), targets);
+			Country start = attackable.get(route);
 			if (attack) {
 				return getAttack(targets, at, route, start);
 			}
@@ -203,9 +204,9 @@ public class AIHardCapital extends AIHardDomination {
 	protected Country findCapital() {
 		int score = Integer.MAX_VALUE;
 		Country result = null;
-		List v = player.getTerritoriesOwned();
+		List<Country> v = player.getTerritoriesOwned();
 		for (int i = 0; i < v.size(); i++) {
-			Country c = (Country)v.get(i);
+			Country c = v.get(i);
 			int val = scoreCountry(c);
 			val -= c.getArmies()/game.getPlayers().size();
 			if (val < score || (val == score && r.nextBoolean())) {

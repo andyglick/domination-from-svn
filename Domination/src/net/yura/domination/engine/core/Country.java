@@ -2,7 +2,13 @@
 
 package net.yura.domination.engine.core;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.OptionalDataException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -25,7 +31,8 @@ public class Country implements Serializable {
 	private int y;
 
 	private String idString; // used by the map editor
-	private transient Vector crossContinentNeighbours;
+	private transient List<Country> crossContinentNeighbours;
+	private List<Country> incomingNeighbours = new ArrayList<Country>(2);
 
 	/**
 	 * Creates a country object
@@ -85,7 +92,7 @@ public class Country implements Serializable {
 
 	/**
 	 * gets the countries neighbours
-	 * @return a vector of the countries ceighbours
+	 * @return a vector of the countries neighbours
 	 */
 	public Vector getNeighbours() {
 
@@ -93,9 +100,9 @@ public class Country implements Serializable {
 
 	}
 	
-	public Vector getCrossContinentNeighbours() {
+	public List<Country> getCrossContinentNeighbours() {
 		if (crossContinentNeighbours == null) {
-			Vector c = new Vector();
+			ArrayList<Country> c = new ArrayList<Country>(2);
 			for (int i = 0; i < this.neighbours.size(); i++) {
 				Country other = (Country)this.neighbours.get(i);
 				if (other.getContinent() != this.continent) {
@@ -146,6 +153,11 @@ public class Country implements Serializable {
 	public void addNeighbour(Country t) {
 		this.crossContinentNeighbours = null;
 		neighbours.add(t);
+		t.getIncomingNeighbours().add(this);
+	}
+	
+	public List<Country> getIncomingNeighbours() {
+		return incomingNeighbours;
 	}
 
 	/**
@@ -234,4 +246,16 @@ public class Country implements Serializable {
 		y=a;
 
 	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		try {
+			this.incomingNeighbours = (List<Country>) in.readObject();
+		} catch (OptionalDataException e) {
+			
+		} catch (EOFException e) {
+			
+		}
+	}
+	
 }

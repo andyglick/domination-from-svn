@@ -4,6 +4,7 @@ package net.yura.domination.engine.ai;
 
 import java.util.Arrays;
 import java.util.List;
+
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -15,8 +16,8 @@ import net.yura.domination.engine.core.Player;
  */
 public class AIHardMission extends AIHardDomination {
 
-	protected List getBorder(GameState gs) {
-		List result = super.getBorder(gs);
+	protected List<Country> getBorder(GameState gs) {
+		List<Country> result = super.getBorder(gs);
 		if (player.getMission().getNoofarmies() > 1 
 				&& (player.getTerritoriesOwned().size()*2 > player.getMission().getNoofcountries() && pressAttack(gs) || player.getTerritoriesOwned().size() - 3 >= player.getMission().getNoofcountries())) {
 			//this is redundant, but that's ok, what matters is the absolute ordering
@@ -36,9 +37,9 @@ public class AIHardMission extends AIHardDomination {
 	protected int scoreCountry(Country country) {
 		int result = super.scoreCountry(country);
 		if (player.getMission().getPlayer() != null && !isTargetMoot()) {
-			List n = country.getNeighbours();
+			List<Country> n = country.getNeighbours();
 			for (int i = 0; i < n.size(); i++) {
-				Country nc = (Country)n.get(i);
+				Country nc = n.get(i);
 				if (nc.getOwner() == player.getMission().getPlayer()) {
 					result--;
 				}
@@ -67,8 +68,8 @@ public class AIHardMission extends AIHardDomination {
 	
 	public GameState getGameState(Player p) {
 		GameState g = super.getGameState(p);
-		if (player.getMission().getPlayer() != null && !isTargetMoot() && player.getMission().getPlayer() != ((PlayerState)g.orderedPlayers.get(0)).p) {
-			g.targetPlayers = Arrays.asList(new Object[] {player.getMission().getPlayer(), ((PlayerState)g.orderedPlayers.get(0)).p});
+		if (player.getMission().getPlayer() != null && !isTargetMoot() && player.getMission().getPlayer() != g.orderedPlayers.get(0).p) {
+			g.targetPlayers = Arrays.asList(player.getMission().getPlayer(), g.orderedPlayers.get(0).p);
 		}
 		return g;
 	}
