@@ -252,9 +252,11 @@ public class Country implements Serializable {
 		try {
 			this.incomingNeighbours = (List<Country>) in.readObject();
 		} catch (OptionalDataException e) {
-			
+			//just assume for ai purposes that we're 2-way
+			this.incomingNeighbours.addAll(this.neighbours);
 		} catch (EOFException e) {
-			
+			//just assume for ai purposes that we're 2-way
+			this.incomingNeighbours.addAll(this.neighbours);
 		}
 	}
 	
