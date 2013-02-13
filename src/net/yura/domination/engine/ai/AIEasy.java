@@ -5,6 +5,7 @@ package net.yura.domination.engine.ai;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 
@@ -27,11 +28,11 @@ public class AIEasy extends AICrap {
      * @param attack true if this is durning attack, which requires the territority to have 2 or more armies
      * @return a Vector of countries, never null
      */
-    public List findAttackableTerritories(Player p, boolean attack) {
-    	List countries = p.getTerritoriesOwned();
-    	List result = new ArrayList();
+    public List<Country> findAttackableTerritories(Player p, boolean attack) {
+    	List<Country> countries = p.getTerritoriesOwned();
+    	List<Country> result = new ArrayList<Country>();
     	for (int i=0; i<countries.size(); i++) {
-    		Country country = (Country)countries.get(i);
+    		Country country = countries.get(i);
     		if ((!attack || country.getArmies() > 1) && !ownsNeighbours(p, country)) {
 				result.add(country);
     		}
@@ -39,32 +40,30 @@ public class AIEasy extends AICrap {
     	return result;
     }
     
-    
-    
     public String getPlaceArmies() {
 		if ( game.NoEmptyCountries()==false ) {
 		    return "autoplace";
 		}
-	    List t = player.getTerritoriesOwned();
-	    List n = findAttackableTerritories(player, false);
-	    List copy = new ArrayList(n);
+	    List<Country> t = player.getTerritoriesOwned();
+	    List<Country> n = findAttackableTerritories(player, false);
+	    List<Country> copy = new ArrayList<Country>(n);
 	    Country c = null;
 	    if (n.isEmpty() || t.size() == 1) {
-	    	c = (Country)t.get(0);
+	    	c = t.get(0);
 		    return getPlaceCommand(c, player.getExtraArmies());
 	    }
 	    if (n.size() == 1) {
-	    	c = (Country)n.get(0);
+	    	c = n.get(0);
 	    	return getPlaceCommand(c, player.getExtraArmies());
 	    }
-	    HashSet toTake = new HashSet();
+	    HashSet<Country> toTake = new HashSet<Country>();
 	    Country fallback = null;
 	    int additional = 1;
 		while (!n.isEmpty()) {
-			c = (Country)n.remove( r.nextInt(n.size()) );
-			List cn = c.getNeighbours();
+			c = n.remove( r.nextInt(n.size()) );
+			List<Country> cn = c.getNeighbours();
 			for (int i = 0; i < cn.size(); i++) {
-				Country other = (Country)cn.get(i);
+				Country other = cn.get(i);
 				if (other.getOwner() == player || toTake.contains(other)) {
 					continue;
 				}
@@ -89,13 +88,13 @@ public class AIEasy extends AICrap {
     }
 
 	public String getAttack() {
-		List v = findAttackableTerritories(player, true);
+		List<Country> v = findAttackableTerritories(player, true);
 		
 		while (!v.isEmpty()) {
-			Country c = (Country)v.remove( r.nextInt(v.size()) );
-			List n = c.getNeighbours();
+			Country c = v.remove( r.nextInt(v.size()) );
+			List<Country> n = c.getNeighbours();
 			for (int i = 0; i < n.size(); i++) {
-				Country other = (Country)n.get(i);
+				Country other = n.get(i);
 				if (other.getOwner() != player && c.getArmies() - 1 > other.getArmies()) {
 					return "attack " + c.getColor() + " " + other.getColor();
 				}

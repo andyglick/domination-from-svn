@@ -2,9 +2,9 @@
 
 package net.yura.domination.engine.ai;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -32,7 +32,7 @@ public class AICrap {
 
 	public String getTrade() {
 
-		List cards = player.getCards();
+		List<Card> cards = player.getCards();
 
 		if (cards.size() < 3) {
 			return "endtrade";
@@ -88,11 +88,11 @@ public class AICrap {
 	    return "capital " + randomCountry(player.getTerritoriesOwned()).getColor();
     }
     
-    public Country randomCountry(List countries) {
+    public Country randomCountry(List<Country> countries) {
     	if (countries.isEmpty()) {
     		return null;
     	}
-    	return (Country)countries.get( r.nextInt(countries.size()) );
+    	return countries.get( r.nextInt(countries.size()) );
     }
 
 	public String getAutoDefendString() {
@@ -106,10 +106,10 @@ public class AICrap {
      * @return boolean True if the country owns its neighbours, else returns false
      */
     public boolean ownsNeighbours(Player p, Country c) {
-        List neighbours = c.getNeighbours();
+        List<Country> neighbours = c.getNeighbours();
 
         for (int i=0; i<neighbours.size(); i++) {
-           if ( ((Country) neighbours.get(i)).getOwner() != p) {
+           if ( neighbours.get(i).getOwner() != p) {
         	   return false;
            }
         }
