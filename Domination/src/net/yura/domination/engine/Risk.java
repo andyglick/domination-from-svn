@@ -2182,28 +2182,27 @@ RiskUtil.printStackTrace(e);
             controller.showMapPic( game );
 	}
 
-	public static int getType(String type) {
-		if (type.equals("human")) {
-			return Player.PLAYER_HUMAN;
-		}
-		if (type.equals("ai easy")) {
-			return Player.PLAYER_AI_EASY;
-		}
-		if (type.equals("ai hard")) {
-			return Player.PLAYER_AI_HARD;
-		}
-		if (type.equals("ai crap")) {
-			return Player.PLAYER_AI_CRAP;
-		}
-		return -1;
+	public int getType(String type) {
+            if (type.equals("human")) {
+                    return Player.PLAYER_HUMAN;
+            }
+            if (type.startsWith("ai ")) {
+                String aiType = type.substring(3);
+                try {
+                    return ai.getTypeFromCommand(aiType);
+                }
+                catch (IllegalArgumentException ex) {
+                    return -1;
+                }
+            }
+            return -1;
 	}
-        public static String getType(int type) {
-            switch (type) {
-                case Player.PLAYER_HUMAN: return "human";
-                case Player.PLAYER_AI_EASY: return "ai easy";
-                case Player.PLAYER_AI_HARD: return "ai hard";
-                case Player.PLAYER_AI_CRAP: return "ai crap";
-                default: throw new IllegalArgumentException();
+        public String getType(int type) {
+            if (type==Player.PLAYER_HUMAN) {
+                return "human";
+            }
+            else {
+                return "ai "+ai.getCommandFromType(type);
             }
 	}
 

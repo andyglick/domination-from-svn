@@ -200,7 +200,7 @@ public class RiskUtil {
                     if (player!=null) {
                         name = player.getName();
                         color = ColorUtil.getStringForColor( player.getColor() );
-                        type = Risk.getType( player.getType() );
+                        type = risk.getType( player.getType() );
                     }
                     prefs.put(nameKey, name);
                     prefs.put(colorKey, color);
