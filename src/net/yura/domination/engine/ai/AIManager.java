@@ -79,4 +79,22 @@ public class AIManager {
 
             return output;
     }
+
+    public int getTypeFromCommand(String command) {
+        for (AI ai:ais.values()) {
+            if (ai.getCommand().equals(command)) {
+                return ai.getType();
+            }
+        }
+        throw new IllegalArgumentException("unknown command "+command);
+    }
+
+    public String getCommandFromType(int type) {
+        for (AI ai:ais.values()) {
+            if (ai.getType() == type) {
+                return ai.getCommand();
+            }
+        }
+        throw new IllegalArgumentException("unknown type "+type);
+    }
 }

@@ -2830,7 +2830,7 @@ public void setNODDefender(int n) {}
 
 				data[cc-1][0] = myrisk.getRiskConfig("default.player"+cc+".name");
 				data[cc-1][1] = findColor( ColorUtil.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
-				data[cc-1][2] = findType( Risk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
+				data[cc-1][2] = findType( myrisk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
 
 			}
 

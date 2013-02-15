@@ -540,7 +540,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                     }
 
                     if (newname!=null&&newcolor!=null) {
-                        myrisk.parser("newplayer " + Risk.getType(type)+" "+ newcolor+" "+ newname );
+                        myrisk.parser("newplayer " + myrisk.getType(type)+" "+ newcolor+" "+ newname );
                     }
                     else {
                         throw new RuntimeException("new name and color can not be found"); // this should never happen
