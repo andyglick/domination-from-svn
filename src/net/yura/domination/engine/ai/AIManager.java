@@ -22,17 +22,21 @@ public class AIManager {
     private final Map<Integer,AI> ais = new HashMap();
 
     public AIManager() {
-        System.out.println("#######################################################");
-        Iterator<AI> providers = (Iterator) Service.providers(AIManager.class);
+        Iterator<Class<AI>> providers = Service.providerClasses(AIManager.class);
         while (providers.hasNext()) {
-            AI ai = providers.next();
-            int type = ai.getType();
-            if ( ais.get( type ) !=null ) {
-                throw new RuntimeException("more then 1 ai with same type");
+            try {
+                // each AIManager has its own instances of AI players so the state does not leak
+                AI ai = providers.next().newInstance();
+                int type = ai.getType();
+                if ( ais.get( type ) !=null ) {
+                    throw new RuntimeException("more then 1 ai with same type");
+                }
+                ais.put( type , ai );
             }
-            ais.put( type , ai );
+            catch (ReflectiveOperationException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-        System.out.println("AIs "+ais);
     }
 
     public void play(Risk risk) {

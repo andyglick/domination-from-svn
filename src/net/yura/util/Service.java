@@ -100,7 +100,8 @@ public class Service {
           classes.add(classLoader.loadClass(line));
         }
       } catch (Exception ex) {
-        //ex.printStackTrace();
+          // this means a name in the file can not be found as a class
+        ex.printStackTrace();
         // Just try the next line
       }
       line = reader.readLine();
