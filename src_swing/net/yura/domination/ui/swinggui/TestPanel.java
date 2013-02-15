@@ -30,7 +30,7 @@ import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
@@ -454,7 +454,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			Object[] message = new Object[2];
 			message[0] = new JLabel("AI wait time (in milliseconds):");
-			message[1] = new JSpinner( new SpinnerNumberModel( AIPlayer.getWait(),0,10000,100 ) );
+			message[1] = new JSpinner( new SpinnerNumberModel( AIManager.getWait(),0,10000,100 ) );
 
 			String[] options = {
 			    "OK", 
@@ -474,7 +474,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			if (result == JOptionPane.OK_OPTION ) {
 
-				AIPlayer.setWait( ((Integer)((JSpinner)message[1]).getValue()).intValue() );
+				AIManager.setWait( ((Integer)((JSpinner)message[1]).getValue()).intValue() );
 			}
 
 		}

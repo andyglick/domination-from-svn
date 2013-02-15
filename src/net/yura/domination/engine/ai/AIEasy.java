@@ -22,6 +22,19 @@ import net.yura.domination.engine.core.Player;
 public class AIEasy extends AICrap {
 
     
+    public int getType() {
+        return Player.PLAYER_AI_EASY;
+    }
+
+    public String getCommand() {
+        return "easy";
+    }
+
+    public String getName() {
+        return "newgame.player.type.easyai";
+    }
+    
+    
     /**
      * Finds all countries that can be attacked from.
      * @param p player object

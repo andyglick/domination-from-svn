@@ -21,7 +21,7 @@ import javax.management.ObjectName;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.lobby.server.LobbySession;
@@ -258,7 +258,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		String playerid = getPlayerId(username);
 		// this check is already done
 		//if (myrisk.getGame().getCurrentPlayer().getAddress().equals(playerid)) {
-			myrisk.addPlayerCommandToInbox(playerid+"-doBasicGo", AIPlayer.getOutput(myrisk.getGame(),AIPlayer.aicrap) );
+			myrisk.addPlayerCommandToInbox(playerid+"-doBasicGo", myrisk.getBasicPassiveGo() );
 		//}
 		// else something is going very wrong!!!!
 		// such as cheating
