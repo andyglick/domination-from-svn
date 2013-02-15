@@ -1,6 +1,6 @@
 package net.yura.domination.lobby.server;
 
-import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.ai.AIManager;
 
 /**
  * @author Yura Mamyrin
@@ -8,11 +8,11 @@ import net.yura.domination.engine.ai.AIPlayer;
 public class GameSettings implements GameSettingsMXBean {
 
     public void setAIWait(int a) {
-        AIPlayer.setWait(a);
+        AIManager.setWait(a);
     }
 
     public int getAIWait() {
-        return AIPlayer.getWait();
+        return AIManager.getWait();
     }
     
 }

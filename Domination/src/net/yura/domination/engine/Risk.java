@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import net.yura.domination.engine.ai.AIPlayer;
+import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
@@ -118,7 +118,7 @@ public class Risk extends Thread {
 		riskconfig.setProperty("default.cards", RiskGame.getDefaultCards() );
                 riskconfig.setProperty("default.autoplaceall","false");
                 riskconfig.setProperty("default.recyclecards","true");
-                riskconfig.setProperty("ai.wait", String.valueOf(AIPlayer.getWait()) );
+                riskconfig.setProperty("ai.wait", String.valueOf(AIManager.getWait()) );
 
                 for (int c=0;c<names.length;c++) {
                     riskconfig.setProperty("default.player"+(c+1)+".type",types[c]);
@@ -133,7 +133,7 @@ public class Risk extends Thread {
                     // can not find file, no problem
 		}
                 
-                AIPlayer.setWait( Integer.parseInt( riskconfig.getProperty("ai.wait") ) );
+                AIManager.setWait( Integer.parseInt( riskconfig.getProperty("ai.wait") ) );
                 
                 myAddress = createRandomUniqueAddress();
 
@@ -2288,7 +2288,7 @@ RiskUtil.printStackTrace(e);
 
 				if ( game.getState() == RiskGame.STATE_DEFEND_YOURSELF && game.getCurrentPlayer().getAutoDefend() ) {
 
-					parser( AIPlayer.getOutput(game,AIPlayer.aicrap) );
+					parser( getBasicPassiveGo() );
 
 				}
 
@@ -2301,7 +2301,7 @@ RiskUtil.printStackTrace(e);
 				}
 				else {
 
-					AIPlayer.play(this);
+					ai.play(this);
 
 				}
 
@@ -2323,6 +2323,12 @@ RiskUtil.printStackTrace(e);
 
 	}
 
+        final AIManager ai = new AIManager();
+
+        public String getBasicPassiveGo() {
+            return ai.getOutput(game,Player.PLAYER_AI_CRAP);
+        }
+        
 	//public void getHumanInput() { }
 
 	public String whoWon() {

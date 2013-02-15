@@ -100,6 +100,7 @@
 		<copy todir="${dir.build.classes}" filtering="true">
 			<fileset dir="${dir.properties}" includes="**/*.properties"/>
                         <fileset dir="src_swing" includes="**/*.ini"/>
+                        <fileset dir="src" includes="META-INF/**"/>
 		</copy>
 
 		<!-- copy images -->

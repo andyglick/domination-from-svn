@@ -83,7 +83,7 @@ public class DominationMain extends Midlet {
                 java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
 
                 // so we do not need to wait for AI while testing
-                net.yura.domination.engine.ai.AIPlayer.setWait(5);
+                net.yura.domination.engine.ai.AIManager.setWait(5);
                 
                 // MWMWMWMWMWMWMWMWMWMWM END ONLY DEBUG MWMWMMWMWMWMWMWMWMWMWMWM
             }
