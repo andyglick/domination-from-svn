@@ -29,11 +29,6 @@ public class AICrap implements AI {
     public String getCommand() {
         return "crap";
     }
-
-    public String getName() {
-        return "newgame.player.type.crapai";
-    }
-
     
     
     public String getBattleWon() {
