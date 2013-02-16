@@ -20,6 +20,7 @@ public class Player implements Serializable {
 	public final static int PLAYER_AI_CRAP = 3;
 	public final static int PLAYER_AI_EASY = 1;
 	public final static int PLAYER_AI_HARD = 2;
+	public static final int PLAYER_AI_AVERAGE = 4;
 
 
     private String name;

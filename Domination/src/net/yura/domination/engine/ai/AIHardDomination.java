@@ -16,8 +16,9 @@ import net.yura.domination.engine.core.Statistic;
  * 
  * TODO:
  * fear reprisals
+ * account for alternative defend dice
  */
-public class AIHardDomination extends AIEasy {
+public class AIHardDomination extends BaseAIStrategy {
 	
 	/**
 	 * Contains quick information about the player
@@ -134,10 +135,56 @@ public class AIHardDomination extends AIEasy {
 	}
 
 	public String getPlaceArmies() {
-	   if ( game.NoEmptyCountries() ) {
-	       return plan(false);
-	   }
-	   return findEmptyCountry();
+		if (this.player.getType() == Player.PLAYER_AI_EASY || (this.player.getType() == Player.PLAYER_AI_AVERAGE && r.nextBoolean())) {
+			if ( game.NoEmptyCountries()==false ) {
+			    return "autoplace";
+			}
+		    List<Country> t = player.getTerritoriesOwned();
+		    List<Country> n = findAttackableTerritories(player, false);
+		    List<Country> copy = new ArrayList<Country>(n);
+		    Country c = null;
+		    if (n.isEmpty() || t.size() == 1) {
+		    	c = t.get(0);
+			    return getPlaceCommand(c, player.getExtraArmies());
+		    }
+		    if (n.size() == 1) {
+		    	c = n.get(0);
+		    	return getPlaceCommand(c, player.getExtraArmies());
+		    }
+		    HashSet<Country> toTake = new HashSet<Country>();
+		    Country fallback = null;
+		    int additional = 1;
+			while (!n.isEmpty()) {
+				c = n.remove( r.nextInt(n.size()) );
+				List<Country> cn = c.getNeighbours();
+				for (int i = 0; i < cn.size(); i++) {
+					Country other = cn.get(i);
+					if (other.getOwner() == player || toTake.contains(other)) {
+						continue;
+					}
+					int diff = c.getArmies() - 2 - (3*other.getArmies()/2 + other.getArmies()%2);
+					if (diff >= 0) {
+						toTake.add(other);
+						continue;
+					}
+					if (-diff <= player.getExtraArmies()) {
+						return getPlaceCommand(c, -diff);
+					}
+					if (fallback == null) {
+						fallback = c;
+						additional = Math.max(1, -diff);
+					}
+				}
+			}
+			if (fallback == null) {
+				fallback = randomCountry(copy);
+			}
+			return getPlaceCommand(fallback, additional);
+	    }
+		if ( game.NoEmptyCountries() ) {
+			return plan(false);
+		}
+		return findEmptyCountry();
     }
 
     /** 
@@ -341,7 +388,7 @@ public class AIHardDomination extends AIEasy {
 					}
 				}
 				//consider low probability eliminations during attack
-				if (attack && !toEliminate.isEmpty()) {
+				if (attack && !toEliminate.isEmpty() && player.getType() == Player.PLAYER_AI_HARD) {
 					//redo the target search using low probability
 					HashMap<Country, AttackTarget> newTargets = searchAllTargets(null, attackable);
 					for (int i = 0; i < toEliminate.size(); i++) {
@@ -458,6 +505,9 @@ public class AIHardDomination extends AIEasy {
 
 	private String ensureRiskCard(List<Country> attackable, GameState gameState,
 			Map<Country, AttackTarget> targets, boolean pressAttack, List<EliminationTarget> continents) {
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			return null;
+		}
 		List<AttackTarget> attacks = new ArrayList<AttackTarget>(targets.values());
 		Collections.sort(attacks);
 		AttackTarget target = null;
@@ -563,6 +613,12 @@ public class AIHardDomination extends AIEasy {
 	 * @return
 	 */
 	protected boolean shouldEndAttack(GameState gameState) {
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			if (gameState.orderedPlayers.size() == 2 || gameState.me.playerValue > gameState.orderedPlayers.get(0).playerValue) {
+				return r.nextBoolean();
+			}
+			return false;
+		}
 		if (gameState.orderedPlayers.size() < 2) {
 			return false;
 		}
@@ -588,6 +644,9 @@ public class AIHardDomination extends AIEasy {
 	 * @return
 	 */
 	protected boolean pressAttack(GameState gameState) {
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			return r.nextBoolean();
+		}
 		if (gameState.orderedPlayers.size() < 2) {
 			return true;
 		}
@@ -606,6 +665,9 @@ public class AIHardDomination extends AIEasy {
 	private List<EliminationTarget> findTargetContinents(GameState gameState, Map<Country, AttackTarget> targets, boolean attack, boolean filterNoAttacks) {
 		Continent[] c = game.getContinents();
 		int targetContinents = Math.max(1, c.length - gameState.orderedPlayers.size());
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			targetContinents = 1;
+		}
 		//step 1 examine continents
 		List<Double> vals = new ArrayList<Double>();
 		List<EliminationTarget> result = new ArrayList<EliminationTarget>();
@@ -1052,6 +1114,9 @@ public class AIHardDomination extends AIEasy {
 	 */
 	protected List<Continent> getContinentsToBreak(GameState gs) {
 		List<Continent> result = new ArrayList<Continent>();
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			return result;
+		}
 		List<Double> vals = new ArrayList<Double>();
 		for (int i = 0; i < gs.owned.length; i++) {
 			if (gs.owned[i] != null && gs.owned[i] != player) {
@@ -1207,6 +1272,9 @@ public class AIHardDomination extends AIEasy {
 	 * ensure that we're not doing something stupid like breaking using too many troops for too little reward or pushing a player to elimination
 	 */
 	private boolean isGoodIdea(GameState gameState, Map<Country, AttackTarget> targets, int route, AttackTarget attackTarget, Country attackFrom, EliminationTarget et, boolean attack) {
+		if (player.getType() == Player.PLAYER_AI_EASY) {
+			return true;
+		}
 		Country c = getCountryToAttack(targets, attackTarget, route, attackFrom);
 		if (gameState.orderedPlayers.size() > 1 && (et.ps == null || c.getOwner() != et.ps.p)) {
 			if (gameState.commonThreat != null && c.getOwner() != gameState.commonThreat.p && c.getContinent().getOwner() != null) {
@@ -1261,6 +1329,9 @@ public class AIHardDomination extends AIEasy {
 	private List<EliminationTarget> findEliminationTargets(Map<Country, AttackTarget> targets, GameState gameState,
 			boolean attack, int remaining) {
 		List<EliminationTarget> toEliminate = new ArrayList<EliminationTarget>();
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			return toEliminate;
+		}
 		players: for (int i = 0; i < gameState.orderedPlayers.size(); i++) {
 			PlayerState ps = gameState.orderedPlayers.get(i);
 			Player player2 = ps.p;
@@ -1463,6 +1534,9 @@ public class AIHardDomination extends AIEasy {
 	 * 3. just move from the interior - however this doesn't yet make a smart choice.
 	 */
 	public String getTacMove() {
+		if (this.player.getType() == Player.PLAYER_AI_EASY) {
+			return super.getTacMove();
+		}
 		List<Country> t = player.getTerritoriesOwned();
 		Country sender = null;
 		Country receiver = null;
@@ -1604,7 +1678,7 @@ public class AIHardDomination extends AIEasy {
 		}
 
 		//spot check the plan
-    	if (game.getBattleRounds()%3 == 2) {
+    	if (player.getType() != Player.PLAYER_AI_EASY && game.getBattleRounds()%3 == 2) {
     		String result = plan(true);
     		//TODO: rewrite to not use string parsing
     		if (result.equals("endattack")) {
@@ -1670,7 +1744,7 @@ public class AIHardDomination extends AIEasy {
 			List<Country> t = player2.getTerritoriesOwned();
 			int noArmies = 0;
 			int attackable = 0;
-			boolean strategic = isStrategic(player2);
+			boolean strategic = player.getType() == Player.PLAYER_AI_HARD && isStrategic(player2);
 			//determine what is available to attack with, discounting if land locked
 			for (int j = 0; j < t.size(); j++) {
 				Country country = t.get(j);
@@ -1731,8 +1805,10 @@ public class AIHardDomination extends AIEasy {
     		//base top player multiplier - will be lower if mission/capital or if there are no risk cards available
     		double multiplier = game.getCards().isEmpty()?(game.isRecycleCards()?1.2:1.1):(player.getMission()!=null||player.getCapital()!=null)?1.2:1.3;
     		PlayerState topPlayer = g.orderedPlayers.get(0);
-    		if (topPlayer.strategic) {
+    		if ((topPlayer.strategic && topPlayer.attackOrder < 3) || (topPlayer.attackOrder == 1 && player.getType() != Player.PLAYER_AI_EASY)) {
     			multiplier *= .9; 
+    		} else if (player.getType() == Player.PLAYER_AI_EASY) {
+    			multiplier *= 1.2;
     		}
 			g.targetPlayers = Arrays.asList(topPlayer.p);
 			//look to see if you and the next highest player are at the multiplier below the highest
@@ -1741,7 +1817,7 @@ public class AIHardDomination extends AIEasy {
     				&& topPlayer.playerValue > multiplier * g.orderedPlayers.get(1).playerValue) {
     			g.commonThreat = topPlayer;
 				PlayerState ps = g.orderedPlayers.get(1);
-				if (ps.playerValue > g.me.playerValue && ps.strategic && ps.playerValue + g.me.playerValue > topPlayer.playerValue) {
+				if (topPlayer.attackOrder > 1 && ps.playerValue > g.me.playerValue && ps.strategic && ps.playerValue + g.me.playerValue > topPlayer.playerValue) {
 					g.commonThreat = null; //don't team up with a hard player if the alliance is stronger than the top player
 				}
     		}
@@ -1779,7 +1855,7 @@ public class AIHardDomination extends AIEasy {
      * TODO: this should be more strategic, such as looking ahead for elimination
      */
     public String getTrade() {
-    	if (!game.getTradeCap()) {
+    	if (!game.getTradeCap() && player.getType() != Player.PLAYER_AI_EASY) {
     		if (game.getCardMode() != RiskGame.CARD_ITALIANLIKE_SET && player.getCards().size() >= RiskGame.MAX_CARDS) {
     			return super.getTrade();
     		}
@@ -1805,7 +1881,32 @@ public class AIHardDomination extends AIEasy {
     
     @Override
     public int tradeCombinationsToScan() {
+    	if (player.getType() == Player.PLAYER_AI_EASY) {
+    		return 10000;
+    	}
     	return 100000;
     }
     
+    /**
+     * Finds all countries that can be attacked from.
+     * @param p player object
+     * @param attack true if this is durning attack, which requires the territority to have 2 or more armies
+     * @return a Vector of countries, never null
+     */
+    public List<Country> findAttackableTerritories(Player p, boolean attack) {
+    	List<Country> countries = p.getTerritoriesOwned();
+    	List<Country> result = new ArrayList<Country>();
+    	for (int i=0; i<countries.size(); i++) {
+    		Country country = countries.get(i);
+    		if ((!attack || country.getArmies() > 1) && !ownsNeighbours(p, country)) {
+				result.add(country);
+    		}
+    	}
+    	return result;
+    }
+    
+	protected String getPlaceCommand(Country country, int armies) {
+		return "placearmies " + country.getColor() + " " + (!game.getSetup()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
+	}
+
 }

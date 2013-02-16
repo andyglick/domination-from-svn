@@ -260,15 +260,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 					case 0: return player.getName();
 					case 1: return ColorUtil.getStringForColor( player.getColor() );
-					case 2: switch( player.getType() ) {
-
-							case Player.PLAYER_HUMAN: return "Human";
-							case Player.PLAYER_AI_CRAP: return "AI Crap";
-							case Player.PLAYER_AI_EASY: return "AI Easy";
-							case Player.PLAYER_AI_HARD: return "AI Hard";
-							default: throw new RuntimeException();
-
-						}
+					case 2: return myrisk.getType(player.getType());
 					case 3: return new Integer( player.getExtraArmies() );
 					case 4: return new Integer( player.getCards().size() );
 					case 5: return new Integer( player.getNoTerritoriesOwned() );
