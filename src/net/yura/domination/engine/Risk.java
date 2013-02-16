@@ -2336,6 +2336,10 @@ RiskUtil.printStackTrace(e);
             return ai.getOutput(game,Player.PLAYER_AI_CRAP);
         }
         
+        public String[] getAICommands() {
+            return ai.getAICommands();
+        }
+        
 	//public void getHumanInput() { }
 
 	public String whoWon() {

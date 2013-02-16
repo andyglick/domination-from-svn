@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.AbstractButton;
@@ -2725,26 +2726,35 @@ public void setNODDefender(int n) {}
                 SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
             }
 
-			class NamedColor extends Color {
-
-				private String name;
-				private String realname;
-
-				public NamedColor(Color color, String rn, String n) {
-					super(color.getRGB());
-					realname = rn;
-					name = n;
-				}
-
-				public String toString() {
-					return name;
-				}
-
-				public String getRealName() {
-					return realname;
-				}
-
-			}
+            class PlayerType {
+                String displayString;
+                String type;
+                public PlayerType(String displayString, String type) {
+                    this.displayString = displayString;
+                    this.type = type;
+                }
+                String getType() {
+                    return type;
+                }
+                public String toString() {
+                    return displayString;
+                }
+            }
+                class NamedColor extends Color {
+                    private String name;
+                    private String realname;
+                    public NamedColor(Color color, String rn, String n) {
+                        super(color.getRGB());
+                        realname = rn;
+                        name = n;
+                    }
+                    public String getRealName() {
+                        return realname;
+                    }
+                    public String toString() {
+                        return name;
+                    }
+                }
 		private ButtonGroup CardTypeButtonGroup;
 		private ButtonGroup GameTypeButtonGroup;
 		private JTable players;
@@ -2752,6 +2762,7 @@ public void setNODDefender(int n) {}
 		private JButton defaultPlayers;
 		private Object[][] data;
 		private NamedColor[] namedColors;
+                private PlayerType[] playerTypes;
 
 		public void actionPerformed(ActionEvent e) {
 
@@ -2801,6 +2812,21 @@ public void setNODDefender(int n) {}
 				new NamedColor(Color.yellow,	"yellow"    , resbundle.getString("color.yellow"))
 
 			};
+
+                        final String[] ais = myrisk.getAICommands();
+                        playerTypes = new PlayerType[ ais.length+1 ];
+                        playerTypes[0] = new PlayerType(resbundle.getString("newgame.player.type.human"),"human");
+                        for (int a=0;a<ais.length;a++) {
+                            String displayString;
+                            try {
+                                displayString = resbundle.getString("newgame.player.type."+ais[a]+"ai");
+                            }
+                            catch (MissingResourceException ex) {
+                                // fallback if missing
+                                displayString = ais[a];
+                            }
+                            playerTypes[a+1] = new PlayerType(displayString,"ai "+ais[a]);
+                        }
 
 			final String[] names = {
 				resbundle.getString("newgame.label.name"),
@@ -2862,19 +2888,7 @@ public void setNODDefender(int n) {}
 			};
 
 			final JComboBox colorComboBox = new JComboBox( namedColors );
-			//for (int a=0; a < namedColors.length; a++) {
-
-			//	colorComboBox.addItem(namedColors[a]);
-
-			//}
-
-			final JComboBox typeComboBox = new JComboBox();
-			typeComboBox.addItem(resbundle.getString("newgame.player.type.human"));
-			typeComboBox.addItem(resbundle.getString("newgame.player.type.crapai"));
-			typeComboBox.addItem(resbundle.getString("newgame.player.type.easyai"));
-			typeComboBox.addItem(resbundle.getString("newgame.player.type.hardai"));
-
-
+			final JComboBox typeComboBox = new JComboBox( playerTypes );
 
 			TableColumn colorColumn = players.getColumn(resbundle.getString("newgame.label.color"));
 			colorColumn.setCellEditor(new DefaultCellEditor(colorComboBox));
@@ -2949,16 +2963,7 @@ public void setNODDefender(int n) {}
 
 							if (result==0) {
 
-
-								String type=null;
-								int types=typeComboBox.getSelectedIndex();
-
-								switch (types) {
-									case 0: type = "human"; break;
-									case 1: type = "ai crap"; break;
-									case 2: type = "ai easy"; break;
-									case 3: type = "ai hard"; break;
-								}
+								String type=((PlayerType)typeComboBox.getSelectedItem()).getType();
 
 								go("newplayer "+type+" "+((NamedColor)colorComboBox.getSelectedItem()).getRealName()+" "+((JTextField)message[1]).getText());
 
@@ -3262,12 +3267,7 @@ public void setNODDefender(int n) {}
 
 								    for (int c=0; c < players.getRowCount(); c++) {
 
-									String Ptype="";
-
-									if ( players.getValueAt(c, 2).equals(      resbundle.getString("newgame.player.type.human")  ) ) { Ptype="human"; }
-									else if ( players.getValueAt(c, 2).equals( resbundle.getString("newgame.player.type.crapai") ) ) { Ptype="ai crap"; }
-									else if ( players.getValueAt(c, 2).equals( resbundle.getString("newgame.player.type.easyai") ) ) { Ptype="ai easy"; }
-									else if ( players.getValueAt(c, 2).equals( resbundle.getString("newgame.player.type.hardai") ) ) { Ptype="ai hard"; }
+									String Ptype = ((PlayerType)players.getValueAt(c, 2)).getType();
 
 									go("newplayer " + Ptype + " " + ((NamedColor)players.getValueAt(c, 1)).getRealName() + " " + players.getValueAt(c, 0) );
 
@@ -3388,7 +3388,7 @@ public void setNODDefender(int n) {}
 
 				NamedColor c=findColor(color);
 
-				String type=findType(t);
+				Object type=findType(t);
 
 				((DefaultTableModel)dataModel).addRow( new Object[] {name, c ,type} );
 
@@ -3408,26 +3408,14 @@ public void setNODDefender(int n) {}
 
 				return null;
 		}
-		public String findType(int t) {
-
-				if (t == Player.PLAYER_HUMAN) {
-					return resbundle.getString("newgame.player.type.human");
-				}
-
-				if (t == Player.PLAYER_AI_CRAP) {
-					return resbundle.getString("newgame.player.type.crapai");
-				}
-
-				if (t == Player.PLAYER_AI_EASY) {
-					return resbundle.getString("newgame.player.type.easyai");
-				}
-
-				if (t == Player.PLAYER_AI_HARD) {
-					return resbundle.getString("newgame.player.type.hardai");
-				}
-
-				return null;
-
+		public PlayerType findType(int t) {
+                    String type = myrisk.getType(t);
+                    for (int a=0;a<playerTypes.length;a++) {
+                        if (playerTypes[a].getType().equals(type)) {
+                            return playerTypes[a];
+                        }
+                    }
+                    return null;
 		}
 
 		public void delPlayer(String name) {
