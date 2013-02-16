@@ -9,7 +9,6 @@ public interface AI {
 
     int getType();
     String getCommand();
-    String getName();
 
     void setGame(RiskGame game);
 

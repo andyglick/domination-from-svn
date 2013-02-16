@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -976,19 +977,26 @@ RiskUtil.printStackTrace(e);
 
 			if (game != null && game.getCurrentPlayer() != null && game.getState()!=RiskGame.STATE_GAME_OVER ) {
 
-				if ( ((Player)game.getCurrentPlayer()).getType()==Player.PLAYER_HUMAN ) { // if the player is human
-					controller.sendMessage( ((Player)game.getCurrentPlayer()).getName()+ "("+resb.getString("newgame.player.type.human")+")>"+echo, false, false );
-				}
-				else if ( ((Player)game.getCurrentPlayer()).getType()==Player.PLAYER_AI_CRAP ) { // if the player is AI
-					controller.sendMessage( ((Player)game.getCurrentPlayer()).getName()+ "("+resb.getString("newgame.player.type.crapai")+")>"+echo, false, false );
-				}
-				else if ( ((Player)game.getCurrentPlayer()).getType()==Player.PLAYER_AI_EASY ) { // if the player is AI
-					controller.sendMessage( ((Player)game.getCurrentPlayer()).getName()+ "("+resb.getString("newgame.player.type.easyai")+")>"+echo, false, false );
-				}
-				else if ( ((Player)game.getCurrentPlayer()).getType()==Player.PLAYER_AI_HARD ) { // if the player is AI
-					controller.sendMessage( ((Player)game.getCurrentPlayer()).getName()+ "("+resb.getString("newgame.player.type.hardai")+")>"+echo, false, false );
-				}
+                                int type = game.getCurrentPlayer().getType();
+                                
+                                String key;
+                                if (type==Player.PLAYER_HUMAN) {
+                                    key = "newgame.player.type.human";
+                                }
+                                else {
+                                    key = "newgame.player.type."+ai.getCommandFromType(type)+"ai";
+                                }
 
+                                String typeString;
+                                try {
+                                    typeString = resb.getString(key);
+                                }
+                                catch (MissingResourceException ex) {
+                                    // fallback just in case
+                                    typeString = key;
+                                }
+
+                                controller.sendMessage( game.getCurrentPlayer().getName()+ "("+typeString+")>"+echo, false, false );
 			}
 			else {
 				controller.sendMessage( "game>" + echo, false, false );
@@ -2356,16 +2364,20 @@ RiskUtil.printStackTrace(e);
 
 			String strId = null;
 
-			switch ( ((Player)game.getCurrentPlayer()).getType() ) {
-
-				case Player.PLAYER_HUMAN: strId = "core.help.move.human"; break;
-				case Player.PLAYER_AI_CRAP: strId = "core.help.move.ai.crap"; break;
-				case Player.PLAYER_AI_EASY: strId = "core.help.move.ai.easy"; break;
-				case Player.PLAYER_AI_HARD: strId = "core.help.move.ai.hard"; break;
-
-			}
-
-			help = RiskUtil.replaceAll(resb.getString(strId), "{0}", ((Player)game.getCurrentPlayer()).getName()) +" ";
+                        int type = game.getCurrentPlayer().getType();
+                        if (type==Player.PLAYER_HUMAN) {
+                            strId = "core.help.move.human";
+                        }
+                        else {
+                            strId = "core.help.move.ai."+ai.getCommandFromType(type);
+                        }
+                        try {
+                            help = RiskUtil.replaceAll(resb.getString(strId), "{0}", game.getCurrentPlayer().getName()) +" ";
+                        }
+                        catch (MissingResourceException ex) {
+                            // fallback just in case we dont have a string
+                            help = strId+": ("+game.getCurrentPlayer().getName()+") ";
+                        }
 		}
 
 		if (game == null) {

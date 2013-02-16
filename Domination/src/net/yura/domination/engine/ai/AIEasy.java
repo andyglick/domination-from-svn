@@ -29,10 +29,6 @@ public class AIEasy extends AICrap {
     public String getCommand() {
         return "easy";
     }
-
-    public String getName() {
-        return "newgame.player.type.easyai";
-    }
     
     
     /**
