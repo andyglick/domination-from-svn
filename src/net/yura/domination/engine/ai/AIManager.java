@@ -33,7 +33,7 @@ public class AIManager {
                 }
                 ais.put( type , ai );
             }
-            catch (ReflectiveOperationException ex) {
+            catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -49,13 +49,13 @@ public class AIManager {
 
     public String getOutput(RiskGame game,int type) {
 
-            AI usethisAI=ais.get(type);
+            AI ai=ais.get(type);
 
-            if (usethisAI==null) {
+            if (ai==null) {
                 throw new IllegalArgumentException("can not find ai for type "+type);
             }
             
-            usethisAI.setGame(game);
+            AIStrategy usethisAI = ai.getStrategy(game);
 
             String output=null;
 

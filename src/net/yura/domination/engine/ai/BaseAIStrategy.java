@@ -15,22 +15,13 @@ import net.yura.domination.engine.core.RiskGame;
  * SO THAT OTHER PLAYERS CAN CARRY ON PLAYING, THIS AI NEVER ATTACKS ANYONE, JUST FOLLOWS RULES
  * @author Yura Mamyrin
  */
-public class AICrap implements AI {
+public class BaseAIStrategy implements AIStrategy {
 
     protected Random r = new Random(); // this was always static
 
     protected RiskGame game;
     protected Player player;
 
-    public int getType() {
-        return Player.PLAYER_AI_CRAP;
-    }
-
-    public String getCommand() {
-        return "crap";
-    }
-    
-    
     public String getBattleWon() {
 	return "move all";
     }
@@ -126,9 +117,4 @@ public class AICrap implements AI {
         return true;
     }
     
-    public void setGame(RiskGame game) {
-    	this.game = game;
-    	this.player = game.getCurrentPlayer();
-    }
-
 }

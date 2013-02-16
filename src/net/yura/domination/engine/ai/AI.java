@@ -9,16 +9,6 @@ public interface AI {
 
     int getType();
     String getCommand();
-
-    void setGame(RiskGame game);
-
-    String getBattleWon();
-    String getTacMove();
-    String getTrade();
-    String getPlaceArmies();
-    String getAttack();
-    String getRoll();
-    String getCapital();
-    String getAutoDefendString();
     
+    AIStrategy getStrategy(RiskGame game);
 }
