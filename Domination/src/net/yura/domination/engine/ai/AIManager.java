@@ -97,4 +97,13 @@ public class AIManager {
         }
         throw new IllegalArgumentException("unknown type "+type);
     }
+
+    public String[] getAICommands() {
+        String[] commands = new String[ais.size()];
+        int c=0;
+        for (AI ai:ais.values()) {
+            commands[c++] = ai.getCommand();
+        }
+        return commands;
+    }
 }
