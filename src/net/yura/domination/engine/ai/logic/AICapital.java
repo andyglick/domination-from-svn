@@ -1,6 +1,6 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -17,8 +16,12 @@ import net.yura.domination.engine.core.Player;
  * <p> Class for AIHardPlayer </p>
  * @author SE Group D
  */
-public class AIHardCapital extends AIHardDomination {
+public class AICapital extends AIDomination {
 	
+        public AICapital(int type) {
+            super(type);
+        }
+    
 	/**
 	 * Adds the best defended capital to the border when there is a threat
 	 */

@@ -1,9 +1,9 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.logic;
 
 import java.util.*;
-
+import net.yura.domination.engine.ai.AISubmissive;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -18,8 +18,14 @@ import net.yura.domination.engine.core.Statistic;
  * fear reprisals
  * account for alternative defend dice
  */
-public class AIHardDomination extends BaseAIStrategy {
+public class AIDomination extends AISubmissive {
 	
+        protected final int type;
+    
+        public AIDomination(int type) {
+            this.type = type;
+        }
+    
 	/**
 	 * Contains quick information about the player
 	 */

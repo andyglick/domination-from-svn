@@ -1,7 +1,8 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.logic;
 
+import net.yura.domination.engine.ai.logic.AIDomination;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +15,11 @@ import net.yura.domination.engine.core.Player;
  * @author SE Group D
  * TODO infer the other missions
  */
-public class AIHardMission extends AIHardDomination {
+public class AIMission extends AIDomination {
+
+        public AIMission(int type) {
+            super(type);
+        }
 
 	protected List<Country> getBorder(GameState gs) {
 		List<Country> result = super.getBorder(gs);
