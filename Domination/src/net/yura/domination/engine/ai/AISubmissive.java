@@ -4,7 +4,6 @@ package net.yura.domination.engine.ai;
 
 import java.util.List;
 import java.util.Random;
-
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -15,8 +14,21 @@ import net.yura.domination.engine.core.RiskGame;
  * SO THAT OTHER PLAYERS CAN CARRY ON PLAYING, THIS AI NEVER ATTACKS ANYONE, JUST FOLLOWS RULES
  * @author Yura Mamyrin
  */
-public class BaseAIStrategy implements AIStrategy {
+public class AISubmissive implements AI {
 
+    public int getType() {
+        return Player.PLAYER_AI_CRAP;
+    }
+
+    public String getCommand() {
+        return "crap";
+    }
+
+    public void setGame(RiskGame game) {
+        this.game = game;
+        player = game.getCurrentPlayer();
+    }
+    
     protected Random r = new Random(); // this was always static
 
     protected RiskGame game;

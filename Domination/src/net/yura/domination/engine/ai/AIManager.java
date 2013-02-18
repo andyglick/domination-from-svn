@@ -49,13 +49,13 @@ public class AIManager {
 
     public String getOutput(RiskGame game,int type) {
 
-            AI ai=ais.get(type);
+            AI usethisAI=ais.get(type);
 
-            if (ai==null) {
+            if (usethisAI==null) {
                 throw new IllegalArgumentException("can not find ai for type "+type);
             }
-            
-            AIStrategy usethisAI = ai.getStrategy(game);
+
+            usethisAI.setGame(game);
 
             String output=null;
 
