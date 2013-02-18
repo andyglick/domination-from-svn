@@ -1,9 +1,11 @@
+// Yura Mamyrin
+
 package net.yura.domination.engine.ai;
 
 import net.yura.domination.engine.core.Player;
 
 /**
- * @author Yura Mamyrin
+ * @author Steven Hawkins
  */
 public class AIHard extends AbstractAI {
 

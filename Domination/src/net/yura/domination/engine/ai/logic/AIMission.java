@@ -2,17 +2,15 @@
 
 package net.yura.domination.engine.ai.logic;
 
-import net.yura.domination.engine.ai.logic.AIDomination;
 import java.util.Arrays;
 import java.util.List;
-
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 
 /**
- * <p> Class for AIHardPlayer </p>
- * @author SE Group D
+ * @author Steven Hawkins
+ *
  * TODO infer the other missions
  */
 public class AIMission extends AIDomination {

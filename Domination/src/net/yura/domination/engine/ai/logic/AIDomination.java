@@ -11,8 +11,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.Statistic;
 
 /**
- * <p> Class for AIHardPlayer </p>
- * @author SE Group D
+ * @author Steven Hawkins
  * 
  * TODO:
  * fear reprisals

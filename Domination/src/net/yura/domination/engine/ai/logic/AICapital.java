@@ -13,8 +13,7 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 
 /**
- * <p> Class for AIHardPlayer </p>
- * @author SE Group D
+ * @author Steven Hawkins
  */
 public class AICapital extends AIDomination {
 	
