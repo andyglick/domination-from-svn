@@ -4,6 +4,9 @@ package net.yura.domination.engine.ai;
 
 import net.yura.domination.engine.core.Player;
 
+/**
+ * @author Steven Hawkins
+ */
 public class AIEasy extends AbstractAI {
     
     public int getType() {
