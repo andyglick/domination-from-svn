@@ -28,6 +28,7 @@ import net.yura.mobile.gui.plaf.Style;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
 import net.yura.mobile.gui.plaf.nimbus.NimbusLookAndFeel;
 import net.yura.swingme.core.CoreUtil;
+import net.yura.util.Service;
 
 public class DominationMain extends Midlet {
 
@@ -113,8 +114,10 @@ public class DominationMain extends Midlet {
     @Override
     public void initialize(DesktopPane rootpane) {
 
+        Service.SERVICES_LOCATION = "assets/services/";
+
         SynthLookAndFeel synth;
-        
+
         try {
             synth = (SynthLookAndFeel)Class.forName("net.yura.android.plaf.AndroidLookAndFeel").newInstance();
 

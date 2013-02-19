@@ -7,12 +7,14 @@ import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.plaf.LookAndFeel;
 import net.yura.mobile.gui.plaf.SynthLookAndFeel;
+import net.yura.util.Service;
 
 public class DominationMidlet extends Midlet {
 
     @Override
     public void initialize(DesktopPane rootpane) {
 
+        Service.SERVICES_LOCATION = "assets/services/";
 
         LookAndFeel lookandfeel=null;
         try {

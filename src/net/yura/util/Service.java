@@ -14,6 +14,13 @@ import java.util.*;
  */
 public class Service {
 
+  /**
+   * this needs to be public as on android i need to change this as the build
+   * process does not actually allow me to put a file into META-INF/services/
+   * http://www.davidwong.com.au/blog/2011/07/using-a-custom-serviceloader-in-android/
+   */
+  public static String SERVICES_LOCATION = "META-INF/services/";
+    
   static HashMap services = new HashMap();
 
   public static synchronized Iterator providerClasses(Class cls) {
@@ -26,7 +33,7 @@ public class Service {
 
   public static synchronized Iterator providers(Class cls, boolean instantiate) {
     ClassLoader classLoader = cls.getClassLoader();
-    String providerFile = "META-INF/services/" + cls.getName();
+    String providerFile = SERVICES_LOCATION + cls.getName();
 
     // check whether we already loaded the provider classes
     List providers = (List) services.get(providerFile);
