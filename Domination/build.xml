@@ -492,6 +492,11 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<fileset dir="game/${game.name}/help" includes="**/*.*"/>
 	</copy>
 
+	<mkdir dir="assets/services"/>
+	<copy todir="assets/services">
+		<fileset dir="src/META-INF/services" includes="**/*.*"/>
+	</copy>
+
 	<copy file="gpl.txt" todir="assets"/>
 	<copy file="ChangeLog.txt" todir="assets"/>
 
