@@ -1,9 +1,6 @@
 package net.yura.domination.lobby.server;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 
 public class ServerRisk extends Risk {
@@ -29,10 +26,6 @@ public class ServerRisk extends Risk {
 		// a new game, clear anything from the inbox
 		inbox.clear();
 
-	}
-
-	public String getRiskconfig(String a) {
-		return (String)riskconfig.get(a);
 	}
 
 	public synchronized void setPaued(boolean a) {
