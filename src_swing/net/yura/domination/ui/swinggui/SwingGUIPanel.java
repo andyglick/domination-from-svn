@@ -3374,7 +3374,13 @@ public void setNODDefender(int n) {}
                             String color = settings.getProperty("default.player"+c+".color");
                             String type = settings.getProperty("default.player"+c+".type");
                             if (!"".equals(name)&&!"".equals(color)&&!"".equals(type)) {
-                                ((DefaultTableModel)dataModel).addRow( new Object[] {name , findColor( ColorUtil.getColor( color ) ), findType( myrisk.getType( type ) ) } );
+                                try {
+                                    ((DefaultTableModel)dataModel).addRow( new Object[] {name , findColor( ColorUtil.getColor( color ) ), findType( myrisk.getType( type ) ) } );
+                                }
+                                catch (Exception ex) {
+                                    System.err.println("unable to add player "+name+" "+color+" "+type);
+                                    ex.printStackTrace();
+                                }
                             }
 			}
 		}
