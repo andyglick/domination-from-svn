@@ -217,11 +217,8 @@ public class Risk extends Thread {
 	}
 
 	public String getRiskConfig(String a) {
-
 		return riskconfig.getProperty(a);
-
 	}
-
 
 	public void addRiskListener(RiskListener o) {
 

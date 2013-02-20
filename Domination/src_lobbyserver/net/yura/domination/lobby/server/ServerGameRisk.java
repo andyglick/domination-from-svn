@@ -21,7 +21,6 @@ import javax.management.ObjectName;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.lobby.server.LobbySession;
@@ -116,12 +115,12 @@ public class ServerGameRisk extends TurnBasedGame {
 		myrisk.addSetupCommandToInbox(options[3]); // set the map file to use
 
 		List<String> colorString = new ArrayList<String>();
-		colorString.add( myrisk.getRiskconfig("default.player1.color") );
-		colorString.add( myrisk.getRiskconfig("default.player2.color") );
-		colorString.add( myrisk.getRiskconfig("default.player3.color") );
-		colorString.add( myrisk.getRiskconfig("default.player4.color") );
-		colorString.add( myrisk.getRiskconfig("default.player5.color") );
-		colorString.add( myrisk.getRiskconfig("default.player6.color") );
+		colorString.add( myrisk.getRiskConfig("default.player1.color") );
+		colorString.add( myrisk.getRiskConfig("default.player2.color") );
+		colorString.add( myrisk.getRiskConfig("default.player3.color") );
+		colorString.add( myrisk.getRiskConfig("default.player4.color") );
+		colorString.add( myrisk.getRiskConfig("default.player5.color") );
+		colorString.add( myrisk.getRiskConfig("default.player6.color") );
 		Iterator<String> it = colorString.iterator();
 
 		for (int c=0;c<players.length;c++) {
