@@ -10,8 +10,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -144,34 +147,34 @@ public class RiskUtil {
 		openURL(new URL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yura%40yura%2enet&item_name="+GAME_NAME+"%20Donation&no_shipping=0&no_note=1&tax=0&currency_code=GBP&lc=GB&bn=PP%2dDonationsBF&charset=UTF%2d8"));
 	}
 
-        public static void loadPlayers(Risk risk,Class uiclass) {
-
+        public static Properties getPlayerSettings(final Risk risk,Class uiclass) {
             Preferences prefs=null;
             try {
                  prefs = Preferences.userNodeForPackage( uiclass );
             }
             catch(Throwable th) { } // security
+            final Preferences theprefs = prefs;
+            return new Properties() {
+                public String getProperty(String key) {
+                    String value = risk.getRiskConfig(key);
+                    if (theprefs!=null) {
+                        value = theprefs.get(key, value);
+                    }
+                    return value;
+                }                
+            };
+        }
 
+        public static void loadPlayers(Risk risk,Class uiclass) {
+            Properties playerSettings = getPlayerSettings(risk, uiclass);
             for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
-                String nameKey = "default.player"+cc+".name";
-                String colorKey = "default.player"+cc+".color";
-                String typeKey = "default.player"+cc+".type";
-
-                String name = risk.getRiskConfig(nameKey);
-                String color = risk.getRiskConfig(colorKey);
-                String type = risk.getRiskConfig(typeKey);
-
-                if (prefs!=null) {
-                    name = prefs.get(nameKey, name);
-                    color = prefs.get(colorKey, color);
-                    type = prefs.get(typeKey, type);
-                }
-
+                String name = playerSettings.getProperty("default.player"+cc+".name");
+                String color = playerSettings.getProperty("default.player"+cc+".color");
+                String type = playerSettings.getProperty("default.player"+cc+".type");
                 if (!"".equals(name)&&!"".equals(color)&&!"".equals(type)) {
                     risk.parser("newplayer " + type+" "+ color+" "+ name );
                 }
             }
-
         }
 
         public static void savePlayers(Risk risk,Class uiclass) {
@@ -184,18 +187,18 @@ public class RiskUtil {
 
             if (prefs!=null) {
 
-                Vector players = risk.getGame().getPlayers();
+                List players = risk.getGame().getPlayers();
 
                 for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
                     String nameKey = "default.player"+cc+".name";
                     String colorKey = "default.player"+cc+".color";
                     String typeKey = "default.player"+cc+".type";
 
-                    Player player = (cc<=players.size())?(Player)players.elementAt(cc-1):null;
-
                     String name = "";
                     String color = "";
                     String type = "";
+
+                    Player player = (cc<=players.size())?(Player)players.get(cc-1):null;
 
                     if (player!=null) {
                         name = player.getName();
@@ -221,6 +224,51 @@ public class RiskUtil {
             }
         }
 
+        public static void savePlayers(List players,Class uiclass) {
+
+            Preferences prefs=null;
+            try {
+                 prefs = Preferences.userNodeForPackage( uiclass );
+            }
+            catch(Throwable th) { } // security
+
+            if (prefs!=null) {
+
+                for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
+                    String nameKey = "default.player"+cc+".name";
+                    String colorKey = "default.player"+cc+".color";
+                    String typeKey = "default.player"+cc+".type";
+
+                    String name = "";
+                    String color = "";
+                    String type = "";
+                    
+                    String[] player = (cc<=players.size())?(String[])players.get(cc-1):null;
+
+                    if (player!=null) {
+                        name = player[0];
+                        color = player[1];
+                        type = player[2];
+                    }
+                    prefs.put(nameKey, name);
+                    prefs.put(colorKey, color);
+                    prefs.put(typeKey, type);
+
+                }
+
+                // on android this does not work, god knows why
+                // whats the point of including a class if its
+                // most simple and basic operation does not work?
+                try {
+                    prefs.flush();
+                }
+                catch(Exception ex) {
+                    RiskUtil.printStackTrace(ex);
+                }
+
+            }
+        }
+        
         public static BufferedReader readMap(InputStream in) throws IOException {
 
             PushbackInputStream pushback = new PushbackInputStream(in,3);

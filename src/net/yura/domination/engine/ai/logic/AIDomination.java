@@ -1914,4 +1914,22 @@ public class AIDomination extends AISubmissive {
 		return "placearmies " + country.getColor() + " " + (!game.getSetup()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
 	}
 
+        
+    /**
+     * Checks whether a country owns its neighbours
+     * @param p player object, c Country object
+     * @return boolean True if the country owns its neighbours, else returns false
+     */
+    public boolean ownsNeighbours(Player p, Country c) {
+        List<Country> neighbours = c.getNeighbours();
+
+        for (int i=0; i<neighbours.size(); i++) {
+           if ( neighbours.get(i).getOwner() != p) {
+        	   return false;
+           }
+        }
+
+        return true;
+    }
+        
 }
