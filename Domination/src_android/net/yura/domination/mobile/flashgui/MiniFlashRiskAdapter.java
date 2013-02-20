@@ -52,8 +52,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
     void addExtraButtons(Menu menu) {
         if (lobby!=null && lobby.amAPlayer()) {
-            Button button = new Button( GameActivity.resb.getString("lobby.resign") );
-            button.setIcon( new Icon("/ic_menu_exit.png") );
+            Button button = new Button( GameActivity.resb.getString("lobby.resign"), new Icon("/ic_menu_exit.png") );
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     lobby.resign();
