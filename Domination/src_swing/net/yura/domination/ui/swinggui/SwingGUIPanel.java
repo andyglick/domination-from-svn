@@ -30,7 +30,11 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.AbstractButton;
@@ -2760,7 +2764,6 @@ public void setNODDefender(int n) {}
 		private JTable players;
 		private TableModel dataModel;
 		private JButton defaultPlayers;
-		private Object[][] data;
 		private NamedColor[] namedColors;
                 private PlayerType[] playerTypes;
 
@@ -2850,17 +2853,8 @@ public void setNODDefender(int n) {}
 				{"lala", namedColors[2], resbundle.getString("newgame.player.type.hardai")}
 			};
 */
-			data = new Object[6][3];
 
-			for (int cc=1;cc<=RiskGame.MAX_PLAYERS;cc++) {
-
-				data[cc-1][0] = myrisk.getRiskConfig("default.player"+cc+".name");
-				data[cc-1][1] = findColor( ColorUtil.getColor( myrisk.getRiskConfig("default.player"+cc+".color") ) );
-				data[cc-1][2] = findType( myrisk.getType( myrisk.getRiskConfig("default.player"+cc+".type") ) );
-
-			}
-
-			dataModel = new DefaultTableModel(data, names) { // AbstractTableModel
+			dataModel = new DefaultTableModel(names,0) { // AbstractTableModel
 				//public int getColumnCount() { return names.length; }
 				//public int getRowCount() { return data.length;}
 				//public Object getValueAt(int row, int col) {return data[row][col];}
@@ -3004,7 +2998,7 @@ public void setNODDefender(int n) {}
 					public void actionPerformed(ActionEvent a) {
 
 						players.removeEditor();
-						resetPlayers();
+						resetPlayers(false);
 
 					}
 				}
@@ -3264,16 +3258,22 @@ public void setNODDefender(int n) {}
 							if (setupOK == true) {
 
 								if (localGame) {
-
+                                                                    
+                                                                    List playerStrings = new ArrayList();
+                                                                    
 								    for (int c=0; c < players.getRowCount(); c++) {
 
-									String Ptype = ((PlayerType)players.getValueAt(c, 2)).getType();
+                                                                        String name = (String)players.getValueAt(c, 0);
+                                                                        String color = ((NamedColor)players.getValueAt(c, 1)).getRealName();
+									String type = ((PlayerType)players.getValueAt(c, 2)).getType();
 
-									go("newplayer " + Ptype + " " + ((NamedColor)players.getValueAt(c, 1)).getRealName() + " " + players.getValueAt(c, 0) );
-
+                                                                        playerStrings.add( new String[] {name,color,type} );
+                                                                        
+									go("newplayer "+type+" "+color+" "+name );
 
 								    }
-
+                                                                    
+                                                                    RiskUtil.savePlayers(playerStrings, SwingGUIPanel.class);
 								}
 
 								String type="";
@@ -3353,14 +3353,30 @@ public void setNODDefender(int n) {}
 
 		}
 
-		public void resetPlayers() {
+		public void resetPlayers(boolean lastUsed) {
 
 			while (players.getRowCount() != 0) ((DefaultTableModel)dataModel).removeRow( 0 );
 
-			for (int c=0; c < data.length; c++) {
-				((DefaultTableModel)dataModel).addRow( data[c] );
-			}
+                        Properties settings;
+                        if (lastUsed) {
+                            settings = RiskUtil.getPlayerSettings(myrisk, SwingGUIPanel.class);
+                        }
+                        else {
+                            settings = new Properties() {
+                                public String getProperty(String key) {
+                                    return myrisk.getRiskConfig(key);
+                                }
+                            };
+                        }
 
+			for (int c=1; c<=RiskGame.MAX_PLAYERS; c++) {
+                            String name = settings.getProperty("default.player"+c+".name");
+                            String color = settings.getProperty("default.player"+c+".color");
+                            String type = settings.getProperty("default.player"+c+".type");
+                            if (!"".equals(name)&&!"".equals(color)&&!"".equals(type)) {
+                                ((DefaultTableModel)dataModel).addRow( new Object[] {name , findColor( ColorUtil.getColor( color ) ), findType( myrisk.getType( type ) ) } );
+                            }
+			}
 		}
 
 		public void setupGame() {
@@ -3369,7 +3385,7 @@ public void setNODDefender(int n) {}
 
 			if (localGame) {
 
-				resetPlayers();
+				resetPlayers(true);
 				defaultPlayers.setEnabled(true);
 			}
 			else {

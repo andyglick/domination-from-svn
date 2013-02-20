@@ -42,44 +42,44 @@ public class AISubmissive implements AI {
 	return "nomove";
     }
 
-	public String getTrade() {
+    public String getTrade() {
 
-		List<Card> cards = player.getCards();
+            List<Card> cards = player.getCards();
 
-		if (cards.size() < 3) {
-			return "endtrade";
-		}
+            if (cards.size() < 3) {
+                    return "endtrade";
+            }
 
-		Card[] result = game.getBestTrade(cards, tradeCombinationsToScan());
+            Card[] result = game.getBestTrade(cards, tradeCombinationsToScan());
 
-		if (result != null) {
-			String output = "trade ";
-			output = getCardName(result[0], output);
-			output = output + " ";
-			output = getCardName(result[1], output);
-			output = output + " ";
-			output = getCardName(result[2], output);
-			return output;
-		}
+            if (result != null) {
+                    String output = "trade ";
+                    output = getCardName(result[0], output);
+                    output = output + " ";
+                    output = getCardName(result[1], output);
+                    output = output + " ";
+                    output = getCardName(result[2], output);
+                    return output;
+            }
 
-		return "endtrade";
-	}
+            return "endtrade";
+    }
 
-	/**
-	 * @return a bounding factor for the number of trades to scan
-	 */
-	public int tradeCombinationsToScan() {
-		return 1;
-	}
+    /**
+    * @return a bounding factor for the number of trades to scan
+    */
+    public int tradeCombinationsToScan() {
+            return 1;
+    }
 
-	private String getCardName(Card card1, String output) {
-		if (card1.getName().equals("wildcard")) {
-			output = output + card1.getName();
-		} else {
-			output = output + card1.getCountry().getColor();
-		}
-		return output;
-	}
+    private String getCardName(Card card1, String output) {
+            if (card1.getName().equals("wildcard")) {
+                    output = output + card1.getName();
+            } else {
+                    output = output + card1.getCountry().getColor();
+            }
+            return output;
+    }
 
     public String getPlaceArmies() {
 		if ( game.NoEmptyCountries()==false ) {
@@ -107,26 +107,9 @@ public class AISubmissive implements AI {
     	return countries.get( r.nextInt(countries.size()) );
     }
 
-	public String getAutoDefendString() {
-	    int n=game.getDefender().getArmies();
+    public String getAutoDefendString() {
+        int n=game.getDefender().getArmies();
         return "roll "+Math.min(game.getMaxDefendDice(), n);
-	}
-    
-    /**
-     * Checks whether a country owns its neighbours
-     * @param p player object, c Country object
-     * @return boolean True if the country owns its neighbours, else returns false
-     */
-    public boolean ownsNeighbours(Player p, Country c) {
-        List<Country> neighbours = c.getNeighbours();
-
-        for (int i=0; i<neighbours.size(); i++) {
-           if ( neighbours.get(i).getOwner() != p) {
-        	   return false;
-           }
-        }
-
-        return true;
     }
-    
+
 }
