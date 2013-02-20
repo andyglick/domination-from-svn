@@ -63,16 +63,15 @@ public class GameActivity extends Frame implements ActionListener {
     Risk myrisk;
     PicturePanel pp;
     ViewChooser mapViewControl;
-    Button note,gobutton,closebutton,savebutton,undobutton;
+    Button note,gobutton,closebutton,savebutton,undobutton,graphbutton;
     
     String status;
     int gameState;
 
-    private CheckBox AutoEndGo,AutoDefend;
+    private CheckBox AutoEndGo,AutoDefend,showToasts;
     private Button cardsbutton,missionbutton;
 
     Menu menu;
-    private int gameOptionSize;
     MiniFlashRiskAdapter controller;
 
     public GameActivity(Risk risk,MiniFlashRiskAdapter controller) {
@@ -108,7 +107,7 @@ public class GameActivity extends Frame implements ActionListener {
         savebutton.addActionListener(this);
         savebutton.setActionCommand("save");
         
-        Button graphbutton = new Button( resb.getProperty("game.button.statistics") );
+        graphbutton = new Button( resb.getProperty("game.button.statistics") );
         graphbutton.setIcon( new Icon("/ic_menu_chartsettings.png") );
         graphbutton.addActionListener(this);
         graphbutton.setActionCommand("graph");
@@ -126,26 +125,21 @@ public class GameActivity extends Frame implements ActionListener {
         AutoDefend.setActionCommand("autodefend");
         AutoDefend.addActionListener(this);
 
+        showToasts = new CheckBox( resb.getProperty("game.menu.showtoasts") );
+        showToasts.setSelected(true);
+        
         Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
         helpbutton.addActionListener(this);
         helpbutton.setActionCommand("help");
         
         
         menu = new Menu();
+        menu.setIcon( new Icon("/menu.png") );
         menu.setMnemonic(KeyEvent.KEY_SOFTKEY1);
         menu.setActionCommand("menu");
         menu.addActionListener(this);
         menu.setName("ActionbarMenuButton");
-        menu.setIcon( new Icon("/menu.png") );
-        menu.add( savebutton );
-        menu.add( graphbutton );
-        menu.add( undobutton );
-        menu.add( AutoEndGo );
-        menu.add( AutoDefend );
-        //menu.add( helpbutton );
-        
-        gameOptionSize = menu.getItemCount();
-        
+
         // MWMWMWMWMWMWM END MENU MWMWMWMWMWMWMW
 
         gobutton = new Button(" ");
@@ -375,9 +369,18 @@ public class GameActivity extends Frame implements ActionListener {
 			AutoEndGo.setSelected( myrisk.getAutoEndGo() );
 			AutoDefend.setSelected( myrisk.getAutoDefend() );
 		}
-                while (menu.getItemCount() > gameOptionSize) {
-                    menu.remove( (Component)menu.getComponents().lastElement() );
-                }
+
+                menu.removeAll();
+
+                // REMEBER WE ARE ONLY ALLOWED 6 BUTTONS TO BE COMPATIBLE WITH OLD DEVICES!
+                if (localGame) menu.add( savebutton );
+                menu.add( graphbutton );
+                if (localGame) menu.add( undobutton );
+                menu.add( AutoEndGo );
+                menu.add( AutoDefend );
+                menu.add( showToasts );
+                //menu.add( helpbutton );
+
                 controller.addExtraButtons(menu);
         }
         else if ("save".equals(actionCommand)) {
@@ -595,7 +598,7 @@ public class GameActivity extends Frame implements ActionListener {
             
             repaint(); // SwingGUI has this here, if here then not needed in set status
             
-            if (isFocused()) {
+            if (isFocused() && showToasts.isSelected() ) {
                 toast(status);
             }
     }
