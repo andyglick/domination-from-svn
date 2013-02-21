@@ -303,10 +303,14 @@ public class MapChooser implements ActionListener,MapServerListener {
     
 
     public static int adjustSizeToDensityFromMdpi(int size) {
+        // HACK to avoid double conversion
+        String dpi = XULLoader.getDPI();
+        if (dpi == null || "mdpi".equals(dpi)) {
+            return size;
+        }
+        // otherwise we can get this happen: 150 mdpi -> 113 ldpi -> 151 mdpi
         return XULLoader.adjustSizeToDensity( (int)(size * 0.75 +0.5) );
     }
-
-    
 
     public static Map createMap(String file) {
         
