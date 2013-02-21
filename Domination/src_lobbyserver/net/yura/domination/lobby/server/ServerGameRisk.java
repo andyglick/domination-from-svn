@@ -92,6 +92,13 @@ public class ServerGameRisk extends TurnBasedGame {
         	//gui.setVisible(true);
 	}
 
+        @Override
+        public void setId(int id) {
+            super.setId(id);
+            
+            myrisk.setName("Domination-Game-"+id);
+        }
+        
 	public void startGame(String startGameOptions, String[] players) {
 
 		// sort them so if player bob was green last time, they r again
