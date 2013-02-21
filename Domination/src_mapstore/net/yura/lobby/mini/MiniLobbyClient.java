@@ -164,7 +164,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                     case Game.STATE_CAN_WATCH:
                         if (openGameId==game.getId()) return; // we have already tried to open this game, do nothing
                         if (openGameId!=-1) {
-                            // TODO should we close the game in the UI?
+                            // we should NOT try and close the game in the UI at this point
+                        	// as it may not have even opened yet, instead we will close it
+                        	// when we get the 2nd game object with "if (existing game!=null) {controller.closeGame();}"
                             closeGame();
                         }
                         openGameId = game.getId();
