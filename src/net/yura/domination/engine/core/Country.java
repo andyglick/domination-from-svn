@@ -2,10 +2,8 @@
 
 package net.yura.domination.engine.core;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.OptionalDataException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -249,13 +247,8 @@ public class Country implements Serializable {
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
-		try {
-			this.incomingNeighbours = (List<Country>) in.readObject();
-		} catch (OptionalDataException e) {
-			//just assume for ai purposes that we're 2-way
-			this.incomingNeighbours = new ArrayList<Country>(this.neighbours);
-		} catch (EOFException e) {
-			//just assume for ai purposes that we're 2-way
+		//just assume for ai purposes that we're 2-way
+		if (this.incomingNeighbours == null) {
 			this.incomingNeighbours = new ArrayList<Country>(this.neighbours);
 		}
 	}
