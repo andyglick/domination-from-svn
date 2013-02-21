@@ -2888,6 +2888,9 @@ RiskUtil.printStackTrace(e);
         }
 
         public void setGame(RiskGame b) {
+                if (game!=null) {
+                    controller.closeGame();
+                }
 		inbox.clear();
 		game = b;
                 controller.startGame(unlimitedLocalMode);// need to always call this as there may be a new map
