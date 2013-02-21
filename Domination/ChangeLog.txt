@@ -20,8 +20,14 @@ CURRENT VERSION:
 	much more info added to the Testing tab in SwingGUI
 	game.ini has ai.wait property that can be changed
 	other game.ini properties work fully now
+	MapEditor can detect more errors on missions
+	SwingGUI can remember the players you used last time
+	new pluggable AI system
+	NEW AI BY Steven Hawkins
 
 	Android 30 fixed: do not show old games when re-connect to lobby
+		   option to disable tooltips added
+		   new ai
 	Android 29 can view hint at any point
 		   annihilate button added to battle dialog
 		   show tooltip at start of go
