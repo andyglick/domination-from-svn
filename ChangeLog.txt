@@ -26,6 +26,7 @@ CURRENT VERSION:
 	NEW AI BY Steven Hawkins
 
 	Android 30 fixed: do not show old games when re-connect to lobby
+		   fixed: Threading problem in ViewChooser isEmpty() is false but get(0) throws ArrayIndexOutOfBoundsException
 		   option to disable tooltips added
 		   new ai
 	Android 29 can view hint at any point

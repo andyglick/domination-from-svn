@@ -72,7 +72,6 @@ public class ViewChooser extends Panel implements ActionListener {
             }
         }
 
-        removeAll();
         if (buttonsWidth <= width) {
             setLayout( new FlowLayout(Graphics.HCENTER,0) );
             ButtonGroup group = new ButtonGroup();
@@ -82,6 +81,8 @@ public class ViewChooser extends Panel implements ActionListener {
                 b.addActionListener(this);
                 add(b);
             }
+            // remove the rest
+            while (getComponentCount() > buttons.length) { remove(0); }
         }
         else {
             ComboBox combo = new ComboBox( RiskUtil.asVector( Arrays.asList( options ) ) );
@@ -89,8 +90,12 @@ public class ViewChooser extends Panel implements ActionListener {
             combo.workoutPreferredSize();
             combo.addActionListener(this);
             setLayout( stretchCombo?(Layout)new BorderLayout():new BoxLayout(Graphics.HCENTER) );
-            add(combo);
+            insert(combo,0);
+            // remove the rest
+            while (getComponentCount() > 1) { remove(1); }
         }
+        // we do the removing after we add the new component so that other threads
+        // can still call getSelectedItem() while this is happening and get a value
 
         super.setSize(width, height);
     }
@@ -105,27 +110,29 @@ public class ViewChooser extends Panel implements ActionListener {
         if (components.isEmpty()) {
             return options[0]; // default
         }
-        else if (components.get(0) instanceof ComboBox) {
-            return (Option) ((ComboBox)components.get(0)).getSelectedItem();
-        }
         else {
-            // TODO looping through buttons to get selected one is not thread-safe
-            // would be better to get the selected button from the button group
-            for (int a=0;a<components.size();a++) {
-                Button b = (Button)components.get(a);
-                if (b.isSelected()) {
-                    String id = b.getActionCommand();
-                    for (int c=0;c<options.length;c++) {
-                        if (id.equals( options[c].getKey() ) ) {
-                            return options[c];
-                        }
-                    }
-                    throw new RuntimeException("can not find option with id: "+id);
-                }
+            Object one = components.get(0);
+            if (one instanceof ComboBox) {
+                return (Option) ((ComboBox)one).getSelectedItem();
             }
-            throw new RuntimeException("no button selected");
+            else {
+                // TODO looping through buttons to get selected one is not thread-safe
+                // would be better to get the selected button from the button group
+                for (int a=0;a<components.size();a++) {
+                    Button b = (Button)components.get(a);
+                    if (b.isSelected()) {
+                        String id = b.getActionCommand();
+                        for (int c=0;c<options.length;c++) {
+                            if (id.equals( options[c].getKey() ) ) {
+                                return options[c];
+                            }
+                        }
+                        throw new RuntimeException("can not find option with id: "+id);
+                    }
+                }
+                throw new RuntimeException("no button selected");
+            }
         }
-        
     }
     
     public void resetMapView() {
