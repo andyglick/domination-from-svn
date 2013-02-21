@@ -85,7 +85,7 @@ public class AISubmissive implements AI {
 		if ( game.NoEmptyCountries()==false ) {
 		    return "autoplace";
 		}
-		return "placearmies " + randomCountry(player.getTerritoriesOwned()).getColor() +" 1";
+		return getPlaceCommand(randomCountry(player.getTerritoriesOwned()), player.getExtraArmies()/3 + player.getExtraArmies()%3);
     }
 
     public String getAttack() {
@@ -111,5 +111,9 @@ public class AISubmissive implements AI {
         int n=game.getDefender().getArmies();
         return "roll "+Math.min(game.getMaxDefendDice(), n);
     }
+
+	protected String getPlaceCommand(Country country, int armies) {
+		return "placearmies " + country.getColor() + " " + (!game.getSetup()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
+	}
 
 }
