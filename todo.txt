@@ -34,19 +34,14 @@ Still needs to be done:
 
 	CORE:
 
-		game.ini should not be overridden by installing an update
 		add the new AI to the game from the masters project
-		**** save should be blocked in mustmove mode after a won battle, otherwise when its loaded it crashes
 		redo graph to use doubles instead of ints for scale
 		should let u stop a game if it is in replay mode
-		ADD continue command to Flash GUI and Swing GUI
-		ADD replay to FlashGUI
+		ADD replay to FlashGUI, MAYBE
 		* Same time Risk - inovation (maybe)
 
-	NETWORK:
+	P2P NETWORK:
 
-		**** when 1 player selects a map others dont have it crashes the game, should revert to old 1
-		can not leave when its not ur go
 		after everyone has left server after a game, u should be able to rejoin the same server
 		when people select a capital in network game other ppl can see when they select it in the console
 		should be able to join a game at any stage and it should be fast
