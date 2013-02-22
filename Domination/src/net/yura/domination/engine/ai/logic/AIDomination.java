@@ -150,7 +150,7 @@ public class AIDomination extends AISubmissive {
 			return simplePlacement();
 	    }
 		//prevent large initial build-ups that can be a risky gambit
-		if (game.getCardMode() == RiskGame.CARD_INCREASING_SET && this.type == AIDomination.PLAYER_AI_HARD && !game.getSetup() && r.nextInt(9 - game.getPlayers().size()) <=2) {
+		if (game.getCardMode() == RiskGame.CARD_INCREASING_SET && this.type == AIDomination.PLAYER_AI_HARD && !game.getSetup() && r.nextInt(9 - game.getPlayers().size()) <= 1) {
 			return simplePlacement(); //TODO: could consider an interior placement
 		}
 		if ( game.NoEmptyCountries() ) {
@@ -177,6 +177,7 @@ public class AIDomination extends AISubmissive {
 		}
 		HashSet<Country> toTake = new HashSet<Country>();
 		Country fallback = null;
+		Country overload = null;
 		int additional = 1;
 		while (!n.isEmpty()) {
 			c = n.remove( r.nextInt(n.size()) );
@@ -188,6 +189,11 @@ public class AIDomination extends AISubmissive {
 				}
 				int diff = c.getArmies() - 2 - (3*other.getArmies()/2 + other.getArmies()%2);
 				if (diff >= 0) {
+					if (diff < other.getArmies()*3) {
+						//we have enough, but try to overload to be safe
+						overload = c;
+						additional = other.getArmies()*3 - diff; 
+					}
 					toTake.add(other);
 					continue;
 				}
@@ -201,11 +207,11 @@ public class AIDomination extends AISubmissive {
 			}
 		}
 		if (fallback == null) {
-			fallback = randomCountry(copy);
-		}
-		if (additional == 1) {
-			//spread out over several targets
-			additional = player.getExtraArmies()/3;
+			if (overload != null) {
+				return getPlaceCommand(overload, additional);
+			}
+			//we're fully overloaded, just place the rest
+			return getPlaceCommand(randomCountry(copy), player.getExtraArmies());
 		}
 		return getPlaceCommand(fallback, additional);
 	}
@@ -415,8 +421,8 @@ public class AIDomination extends AISubmissive {
 			
 			if (type == PLAYER_AI_HARD && game.getCardMode() == RiskGame.CARD_INCREASING_SET && !game.getCards().isEmpty() && gameState.orderedPlayers.size() > 1) {
 				//consider low probability eliminations
-				if (!attack) {
-					if (!toEliminate.isEmpty()) {
+				if (!toEliminate.isEmpty()) {
+					if (!attack) {
 						//redo the target search using low probability
 						HashMap<Country, AttackTarget> newTargets = searchAllTargets(true, attackable, gameState);
 						outer: for (int i = 0; i < toEliminate.size(); i++) {
@@ -436,17 +442,18 @@ public class AIDomination extends AISubmissive {
 								return result;
 							}
 						}
-					}
-					//use the simple placement logic to slow down the attack in increasing mode 
-					if (this.type == AIDomination.PLAYER_AI_HARD && game.getGameMode() == RiskGame.CARD_INCREASING_SET
-							&& gameState.orderedPlayers.size() > 2
-							&& gameState.commonThreat == null && gameState.me.playerValue < gameState.orderedPlayers.get(0).playerValue
-							&& r.nextInt(9 - gameState.orderedPlayers.size()) <=2) {
-						return simplePlacement(); //TODO: could consider an interior placement
+					} else {
+						//try to pursue the weakest player
+						EliminationTarget et = toEliminate.get(0);
+						et.allOrNone = false;
+						String result = eliminate(attackable, targets, gameState, attack, extra, allCountriesTaken, et, shouldEndAttack, true);
+						if (result != null) {
+							return result;
+						}
 					}
 				}
 				//just try to stay in the game
-				if (gameState.me.playerValue < .8*gameState.orderedPlayers.get(0).playerValue) {
+				if (gameState.me.playerValue < gameState.orderedPlayers.get(0).playerValue) {
 					shouldEndAttack = true;
 				}
 			}
@@ -1913,6 +1920,9 @@ public class AIDomination extends AISubmissive {
     				&& topPlayer.playerValue > multiplier * g.me.playerValue 
     				&& topPlayer.playerValue > multiplier * g.orderedPlayers.get(1).playerValue) {
     			g.commonThreat = topPlayer;
+    		}else if (type == AIDomination.PLAYER_AI_HARD && game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
+    			//play for the elimination
+    			g.targetPlayers = Arrays.asList(g.orderedPlayers.get(g.orderedPlayers.size()-1).p);
     		}
     	} else {
     		g.targetPlayers = Collections.EMPTY_LIST;
