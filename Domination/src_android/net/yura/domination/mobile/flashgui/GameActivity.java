@@ -342,7 +342,8 @@ public class GameActivity extends Frame implements ActionListener {
         finally {
             if (!retry) Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?command=hide");
         }
-        
+
+        note.setText( resb.getString("game.pleasewait") );
         mapViewControl.resetMapView();
         
         // ============================================ show
