@@ -3,6 +3,7 @@
 package net.yura.domination.engine.core;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -198,6 +199,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		return replayCommands;
 
+	}
+	
+	public void setCommands(Vector replayCommands) {
+		this.replayCommands = replayCommands;
 	}
 
 	public int getMaxDefendDice() {
@@ -1501,14 +1506,22 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @throws Exception There was a error
 	 */
 	public void loadMap() throws Exception {
+		loadMap(false);
+	}
+	
+	public void loadMap(boolean serializedLoad) throws Exception {
 
 		StringTokenizer st=null;
 
 		Vector Countries = new Vector();
 		Vector Continents = new Vector();
+		if (serializedLoad) {
+			Countries = new Vector(Arrays.asList(this.Countries));
+			Continents = new Vector(Arrays.asList(this.Continents));
+		}
 
 		//System.out.print("Starting Load Map...\n");
-
+		int countryCount = 0;
 		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(mapfile) );
 
 		String input = bufferin.readLine();
@@ -1560,8 +1573,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					if ( st.hasMoreTokens() ) { throw new Exception("unknown item found in map file: "+ st.nextToken() ); }
 
-					Continent continent = new Continent(id, name, noa, color);
-					Continents.add(continent);
+					if (!serializedLoad) {
+						Continent continent = new Continent(id, name, noa, color);
+						Continents.add(continent);
+					}
 
 				}
 				else if (mode.equals("countries")) {
@@ -1578,12 +1593,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 					int y = Integer.parseInt(st.nextToken());
 
 					if ( st.hasMoreTokens() ) { throw new Exception("unknown item found in map file: "+ st.nextToken() ); }
-					if ( Countries.size() != (color-1) ) { throw new Exception("unexpected number found in map file: "+color ); }
+					if ( ++countryCount != color ) { throw new Exception("unexpected number found in map file: "+color ); }
 
-					Country country = new Country(color, id, name, (Continent)Continents.elementAt( continent - 1 ), x, y);
-					Countries.add(country);
-
-					((Continent)Continents.elementAt( continent - 1 )).addTerritoriesContained(country);
+					if (!serializedLoad) {
+						Country country = new Country(color, id, name, (Continent)Continents.elementAt( continent - 1 ), x, y);
+						Countries.add(country);
+	
+						((Continent)Continents.elementAt( continent - 1 )).addTerritoriesContained(country);
+					}
 
 				}
 				else if (mode.equals("borders")) {
@@ -1646,8 +1663,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 		bufferin.close();
 
-		this.Countries = (Country[])Countries.toArray( new Country[Countries.size()] );
-		this.Continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
+		if (!serializedLoad) {
+			this.Countries = (Country[])Countries.toArray( new Country[Countries.size()] );
+			this.Continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
+		}
 
 		//System.out.print("Map Loaded\n");
 
@@ -2749,4 +2768,14 @@ System.out.print(str+"]\n");
         if ( defender.getArmies() > maxDefendDice ) { return maxDefendDice; }
         else { return defender.getArmies(); }
     }
+    
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    	in.defaultReadObject();
+		try {
+			this.loadMap(true);
+		} catch (Exception e1) {
+			throw new IOException(e1);
+		}
+    }
+    
 }

@@ -20,7 +20,7 @@ public class Country implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private Vector neighbours;
+	private transient Vector neighbours;
 	private Player owner;
 	private int armies;
 	private Continent continent;
@@ -30,7 +30,7 @@ public class Country implements Serializable {
 
 	private String idString; // used by the map editor
 	private transient List<Country> crossContinentNeighbours;
-	private List<Country> incomingNeighbours = new ArrayList<Country>(2);
+	private transient List<Country> incomingNeighbours = new ArrayList<Country>(2);
 
 	/**
 	 * Creates a country object
@@ -247,10 +247,8 @@ public class Country implements Serializable {
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
-		//just assume for ai purposes that we're 2-way
-		if (this.incomingNeighbours == null) {
-			this.incomingNeighbours = new ArrayList<Country>(this.neighbours);
-		}
+		this.incomingNeighbours = new ArrayList<Country>(2);
+		this.neighbours = new Vector();
 	}
 	
 }
