@@ -21,8 +21,8 @@ public class AITest extends AISubmissive {
     }
 
     protected class Attack {
-	Country source;
-	Country destination;
+	public final Country source;
+	public final Country destination;
 
 	public Attack(Country s, Country d){
 	    source=s;
