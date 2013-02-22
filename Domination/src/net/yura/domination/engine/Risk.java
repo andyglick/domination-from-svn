@@ -57,6 +57,7 @@ public class Risk extends Thread {
 	// crashes on a mac too much
 	//private SealedObject Undo;
 	private ByteArrayOutputStream Undo = new ByteArrayOutputStream();
+	private int replayCommand;
 
 	protected boolean unlimitedLocalMode;
 	private boolean autoplaceall;
@@ -75,7 +76,7 @@ public class Risk extends Thread {
 		RiskGame.setDefaultMapAndCards(b,c);
 	}
 
-        public static final String[] types = new String[] { "human","ai easy","ai easy","ai easy","ai hard","ai hard" };
+        public static final String[] types = new String[] { "human","ai easy","ai easy","ai easy","ai average","ai average" };
         public static final String[] names = new String[] { "player","bob","fred","ted","yura","lala"};
         public static final String[] colors = new String[] { "green","blue","red","cyan","magenta","yellow"};
 
@@ -1399,9 +1400,11 @@ RiskUtil.printStackTrace(e);
 					try {
                                                 // can not undo when defending yourself as it is not really your go
 						if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
-
+							Vector commands = game.getCommands();
 							ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
 							game = (RiskGame)in.readObject();
+							commands.setSize(replayCommand);
+							game.setCommands(commands);
 							//game = (RiskGame)Undo.getObject( nullCipher );
 
 							output =resb.getString( "core.undo.undone");
@@ -2426,23 +2429,20 @@ RiskUtil.printStackTrace(e);
             if (skipUndo) return;
 
             if ( unlimitedLocalMode ) {
-
+            	Vector commands = game.getCommands();
+                
                 // the game is saved
                 try {
                     //Undo = new SealedObject( game, nullCipher );
 
                     Undo.reset();
                     ObjectOutputStream out = new ObjectOutputStream(Undo);
+                    game.setCommands(null);
                     out.writeObject(game);
+                    replayCommand = commands.size();
                     out.flush();
                     out.close();
 
-                }
-                catch (StackOverflowError e) {
-                    // the game object is too complex for java to serialize it
-                    // this happens for big maps on Android, no fix yet
-                    skipUndo = true;
-                    System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
                 }
                 catch (OutOfMemoryError e) {
                     // what can we do :-(
@@ -2453,6 +2453,8 @@ RiskUtil.printStackTrace(e);
                     skipUndo = true;
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
                     RiskUtil.printStackTrace(e);
+                } finally {
+                	game.setCommands(commands);
                 }
             }
 	}
