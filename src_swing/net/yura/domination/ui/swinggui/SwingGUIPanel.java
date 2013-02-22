@@ -2921,7 +2921,7 @@ public void setNODDefender(int n) {}
 
 						if (localGame) {
 
-							((DefaultTableModel)dataModel).addRow( new Object[] { resbundle.getString("newgame.newplayername") ,namedColors[0],resbundle.getString("newgame.player.type.human")} );
+							((DefaultTableModel)dataModel).addRow( new Object[] { resbundle.getString("newgame.newplayername") ,namedColors[0],playerTypes[0]} );
 
 						}
 						else {

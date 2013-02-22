@@ -349,7 +349,7 @@ public class Risk extends Thread {
                                     closeGame();
 
                                     controller.sendMessage( resb.getString( "core.close.closed") , false, false );
-                                    setHelp();
+
                                     getInput();
 				//}
 				//else {
@@ -614,8 +614,6 @@ RiskUtil.printStackTrace(e);
                 // if there was NO game
 
                 controller.sendMessage(output, false, true );
-
-                setHelp();
 
                 getInput();
             
@@ -2108,37 +2106,27 @@ RiskUtil.printStackTrace(e);
 
 		// give a output if there is one
 		if (output!=null) {
-
 			// give a output
 			if (game==null) {
 				controller.sendMessage(output, false, true );
-				setHelp();
 			}
 			else if ( game.getState()==RiskGame.STATE_NEW_GAME ) {
 				controller.sendMessage(output, false, true );
-				setHelp();
 			}
 			else if ( game.getState()==RiskGame.STATE_GAME_OVER ) {
 				controller.sendMessage(output, true, true );
-				setHelp();
 			}
 			else if (game.getState()==RiskGame.STATE_END_TURN) {
-
-				// if ( game.getCurrentPlayer().getAutoEndGo() && chatSocket == null ) {
-				// @todo:?????
 				if ( game.getCurrentPlayer().getAutoEndGo() ) {
 					controller.sendMessage(output, false, false );
 				}
 				else {
 					controller.sendMessage(output, true, true );
-					setHelp();
 				}
 			}
 			else {// if player type is human or neutral or ai
 				controller.sendMessage(output, true, true );
-				if ( inbox.isEmpty() ) setHelp();
 			}
-
 		}
 
 		// check to see if the players go should be ended
@@ -2260,6 +2248,8 @@ RiskUtil.printStackTrace(e);
 	 */
 	public void getInput() {
 
+                setHelp();
+            
 		if (game==null) {
 			controller.needInput( -1 );
 		}
@@ -2280,8 +2270,6 @@ RiskUtil.printStackTrace(e);
 				controller.sendMessage( RiskUtil.replaceAll(resb.getString( "core.input.armiesleft"), "{0}", ((Player)game.getCurrentPlayer()).getExtraArmies() + ""), false, false);
 				//controller.armiesLeft( ((Player)game.getCurrentPlayer()).getExtraArmies() , game.NoEmptyCountries() );
 			}
-
-			setHelp();
 
 			if (!replay) {
 
@@ -2475,7 +2463,7 @@ RiskUtil.printStackTrace(e);
                 closeGame();
 
                 controller.sendMessage(resb.getString( "core.kicked.error.disconnected"),false,false);
-                setHelp();
+
                 getInput();
 
 	}
