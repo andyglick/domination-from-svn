@@ -563,7 +563,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			if ( checkMap() ) {
 
 				try {
-					myrisk.newMemoryGame(myMap); // buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic")
+					myrisk.newMemoryGame(myMap,buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic"));
                                         
                                         panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
 				}

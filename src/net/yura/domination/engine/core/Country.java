@@ -4,47 +4,49 @@ package net.yura.domination.engine.core;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
+import net.yura.domination.engine.RiskObjectOutputStream;
 
 /**
  * <p> Country </p>
  * @author Yura Mamyrin
  */
-
 public class Country implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private transient Vector neighbours;
+	private Vector neighbours;
 	private Player owner;
 	private int armies;
 	private Continent continent;
 	private int color;
 	private int x;
 	private int y;
-
 	private String idString; // used by the map editor
+
 	private transient List<Country> crossContinentNeighbours;
 	private transient List<Country> incomingNeighbours = new ArrayList<Country>(2);
 
+	Country() {
+		neighbours = new Vector();
+	}
+	
 	/**
 	 * Creates a country object
 	 * @param n the name of the country
 	 * @param c the name of the continent the country belongs to
 	 */
 	public Country (int p, String id, String n, Continent c, int a, int b) {
-
-		idString = id;
-
+                this();
+		idString        = id;
 		color		=p;
 		name		=n;
 		continent	=c;
-		neighbours	=new Vector();
 		owner		=null;
 		armies		=0;
 		x		=a;
@@ -52,21 +54,15 @@ public class Country implements Serializable {
 	}
 
 	public String getIdString() {
-
 		return idString;
-
 	}
 
 	public void setIdString(String a) {
-
 		idString = a;
-
 	}
 
 	public String toString() { // used in the editor
-
 		return idString+" ("+color+")";
-
 	}
 
 	/**
@@ -93,9 +89,7 @@ public class Country implements Serializable {
 	 * @return a vector of the countries neighbours
 	 */
 	public Vector getNeighbours() {
-
 		return neighbours;
-
 	}
 	
 	public List<Country> getCrossContinentNeighbours() {
@@ -235,14 +229,22 @@ public class Country implements Serializable {
 	}
 
 	public void setX(int a) {
-
 		x=a;
-
 	}
 	public void setY(int a) {
-
 		y=a;
-
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		if (out instanceof RiskObjectOutputStream) {
+			ObjectOutputStream.PutField putField = out.putFields();
+			putField.put("owner", owner);
+			putField.put("armies", armies);
+			out.writeFields();
+		}
+                else {
+                    out.defaultWriteObject();
+		}
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -250,5 +252,5 @@ public class Country implements Serializable {
 		this.incomingNeighbours = new ArrayList<Country>(2);
 		this.neighbours = new Vector();
 	}
-	
+
 }

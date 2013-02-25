@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class ServerGameRisk extends TurnBasedGame {
                 public void openDocs(String doc) throws Exception {
 
                 }
-                public void saveGameFile(String name,Object obj) throws Exception {
+                public void saveGameFile(String name,RiskGame obj) throws Exception {
 
                 }
                 public InputStream loadGameFile(String file) throws Exception {
@@ -169,10 +168,7 @@ public class ServerGameRisk extends TurnBasedGame {
         public byte[] saveGameState() {
             try {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(bout);
-                out.writeObject(myrisk.getGame()); // TODO this is prob not very thread safe!!
-                out.flush();
-                out.close();
+                myrisk.getGame().saveGame(bout); // TODO this is prob not very thread safe!!
                 return bout.toByteArray();
             }
             catch (Exception ex) {
