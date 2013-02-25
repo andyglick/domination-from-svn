@@ -106,7 +106,7 @@ public class RiskUIUtil {
                 public void openDocs(String doc) throws Exception {
                     riskOpenURL(getRiskFileURL(doc));
                 }
-                public void saveGameFile(String name,Object obj) throws Exception {
+                public void saveGameFile(String name,RiskGame obj) throws Exception {
                     saveFile(name,obj);
                 }
                 public InputStream loadGameFile(String file) throws Exception {
@@ -653,33 +653,22 @@ public class RiskUIUtil {
 
 	}
 
-	public static void saveFile(String name,Object obj) throws Exception {
+	public static void saveFile(String name,RiskGame obj) throws Exception {
 
 		// it is impossible for a applet to get here
 
 		if (webstart!=null) {
-
 			ByteArrayOutputStream stor = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(stor);
-			out.writeObject(obj);
-			out.flush();
-			out.close();
+                        obj.saveGame(stor);
 			InputStream stream = new ByteArrayInputStream(stor.toByteArray());
 
 			javax.jnlp.FileSaveService fss = (javax.jnlp.FileSaveService)javax.jnlp.ServiceManager.lookup("javax.jnlp.FileSaveService");
-
 			javax.jnlp.FileContents fc = fss.saveFileDialog(name.substring(0,name.indexOf('/')+1), new String[]{ name.substring(name.indexOf('.')+1) }, stream, name.substring(name.indexOf('/')+1,name.indexOf('.')) );
-
 		}
 		else {
-
 			FileOutputStream fileout = new FileOutputStream(name);
-			ObjectOutputStream objectout = new ObjectOutputStream(fileout);
-			objectout.writeObject(obj);
-			objectout.close();
-
+                        obj.saveGame(fileout);
 		}
-
 	}
 
 	public static void showAppletWarning(Frame frame) {

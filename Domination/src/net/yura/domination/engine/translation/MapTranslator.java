@@ -26,6 +26,11 @@ public class MapTranslator
 	 */
 	public static void setMap(String strFile) {
 
+                if (strFile==null) {
+                    MapResb = null;
+                    return;
+                }
+            
 		//remove the extension
 		String strName = strFile.substring( 0, strFile.lastIndexOf( '.'));
 
@@ -38,14 +43,13 @@ public class MapTranslator
 
 		}
 		catch( Exception ioe ) {
-
 			try {
 				MapResb = ResourceBundle.getBundle( "net.yura.domination.engine.translation.DefaultMaps", TranslationBundle.getBundle().getLocale());
-			} catch( MissingResourceException e) {
+			}
+                        catch( MissingResourceException e) {
 				//ok, we don't have one
 				MapResb = null;
 			}
-
 		}
 
 	}//public static void setMap(String strFile)

@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +19,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import net.yura.domination.engine.ColorUtil;
+import net.yura.domination.engine.RiskObjectOutputStream;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.MapTranslator;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -1506,23 +1509,31 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @throws Exception There was a error
 	 */
 	public void loadMap() throws Exception {
-		loadMap(false);
+		loadMap(true, null);
 	}
 	
-	public void loadMap(boolean serializedLoad) throws Exception {
+	public void loadMap(boolean cleanLoad, BufferedReader bufferin) throws Exception {
 
+                MapTranslator.setMap( mapfile );
+            
 		StringTokenizer st=null;
 
-		Vector Countries = new Vector();
-		Vector Continents = new Vector();
-		if (serializedLoad) {
-			Countries = new Vector(Arrays.asList(this.Countries));
-			Continents = new Vector(Arrays.asList(this.Continents));
+		Vector Countries;
+		Vector Continents;
+		if (cleanLoad) {
+                    Countries = new Vector();
+                    Continents = new Vector();
+                }
+                else {
+                    Countries = new Vector(Arrays.asList(this.Countries));
+                    Continents = new Vector(Arrays.asList(this.Continents));
 		}
 
 		//System.out.print("Starting Load Map...\n");
 		int countryCount = 0;
-		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(mapfile) );
+		if (bufferin == null) {
+			bufferin=RiskUtil.readMap( RiskUtil.openMapStream(mapfile) );
+		}
 
 		String input = bufferin.readLine();
 		String mode = "none";
@@ -1534,7 +1545,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 				//System.out.print("Nothing\n"); // testing
 			}
 			else {
-
 				//System.out.print("Something found\n"); // testing
 
 				if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
@@ -1573,7 +1583,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					if ( st.hasMoreTokens() ) { throw new Exception("unknown item found in map file: "+ st.nextToken() ); }
 
-					if (!serializedLoad) {
+					if (cleanLoad) {
 						Continent continent = new Continent(id, name, noa, color);
 						Continents.add(continent);
 					}
@@ -1595,13 +1605,22 @@ transient - A keyword in the Java programming language that indicates that a fie
 					if ( st.hasMoreTokens() ) { throw new Exception("unknown item found in map file: "+ st.nextToken() ); }
 					if ( ++countryCount != color ) { throw new Exception("unexpected number found in map file: "+color ); }
 
-					if (!serializedLoad) {
-						Country country = new Country(color, id, name, (Continent)Continents.elementAt( continent - 1 ), x, y);
+					Country country;
+					if (cleanLoad) {
+						country = new Country();
 						Countries.add(country);
-	
 						((Continent)Continents.elementAt( continent - 1 )).addTerritoriesContained(country);
 					}
+                                        else {
+						country = (Country)Countries.get(color -1);
+					}
 
+					country.setColor(color);
+					country.setContinent((Continent)Continents.elementAt( continent - 1 ));
+					country.setIdString(id);
+					country.setName(name);
+					country.setX(x);
+					country.setY(y);
 				}
 				else if (mode.equals("borders")) {
 					//System.out.print("Adding borders\n"); // testing
@@ -1663,13 +1682,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 		bufferin.close();
 
-		if (!serializedLoad) {
+		if (cleanLoad) {
 			this.Countries = (Country[])Countries.toArray( new Country[Countries.size()] );
 			this.Continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
 		}
 
 		//System.out.print("Map Loaded\n");
-
 	}
 
 	/**
@@ -1780,8 +1798,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		mapfile = f;
 		bufferin.close();
-
-		MapTranslator.setMap( f );
 
 		return returnvalue;
 
@@ -2178,9 +2194,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param file The filename of the save
 	 * @return boolean Return trues if you saved, returns false if you cannot
 	 */
-	public void saveGame(String file) throws Exception { //added RiskGame parameter g, so remember to change in parser
+	public void saveGame(OutputStream file) throws Exception { //added RiskGame parameter g, so remember to change in parser
 
-            RiskUtil.saveFile(file,this);
+            ObjectOutputStream out = new RiskObjectOutputStream(file);
+            out.writeObject(this);
+            //out.flush(); not needed if we do a close
+            out.close();
 
             //XMLEncoder e = new XMLEncoder( new BufferedOutputStream( new FileOutputStream(file)));
             //e.writeObject(this);
@@ -2771,11 +2790,14 @@ System.out.print(str+"]\n");
     
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
     	in.defaultReadObject();
-		try {
-			this.loadMap(true);
-		} catch (Exception e1) {
-			throw new IOException(e1);
-		}
+    	if (this.mapfile != null) {
+            try {
+                    loadMap(false, null);
+            }
+            catch (Exception e1) {
+                    throw new IOException(e1);
+            }
+    	}
     }
     
 }

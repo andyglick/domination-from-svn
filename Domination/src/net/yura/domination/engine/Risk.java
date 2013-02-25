@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.URL;
@@ -1497,7 +1498,7 @@ RiskUtil.printStackTrace(e);
 //                                        }
 //                                        else {
                                             try {
-                                                game.saveGame(filename);
+                                                RiskUtil.saveFile(filename,game);
                                                 output=resb.getString( "core.save.saved");
                                             }
                                             catch (Exception ex) {
@@ -2433,15 +2434,13 @@ RiskUtil.printStackTrace(e);
                 
                 // the game is saved
                 try {
-                    //Undo = new SealedObject( game, nullCipher );
+
+                    game.setCommands(null);
 
                     Undo.reset();
-                    ObjectOutputStream out = new ObjectOutputStream(Undo);
-                    game.setCommands(null);
-                    out.writeObject(game);
+                    game.saveGame(Undo);
+                    
                     replayCommand = commands.size();
-                    out.flush();
-                    out.close();
 
                 }
                 catch (OutOfMemoryError e) {
@@ -2453,7 +2452,8 @@ RiskUtil.printStackTrace(e);
                     skipUndo = true;
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
                     RiskUtil.printStackTrace(e);
-                } finally {
+                }
+                finally {
                 	game.setCommands(commands);
                 }
             }
@@ -2812,7 +2812,7 @@ RiskUtil.printStackTrace(e);
         }
 
 
-	public void newMemoryGame(RiskGame g) {
+	public void newMemoryGame(RiskGame g, String map) {
 
                 closeGame();
 
@@ -2823,11 +2823,10 @@ RiskUtil.printStackTrace(e);
 
                         // @TODO, this will crash on macs
                         game = (RiskGame) (new javax.crypto.SealedObject( g, nullCipher ).getObject( nullCipher ));
+                        game.loadMap(false, new BufferedReader(new StringReader(map)));
 
                         for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
-
                                 game.delPlayer("PLAYER"+c);
-
                         }
                 }
                 catch (Exception e) {
@@ -2922,6 +2921,6 @@ RiskUtil.printStackTrace(e);
             }
             return null;
 	}
-        
+
         
 }

@@ -27,6 +27,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
 import net.yura.domination.ui.flashgui.GameFrame;
@@ -64,7 +65,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                     public void openDocs(String doc) throws Exception {
                             openURL( new URL( LobbyClientGUI.getCodeBase(), RISK_PATH+doc) );
                     }
-                    public void saveGameFile(String name, Object obj) throws Exception {
+                    public void saveGameFile(String name, RiskGame obj) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                     public InputStream loadGameFile(String file) throws Exception {

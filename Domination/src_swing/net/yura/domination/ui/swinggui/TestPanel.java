@@ -98,7 +98,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		countriesModel = new AbstractTableModel() {
 
-			private final String[] columnNames = { "Color/No.","ID", "Name", "Continent", "Owner" , "Armies","No. Neighbours", "x", "y" };
+			private final String[] columnNames = { "Color/No.","ID","Name","x","y","Continent","Owner","Armies","No. Neighbours","in","con" };
 
 			public int getColumnCount() {
 				return columnNames.length;
@@ -134,12 +134,26 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 					case 0: return new Integer( country.getColor() );
 					case 1: return country.getIdString();
 					case 2: return country.getName();
-					case 3: return country.getContinent();
-					case 4: return country.getOwner();
-					case 5: return new Integer( country.getArmies() );
-					case 6: return new Integer( country.getNeighbours().size() );
-					case 7: return new Integer( country.getX() );
-					case 8: return new Integer( country.getY() );
+					case 3: return new Integer( country.getX() );
+					case 4: return new Integer( country.getY() );
+					case 5: return country.getContinent();
+					case 6: return country.getOwner();
+					case 7: return new Integer( country.getArmies() );
+					case 8: {
+                                            List neighbours = country.getNeighbours();
+                                            if (neighbours==null) return null;
+                                            return new Integer( neighbours.size() );
+                                        }
+                                        case 9: {
+                                            List neighbours = country.getIncomingNeighbours();
+                                            if (neighbours==null) return null;
+                                            return new Integer( neighbours.size() );
+                                        }
+                                        case 10: {
+                                            List neighbours = country.getCrossContinentNeighbours();
+                                            if (neighbours==null) return null;
+                                            return new Integer( neighbours.size() );
+                                        }
 					default: throw new RuntimeException();
 
 				}

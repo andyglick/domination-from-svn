@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.net.URL;
+import net.yura.domination.engine.core.RiskGame;
 
 public interface RiskIO {
 
@@ -20,7 +21,7 @@ public interface RiskIO {
 	void openDocs(String doc) throws Exception;
 
         // only here coz of android, as are not used for lobby
-        void saveGameFile(String name,Object obj) throws Exception;
+        void saveGameFile(String name,RiskGame obj) throws Exception;
         InputStream loadGameFile(String file) throws Exception;
         
         OutputStream saveMapFile(String fileName) throws Exception;
