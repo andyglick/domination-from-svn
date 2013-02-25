@@ -562,10 +562,14 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 			if ( checkMap() ) {
 
-				myrisk.newMemoryGame(myMap );
-
-                                panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
-
+				try {
+					myrisk.newMemoryGame(myMap); // buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic")
+                                        
+                                        panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
+				}
+                                catch (Exception e) {
+					showError(e);
+				}
 			}
 
 		}
@@ -1195,72 +1199,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             int index = name.lastIndexOf('.');
             return index>0?name.substring( index+1 ):"";
         }
-        
-        /**
-         * @return true if everything is ok, false if the user cancelled
-         */
-	public boolean saveMap(File mapFile) throws Exception {
 
-            String mapName = mapFile.getName();
 
-            net.yura.domination.mapstore.Map map2 = MapsTools.findMap( MapsTools.loadMaps() ,mapName);
+        // ####################################################### MAKE CARDS FILE
+        private String buildCardsFile(String cardsName) throws Exception {
 
-            if (map2!=null) { // this means it has been published at least once
-                String version = map2.getVersion();
-                int newVersion;
-                if (version==null || "".equals(version)) {
-                    newVersion = 2;
-                }
-                else {
-                    newVersion = Integer.parseInt(version) + 1;
-                }
-                myMap.setVersion( newVersion );
-            }
+            String n = System.getProperty("line.separator");
             
-	    String safeName = MapsTools.getSafeMapID(mapName);
-
-	    String cardsName = safeName + "." + RiskFileFilter.RISK_CARDS_FILES;
-	    String imageMapName = safeName+"_map."+IMAGE_MAP_EXTENSION;
-
-            String pic_extension = IMAGE_PIC_EXTENSION;
-            boolean doCopy = false;
-            if (imgFile!=null && imgFile.exists() ) {
-                String extension = getExtension(imgFile).toLowerCase();
-                if ("jpeg".equals(extension)) { extension="jpg"; }
-
-                // these are the file formats we do not want to re-encode
-                if ("jpg".equals(extension) || "png".equals(extension) || "gif".equals(extension)) {
-                    doCopy = true;
-                    pic_extension = extension;
-                }
-            }
-
-	    String imagePicName = safeName+"_pic."+pic_extension;
-
-	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
-	    File imageMapFile = new File( mapFile.getParentFile(),imageMapName );
-	    File imagePicFile = new File( mapFile.getParentFile(),imagePicName );
-
-	    if (mapFile.exists() || cardsFile.exists() || imageMapFile.exists() || imagePicFile.exists()) {
-
-		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to replace:\n"+
-		(mapFile.exists()?mapFile+"\n":"")+
-		(cardsFile.exists()?cardsFile+"\n":"")+
-		(imageMapFile.exists()?imageMapFile+"\n":"")+
-		(imagePicFile.exists()?imagePicFile+"\n":""), "Replace?", JOptionPane.YES_NO_OPTION);
-
-		if (result != JOptionPane.YES_OPTION) {
-
-			return false;
-
-		}
-
-	    }
-
-	    String n = System.getProperty("line.separator");
-
-	    // ####################################################### MAKE CARDS FILE
-
 	    StringBuffer cardsBuffer = new StringBuffer();
 
 	    cardsBuffer.append("; cards: ");
@@ -1348,23 +1293,31 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	    }
 
-	    // ####################################################### MAKE MAP FILE
+            return cardsBuffer.toString();
 
-	    StringBuffer buffer = new StringBuffer();
+        }
 
-	    buffer.append("; map: ");
-	    buffer.append(mapName);
-	    buffer.append(n);
 
-	    buffer.append("; Made with yura.net ");
+        // ####################################################### MAKE MAP FILE
+        private String buildMapFile(String mapName, String cardsName, String imageMapName, String imagePicName) throws Exception {
+
+            String n = System.getProperty("line.separator");
+            
+            StringBuffer buffer = new StringBuffer();
+
+            buffer.append("; map: ");
+            buffer.append(mapName);
+            buffer.append(n);
+
+            buffer.append("; Made with yura.net ");
             buffer.append( RiskUtil.GAME_NAME );
             buffer.append(" ");
 	    buffer.append( Risk.RISK_VERSION );
-	    buffer.append(n);
-            
+            buffer.append(n);
+
             buffer.append("; OS: ");
             buffer.append( RiskUIUtil.getOSString() );
-	    buffer.append(n);
+            buffer.append(n);
             buffer.append(n); // empty line
 
 //            String name = myMap.getMapName();
@@ -1382,6 +1335,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 //            if (name!=null || version!=1) {
 //                buffer.append(n); // in case we put a name or a version, add a extra empty line
 //            }
+
             Map properties = myMap.getProperties();
             if (!properties.isEmpty()) {
                 Iterator keyvals = properties.entrySet().iterator();
@@ -1395,19 +1349,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 buffer.append(n);
             }
 
-	    buffer.append("[files]");
-	    buffer.append(n);
+            buffer.append("[files]");
+            buffer.append(n);
 
-	    buffer.append("pic ");
-	    buffer.append(imagePicName);
-	    buffer.append(n);
-	    buffer.append("map ");
-	    buffer.append(imageMapName);
-	    buffer.append(n);
-	    buffer.append("crd ");
-	    buffer.append(cardsName);
-	    buffer.append(n);
-            
+            buffer.append("pic ");
+            buffer.append(imagePicName);
+            buffer.append(n);
+            buffer.append("map ");
+            buffer.append(imageMapName);
+            buffer.append(n);
+            buffer.append("crd ");
+            buffer.append(cardsName);
+            buffer.append(n);
+
             String prv = myMap.getPreviewPic();
             if (prv!=null) {
                 buffer.append("prv ");
@@ -1415,56 +1369,56 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 buffer.append(n);
             }
 
-	    buffer.append(n);
-	    buffer.append("[continents]");
-	    buffer.append(n);
+            buffer.append(n);
+            buffer.append("[continents]");
+            buffer.append(n);
 
-	    Continent[] continents = myMap.getContinents();
+            Continent[] continents = myMap.getContinents();
 
             for (int i = 0; i < continents.length; i++) {
 
                 Continent c = continents[i];
 
-		buffer.append(c.getIdString());
-		buffer.append(" ");
-		buffer.append(c.getArmyValue());
-		buffer.append(" ");
+                buffer.append(c.getIdString());
+                buffer.append(" ");
+                buffer.append(c.getArmyValue());
+                buffer.append(" ");
 		buffer.append( ColorUtil.getStringForColor( c.getColor() ) );
-		buffer.append(n);
+                buffer.append(n);
 
-	    }
+            }
 
-	    buffer.append(n);
-	    buffer.append("[countries]");
-	    buffer.append(n);
+            buffer.append(n);
+            buffer.append("[countries]");
+            buffer.append(n);
 
-	    Country[] countries = myMap.getCountries();
+            Country[] countries = myMap.getCountries();
 
             for (int i = 0; i < countries.length; i++) {
 
                 Country c = countries[i];
 
-		int color = c.getColor();
+                int color = c.getColor();
 
 		if (color != (i+1)) { throw new Exception("country missmatch with pos/id/color: "+c); }
 
-		buffer.append(String.valueOf(color));
-		buffer.append(" ");
-		buffer.append(c.getIdString());
-		buffer.append(" ");
+                buffer.append(String.valueOf(color));
+                buffer.append(" ");
+                buffer.append(c.getIdString());
+                buffer.append(" ");
 		buffer.append( getStringForContinent( c.getContinent() ) );
-		buffer.append(" ");
+                buffer.append(" ");
 		buffer.append( c.getX() );
-		buffer.append(" ");
+                buffer.append(" ");
 		buffer.append( c.getY() );
-		buffer.append(n);
+                buffer.append(n);
 
-	    }
+            }
 
 
-	    buffer.append(n);
-	    buffer.append("[borders]");
-	    buffer.append(n);
+            buffer.append(n);
+            buffer.append("[borders]");
+            buffer.append(n);
 
 
             for (int i = 0; i < countries.length; i++) {
@@ -1479,16 +1433,80 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                     Country n1 = (Country)ney.get(j);
 
-		    buffer.append(" ");
+                    buffer.append(" ");
 		    buffer.append(String.valueOf( n1.getColor() ) );
-		}
+                }
 
-		buffer.append(n);
+                buffer.append(n);
+
+            }
+            return buffer.toString();
+        }
+        
+        /**
+         * @return true if everything is ok, false if the user cancelled
+         */
+	public boolean saveMap(File mapFile) throws Exception {
+
+            String mapName = mapFile.getName();
+
+            net.yura.domination.mapstore.Map map2 = MapsTools.findMap( MapsTools.loadMaps() ,mapName);
+
+            if (map2!=null) { // this means it has been published at least once
+                String version = map2.getVersion();
+                int newVersion;
+                if (version==null || "".equals(version)) {
+                    newVersion = 2;
+                }
+                else {
+                    newVersion = Integer.parseInt(version) + 1;
+                }
+                myMap.setVersion( newVersion );
+            }
+            
+	    String safeName = MapsTools.getSafeMapID(mapName);
+
+	    String cardsName = safeName + "." + RiskFileFilter.RISK_CARDS_FILES;
+	    String imageMapName = safeName+"_map."+IMAGE_MAP_EXTENSION;
+
+            String pic_extension = IMAGE_PIC_EXTENSION;
+            boolean doCopy = false;
+            if (imgFile!=null && imgFile.exists() ) {
+                String extension = getExtension(imgFile).toLowerCase();
+                if ("jpeg".equals(extension)) { extension="jpg"; }
+
+                // these are the file formats we do not want to re-encode
+                if ("jpg".equals(extension) || "png".equals(extension) || "gif".equals(extension)) {
+                    doCopy = true;
+                    pic_extension = extension;
+                }
+            }
+
+	    String imagePicName = safeName+"_pic."+pic_extension;
+
+	    File cardsFile = new File( mapFile.getParentFile(),cardsName );
+	    File imageMapFile = new File( mapFile.getParentFile(),imageMapName );
+	    File imagePicFile = new File( mapFile.getParentFile(),imagePicName );
+
+	    if (mapFile.exists() || cardsFile.exists() || imageMapFile.exists() || imagePicFile.exists()) {
+
+		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to replace:\n"+
+		(mapFile.exists()?mapFile+"\n":"")+
+		(cardsFile.exists()?cardsFile+"\n":"")+
+		(imageMapFile.exists()?imageMapFile+"\n":"")+
+		(imagePicFile.exists()?imagePicFile+"\n":""), "Replace?", JOptionPane.YES_NO_OPTION);
+
+		if (result != JOptionPane.YES_OPTION) {
+			return false;
+		}
 
 	    }
 
-            saveMap( buffer.toString() ,new FileOutputStream(mapFile));
-            saveMap( cardsBuffer.toString() ,new FileOutputStream(cardsFile));
+            String cardsBuffer = buildCardsFile(cardsName);
+	    String buffer = buildMapFile(mapName, cardsName, imageMapName, imagePicName);
+
+            saveMap( buffer ,new FileOutputStream(mapFile));
+            saveMap( cardsBuffer ,new FileOutputStream(cardsFile));
 
             saveImage( editPanel.getImageMap() , IMAGE_MAP_EXTENSION , imageMapFile );
 
@@ -1508,7 +1526,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             return true;
             
 	}
-        
+
         void saveImage(BufferedImage im, String formatName, File output) throws Exception {
 	    if ( !ImageIO.write( im , formatName , output ) ) {
 		// this should NEVER happen
