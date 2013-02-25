@@ -352,8 +352,13 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                                 List result = new ArrayList();
                                 for (int c=0;c<fs.length;c++) {
                                     if (!java.lang.reflect.Modifier.isStatic(fs[c].getModifiers())) {
-                                        fs[c].setAccessible(true);
-                                        result.add(fs[c]);
+                                        try {
+                                            fs[c].setAccessible(true);
+                                            result.add(fs[c]);
+                                        }
+                                        catch (Exception ex) { // security
+                                         System.out.println("can not setAccessible "+fs[c]+" "+ex);
+                                        }
                                     }
                                 }
                                 fields = (Field[])result.toArray(new Field[result.size()]);
