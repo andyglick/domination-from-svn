@@ -2329,6 +2329,10 @@ RiskUtil.printStackTrace(e);
             return ai.getAICommands();
         }
         
+        public String getCommandFromType(int type) {
+            return ai.getCommandFromType(type);
+        }
+        
 	//public void getHumanInput() { }
 
 	public String whoWon() {

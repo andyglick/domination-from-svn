@@ -86,7 +86,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	private JRadioButton human;
 	private JRadioButton ai;
 	private JRadioButton aismart;
-	//private JRadioButton aicrap;
+	private JRadioButton aiaverage;
 
 	private JRadioButton fixed;
 	private JRadioButton increasing;
@@ -287,8 +287,8 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ButtonGroup playerTypeButtonGroup = new ButtonGroup();
 
                 int typeX = 520;
-                int typeY = 330;
-                int typeGap = 20;
+                int typeY = 325;
+                int typeGap = 18;
                 int typeW = 160;
                 int typeH = 25;
                 
@@ -296,15 +296,15 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		sortOutButton( human );
 		human.setBounds(typeX, typeY, typeW , typeH);
 
-                //typeY = typeY + typeGap;
-		//aicrap = new JRadioButton(resb.getString("newgame.player.type.crapai"));
-		//sortOutButton( aicrap );
-		//aicrap.setBounds(typeX, typeY, typeW , typeH);
-
                 typeY = typeY + typeGap;
 		ai = new JRadioButton(resb.getString("newgame.player.type.easyai"));
 		sortOutButton( ai );
 		ai.setBounds(typeX, typeY, typeW , typeH);
+
+                typeY = typeY + typeGap;
+		aiaverage = new JRadioButton(resb.getString("newgame.player.type.averageai"));
+		sortOutButton( aiaverage );
+		aiaverage.setBounds(typeX, typeY, typeW , typeH);
 
                 typeY = typeY + typeGap;
 		aismart = new JRadioButton(resb.getString("newgame.player.type.hardai"));
@@ -315,8 +315,8 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		playerTypeButtonGroup.add ( human );
 		playerTypeButtonGroup.add ( ai );
+                playerTypeButtonGroup.add ( aiaverage );
 		playerTypeButtonGroup.add ( aismart );
-		//playerTypeButtonGroup.add ( aicrap );
 
 		color = "black";
 		thecolor = Color.black;
@@ -367,8 +367,8 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ngp.add(playerName);
 		ngp.add(human);
 		ngp.add(ai);
-		ngp.add(aismart);
-		//ngp.add(aicrap);
+		ngp.add(aiaverage);
+                ngp.add(aismart);
 		ngp.add(playerColor);
 
 		ngp.add(resetplayers);
@@ -452,6 +452,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			playerColor,
 			human,
 			ai,
+                        aiaverage,
 			aismart,
 			addplayer,
 
@@ -712,19 +713,20 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 			g.drawString( name, 10, 20);
 
-
+                        String typeString;
 			if (type == Player.PLAYER_HUMAN) {
-				g.drawString( resb.getString("newgame.player.type.human"), 120, 20);
-			}
-			else if (type == Player.PLAYER_AI_EASY) {
-				g.drawString( resb.getString("newgame.player.type.easyai"), 120, 20);
-			}
-			else if (type == Player.PLAYER_AI_HARD) {
-				g.drawString( resb.getString("newgame.player.type.hardai"), 120, 20);
+				typeString = resb.getString("newgame.player.type.human");
 			}
 			else {
-				g.drawString( resb.getString("newgame.player.type.crapai"), 120, 20);
+                            String command = myrisk.getCommandFromType(type);
+                            try {
+                                typeString = resb.getString("newgame.player.type."+command+"ai");
+                            }
+                            catch (Exception ex){
+                                typeString = command;
+                            }
 			}
+                        g.drawString(typeString , 120, 20);
 
 			//if (localgame) { g.drawString( resb.getString("newgame.type.local"), 140, 20); }
 			//else { g.drawString( ip, 140, 20); }
@@ -886,7 +888,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			if (human.isSelected())	{ type = "human"; }
 			else if (ai.isSelected())	{ type = "ai easy"; }
 			else if (aismart.isSelected())	{ type = "ai hard"; }
-			else			{ type = "ai crap"; }
+			else			{ type = "ai average"; }
 
 			myrisk.parser("newplayer "+ type +" "+ color +" "+ playerName.getText() );
 
