@@ -112,11 +112,11 @@ public class ServerGameRisk extends TurnBasedGame {
 
 		String[] options = startGameOptions.split("\\n");
 
-		int aicrap = Integer.parseInt(options[0]);
+		int aiaverage = Integer.parseInt(options[0]);
 		int aieasy = Integer.parseInt(options[1]);
 		int aihard = Integer.parseInt(options[2]);
 
-		if ((players.length+aicrap+aieasy+aihard)>RiskGame.MAX_PLAYERS ) { throw new RuntimeException("player number missmatch for startgame"); }
+		if ((players.length+aiaverage+aieasy+aihard)>RiskGame.MAX_PLAYERS ) { throw new RuntimeException("player number missmatch for startgame"); }
 
 		myrisk.addSetupCommandToInbox(options[3]); // set the map file to use
 
@@ -136,10 +136,13 @@ public class ServerGameRisk extends TurnBasedGame {
 			myrisk.addSetupCommandToInbox(playerid,"newplayer human "+color + " " + players[c]);
 		}
 
-		for (int c=0;c<aicrap;c++) {
+                // BeginnerBot, RookieBot, AmateurBot and ProBot.
+                // Normal Medium Average Standard
+                
+		for (int c=0;c<aiaverage;c++) {
 			it.hasNext();
 			String color = it.next();
-			myrisk.addSetupCommandToInbox("newplayer ai crap "+color + " CrapBot" + (c+1));
+			myrisk.addSetupCommandToInbox("newplayer ai average "+color + " AverageBot" + (c+1));
 		}
 
 		for (int c=0;c<aieasy;c++) {
