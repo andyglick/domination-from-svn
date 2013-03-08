@@ -96,7 +96,7 @@ public class ServerRisk extends Risk {
 			inGameParser(message);
 		}
 
-		System.out.println("SERVER-GAME-RISK THREAD DIE");
+		System.out.println("THREAD DIE: "+getName());
 	}
 
 	@Override
