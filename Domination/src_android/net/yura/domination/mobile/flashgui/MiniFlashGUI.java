@@ -35,8 +35,8 @@ import net.yura.mobile.util.Properties;
 
 public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
 
-    private static final String[] compsNames = new String[]{"crapAI","easyAI","hardAI","human"};
-    private static final int[] compTypes = new int[] {Player.PLAYER_AI_CRAP,Player.PLAYER_AI_EASY,Player.PLAYER_AI_HARD,Player.PLAYER_HUMAN};
+    private final String[] compsNames;
+    private final int[] compTypes;
 
     // shares res
     Properties resb = GameActivity.resb;
@@ -64,6 +64,16 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         
         setBorder(GameActivity.marble);
         setBackground( 0x00FFFFFF );
+
+        String[] ais = myrisk.getAICommands();
+        compsNames = new String[ais.length+1];
+        compTypes = new int[ais.length+1];
+        for (int c=0;c<ais.length;c++) {
+            compsNames[c] = ais[c]+"AI";
+            compTypes[c] = myrisk.getType("ai "+ais[c]);
+        }
+        compsNames[compsNames.length-1] = "human";
+        compTypes[compTypes.length-1] = Player.PLAYER_HUMAN;
     }
 
     @Override
@@ -145,7 +155,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                         controller.createLobbyGame(
                         	    ((TextComponent)newgame.find("GameName")).getText(),
                         	    RiskUtil.createGameString(
-                                    	    getNoPlayers(Player.PLAYER_AI_CRAP),
+                                    	    getNoPlayers(Player.PLAYER_AI_AVERAGE),
                                     	    getNoPlayers(Player.PLAYER_AI_EASY),
                                     	    getNoPlayers(Player.PLAYER_AI_HARD),
                                     	    getStartGameOption( GameType.getSelection().getActionCommand() ),
@@ -381,6 +391,13 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             ((GridBagConstraints)((Panel)startButton.getParent()).getConstraints().get(startButton)).colSpan = 2;
         }
 
+        ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
+
+// temp hack while we do not have a average AI on the server
+((Spinner)newgame.find("averageAI")).setValue( 0 );
+((Component)newgame.find("averageAI")).setVisible(localgame);
+((Component)newgame.find("averageAIlabel")).setVisible(localgame);
+
         for (int c=0;c<compsNames.length;c++) {
             addChangeListener(compsNames[c]);
         }
@@ -391,8 +408,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         else {
             setLobbyMap( allowedMaps[0] );
         }
-        
-        ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
 
         // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
         DesktopPane.invokeLater( new Runnable() {
@@ -465,7 +480,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     }
 
     public void changeEvent(Component source, int num) {
-        System.out.println("changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent changeEvent");
 
         int type = -1;
         for (int c=0;c<compsNames.length;c++) {
