@@ -67,12 +67,11 @@ public class AIManager {
                     case RiskGame.STATE_BATTLE_WON:	output = usethisAI.getBattleWon(); break;
                     case RiskGame.STATE_FORTIFYING:	output = usethisAI.getTacMove(); break;
                     case RiskGame.STATE_SELECT_CAPITAL:	output = usethisAI.getCapital(); break;
-
-                    case RiskGame.STATE_END_TURN:	output = "endgo"; break;
-                    case RiskGame.STATE_GAME_OVER:	/* output="closegame"; */ break;
                     case RiskGame.STATE_DEFEND_YOURSELF:output = usethisAI.getAutoDefendString(); break;
+                    case RiskGame.STATE_END_TURN:	output = "endgo"; break;
 
-                    default: throw new RuntimeException("AI error: unknown state "+ game.getState() );
+                    case RiskGame.STATE_GAME_OVER: throw new IllegalStateException("AI error: game is over");
+                    default: throw new IllegalStateException("AI error: unknown state "+ game.getState() );
             }
 
             if (output==null) { throw new NullPointerException("AI ERROR!"); }
