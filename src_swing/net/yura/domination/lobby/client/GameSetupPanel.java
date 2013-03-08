@@ -83,8 +83,8 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	private RiskMap riskmap;
 
 	private JSpinner human;
-	//private JSpinner aipassive;
 	private JSpinner aieasy;
+        private JSpinner aiaverage;
 	private JSpinner aihard;
 
 	private JTextField gamename;
@@ -218,7 +218,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 
 		human = new JSpinner( new SpinnerNumberModel(2,1,6,1) );
-		//aipassive = new JSpinner( new SpinnerNumberModel(0,0,6,1) );
+		aiaverage = new JSpinner( new SpinnerNumberModel(0,0,6,1) );
 		aieasy = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 		aihard = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 
@@ -229,13 +229,22 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 		playernum.add(new JLabel("human"));
 		playernum.add(human);
-		//playernum.add(new JLabel("crap ai"));
-		//playernum.add(aipassive);
+
 		playernum.add(new JLabel("easy ai"));
 		playernum.add(aieasy);
-		playernum.add(new JLabel("hard ai"));
+
+                JLabel aialabel = new JLabel("average ai");
+		playernum.add(aialabel);
+		playernum.add(aiaverage);
+
+                playernum.add(new JLabel("hard ai"));
 		playernum.add(aihard);
 
+// temp hack while we do not have a average AI on the server
+aiaverage.setValue(0);
+aiaverage.setVisible(false);
+aialabel.setVisible(false);
+                
 		ButtonGroup GameTypeButtonGroup = new ButtonGroup();
 		ButtonGroup CardTypeButtonGroup = new ButtonGroup();
 
@@ -591,7 +600,7 @@ resb = TranslationBundle.getBundle();
 		if (e.getSource()==start) {
 
 			int a = ((Integer)human.getValue()).intValue();
-			//int b = ((Integer)aipassive.getValue()).intValue();
+			int b = ((Integer)aiaverage.getValue()).intValue();
 			int c = ((Integer)aieasy.getValue()).intValue();
 			int d = ((Integer)aihard.getValue()).intValue();
 
@@ -610,7 +619,7 @@ resb = TranslationBundle.getBundle();
                                 else if (fixed.isSelected()) cardsMode = RiskGame.CARD_FIXED_SET;
                                 else cardsMode = RiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
 
-				options = RiskUtil.createGameString(0,c,d,gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
+				options = RiskUtil.createGameString(b,c,d,gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
 
 				dialog.setVisible(false);
 
