@@ -16,10 +16,8 @@
     <panel columns="2" rowspan="2" width="30">
         <label i18n="true" text="newgame.player.type.easyai" weightx="1" width="10"/>
         <spinbox end="1" maximum="5" minimum="0" name="easyAI" start="1" text="2"/>
-
         <label i18n="true" text="newgame.player.type.averageai" name="averageAIlabel" width="10"/>
-        <spinbox end="1" maximum="5" minimum="0" name="averageAI" start="1" text="2"/>
-
+        <spinbox end="1" maximum="5" minimum="0" name="averageAI" start="1" text="0"/>
         <label i18n="true" text="newgame.player.type.hardai" width="10"/>
         <spinbox end="1" maximum="5" minimum="0" name="hardAI" start="1" text="2"/>
         <label i18n="true" text="newgame.player.type.human" width="10"/>

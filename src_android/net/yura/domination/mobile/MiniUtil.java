@@ -31,7 +31,7 @@ public class MiniUtil {
         
         String text = "<html>" +
                 "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
-                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version +"</p>"+
+                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
                 "<p>"+"Game Engine: "+" "+Risk.RISK_VERSION +"</p>"+
                 "<p>"+author+"</p>"+
                 "<p>"+copyright+"</p>"+
