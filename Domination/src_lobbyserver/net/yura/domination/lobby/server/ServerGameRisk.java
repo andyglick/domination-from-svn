@@ -228,7 +228,7 @@ public class ServerGameRisk extends TurnBasedGame {
             RiskGame game = myrisk.getGame();
             List<Player> players = game.getPlayers();
             for (Player player:players) {
-                if (player.getType()==Player.PLAYER_HUMAN && username.equals(player.getName())) {
+                if (player.getType()==Player.PLAYER_HUMAN && player.getName().equals(username)) {
                     return player.getAddress();
                 }
             }
