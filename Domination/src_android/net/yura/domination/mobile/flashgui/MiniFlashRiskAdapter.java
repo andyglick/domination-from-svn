@@ -31,7 +31,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
     void openLobby() {
     	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
-        	mainFrame.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
+                final MiniFlashGUI frame = mainFrame;
+                if (frame!=null) {
+                    frame.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
+                }
+                // frame can be null if we have a game open at this same point as we click new game
+                // in that case we do not do anything as the user is now faced with a game screen
             }
             public String getAppName() {
                 return "AndroidDomination";
