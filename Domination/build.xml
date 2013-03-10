@@ -14,7 +14,7 @@
 	    <!-- this is needed for running the junit test in netbeans -->
         <import file="nbproject/build-impl.xml"/>
 
-	<property name="game.version" value="1.1.1.2"/>
+	<property name="game.version" value="1.1.1.3"/>
 
 
         <!-- -->
@@ -55,6 +55,7 @@
         <!-- if the izpack installer jar is available -->
 	<property name="izpack.compiler" value="${basedir}/installer/izpack/standalone-compiler.jar"/>
 	<property name="jsmooth.compiler" value="${basedir}/installer/jsmooth/jsmoothgen-ant.jar"/>
+	<property name="launch4j.dir" location="${basedir}/installer/launch4j" />
 
 	<available file="${izpack.compiler}" property="izpack.available"/>
 	<available file="${jsmooth.compiler}" property="jsmooth.available"/>
@@ -192,6 +193,15 @@
 			<fileset dir="lib" includes="SwingME.jar,midletrunner.jar,m3gbasic.jar,TranslationTool.jar,Grasshopper.jar,httpmime-4.1.2.jar,httpcore-4.1.2.jar,LobbyCore.jar"/>
 		</copy>
 
+
+		<taskdef name="launch4j"
+		    classname="net.sf.launch4j.ant.Launch4jTask"
+		    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+
+		<launch4j configFile="${launch4j.dir}/my_flash.xml" />
+		<launch4j configFile="${launch4j.dir}/my_swing.xml" />
+
+
 	</target>
 
 	<target name="distribution.source.zip"
@@ -253,7 +263,7 @@
 			izPackDir="${basedir}/installer/izpack/"
 		/>
 
-		<antcall target="distribution.exe"/>
+		<antcall target="distribution.launch4j"/>
 
 	</target>
 
@@ -271,7 +281,19 @@ ${basedir}/installer/izpack/standalone-compiler.jar
 	</target>
 
 
-	<target name="distribution.exe" depends="distribution.jsmooth.available,distribution.jsmooth.unavailable"/>
+
+
+	<target name="distribution.launch4j">
+		<taskdef name="launch4j"
+		    classname="net.sf.launch4j.ant.Launch4jTask"
+		    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+		<launch4j configFile="${launch4j.dir}/my_install.xml" />
+	</target>
+
+
+
+
+	<target name="distribution.jsmooth" depends="distribution.jsmooth.available,distribution.jsmooth.unavailable"/>
 
 	<target name="distribution.jsmooth.available"
 		description="Generates a Windows .exe file from the izPack installer"
