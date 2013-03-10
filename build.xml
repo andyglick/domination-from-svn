@@ -59,7 +59,7 @@
 
 	<available file="${izpack.compiler}" property="izpack.available"/>
 	<available file="${jsmooth.compiler}" property="jsmooth.available"/>
-
+	<available file="${launch4j.dir}/launch4j.jar" property="launch4j.available"/>
 
 
 	<condition property="lobby.available">
@@ -193,15 +193,16 @@
 			<fileset dir="lib" includes="SwingME.jar,midletrunner.jar,m3gbasic.jar,TranslationTool.jar,Grasshopper.jar,httpmime-4.1.2.jar,httpcore-4.1.2.jar,LobbyCore.jar"/>
 		</copy>
 
+		<antcall target="game.exe"/>
 
+	</target>
+
+	<target name="game.exe" if="launch4j.available">
 		<taskdef name="launch4j"
 		    classname="net.sf.launch4j.ant.Launch4jTask"
 		    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-
 		<launch4j configFile="${launch4j.dir}/my_flash.xml" />
 		<launch4j configFile="${launch4j.dir}/my_swing.xml" />
-
-
 	</target>
 
 	<target name="distribution.source.zip"
@@ -282,14 +283,30 @@ ${basedir}/installer/izpack/standalone-compiler.jar
 
 
 
+	<target name="distribution.launch4j" depends="distribution.launch4j.available,distribution.launch4j.unavailable"/>
 
-	<target name="distribution.launch4j">
+	<target name="distribution.launch4j.available"
+		description="Generates a Windows .exe file from the izPack installer"
+		if="launch4j.available">
+
 		<taskdef name="launch4j"
 		    classname="net.sf.launch4j.ant.Launch4jTask"
 		    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 		<launch4j configFile="${launch4j.dir}/my_install.xml" />
 	</target>
 
+	<target name="distribution.launch4j.unavailable"
+		description="Small notice"
+		unless="launch4j.available">
+		<echo>
+The launch4j installer is not available on your system.
+Get it from http://launch4j.sourceforge.net/ if you want
+to create the windows exe installer.
+extract launch4j-3.0.2-win32.zip to
+${basedir}/installer/launch4j/
+############################################################
+		</echo>
+	</target>
 
 
 
