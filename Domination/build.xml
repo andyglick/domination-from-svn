@@ -167,6 +167,12 @@
 
 		<copy file="${dir.dist}/${game.name}.jar" todir="${dir.build.game}"/>
 
+                <!-- for the map chooser -->
+                <copy todir="${dir.build.game}/lib">
+			<fileset dir="lib" includes="SwingME.jar,midletrunner.jar,m3gbasic.jar,TranslationTool.jar,Grasshopper.jar,httpmime-4.1.2.jar,httpcore-4.1.2.jar,LobbyCore.jar"/>
+		</copy>
+
+
 		<copy todir="${dir.build.game}" filtering="true">
 			<!-- script start files for easy starting -->
 			<fileset dir="${basedir}/res_swing/scripts" includes="*.sh,*.cmd"/>
@@ -175,7 +181,7 @@
 
 		<copy todir="${dir.build.game}">
 			<!-- Apple OS X Launcher files, these are binary files and can not be filtered -->
-			<fileset dir="${basedir}/res_swing/scripts" includes="*.app/**"/>
+			<fileset dir="${basedir}/res_swing/scripts" includes="*.app/**,*.exe"/>
 			<fileset dir="${basedir}/res_swing/scripts" defaultexcludes="no" includes="._*"/>
 		</copy>
 
@@ -187,13 +193,6 @@
 
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
 		<chmod dir="${dir.build.game}" includes="*.sh,**/JavaApplicationStub" perm="ugo+x" />
-
-                <!-- for the map chooser -->
-                <copy todir="${dir.build.game}/lib">
-			<fileset dir="lib" includes="SwingME.jar,midletrunner.jar,m3gbasic.jar,TranslationTool.jar,Grasshopper.jar,httpmime-4.1.2.jar,httpcore-4.1.2.jar,LobbyCore.jar"/>
-		</copy>
-
-		<antcall target="game.exe"/>
 
 	</target>
 
