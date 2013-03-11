@@ -2207,7 +2207,7 @@ RiskUtil.printStackTrace(e);
 	 * return true ONLY if info of this Player p should be disclosed to this computer
 	 */
 	private boolean showHumanPlayerThereInfo(Player p) {
-		return (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) );
+		return game.getState()==RiskGame.STATE_GAME_OVER || ( (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) ) );
 	}
         
         public boolean showHumanPlayerThereInfo() {
