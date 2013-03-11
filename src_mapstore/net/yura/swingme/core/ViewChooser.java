@@ -53,8 +53,7 @@ public class ViewChooser extends Panel implements ActionListener {
         Button[] buttons = new Button[options.length];
         for (int c=0;c<buttons.length;c++) {
             buttons[c] = new Button( options[c].getValue() );
-            buttons[c].setActionCommand( options[c].getKey() );
-            
+
             if (c==0) {
                 buttons[c].setName("SegmentedControlLeft");
             }
@@ -64,12 +63,9 @@ public class ViewChooser extends Panel implements ActionListener {
             else {
                 buttons[c].setName("SegmentedControlMiddle");
             }
-            
+
             buttons[c].workoutPreferredSize();
             buttonsWidth = buttonsWidth + buttons[c].getWidthWithBorder();
-            if (currentOption == options[c]) {
-                buttons[c].setSelected(true);
-            }
         }
 
         if (buttonsWidth <= width) {
@@ -77,6 +73,10 @@ public class ViewChooser extends Panel implements ActionListener {
             ButtonGroup group = new ButtonGroup();
             for (int c=0;c<buttons.length;c++) {
                 Button b = buttons[c];
+                b.setActionCommand( options[c].getKey() );
+                if (currentOption == options[c]) {
+                    b.setSelected(true);
+                }
                 group.add(b);
                 b.addActionListener(this);
                 add(b);
@@ -116,21 +116,14 @@ public class ViewChooser extends Panel implements ActionListener {
                 return (Option) ((ComboBox)one).getSelectedItem();
             }
             else {
-                // TODO looping through buttons to get selected one is not thread-safe
-                // would be better to get the selected button from the button group
-                for (int a=0;a<components.size();a++) {
-                    Button b = (Button)components.get(a);
-                    if (b.isSelected()) {
-                        String id = b.getActionCommand();
-                        for (int c=0;c<options.length;c++) {
-                            if (id.equals( options[c].getKey() ) ) {
-                                return options[c];
-                            }
-                        }
-                        throw new RuntimeException("can not find option with id: "+id);
+                ButtonGroup bg = ((Button)one).getGroup();
+                String id = bg.getSelection().getActionCommand();
+                for (int c=0;c<options.length;c++) {
+                    if (id.equals( options[c].getKey() ) ) {
+                        return options[c];
                     }
                 }
-                throw new RuntimeException("no button selected");
+                throw new RuntimeException("can not find option with id: "+id);
             }
         }
     }
