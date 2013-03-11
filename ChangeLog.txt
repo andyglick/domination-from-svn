@@ -2,16 +2,20 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.3
+	Risk Game:	1.1.1.4
 	 * Save:	8
 	 * Network:	11
 
-	Android		30
+	Android		31
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
 	Increment1GUI:	1.1.1.1
 	CommandLine:	1.0.4.1
+
+1.1.1.4
+
+	Android 31 allows human to view mssion at end of game if AI won
 
 1.1.1.3
 
