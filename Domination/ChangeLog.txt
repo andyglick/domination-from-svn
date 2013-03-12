@@ -16,6 +16,7 @@ CURRENT VERSION:
 1.1.1.4
 
 	Android 31 allows human to view mssion at end of game if AI won
+		   wakelock added when game screen is open
 
 1.1.1.3
 
