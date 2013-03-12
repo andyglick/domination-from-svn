@@ -249,10 +249,13 @@ public class CardsDialog extends Frame implements ActionListener {
                                     ownerColor = card.getCountry().getOwner().getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
-                                g.getGraphics().setColorMarix(m);
-                                g.drawScaledImage(i, (getWidth()-imgSize)/2, getHeight()/2 - imgSize, imgSize, imgSize);
-                                g.getGraphics().setColorMarix(null);
                                 
+                                if (i!=null) { // i can be null if we had a outofmem in the picturepanel
+                                    g.getGraphics().setColorMarix(m);
+                                    g.drawScaledImage(i, (getWidth()-imgSize)/2, getHeight()/2 - imgSize, imgSize, imgSize);
+                                    g.getGraphics().setColorMarix(null);
+                                }
+
                                 if (this == extraArmiesCard) {
                                     
                                     g.setColor(ownerColor);

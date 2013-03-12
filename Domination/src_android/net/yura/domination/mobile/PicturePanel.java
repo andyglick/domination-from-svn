@@ -981,6 +981,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          * @return BufferedImage Image buffered of a country
          */
         public Image getCountryImage(int num) {
+                if (countryImages==null) return null; // if we had a outofmem, and dont have anything loaded
                 CountryImage ci = countryImages[num-1];
                 return ci.getSourceImage();
         }
