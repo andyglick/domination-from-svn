@@ -54,7 +54,7 @@ public class SwingGUIFrame {
 
 		gui.setVisible(true);
 
-		sg.setupLobbyButton();
+		sg.checkForUpdates();
 
 	}
 

@@ -12,15 +12,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -114,7 +111,8 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		lobby.setBounds(152,409,95,95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
 		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
-		//lobby.setVisible(false);
+
+		lobby.setVisible( RiskUIUtil.checkForNoSandbox() );
 
 		lobby.setForeground( Color.WHITE );
 		add(lobby);
@@ -629,16 +627,6 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 	}
 
-	public void addLobbyButton() {
-
-		if (RiskUIUtil.getAddLobby(myrisk)) {
-
-			lobby.setVisible( true );
-
-			repaint();
-		}
-
-	}
         public void hide() {
             window.setVisible(false);
         }
@@ -697,9 +685,10 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
                 initGrasshopper();
                 
-		MainMenu mm = newMainMenuFrame( new Risk(),JFrame.EXIT_ON_CLOSE );
+                Risk r = new Risk();
+		newMainMenuFrame(r ,JFrame.EXIT_ON_CLOSE );
 
-		mm.addLobbyButton();
+		RiskUIUtil.checkForUpdates(r);
 
 	}
 
