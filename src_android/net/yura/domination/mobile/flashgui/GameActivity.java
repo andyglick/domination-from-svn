@@ -357,6 +357,12 @@ public class GameActivity extends Frame implements ActionListener {
         setVisible(true);
     }
     
+    @Override
+    public void setVisible(boolean b) {
+    	super.setVisible(b);
+    	Midlet.openURL("wakelock://"+b);
+    }
+    
     public void actionPerformed(String actionCommand) {
         if ("go".equals(actionCommand)) {
             goOn();
