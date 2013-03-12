@@ -217,7 +217,9 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		addTab(gameTab);
 		addTab( new FX3DPanel(pp) );
                 try {
-                    addTab( new LobbyTab(myrisk) );
+                    if (RiskUIUtil.checkForNoSandbox()) {
+                        addTab( new LobbyTab(myrisk) );
+                    }
                 }
                 catch (Throwable th) {
                     RiskUtil.printStackTrace(th); // midletrunner.jar could be missing
@@ -234,13 +236,17 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		addTab( new TestPanel(myrisk,pp) );
 		addTab(editorTab);
                 try {
-                    addTab( new TranslationToolPanel() );
+                    if (RiskUIUtil.checkForNoSandbox()) {
+                        addTab( new TranslationToolPanel() );
+                    }
                 }
                 catch (Throwable th) {
                     RiskUtil.printStackTrace(th); // TranslationTool.jar could be missing
                 }
-		addTab(new BugsPanel());
-
+                
+                if (RiskUIUtil.checkForNoSandbox()) {
+                    addTab(new BugsPanel());
+                }
 
 		add(tabbedpane, java.awt.BorderLayout.CENTER );
 
@@ -325,16 +331,15 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
             return gMenuBar;
         }
 
-	public void setupLobbyButton() {
+	public void checkForUpdates() {
 
-		if (RiskUIUtil.getAddLobby(myrisk)) {
-
+                RiskUIUtil.checkForUpdates(myrisk);
+            
+		if (RiskUIUtil.getAddLobby()) {
 			lobby.setVisible(true);
-
+                        revalidate();
+                        repaint();
 		}
-
-		revalidate();
-		repaint();
 
 	}
 

@@ -765,112 +765,117 @@ public class RiskUIUtil {
 	private static String lobbyAppletURL;
 	private static String lobbyURL;
 
-	public static boolean getAddLobby(Risk risk) {
+	public static boolean getAddLobby() {
 
 		boolean canlobby = false;
 
-			if (checkForNoSandbox()) {
+                if (checkForNoSandbox()) {
 
-				try {
+                        try {
 
+                                URL url = new URL(RiskUtil.RISK_LOBBY_URL);
 
-					URL url = new URL(RiskUtil.RISK_LOBBY_URL);
+                                BufferedReader bufferin=new BufferedReader( new InputStreamReader(url.openStream()) );
 
-					BufferedReader bufferin=new BufferedReader( new InputStreamReader(url.openStream()) );
+                                StringBuffer buffer = new StringBuffer();
 
-					StringBuffer buffer = new StringBuffer();
+                                String input = bufferin.readLine();
 
-					String input = bufferin.readLine();
+                                while(input != null) {
 
-					while(input != null) {
+                                        buffer.append(input+"\n");
 
-						buffer.append(input+"\n");
-
-						input = bufferin.readLine(); // get next line
-					}
-
-					String[] lobbyinfo = buffer.toString().split("\\n");
-
-					if (lobbyinfo.length>=1 && lobbyinfo[0].equals("LOBBYOK")) {
-
-						if (lobbyinfo.length>=2) {
-
-							lobbyAppletURL = lobbyinfo[1];
-							canlobby = true;
-						}
-						if (lobbyinfo.length>=3) {
-
-							lobbyURL = lobbyinfo[2];
-							canlobby = true;
-
-						}
-					}
-
-				}
-				catch(Throwable ex) { }
-
-
-
-				try {
-
-					//try { Thread.sleep(5000); }
-					//catch(InterruptedException e) {}
-
-					URL url = new URL(RiskUtil.RISK_VERSION_URL);
-
-					BufferedReader bufferin=new BufferedReader( new InputStreamReader(url.openStream()) );
-					Vector buffer = new Vector();
-					String input = bufferin.readLine();
-
-					while(input != null) {
-						buffer.add(input);
-						input = bufferin.readLine(); // get next line
-					}
-
-					String[] newversion = (String[])buffer.toArray( new String[buffer.size()] );
-
-					if (newversion[0].startsWith("RISKOK ")) {
-
-						String v = newversion[0].substring(7, newversion[0].length() );
-
-						if (!v.equals(Risk.RISK_VERSION)) {
-
-							for (int c=1;c<newversion.length;c++) {
-								v = v+"\n"+newversion[c];
-							}
-
-                                                        ResourceBundle resb = TranslationBundle.getBundle();
-                                                        
-                                                        v = resb.getString("mainmenu.new-version.text").replaceAll("\\{0\\}", RiskUtil.GAME_NAME) + " "+v;
-                                                        
-                                                        String link = getURL(v);
-                                                        if (link!=null) {
-                                                            int result = JOptionPane.showConfirmDialog(null, v, resb.getString("mainmenu.new-version.title"), JOptionPane.OK_CANCEL_OPTION);
-                                                            if (result == JOptionPane.OK_OPTION) {
-                                                                RiskUtil.streamOpener.openURL( new URL(link) );
-                                                            }
-                                                        }
-                                                        else {
-                                                            // do not use this, this is used for errors
-                                                            risk.showMessageDialog(v);
-                                                        }
-
-						}
-					}
-
-				}
-				catch (Throwable e) { }
-
-
-                                try {
-                                    //check for map updates
-                                    MapUpdateService.getInstance().init( getFileList("map"), MapChooser.MAP_PAGE );
+                                        input = bufferin.readLine(); // get next line
                                 }
-                                catch (Throwable th) { }
-			}
+
+                                String[] lobbyinfo = buffer.toString().split("\\n");
+
+                                if (lobbyinfo.length>=1 && lobbyinfo[0].equals("LOBBYOK")) {
+
+                                        if (lobbyinfo.length>=2) {
+
+                                                lobbyAppletURL = lobbyinfo[1];
+                                                canlobby = true;
+                                        }
+                                        if (lobbyinfo.length>=3) {
+
+                                                lobbyURL = lobbyinfo[2];
+                                                canlobby = true;
+
+                                        }
+                                }
+
+                        }
+                        catch(Throwable ex) { }
+
+                }
 
 		return canlobby;
 	}
+        
+        
+        public static void checkForUpdates(Risk risk) {
+            
+                if (checkForNoSandbox()) {
+
+                        try {
+
+                                //try { Thread.sleep(5000); }
+                                //catch(InterruptedException e) {}
+
+                                URL url = new URL(RiskUtil.RISK_VERSION_URL);
+
+                                BufferedReader bufferin=new BufferedReader( new InputStreamReader(url.openStream()) );
+                                Vector buffer = new Vector();
+                                String input = bufferin.readLine();
+
+                                while(input != null) {
+                                        buffer.add(input);
+                                        input = bufferin.readLine(); // get next line
+                                }
+
+                                String[] newversion = (String[])buffer.toArray( new String[buffer.size()] );
+
+                                if (newversion[0].startsWith("RISKOK ")) {
+
+                                        String v = newversion[0].substring(7, newversion[0].length() );
+
+                                        if (!v.equals(Risk.RISK_VERSION)) {
+
+                                                for (int c=1;c<newversion.length;c++) {
+                                                        v = v+"\n"+newversion[c];
+                                                }
+
+                                                ResourceBundle resb = TranslationBundle.getBundle();
+
+                                                v = resb.getString("mainmenu.new-version.text").replaceAll("\\{0\\}", RiskUtil.GAME_NAME) + " "+v;
+
+                                                String link = getURL(v);
+                                                if (link!=null) {
+                                                    int result = JOptionPane.showConfirmDialog(null, v, resb.getString("mainmenu.new-version.title"), JOptionPane.OK_CANCEL_OPTION);
+                                                    if (result == JOptionPane.OK_OPTION) {
+                                                        RiskUtil.streamOpener.openURL( new URL(link) );
+                                                    }
+                                                }
+                                                else {
+                                                    // do not use this, this is used for errors
+                                                    risk.showMessageDialog(v);
+                                                }
+
+                                        }
+                                }
+
+                        }
+                        catch (Throwable e) { }
+
+
+                        try {
+                            //check for map updates
+                            MapUpdateService.getInstance().init( getFileList("map"), MapChooser.MAP_PAGE );
+                        }
+                        catch (Throwable th) { }
+                }
+        }
 
         public static String getURL(String v) {
             
