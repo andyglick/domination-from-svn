@@ -776,6 +776,9 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
 
+    /**
+     * @see net.yura.lobby.mini.MiniLobbyClient#toast(java.lang.String) 
+     */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
             Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message)+"&duration=SHORT");

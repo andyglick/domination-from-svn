@@ -42,14 +42,23 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         return RiskUtil.GAME_NAME.equals( gametype.getName() );
     }
 
+    private boolean openGame;
 
     public void objectForGame(Object object) {
         java.util.Map map = (java.util.Map)object;
         myrisk.lobbyMessage(map, lobby.whoAmI(), this);
+        
+        String command = (String)map.get("command");
+        if ("game".equals(command)) {
+            openGame = true;
+        }
     }
 
     public void stringForGame(String message) {
-        myrisk.parserFromNetwork(message);
+        if (openGame) {
+            myrisk.parserFromNetwork(message);
+        }
+        // else the game is not open so ignore the message
     }
 
     public void renamePlayer(String oldname, String newname) {
@@ -94,6 +103,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         logger.info("ignore GameCommand "+mtemp );
     }
     public void closeGame() {
+        openGame = false;
         lobby.closeGame();
     }
     

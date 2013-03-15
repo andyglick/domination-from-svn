@@ -450,6 +450,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             toast(message);
         }
     }
+
+    /**
+     * @see net.yura.domination.mobile.flashgui.GameActivity#toast(java.lang.String) 
+     */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
             Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
