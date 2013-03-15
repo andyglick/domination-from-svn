@@ -58,6 +58,9 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         if (openGame) {
             myrisk.parserFromNetwork(message);
         }
+        else {
+            logger.info("GAME NOT OPEN SO IGNORING: "+message);
+        }
         // else the game is not open so ignore the message
     }
 
