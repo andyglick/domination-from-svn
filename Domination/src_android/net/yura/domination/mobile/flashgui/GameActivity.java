@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
@@ -776,7 +777,9 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     static void toast(String message) {
-        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message)+"&duration=SHORT");
+        if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
+            Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message)+"&duration=SHORT");
+        }
     }
 
 }

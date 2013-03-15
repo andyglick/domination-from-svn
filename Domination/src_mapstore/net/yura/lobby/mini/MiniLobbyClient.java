@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Logger;
+import javax.microedition.lcdui.Display;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.client.Connection;
@@ -450,7 +451,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
     static void toast(String message) {
-        Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+        if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
+            Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+        }
     }
     
 }
