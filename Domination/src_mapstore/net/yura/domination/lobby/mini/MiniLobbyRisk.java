@@ -61,7 +61,6 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         else {
             logger.info("GAME NOT OPEN SO IGNORING: "+message);
         }
-        // else the game is not open so ignore the message
     }
 
     public void renamePlayer(String oldname, String newname) {

@@ -317,7 +317,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             autoplaceall=null;
         }
         
-        setTitle( resb.getProperty("mainmenu.title") );
+        //setTitle( resb.getProperty("mainmenu.title") );
+        setUndecorated(true);
 
         XULLoader loader = getPanel("/mainmenu.xml");
 
@@ -413,6 +414,7 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         DesktopPane.invokeLater( new Runnable() {
             public void run() {
 
+                setUndecorated(false);
                 setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
                 //resetplayers.setVisible(localgame?true:false);
 
