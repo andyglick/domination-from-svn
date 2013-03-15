@@ -200,7 +200,7 @@ Could you create a section in the risk.ini, in wich I can modify my own rulesets
 
 Theo: a button on the dice screen equivalent to "destroy and move all troops"
 
-
+1) cant see how many cards other players have.  This is important to strategize when to take out (and which ones) first, bc cards are so important for reinforcements
 
 
 
