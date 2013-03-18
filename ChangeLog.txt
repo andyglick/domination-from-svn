@@ -17,6 +17,7 @@ CURRENT VERSION:
 	main map (luca.map) is now higher resolution (800x500)
 	world map (world.map) is now higher resolution (800x500)
 
+	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices with preferExternal 
 	Android 31 allows human to view mssion at end of game if AI won
 		   wakelock added when game screen is open
 		   got rid of titlebar in main menu
