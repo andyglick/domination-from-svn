@@ -17,13 +17,13 @@ CURRENT VERSION:
 	main map (luca.map) is now higher resolution (800x500)
 	world map (world.map) is now higher resolution (800x500)
 
-	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices with preferExternal 
+	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices (GT-i5500)
 	Android 31 allows human to view mssion at end of game if AI won
 		   wakelock added when game screen is open
 		   got rid of titlebar in main menu
 		   fixed: nullpointer in getting game commands when game is not open
 
-1.1.1.3
+1.1.1.3 (10.03.2013)
 
 	Online Mini Lobby added to FlashGUI and SwingGUI
 	Brazilian Portuguese added by Ricardo Gomes Ponce
@@ -64,7 +64,7 @@ CURRENT VERSION:
 		   do not spam logs with known MapServer connections errors
 	Android 22 online multiplayer Beta for en_GB users
 
-1.1.1.2
+1.1.1.2 (18.11.2012)
 
 	italian update by Marco Barbarino
 	when publishing maps, it checks to see if the map name is already taken
@@ -85,7 +85,7 @@ CURRENT VERSION:
 		   do not crash on "application/xml" mime type from server
 		   shows new line as a new line and not a [] in the MapStore
 
-1.1.1.1
+1.1.1.1 (12.09.2012)
 
 	in p2p online play, when someone disconnects, the others can carry on playing
 	in italian cards, there is no limit to the number of cards you can hold
@@ -108,7 +108,7 @@ CURRENT VERSION:
 		   fixed: in ICS the menu button still comes up, (eg THC One X)
 		   fixed: ldpi/small green go button looks wrong
 
-1.1.1.0
+1.1.1.0 (16.07.2012)
 
 	when you must trade, the "End Trade" button becomes disabled/hidden
 	can have different circle sizes on maps
