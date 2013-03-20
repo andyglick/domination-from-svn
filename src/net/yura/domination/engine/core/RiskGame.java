@@ -2331,6 +2331,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public String getPreviewPic() {
 		return previewPic;
 	}
+        public void setPreviewPic(String prv) {
+            previewPic = prv;
+        }
 
         public Map getProperties() {
             return properties;

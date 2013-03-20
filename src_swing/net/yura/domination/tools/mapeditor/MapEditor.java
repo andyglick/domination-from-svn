@@ -2,18 +2,17 @@
 
 package net.yura.domination.tools.mapeditor;
 
-import java.awt.image.BufferedImage;
-import java.awt.Graphics;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.Frame;
 import java.awt.Color;
 import java.awt.Component;
-import javax.imageio.ImageIO;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -435,6 +435,48 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 		return rg;
 	}
+        
+        private void loadMap(String name) throws Exception {
+            RiskGame map = makeNewMap();
+            map.setMapfile(name); // this is here just to update the cards option, also set the name and version
+            map.loadMap();
+            map.loadCards(true);
+
+            InputStream in = RiskUtil.openMapStream(map.getImagePic());
+
+            BufferedImage ipic = makeRGBImage( RiskUIUtil.read( in ) );
+            BufferedImage imap = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImageMap()) ) );
+
+            map.setMemoryLoad();
+
+            File file=null;
+            if (in instanceof RiskUIUtil.FileInputStream) {
+                file = ( (RiskUIUtil.FileInputStream)in ).getFile();
+            }
+
+            setNewMap(map,ipic,imap,name,file);
+        }
+        
+        void setImagePic(BufferedImage bufferedImage,File file,boolean checkmap) {
+            editPanel.setImagePic(bufferedImage,checkmap);
+            imgFile = file;
+            revalidate();
+            repaint();
+        }
+        
+        void setImageMap(BufferedImage bufferedImage) {
+            editPanel.setImageMap(bufferedImage);
+            repaint();
+        }
+        
+        static BufferedImage newImageMap(int w, int h) {
+            BufferedImage imap = new BufferedImage(w , h, BufferedImage.TYPE_INT_BGR); // @YURA:TODO only works with this, but should be something else
+            Graphics g = imap.getGraphics();
+            g.setColor( Color.WHITE );
+            g.fillRect(0,0,w , h);
+            g.dispose();
+            return imap;
+        }
 
 	public void actionPerformed(ActionEvent a) {
 
@@ -446,11 +488,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				map.setupNewMap();
 
 				BufferedImage ipic = new BufferedImage(PicturePanel.PP_X , PicturePanel.PP_Y, BufferedImage.TYPE_INT_BGR);
-				BufferedImage imap = new BufferedImage(PicturePanel.PP_X , PicturePanel.PP_Y, BufferedImage.TYPE_INT_BGR); // @YURA:TODO only works with this, but should be something else
-				Graphics g = imap.getGraphics();
-				g.setColor( Color.WHITE );
-				g.fillRect(0,0,PicturePanel.PP_X , PicturePanel.PP_Y);
-				g.dispose();
+				BufferedImage imap = newImageMap(PicturePanel.PP_X,PicturePanel.PP_Y);
 
 				setNewMap(map,ipic,imap,null,null);
 
@@ -472,38 +510,31 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			if (name!=null) {
-
-				RiskGame map = makeNewMap();
-				map.setMapfile(name); // this is here just to update the cards option, also set the name and version
-				map.loadMap();
-				map.loadCards(true);
-
-                                InputStream in = RiskUtil.openMapStream(map.getImagePic());
+                            
+                            if (name.endsWith(".xml")) {
                                 
-				BufferedImage ipic = makeRGBImage( RiskUIUtil.read( in ) );
-				BufferedImage imap = makeRGBImage( RiskUIUtil.read(RiskUtil.openMapStream(map.getImageMap()) ) );
-
-				map.setMemoryLoad();
-
-                                File file=null;
-                                if (in instanceof RiskUIUtil.FileInputStream) {
-                                    file = ( (RiskUIUtil.FileInputStream)in ).getFile();
-                                }
+                                loadMap("teg.map");
                                 
-				setNewMap(map,ipic,imap,name,file);
+                                File file = new File(name);
                                 
+                                TegMapLoader loader = new TegMapLoader();
+                                loader.load( file , myMap , this);
 
+                                myMap.setMapName(null);
+                                myMap.setPreviewPic(null);
+                                fileName = file.getParentFile().getName();
+                            }
+                            else {
+                                loadMap(name);
+                            }
 			}
-
 		    }
 		    catch(Exception ex) {
-
 			showError(ex);
-
 		    }
-
-		    setCursor(null);
-
+                    finally {
+                        setCursor(null);
+                    }
 		}
 		else if (a.getActionCommand().equals("save")) {
 
@@ -727,10 +758,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			NewImage img = getNewImage(true);
 
 			if (img!=null) {
-				editPanel.setImagePic(img.bufferedImage,true);
-                                imgFile = img.file;
-				revalidate();
-				repaint();
+                            setImagePic(img.bufferedImage,img.file,true);
 			}
 
 		}
@@ -739,8 +767,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			NewImage img = getNewImage(false);
 
 			if (img!=null) {
-				editPanel.setImageMap(img.bufferedImage);
-				repaint();
+                            setImageMap(img.bufferedImage);
 			}
 
 		}
@@ -957,7 +984,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	private BufferedImage makeRGBImage(BufferedImage INipic) {
+	static BufferedImage makeRGBImage(BufferedImage INipic) {
 
 		BufferedImage ipic = new BufferedImage(INipic.getWidth(), INipic.getHeight(), BufferedImage.TYPE_INT_BGR);
 
@@ -967,7 +994,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		g1.fillRect(0,0,INipic.getWidth(), INipic.getHeight());
 
-		g1.drawImage(INipic,0,0,this);
+		g1.drawImage(INipic,0,0,null);
 
 		g1.dispose();
 
