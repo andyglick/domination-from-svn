@@ -72,8 +72,10 @@ public class TegMapLoader {
 
                         int pos_x = Integer.parseInt( parser.getAttributeValue(null, "pos_x") );
                         int pos_y = Integer.parseInt( parser.getAttributeValue(null, "pos_y") );
-                        int army_x = Integer.parseInt( parser.getAttributeValue(null, "army_x") );
-                        int army_y = Integer.parseInt( parser.getAttributeValue(null, "army_y") );
+                        String army_x = parser.getAttributeValue(null, "army_x");
+                        int armyX = (army_x==null||"".equals(army_x))?0:Integer.parseInt( army_x );
+                        String army_y = parser.getAttributeValue(null, "army_y");
+                        int armyY = (army_y==null||"".equals(army_y))?0:Integer.parseInt( army_y );
 
                         BufferedImage countryImage = ImageIO.read( new File(dir, file) );
 
@@ -93,8 +95,8 @@ public class TegMapLoader {
 
                         country.setName(countryName);
                         country.setIdString(countryName.replace(' ', '_'));
-                        country.setX( continentX+pos_x+  (countryImage.getWidth()/2)  +(army_x/2) );
-                        country.setY( continentY+pos_y+  (countryImage.getHeight()/2)  +(army_y/2) );
+                        country.setX( continentX+pos_x+  (countryImage.getWidth()/2)  +(armyX/2) );
+                        country.setY( continentY+pos_y+  (countryImage.getHeight()/2)  +(armyY/2) );
 
                         countryId++;
                     }
@@ -105,7 +107,7 @@ public class TegMapLoader {
             }
             else {
                 
-                if ("board".equals(name)) {
+                if ("board".equals(name) || "map".equals(name)) {
                     String file = parser.getAttributeValue(null, "file");
                     
                     File boardFile = new File(dir, file);
