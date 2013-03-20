@@ -481,8 +481,12 @@ public class RiskUIUtil {
                     // useless chack, but sometimes this is null
                     if (file==null) { return null; }
 
-                    return file.getName();
-
+                    if (file.getParentFile().equals(md)) {
+                        return file.getName();
+                    }
+                    else {
+                        return file.getPath();
+                    }
             }
 
             return null;
