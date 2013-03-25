@@ -12,6 +12,7 @@ import net.yura.domination.engine.core.Player;
  * @author Steven Hawkins
  *
  * TODO infer the other missions
+ * TODO modify isTooWeak and calculate the probable number of countries to take
  */
 public class AIMission extends AIDomination {
 
@@ -22,7 +23,7 @@ public class AIMission extends AIDomination {
 	protected List<Country> getBorder(GameState gs) {
 		List<Country> result = super.getBorder(gs);
 		if (player.getMission().getNoofarmies() > 1 
-				&& (player.getTerritoriesOwned().size()*2 > player.getMission().getNoofcountries() && pressAttack(gs) || player.getTerritoriesOwned().size() - 3 >= player.getMission().getNoofcountries())) {
+				&& (player.getTerritoriesOwned().size() - 3 >= player.getMission().getNoofcountries())) {
 			//this is redundant, but that's ok, what matters is the absolute ordering
 			result.addAll(player.getTerritoriesOwned());
 		}
@@ -69,8 +70,9 @@ public class AIMission extends AIDomination {
 		return Math.max(1, player.getMission().getNoofarmies());
 	}
 	
-	public GameState getGameState(Player p) {
-		GameState g = super.getGameState(p);
+	@Override
+	public GameState getGameState(Player p, boolean excludeCards) {
+		GameState g = super.getGameState(p, excludeCards);
 		if (player.getMission().getPlayer() != null && !isTargetMoot() && player.getMission().getPlayer() != g.orderedPlayers.get(0).p) {
 			g.targetPlayers = Arrays.asList(player.getMission().getPlayer(), g.orderedPlayers.get(0).p);
 		}
