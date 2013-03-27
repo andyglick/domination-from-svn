@@ -83,29 +83,18 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 	}
 
-	private void setupSize(int x,int y) {
-
-	    if (map==null || map.length!=x || map[0].length!=y) {
-
-		//System.out.println("MAKING NEW SIZE!!!!");
-
-		Dimension size = new Dimension(x,y);
-
-		setPreferredSize(size);
-		setMinimumSize(size);
-		setMaximumSize(size);
-
-                // clear out old values
-                img = null;
-                tempimg = null;
-                map = null;
-                
-		img = new BufferedImage(x,y, java.awt.image.BufferedImage.TYPE_INT_RGB );
-		tempimg = new BufferedImage(x,y, java.awt.image.BufferedImage.TYPE_INT_RGB );
-		map = new byte[x][y];
-	    }
-
-	}
+        protected void processMouseEvent(MouseEvent e) {
+            super.processMouseEvent(e);
+            if (e.getID() == MouseEvent.MOUSE_CLICKED && myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER ) {
+                // toggle the animation
+                if (ballWorld==null) {
+                    startAni();
+                }
+                else {
+                    stopAni();
+                }
+            }
+        }
 
 	/**
 	 * Adds the images related to the game to the picture panel
@@ -149,8 +138,28 @@ public class PicturePanel extends JPanel implements MapPanel {
                 m=null;
 
 
+                // creates a 2D byte array and double paint buffer
+                if (map==null || map.length!=mWidth || map[0].length!=mHeight) {
 
-		setupSize(mWidth,mHeight); // creates a 2D byte array and double paint buffer
+                    //System.out.println("MAKING NEW SIZE!!!!");
+
+                    Dimension size = new Dimension(mWidth,mHeight);
+
+                    setPreferredSize(size);
+                    setMinimumSize(size);
+                    setMaximumSize(size);
+
+                    // clear out old values
+                    img = null;
+                    tempimg = null;
+                    map = null;
+
+                    img = new BufferedImage(mWidth,mHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+                    tempimg = new BufferedImage(mWidth,mHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+                    map = new byte[mWidth][mHeight];
+                }
+
+
 		{ Graphics zg = img.getGraphics(); zg.drawImage(original, 0, 0, this); zg.dispose(); }
 
 
@@ -256,17 +265,30 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 			g2.drawImage(img,0,0,this);
 
+                        int c1=this.c1,c2=this.c2,cc=this.cc; // take local copy to be thread safe
+
 			if (c1 != NO_COUNTRY) {
-				g2.drawImage( countryImages[c1-1].getHighLightImage() ,countryImages[c1-1].getX1() ,countryImages[c1-1].getY1() ,this);
-			}
+                                drawHighLightImage(g2, c1);
+                        }
 
 			if (c2 != NO_COUNTRY) {
-				g2.drawImage(countryImages[c2-1].getHighLightImage() ,countryImages[c2-1].getX1() ,countryImages[c2-1].getY1() ,this);
-			}
+                                drawHighLightImage(g2, c2);
+                        }
 
 			if (cc != NO_COUNTRY) {
-				g2.drawImage( countryImages[cc-1].getHighLightImage() ,countryImages[cc-1].getX1() ,countryImages[cc-1].getY1() ,this);
-			}
+                                drawHighLightImage(g2, cc);
+                        }
+                        
+                        if (myrisk.getGame().getState()==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
+                            Player me = myrisk.getGame().getCurrentPlayer();
+                            List<Card> cards = me.getCards();
+                            for (Card card:cards) {
+                                Country country = card.getCountry();
+                                if (country!=null && country.getOwner() == me ) {
+                                    drawHighLightImage(g2,country.getColor());
+                                }
+                            }
+                        }
 
 			drawArmies(g2);
 
@@ -333,8 +355,8 @@ public class PicturePanel extends JPanel implements MapPanel {
 			int a=game.getAttacker().getColor();
 			int b=game.getDefender().getColor();
 
-			g2.drawImage(countryImages[a-1].getHighLightImage() ,countryImages[a-1].getX1() ,countryImages[a-1].getY1() ,this);
-			g2.drawImage(countryImages[b-1].getHighLightImage() ,countryImages[b-1].getX1() ,countryImages[b-1].getY1() ,this);
+                        drawHighLightImage(g2, a);
+                        drawHighLightImage(g2, b);
 
 			Color ac = new Color( game.getAttacker().getOwner().getColor() );
 			g2.setColor( new Color(ac.getRed(),ac.getGreen(), ac.getBlue(), 150) );
@@ -479,17 +501,8 @@ public class PicturePanel extends JPanel implements MapPanel {
             }
         }
 
-        protected void processMouseEvent(MouseEvent e) {
-            super.processMouseEvent(e);
-            if (e.getID() == MouseEvent.MOUSE_CLICKED && myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER ) {
-                // toggle the animation
-                if (ballWorld==null) {
-                    startAni();
-                }
-                else {
-                    stopAni();
-                }
-            }
+        private void drawHighLightImage(Graphics g,int id) {
+            g.drawImage( countryImages[id-1].getHighLightImage() ,countryImages[id-1].getX1() ,countryImages[id-1].getY1() ,this);
         }
 
 	/**
@@ -672,7 +685,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                         boolean mine = game.getCountryInt(c+1).getOwner() == game.getCurrentPlayer();
 
                         if (myrisk.showHumanPlayerThereInfo()) {
-                                List cards = game.getCurrentPlayer().getCards();
+                                List cards = myrisk.getCurrentCards();
                                 for (int j = 0; j < cards.size() ; j++) {
                                         if ( ((Card)cards.get(j)).getCountry() == game.getCountryInt(c+1) ) {
                                                 val = mine?Color.BLUE:Color.YELLOW;

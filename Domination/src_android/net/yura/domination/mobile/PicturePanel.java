@@ -368,15 +368,26 @@ public class PicturePanel extends ImageView implements MapPanel {
                         int c1=this.c1,c2=this.c2,cc=this.cc; // take local copy to be thread safe
                         
                         if (c1 != NO_COUNTRY) {
-                                drawHighLightImage(g, countryImages[c1-1]);
+                                drawHighLightImage(g,c1);
                         }
 
                         if (c2 != NO_COUNTRY) {
-                                drawHighLightImage(g,countryImages[c2-1]);
+                                drawHighLightImage(g,c2);
                         }
 
                         if (cc != NO_COUNTRY) {
-                                drawHighLightImage(g,countryImages[cc-1]);
+                                drawHighLightImage(g,cc);
+                        }
+
+                        if (myrisk.getGame().getState()==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
+                            Player me = myrisk.getGame().getCurrentPlayer();
+                            List<Card> cards = me.getCards();
+                            for (Card card:cards) {
+                                Country country = card.getCountry();
+                                if (country!=null && country.getOwner() == me ) {
+                                    drawHighLightImage(g,country.getColor());
+                                }
+                            }
                         }
 
                         g.setFont(font);
@@ -435,8 +446,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                             int a=attacker.getColor();
                             int b=defender.getColor();
 
-                            drawHighLightImage(g2,countryImages[a-1]);
-                            drawHighLightImage(g2,countryImages[b-1]);
+                            drawHighLightImage(g2,a);
+                            drawHighLightImage(g2,b);
 
                             int ac = attacker.getOwner().getColor();
 
@@ -581,7 +592,8 @@ public class PicturePanel extends ImageView implements MapPanel {
             }
         }
         
-        private void drawHighLightImage(Graphics2D g, CountryImage countryImage) {
+        private void drawHighLightImage(Graphics2D g, int id) {
+            CountryImage countryImage = countryImages[id-1];
             
             int val = countryImage.color;
             Graphics g2 = g.getGraphics();
@@ -784,7 +796,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         boolean mine = game.getCountryInt(c+1).getOwner() == game.getCurrentPlayer();
 
                         if (myrisk.showHumanPlayerThereInfo()) {
-                                List cards = game.getCurrentPlayer().getCards();
+                                List cards = myrisk.getCurrentCards();
                                 for (int j = 0; j < cards.size() ; j++) {
                                         if ( ((Card)cards.get(j)).getCountry() == game.getCountryInt(c+1) ) {
                                                 val = mine?BLUE:YELLOW;
