@@ -781,24 +781,22 @@ public class PicturePanel extends ImageView implements MapPanel {
                     }
                     else if (view == VIEW_CARD_OWNERSHIP) {
 
-                                if (  game.getCurrentPlayer()==null  || ((Country)game.getCountryInt(c+1)).getOwner() != (Player)game.getCurrentPlayer()) {
-                                        val = LIGHT_GRAY;
-                                }
-                                else {
-                                        List cards = ((Player)game.getCurrentPlayer()).getCards();
+                        boolean mine = game.getCountryInt(c+1).getOwner() == game.getCurrentPlayer();
 
-                                        for (int j = 0; j < cards.size() ; j++) {
-
-                                                if ( ((Card)cards.get(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
-                                                        val = BLUE;
-                                                }
-
+                        if (myrisk.showHumanPlayerThereInfo() && game.getCurrentPlayer()!=null) {
+                                List cards = game.getCurrentPlayer().getCards();
+                                for (int j = 0; j < cards.size() ; j++) {
+                                        if ( ((Card)cards.get(j)).getCountry() == game.getCountryInt(c+1) ) {
+                                                val = mine?BLUE:YELLOW;
                                         }
-
-                                        if (val == 0) val = DARK_GRAY;
                                 }
+                        }
 
-                                val = colorWithAlpha(val, 100);
+                        if (val == 0) {
+                                val = mine?DARK_GRAY:LIGHT_GRAY;
+                        }
+
+                        val = colorWithAlpha(val, 100);
 
                     }
                     else if (view == VIEW_TROOP_STRENGTH) {
@@ -990,6 +988,7 @@ public class PicturePanel extends ImageView implements MapPanel {
         public final static int DARK_GRAY  = newColor(64, 64, 64);
         public final static int LIGHT_GRAY = newColor(192, 192, 192);
         public final static int BLUE  = newColor(0, 0, 255);
+        public final static int YELLOW  = newColor(255, 255, 0);
 
         public static int colorWithAlpha(int color, int alpha) {
             return ((alpha & 0xFF) << 24) | (color & 0xFFFFFF);
