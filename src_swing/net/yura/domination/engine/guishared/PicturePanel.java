@@ -669,24 +669,22 @@ public class PicturePanel extends JPanel implements MapPanel {
 		    }
 		    else if (view == VIEW_CARD_OWNERSHIP) {
 
-				if (  game.getCurrentPlayer()==null  || ((Country)game.getCountryInt(c+1)).getOwner() != (Player)game.getCurrentPlayer()) {
-					val = Color.lightGray;
-				}
-				else {
-					List cards = ((Player)game.getCurrentPlayer()).getCards();
+                        boolean mine = game.getCountryInt(c+1).getOwner() == game.getCurrentPlayer();
 
-					for (int j = 0; j < cards.size() ; j++) {
+                        if (myrisk.showHumanPlayerThereInfo()) {
+                                List cards = game.getCurrentPlayer().getCards();
+                                for (int j = 0; j < cards.size() ; j++) {
+                                        if ( ((Card)cards.get(j)).getCountry() == game.getCountryInt(c+1) ) {
+                                                val = mine?Color.BLUE:Color.YELLOW;
+                                        }
+                                }
+                        }
 
-						if ( ((Card)cards.get(j)).getCountry() == (Country)game.getCountryInt(c+1) ) {
-							val = Color.blue;
-						}
+                        if (val == null) {
+                                val = mine?Color.DARK_GRAY:Color.LIGHT_GRAY;
+                        }
 
-					}
-
-					if (val == null) val = Color.darkGray;
-				}
-
-				val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 100);
+                        val = new Color(val.getRed(), val.getGreen(), val.getBlue(), 100);
 
 		    }
 		    else if (view == VIEW_TROOP_STRENGTH) {

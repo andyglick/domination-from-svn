@@ -14,8 +14,11 @@ CURRENT VERSION:
 	CommandLine:	1.0.4.1
 
 1.1.1.4
+
 	main map (luca.map) is now higher resolution (800x500)
 	world map (world.map) is now higher resolution (800x500)
+	MapEditor can load TEG/JTEG xml maps
+	Card Ownership view shows you the cards you own when you dont own the country in Yellow
 
 	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices (GT-i5500)
 	Android 31 allows human to view mssion at end of game if AI won

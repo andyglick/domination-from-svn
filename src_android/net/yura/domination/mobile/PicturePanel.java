@@ -783,7 +783,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         boolean mine = game.getCountryInt(c+1).getOwner() == game.getCurrentPlayer();
 
-                        if (myrisk.showHumanPlayerThereInfo() && game.getCurrentPlayer()!=null) {
+                        if (myrisk.showHumanPlayerThereInfo()) {
                                 List cards = game.getCurrentPlayer().getCards();
                                 for (int j = 0; j < cards.size() ; j++) {
                                         if ( ((Card)cards.get(j)).getCountry() == game.getCountryInt(c+1) ) {
