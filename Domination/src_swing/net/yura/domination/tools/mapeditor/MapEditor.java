@@ -104,6 +104,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	private JButton loadimagepic;
 	private JButton loadimagemap;
 	private JButton fixButton;
+        private JButton bamButton;
 
 	private JButton zoomin;
 	private JButton zoomout;
@@ -273,6 +274,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		modesPanel.add(fixButton);
 		fixButton.setEnabled(false);
 
+		bamButton = new JButton("BAM");
+		bamButton.setActionCommand("bam");
+		bamButton.addActionListener(this);
+		modesPanel.add(bamButton);
+		bamButton.setEnabled(false);
+
 		add(modesPanel, BorderLayout.SOUTH );
 
 		JPanel topPanel = new JPanel();
@@ -411,6 +418,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		loadimagepic.setEnabled(true);
 		loadimagemap.setEnabled(true);
 		fixButton.setEnabled(true);
+                bamButton.setEnabled(true);
 
                 fileName = fname;
                 imgFile = img;
@@ -481,9 +489,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	public void actionPerformed(ActionEvent a) {
 
 		if (a.getActionCommand().equals("newmap")) {
-
 			try {
-
 				RiskGame map = makeNewMap();
 				map.setupNewMap();
 
@@ -491,17 +497,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				BufferedImage imap = newImageMap(PicturePanel.PP_X,PicturePanel.PP_Y);
 
 				setNewMap(map,ipic,imap,null,null);
-
 			}
 			catch(Exception ex) {
-
 				showError(ex);
-
 			}
-
 		}
 		else if (a.getActionCommand().equals("load")) {
-
 
 		    try {
 
@@ -590,19 +591,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     }
 		}
 		else if (a.getActionCommand().equals("play")) {
-
 			if ( checkMap() ) {
-
 				try {
 					myrisk.newMemoryGame(myMap,buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic"));
-                                        
                                         panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
 				}
                                 catch (Exception e) {
 					showError(e);
 				}
 			}
-
 		}
                 else if (a.getActionCommand().equals("publish")) {
 
@@ -760,7 +757,6 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			if (img!=null) {
                             setImagePic(img.bufferedImage,img.file,true);
 			}
-
 		}
 		else if (a.getActionCommand().equals("loadimagemap")) {
 
@@ -769,70 +765,45 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			if (img!=null) {
                             setImageMap(img.bufferedImage);
 			}
-
 		}
 		else if (a.getActionCommand().equals("mode")) {
-
 			if (move.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_MOVE);
-
 			}
 			else if (moveall.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_MOVEALL);
-
 			}
 			else if (join.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_JOIN);
-
 			}
 			else if (join1way.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_JOIN1WAY);
-
 			}
 			else if (disjoin.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_DISJOIN);
-
 			}
 			else if (draw.isSelected()) {
-
 				editPanel.setMode(MapEditorPanel.MODE_DRAW);
-
 			}
 			else {
-
 				throw new RuntimeException("unknown mode");
-
 			}
-
 		}
 		else if (a.getActionCommand().equals("zoomin")) {
-
 			zoom(true);
-
-
 		}
 		else if (a.getActionCommand().equals("zoomout")) {
-
 			zoom(false);
-
 		}
 		else if (a.getActionCommand().equals("fix")) {
-
 			removeBadMapColors();
-
+		}
+                else if (a.getActionCommand().equals("bam")) {
+			bam();
 		}
 		else {
-
 			throw new RuntimeException("unknown command: "+a.getActionCommand());
-
 		}
-
-
 	}
 
         private int showInputDialog(String[] labels, JComponent[] comps,String title) {
@@ -960,29 +931,32 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	private void removeBadMapColors() {
-
 		java.util.Map updateMap = new HashMap();
-
 		// go though ALL the colors that can be in the image map
 		for (int c=0;c<256;c++) {
-
 			if (myMap.getCountryInt(c)!=null) {
-
 				updateMap.put(new Integer(c),new Integer(c));
-
 			}
 			else {
-
 				updateMap.put(new Integer(c),new Integer(255));
-
 			}
 		}
-
 		editPanel.update(updateMap);
-
 		editPanel.repaint();
-
 	}
+
+        private void bam() {
+            BufferedImage imgMap = editPanel.getImageMap();
+            Graphics g = imgMap.getGraphics();
+            int size = myMap.getCircleSize();
+            Country[] countries = myMap.getCountries();
+            for (Country country:countries) {
+                g.setColor( new Color(country.getColor(), country.getColor(), country.getColor()) );
+                g.fillOval(country.getX()-(size/2),country.getY()-(size/2),size,size);
+            }
+            g.dispose();
+            editPanel.repaint();
+        }
 
 	static BufferedImage makeRGBImage(BufferedImage INipic) {
 

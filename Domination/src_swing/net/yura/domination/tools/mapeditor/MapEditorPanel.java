@@ -69,16 +69,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	}
 
 	public BufferedImage getImageMap() {
-
 		return map;
-
 	}
 
 
 	public BufferedImage getImagePic() {
-
 		return pic;
-
 	}
 
 	public void zoom(int a) {
