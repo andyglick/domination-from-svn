@@ -27,6 +27,8 @@ public class Statistic implements Serializable {
     public static final int countriesWon = 9;
     public static final int countriesLost = 10;
     public static final int attacked = 11;
+    
+    public static final int cards = 12;
 
     // in the rest of the game they are knows as num + 1
 
@@ -34,7 +36,7 @@ public class Statistic implements Serializable {
 
     public Statistic() {
 
-	statistics = new int[12];
+	statistics = new int[13];
 
 	for (int i = 0; i < statistics.length; i++) {
 	    statistics[i]=0;
@@ -43,12 +45,13 @@ public class Statistic implements Serializable {
     }
 
     // at the end of a persons go this gets called
-    public void endGoStatistics(int a, int b, int c, int d) {
+    public void endGoStatistics(int a, int b, int c, int d, int cards) {
 
 	statistics[0] = a;
 	statistics[1] = b;
 	statistics[5] = c;
 	statistics[6] = d;
+	statistics[12] = cards;
 /*
 	System.out.print("\nStatistic for the last go:\n");
 	System.out.print("countries "+statistics[0]+"\n");
@@ -100,9 +103,7 @@ public class Statistic implements Serializable {
     }
 
     public int get(int a) {
-
 	return statistics[a-1];
-
     }
 
 }

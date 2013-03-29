@@ -50,7 +50,8 @@ public class StatsActivity extends Activity {
         RETREATS("retreats",9),
         VICTORIES("victories",10),
         DEFEATS("defeats",11),
-        ATTACKED("attacked" ,12);
+        ATTACKED("attacked" ,12),
+        CARDS("cards" ,13);
 
         private final String name;
         private final int id;
@@ -150,7 +151,7 @@ public class StatsActivity extends Activity {
             for (int i = 0; i < PointToDraw.length; i++) {
 
                 // TODO why 0? this makes no sense??
-                if ( a==0 || a==1 || a==2 || a==6 || a==7) {
+                if ( a==0 || a==1 || a==2 || a==6 || a==7 || a==13) {
                     newPoint = PointToDraw[i] ;
                 }
                 else {
