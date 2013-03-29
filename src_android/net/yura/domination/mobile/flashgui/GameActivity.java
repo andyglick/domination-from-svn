@@ -93,9 +93,14 @@ public class GameActivity extends Frame implements ActionListener {
         pp.addMouseListener(
             new MouseListener() {
                 public void click(int x,int y) {
-                    int[] countries = mml.mouseReleased(x, y, gameState);
-                    if (countries!=null) {
-                        mapClick(countries);
+                    if (gameState == RiskGame.STATE_TRADE_CARDS) {
+                        openCards();
+                    }
+                    else {
+                        int[] countries = mml.mouseReleased(x, y, gameState);
+                        if (countries!=null) {
+                            mapClick(countries);
+                        }
                     }
                 }
             }
@@ -459,14 +464,17 @@ public class GameActivity extends Frame implements ActionListener {
             OptionPane.showMessageDialog(null, toString(html) , resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
         }
         else if ("cards".equals(actionCommand)) {
-            
-            CardsDialog cardsDialog = new CardsDialog( myrisk, pp);
-            cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
-            cardsDialog.setVisible(true);
+            openCards();
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
         }
+    }
+    
+    void openCards() {
+        CardsDialog cardsDialog = new CardsDialog( myrisk, pp);
+        cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
+        cardsDialog.setVisible(true);
     }
 
     static String toString(Element element) {
