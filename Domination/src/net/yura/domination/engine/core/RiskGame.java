@@ -1225,9 +1225,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 		int countries = p.getNoTerritoriesOwned();
 		int armies = p.getNoArmies();
 		int continents = getNoContinentsOwned(p);
-		int conectedEmpire = ((Vector)getConnectedEmpire(p)).size() ;
+		int conectedEmpire = getConnectedEmpire(p).size();
+		int cards = p.getCards().size();
 
-		p.currentStatistic.endGoStatistics(countries, armies, continents, conectedEmpire);
+		p.currentStatistic.endGoStatistics(countries, armies, continents, conectedEmpire, cards);
 
 	}
 
