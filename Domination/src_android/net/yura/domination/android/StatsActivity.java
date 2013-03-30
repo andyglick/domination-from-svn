@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import net.yura.domination.engine.core.Statistic;
 
 public class StatsActivity extends Activity {
 
@@ -39,19 +40,19 @@ public class StatsActivity extends Activity {
     
 
     enum Stat implements EnumConverter<Integer> {
-        COUNTRIES("countries",1),
-        ARMIES("armies",2),
-        KILLS("kills",3),
-        CASUALTIES("casualties",4),
-        REINFORCEMENTS("reinforcements",5),
-        CONTINENTS("continents",6),
-        EMPIRE("empire",7),
-        ATTACKS("attacks",8),
-        RETREATS("retreats",9),
-        VICTORIES("victories",10),
-        DEFEATS("defeats",11),
-        ATTACKED("attacked" ,12),
-        CARDS("cards" ,13);
+        COUNTRIES("countries",Statistic.COUNTRIES),
+        ARMIES("armies",Statistic.ARMIES),
+        KILLS("kills",Statistic.KILLS),
+        CASUALTIES("casualties",Statistic.CASUALTIES),
+        REINFORCEMENTS("reinforcements",Statistic.REINFORCEMENTS),
+        CONTINENTS("continents",Statistic.CONTINENTS),
+        EMPIRE("empire",Statistic.CONECTED_EMPIRE),
+        ATTACKS("attacks",Statistic.ATTACKS),
+        RETREATS("retreats",Statistic.RETREATS),
+        VICTORIES("victories",Statistic.COUNTRIES_WON),
+        DEFEATS("defeats",Statistic.COUNTRIES_LOST),
+        ATTACKED("attacked" ,Statistic.ATTACKED),
+        CARDS("cards" ,Statistic.CARDS);
 
         private final String name;
         private final int id;

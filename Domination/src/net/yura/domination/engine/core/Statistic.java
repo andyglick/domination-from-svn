@@ -11,47 +11,43 @@ import java.io.Serializable;
 
 public class Statistic implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     // RISK II Statistics
-    public static final int countries = 0;
-    public static final int armies = 1;
-    public static final int kills = 2;
-    public static final int casualties = 3;
-    public static final int reinforcements = 4;
-    public static final int continents = 5;
-    public static final int conectedEmpire = 6;
-    public static final int attacks = 7;
+    public static final int COUNTRIES = 1,
+                            ARMIES = 2,
+                            KILLS = 3,
+                            CASUALTIES = 4,
+                            REINFORCEMENTS = 5,
+                            CONTINENTS = 6,
+                            CONECTED_EMPIRE = 7,
+                            ATTACKS = 8,
 
-    public static final int retreats = 8;
-    public static final int countriesWon = 9;
-    public static final int countriesLost = 10;
-    public static final int attacked = 11;
-    
-    public static final int cards = 12;
+                            RETREATS = 9,
+                            COUNTRIES_WON = 10,
+                            COUNTRIES_LOST = 11,
+                            ATTACKED = 12,
+
+                            CARDS = 13;
 
     // in the rest of the game they are knows as num + 1
-
     public int[] statistics;
 
     public Statistic() {
-
 	statistics = new int[13];
-
 	for (int i = 0; i < statistics.length; i++) {
 	    statistics[i]=0;
 	}
-
     }
 
     // at the end of a persons go this gets called
-    public void endGoStatistics(int a, int b, int c, int d, int cards) {
+    public void endGoStatistics(int countries, int armies, int continents, int conectedEmpire, int cards) {
 
-	statistics[0] = a;
-	statistics[1] = b;
-	statistics[5] = c;
-	statistics[6] = d;
-	statistics[12] = cards;
+	statistics[COUNTRIES-1] = countries;
+	statistics[ARMIES-1] = armies;
+	statistics[CONTINENTS-1] = continents;
+	statistics[CONECTED_EMPIRE-1] = conectedEmpire;
+	statistics[CARDS-1] = cards;
 /*
 	System.out.print("\nStatistic for the last go:\n");
 	System.out.print("countries "+statistics[0]+"\n");
@@ -71,35 +67,35 @@ public class Statistic implements Serializable {
     }
 
     public void addReinforcements(int a) {
-	statistics[4] = statistics[4] + a;
+	statistics[REINFORCEMENTS-1] = statistics[REINFORCEMENTS-1] + a;
     }
 
     public void addKill() {
-	statistics[2]++;
+	statistics[KILLS-1]++;
     }
 
     public void addCasualty() {
-	statistics[3]++;
+	statistics[CASUALTIES-1]++;
     }
 
     public void addAttack() {
-	statistics[7]++;
+	statistics[ATTACKS-1]++;
     }
 
     public void addAttacked() {
-	statistics[11]++;
+	statistics[ATTACKED-1]++;
     }
 
     public void addRetreat() {
-	statistics[8]++;
+	statistics[RETREATS-1]++;
     }
 
     public void addCountriesWon() {
-	statistics[9]++;
+	statistics[COUNTRIES_WON-1]++;
     }
 
     public void addCountriesLost() {
-	statistics[10]++;
+	statistics[COUNTRIES_LOST-1]++;
     }
 
     public int get(int a) {
