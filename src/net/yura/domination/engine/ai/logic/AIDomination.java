@@ -2170,9 +2170,9 @@ public class AIDomination extends AISubmissive {
 		int casualities = 0;
 		for (int i = stats.size() - 1; i >= end; i--) {
 			Statistic s = stats.get(i);
-			reenforcements += s.statistics[Statistic.reinforcements];
-			kills += s.statistics[Statistic.kills];
-			casualities += s.statistics[Statistic.casualties];
+			reenforcements += s.get(Statistic.REINFORCEMENTS);
+			kills += s.get(Statistic.KILLS);
+			casualities += s.get(Statistic.CASUALTIES);
 		}
 		return reenforcements + kills/((player2.getCards().size() > 2)?1:2) > 2*casualities;
 	}

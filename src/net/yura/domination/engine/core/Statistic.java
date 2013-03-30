@@ -31,7 +31,7 @@ public class Statistic implements Serializable {
                             CARDS = 13;
 
     // in the rest of the game they are knows as num + 1
-    public int[] statistics;
+    private int[] statistics;
 
     public Statistic() {
 	statistics = new int[13];
