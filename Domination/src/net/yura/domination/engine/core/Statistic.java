@@ -43,11 +43,11 @@ public class Statistic implements Serializable {
     // at the end of a persons go this gets called
     public void endGoStatistics(int countries, int armies, int continents, int conectedEmpire, int cards) {
 
-	statistics[COUNTRIES-1] = countries;
-	statistics[ARMIES-1] = armies;
-	statistics[CONTINENTS-1] = continents;
-	statistics[CONECTED_EMPIRE-1] = conectedEmpire;
-	statistics[CARDS-1] = cards;
+	statistics[getIndexFromStatistic(COUNTRIES)] = countries;
+	statistics[getIndexFromStatistic(ARMIES)] = armies;
+	statistics[getIndexFromStatistic(CONTINENTS)] = continents;
+	statistics[getIndexFromStatistic(CONECTED_EMPIRE)] = conectedEmpire;
+	statistics[getIndexFromStatistic(CARDS)] = cards;
 /*
 	System.out.print("\nStatistic for the last go:\n");
 	System.out.print("countries "+statistics[0]+"\n");
@@ -66,40 +66,44 @@ public class Statistic implements Serializable {
 */
     }
 
-    public void addReinforcements(int a) {
-	statistics[REINFORCEMENTS-1] = statistics[REINFORCEMENTS-1] + a;
+    public void addReinforcements(final int a) {
+	statistics[getIndexFromStatistic(REINFORCEMENTS)] += a;
     }
 
     public void addKill() {
-	statistics[KILLS-1]++;
+	statistics[getIndexFromStatistic(KILLS)]++;
     }
 
     public void addCasualty() {
-	statistics[CASUALTIES-1]++;
+	statistics[getIndexFromStatistic(CASUALTIES)]++;
     }
 
     public void addAttack() {
-	statistics[ATTACKS-1]++;
+	statistics[getIndexFromStatistic(ATTACKS)]++;
     }
 
     public void addAttacked() {
-	statistics[ATTACKED-1]++;
+	statistics[getIndexFromStatistic(ATTACKED)]++;
     }
 
     public void addRetreat() {
-	statistics[RETREATS-1]++;
+	statistics[getIndexFromStatistic(RETREATS)]++;
     }
 
     public void addCountriesWon() {
-	statistics[COUNTRIES_WON-1]++;
+	statistics[getIndexFromStatistic(COUNTRIES_WON)]++;
     }
 
     public void addCountriesLost() {
-	statistics[COUNTRIES_LOST-1]++;
+	statistics[getIndexFromStatistic(COUNTRIES_LOST)]++;
     }
 
-    public int get(int a) {
-	return statistics[a-1];
+    public int get(int statistic) {
+	return statistics[ getIndexFromStatistic(statistic) ];
+    }
+    
+    private static int getIndexFromStatistic(int statistic) {
+        return statistic-1;
     }
 
 }
