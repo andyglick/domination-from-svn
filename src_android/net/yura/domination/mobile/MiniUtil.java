@@ -14,6 +14,7 @@ import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.grasshopper.BugUIInfo;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.KeyEvent;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.io.FileUtil;
@@ -21,25 +22,14 @@ import net.yura.mobile.io.FileUtil;
 public class MiniUtil {
 
     public static void showAbout() {
+        Midlet.openURL("nativeNoResult://net.yura.domination.android.AboutActivity");
+    }
+    
+    private static void showOldAbout() {
 
         ResourceBundle resb = TranslationBundle.getBundle();
-        
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        String copyright = resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
-        
-        String author = resb.getString("about.author") + " Yura Mamyrin (yura@yura.net)";
-        
-        String text = "<html>" +
-                "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
-                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
-                "<p>"+"Game Engine: "+" "+Risk.RISK_VERSION +"</p>"+
-                "<p>"+author+"</p>"+
-                "<p>"+copyright+"</p>"+
-               // "<p>"+ resb.getString("about.comments") +"</p>"+
-                "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
-                "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
-                "<p>"+BugUIInfo.getLookAndFeel()+"</p>"+
-                "</html>";
+
+        String text = getAboutHtml();
 
         Button credits = new Button(resb.getString("about.tab.credits"));
         credits.setActionCommand("credits");
@@ -69,7 +59,29 @@ public class MiniUtil {
             }
         } ,text,resb.getString("about.title"), 0, OptionPane.INFORMATION_MESSAGE,
         null, new Button[] {credits,license,changelog,ok} , ok);
+
+    }
+    
+    public static String getAboutHtml() {
         
+        ResourceBundle resb = TranslationBundle.getBundle();
+        
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        String copyright = resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
+        
+        String author = resb.getString("about.author") + " Yura Mamyrin (yura@yura.net)";
+        
+        return "<html>" +
+                "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
+                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
+                "<p>"+"Game Engine: "+" "+Risk.RISK_VERSION +"</p>"+
+                "<p>"+author+"</p>"+
+                "<p>"+copyright+"</p>"+
+               // "<p>"+ resb.getString("about.comments") +"</p>"+
+                "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
+                "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
+                "<p>"+BugUIInfo.getLookAndFeel()+"</p>"+
+                "</html>";
     }
 
     public static List getFileList(String string) {
