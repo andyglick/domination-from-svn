@@ -21,8 +21,9 @@ CURRENT VERSION:
 	Card Ownership view shows you the cards you own when you dont own the country in Yellow
 
 	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices (GT-i5500)
-		   cards graph added
+		   cards graph added to see number of cards of other players
 		   new About screen with advert added
+		   keepAlive changed from < FROYO to <= GINGERBREAD_MR1 maybe it will fix the -1 http error
 	Android 31 allows human to view mssion at end of game if AI won
 		   wakelock added when game screen is open
 		   got rid of titlebar in main menu
