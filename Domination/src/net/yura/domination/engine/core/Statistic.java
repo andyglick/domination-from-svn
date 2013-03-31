@@ -2,6 +2,7 @@
 
 package net.yura.domination.engine.core;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -104,6 +105,16 @@ public class Statistic implements Serializable {
     
     private static int getIndexFromStatistic(int statistic) {
         return statistic-1;
+    }
+
+    // we may have loaded a old game where statistics.length is 12
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        if (statistics.length < 13) {
+            int[] old = statistics;
+            statistics = new int[13];
+            System.arraycopy(old, 0, statistics, 0, old.length);
+        }
     }
 
 }
