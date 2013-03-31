@@ -41,13 +41,13 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
             webView.loadData(MiniUtil.getAboutHtml(), "text/html", null);
         }
         else if ("credits".equals(tag)){
-            webView.loadUrl(prefix+"gpl.txt");
+            webView.loadUrl(prefix+"help/game_credits.htm");
         }
         else if ("license".equals(tag)){
-            webView.loadUrl(prefix+"ChangeLog.txt");
+            webView.loadUrl(prefix+"gpl.txt");
         }
         else if ("changelog".equals(tag)){
-            webView.loadUrl(prefix+"help/game_credits.htm");
+            webView.loadUrl(prefix+"ChangeLog.txt");
         }
         else {
             throw new IllegalArgumentException("strange tag "+tag);
