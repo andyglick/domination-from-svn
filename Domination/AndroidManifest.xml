@@ -26,7 +26,9 @@
 	<!-- online it says i should add this if i want it to vibrate with notifications, but in my own test i did not need it, strange -->
 	<uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> this is for AdMob -->
+	<!--  this is for AdMob -->
+    	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     
     <!-- this means i dont need different assets for different resolutions -->
@@ -71,7 +73,8 @@
         <activity android:name="net.yura.android.ToastActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@android:style/Theme.NoDisplay"/>
         <activity android:name="net.yura.domination.android.StatsActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />
         
-        <!-- <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/> -->
+        <activity android:name="net.yura.domination.android.AboutActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />
+        <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
         
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
     </application>
