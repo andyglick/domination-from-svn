@@ -837,6 +837,8 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
 		return map[x][y] + 128;
+		//int result = map[x][y] + 128;
+		//return result==NO_COUNTRY?myrisk.getGame().getClosestCountry(x,y):result;
 	}
 
 	/**

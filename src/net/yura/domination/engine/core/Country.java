@@ -234,7 +234,16 @@ public class Country implements Serializable {
 	public void setY(int a) {
 		y=a;
 	}
-	
+
+        /**
+         * @see java.awt.geom.Point2D#distance(double, double, double, double) Point2D.distance
+         */
+        public int getDistanceTo(int px, int py) {
+            px -= getX();
+            py -= getY();
+            return (int)Math.sqrt(px * px + py * py);
+        }
+
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		if (out instanceof RiskObjectOutputStream) {
 			ObjectOutputStream.PutField putField = out.putFields();

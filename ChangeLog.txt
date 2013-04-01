@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		31
+	Android		33
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	MapEditor can load TEG/JTEG xml maps
 	Card Ownership view shows you the cards you own when you dont own the country in Yellow
 
+	Android 33 find Closest Country if we are not touching a actual Country
 	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices (GT-i5500)
 		   cards graph added to see number of cards of other players
 		   new About screen with advert added

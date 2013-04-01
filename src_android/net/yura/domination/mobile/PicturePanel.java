@@ -908,7 +908,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                         return NO_COUNTRY;
                 }
 
-                return map[x][y] + 128;
+                int result = map[x][y] + 128;
+		return result==NO_COUNTRY?myrisk.getGame().getClosestCountry(x,y):result;
         }
 
         /**

@@ -223,17 +223,12 @@ public class Risk extends Thread {
 	}
 
 	public void addRiskListener(RiskListener o) {
-
 		controller.addListener(o);
-
 		setHelp();
-
 	}
 
 	public void deleteRiskListener(RiskListener o) {
-
 		controller.deleteListener(o);
-
 	}
 
         private static class GameCommand {
