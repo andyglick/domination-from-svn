@@ -1500,9 +1500,20 @@ transient - A keyword in the Java programming language that indicates that a fie
 		return false;
 	}
 
-	//private URL getURL(String a) throws Exception {
-	//	return new URL(net.yura.domination.engine.Risk.mapsdir,a);
-	//}
+        public int getClosestCountry(int x, int y) {
+		Country closestCountryCanvas = null;
+		int closestDistance = Integer.MAX_VALUE;
+		
+		for (int index=0; index < Countries.length; index++) {
+                        int distance = Countries[index].getDistanceTo(x,y);
+                        if (distance < closestDistance) {
+                                // we have a country closer to the point (x,y)
+                                closestCountryCanvas = Countries[index];
+                                closestDistance = distance;
+                        }
+		}
+		return closestCountryCanvas.getColor();
+        }
 
 	/**
 	 * Loads the map
@@ -1835,14 +1846,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 	}
 
 	public void setCountries(Country[] a) {
-
 		Countries = a;
-
 	}
 	public void setContinents(Continent[] a) {
-
 		Continents = a;
-
 	}
 
 	/**
