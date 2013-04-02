@@ -21,6 +21,7 @@ CURRENT VERSION:
 	Card Ownership view shows you the cards you own when you dont own the country in Yellow
 
 	Android 33 find Closest Country if we are not touching a actual Country
+		   if the system kills off the game because of too little mem, the game will then be loaded on next startup
 	Android 32 android:installLocation changed from preferExternal to auto as it did not work on some devices (GT-i5500)
 		   cards graph added to see number of cards of other players
 		   new About screen with advert added
