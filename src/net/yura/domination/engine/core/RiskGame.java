@@ -2801,7 +2801,7 @@ System.out.print(str+"]\n");
     
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
     	in.defaultReadObject();
-    	if (this.mapfile != null) {
+    	if (this.mapfile != null && gameState!=STATE_NEW_GAME) {
             try {
                     loadMap(false, null);
             }
