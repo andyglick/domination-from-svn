@@ -2096,6 +2096,9 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 	}
 
+        /**
+         * called by the map editor to show a preview of the map we are making/testing
+         */
         public void showMapImage(Icon p) {
             guiSetup.showMapImage( p );
         }

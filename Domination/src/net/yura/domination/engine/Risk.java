@@ -392,10 +392,7 @@ public class Risk extends Thread {
                                                 unlimitedLocalMode = true;
 
                                                 controller.newGame(true);
-
-                                                setupPreview();
-
-                                                controller.showCardsFile( game.getCardsFile() , true);
+                                                setupPreviews( doesMapHaveMission() );
 
                                                 output=resb.getString( "core.newgame.created");
                                         }
@@ -435,8 +432,13 @@ RiskUtil.printStackTrace(e);
 
                                                 unlimitedLocalMode = true;
 
-                                                if (game.getState()==RiskGame.STATE_NEW_GAME) { controller.newGame(true); }
-                                                else { controller.startGame(unlimitedLocalMode); }
+                                                if (game.getState()==RiskGame.STATE_NEW_GAME) {
+                                                    controller.newGame(true);
+                                                    setupPreviews( doesMapHaveMission() );
+                                                }
+                                                else {
+                                                    controller.startGame(unlimitedLocalMode);
+                                                }
 
                                                 output=resb.getString( "core.loadgame.loaded");
 
@@ -487,10 +489,7 @@ RiskUtil.printStackTrace(e);
                                                 unlimitedLocalMode = false;
 
                                                 controller.newGame(false);
-
-                                                setupPreview();
-
-                                                controller.showCardsFile( game.getCardsFile() , true);
+                                                setupPreviews( doesMapHaveMission() );
 
                                                 output=resb.getString( "core.join.created");
 
@@ -2150,9 +2149,8 @@ RiskUtil.printStackTrace(e);
             
                 boolean yesmissions = game.setMapfile(filename);
 
-                setupPreview();
+                setupPreviews(yesmissions);
 
-                controller.showCardsFile( game.getCardsFile() , yesmissions );
                 //New map file selected: "{0}" (cards have been reset to the default for this map)
                 String output= RiskUtil.replaceAll( resb.getString( "core.choosemap.mapselected"), "{0}", filename);
 
@@ -2170,9 +2168,16 @@ RiskUtil.printStackTrace(e);
             showMessageDialog(output);
         }
         
-	private void setupPreview() {
+	private void setupPreviews(boolean yesmissions) {
             controller.showMapPic( game );
+            controller.showCardsFile( game.getCardsFile() , yesmissions );
 	}
+
+        private boolean doesMapHaveMission() {
+            java.util.Map cardsinfo = RiskUtil.loadInfo( game.getCardsFile() ,true);
+            String[] missions = (String[])cardsinfo.get("missions");
+            return missions.length > 0;
+        }
 
 	public int getType(String type) {
             if (type.equals("human")) {
@@ -2840,6 +2845,8 @@ RiskUtil.printStackTrace(e);
 
                 // we dont do this here as it wont work
                 //controller.showMapPic(game);
+                // the preview pic is instead set directly by the MapEditor calling on the SetupPanel
+                /** @see net.yura.domination.ui.swinggui.SwingGUIPanel#showMapImage(javax.swing.Icon) */
 
                 unlimitedLocalMode = true;
 	}
