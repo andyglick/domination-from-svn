@@ -15,11 +15,9 @@ import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
 import net.yura.mobile.gui.DesktopPane;
-import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Component;
-import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Label;
 import net.yura.mobile.gui.components.OptionPane;
@@ -27,13 +25,12 @@ import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Spinner;
 import net.yura.mobile.gui.components.TextComponent;
-import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.GridBagConstraints;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
 
-public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener {
+public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
     private final String[] compsNames;
     private final int[] compTypes;
@@ -41,23 +38,19 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
     // shares res
     Properties resb = GameActivity.resb;
     public Risk myrisk;
-
-    // main menu res
-    FileChooser chooser;
+    MiniFlashRiskAdapter controller;
 
     // new game res
     XULLoader newgame;
     Button autoplaceall;
     private boolean localgame;
     
-    MiniFlashRiskAdapter controller;
-    
     // online play
     private String[] allowedMaps;
     String lobbyMapName;
     // end online play
     
-    public MiniFlashGUI(Risk risk,MiniFlashRiskAdapter controller) {
+    public GameSetup(Risk risk,MiniFlashRiskAdapter controller) {
         myrisk = risk;
         this.controller = controller;
         setMaximum(true);
@@ -78,58 +71,16 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
     @Override
     public void actionPerformed(String actionCommand) {
-            if ("new game".equals(actionCommand)) {
-                myrisk.parser("newgame");
-            }
-            else if ("load game".equals(actionCommand)) {
 
-                chooser = new FileChooser();
-                chooser.setCurrentDirectory( MiniUtil.getSaveGameDirURL() );
-                chooser.showDialog(this, "doLoad", resb.getProperty("mainmenu.loadgame.loadbutton") , resb.getProperty("mainmenu.loadgame.loadbutton") );
-
-            }
-            else if ("doLoad".equals(actionCommand)) {
-
-                String file = chooser.getSelectedFile();
-                chooser = null;
-                
-                if (file.endsWith( GameActivity.SAVE_EXTENSION )) {
-                    myrisk.parser("loadgame " + file );
-                }
-                // else ignore file
-
-            }
-            else if ("manual".equals(actionCommand)) {
-
-                //WebView webView = new WebView( AndroidMeActivity.DEFAULT_ACTIVITY );
-                //webView.loadUrl("file:///android_asset/help/index.htm");
-                //AndroidMeActivity.DEFAULT_ACTIVITY.setContentView(webView);
-
-                MiniUtil.openHelp();
-            }
-            else if ("about".equals(actionCommand)) {
-                MiniUtil.showAbout();
-            }
-            else if ("quit".equals(actionCommand)) {
-                System.exit(0);
-            }
-            else if ("join game".equals(actionCommand)) {
-                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
-            }
-            else if ("start server".equals(actionCommand)) {
-                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
-            }
-            else if ("closegame".equals(actionCommand)) { // user clicks back in game setup screen
-        	
+            if ("closegame".equals(actionCommand)) { // user clicks back in game setup screen
         	if (localgame) {
         	    myrisk.parser("closegame");
         	}
         	else {
-        	    openMainMenu();
+        	    controller.openMainMenu();
         	}
             }
             else if ("startgame".equals(actionCommand)) {
-
                 ButtonGroup GameType = (ButtonGroup)newgame.getGroups().get("GameType");
                 ButtonGroup CardType = (ButtonGroup)newgame.getGroups().get("CardType");
 
@@ -151,7 +102,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                                 );
                     }
                     else {
-                        
                         controller.createLobbyGame(
                         	    ((TextComponent)newgame.find("GameName")).getText(),
                         	    RiskUtil.createGameString(
@@ -166,8 +116,8 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                         	    getNoPlayers(Player.PLAYER_HUMAN),
                                     Integer.parseInt( ((Option)((ComboBox)newgame.find("TimeoutValue")).getSelectedItem()).getKey() )
                             );
-                        
-                        openMainMenu(); // close the game setup screen
+
+                        controller.openMainMenu(); // close the game setup screen
                     }   
                 }
                 else {
@@ -176,7 +126,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
 
             }
             else if ("choosemap".equals(actionCommand)) {
-
                 MapListener al = new MapListener();
 
                 MapChooser mapc = new MapChooser(al, allowedMaps==null?MiniUtil.getFileList("map"):Arrays.asList(allowedMaps), localgame );
@@ -186,7 +135,6 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 mapFrame.setContentPane( mapc.getRoot() );
                 mapFrame.setMaximum(true);
                 mapFrame.setVisible(true);
-
             }
             else if ("mission".equals(actionCommand)) {
                     autoplaceall.setFocusable(false);
@@ -209,12 +157,10 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
                 }
             }
             else if ("online".equals(actionCommand)) {
-
         	controller.openLobby();
-                
             }
             else {
-                System.out.println("Unknown command: "+actionCommand);
+                System.err.println("Unknown command: "+actionCommand);
             }
         }
 
@@ -294,85 +240,14 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
         String[] missions = (String[])cardsinfo.get("missions");
         showCardsFile(cardsFile, missions.length > 0);
     }
-    
-    private XULLoader getPanel(String xmlfile) {
-
-        XULLoader loader;
-        try {
-            loader = XULLoader.load( Midlet.getResourceAsStream(xmlfile) , this, resb);
-        }
-        catch(Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        return loader;
-
-    }
-
-    public void openMainMenu() {
-
-        if (newgame!=null) {
-            // clean up
-            MapUpdateService.getInstance().deleteObserver( (BadgeButton)newgame.find("MapImg") );
-            newgame = null;
-            autoplaceall=null;
-        }
-        
-        //setTitle( resb.getProperty("mainmenu.title") );
-        setUndecorated(true);
-
-        XULLoader loader = getPanel("/mainmenu.xml");
-
-        //Component onlineButton = loader.find("OnlineButton");
-        //if (onlineButton!=null) {
-        //    onlineButton.setVisible( Locale.getDefault().equals(new Locale("en","GB")) );
-        //}
-        
-        final Panel newContentPane = new ScrollPane( loader.getRoot() );
-        
-        
-
-
-        
-        
-        if (isVisible()) {
-            DesktopPane.invokeLater(new Runnable() {
-                public void run() {
-                    setContentPane( newContentPane );
-                    revalidate();
-                    repaint();
-                    moveToBack();
-                }
-            });
-            
-        }
-        else {
-            setContentPane( newContentPane );
-            revalidate();
-            setVisible(true);
-            moveToBack();
-        }
-        
-    }
-    
-    private void moveToBack() {
-        // we want to always be at the bottom of the stack
-        // so move anything bellow us to be above us
-        List windows = getDesktopPane().getAllFrames();
-        for (int c=1;c<windows.size();c++) {
-            getDesktopPane().setSelectedFrame((Window)windows.get(0));
-        }
-    }
 
     // ================================================ GAME SETUP
     public void openNewGame(boolean islocalgame,String[] allowedMaps,String gameName) {
-
-        // clean up
-        chooser = null;
         
         localgame = islocalgame;
         this.allowedMaps = allowedMaps;
 
-        newgame = getPanel("/newgame.xml");
+        newgame = GameActivity.getPanel("/newgame.xml",this);
 
         if (gameName!=null) {
             TextComponent tc = (TextComponent)newgame.find("GameName");
@@ -410,24 +285,17 @@ public class MiniFlashGUI extends Frame implements ChangeListener,ActionListener
             setLobbyMap( allowedMaps[0] );
         }
 
-        // we need to go onto the UI thread to change the UI as it may be in the middle of a repaint
-        DesktopPane.invokeLater( new Runnable() {
-            public void run() {
 
-                setUndecorated(false);
-                setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
-                //resetplayers.setVisible(localgame?true:false);
+        
+        
 
-                setContentPane( new ScrollPane( newgame.getRoot() ) );
+        setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
+        //resetplayers.setVisible(localgame?true:false);
 
-                // bring this window to front, in case we have a mini lobby window open too
-                getDesktopPane().setSelectedFrame(MiniFlashGUI.this);
-                
-                revalidate();
-                repaint();
-            }
-        } );
+        setContentPane( new ScrollPane( newgame.getRoot() ) );
+        revalidate();
 
+        setVisible(true);
     }
 
     @Override

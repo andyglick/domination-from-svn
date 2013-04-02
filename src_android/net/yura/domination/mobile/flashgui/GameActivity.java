@@ -793,4 +793,17 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
 
+    public static XULLoader getPanel(String xmlfile, ActionListener al) {
+
+        XULLoader loader;
+        try {
+            loader = XULLoader.load( Midlet.getResourceAsStream(xmlfile) , al, resb);
+        }
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        return loader;
+
+    }
+
 }
