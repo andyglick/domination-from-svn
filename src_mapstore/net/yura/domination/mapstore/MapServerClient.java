@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Hashtable;
@@ -54,7 +55,7 @@ public class MapServerClient extends HTTPClient {
         }
 
         Level level  = Level.WARNING;
-        if (ex instanceof UnknownHostException || (ex instanceof SocketException && ("Connection timed out".equals(ex.getMessage()) || "Connection reset by peer".equals(ex.getMessage())) ) ) {
+        if (ex instanceof UnknownHostException || ex instanceof SocketTimeoutException || (ex instanceof SocketException && ("Connection timed out".equals(ex.getMessage()) || "Connection reset by peer".equals(ex.getMessage())) ) ) {
             level = Level.INFO;
         }
         // print error to console

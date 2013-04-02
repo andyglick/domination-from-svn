@@ -17,12 +17,12 @@ import net.yura.mobile.util.Properties;
  * @author Yura Mamyrin
  */
 public class MainMenu extends Frame implements ActionListener {
-    
+
     // shares res
     Properties resb = GameActivity.resb;
     public Risk myrisk;
     MiniFlashRiskAdapter controller;
-    
+
     // main menu res
     FileChooser chooser;
 
