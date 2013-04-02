@@ -144,19 +144,11 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             else if ("capital".equals(actionCommand)) {
                     autoplaceall.setFocusable(true);
             }
+            else if ("increasing".equals(actionCommand) || "fixed".equals(actionCommand) || "italianlike".equals(actionCommand)) {
+                // ignore these radio buttons
+            }
             else if ("customPlayers".equals(actionCommand)) {
                 // TODO
-            }
-            else if ("donate".equals(actionCommand)) {
-                try {
-                    RiskUtil.donate();
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            else if ("online".equals(actionCommand)) {
-        	controller.openLobby();
             }
             else {
                 System.err.println("Unknown command: "+actionCommand);

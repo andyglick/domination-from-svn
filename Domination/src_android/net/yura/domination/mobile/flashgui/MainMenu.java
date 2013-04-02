@@ -5,6 +5,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
@@ -86,6 +87,9 @@ public class MainMenu extends Frame implements ActionListener {
                 }
                 // else ignore file
             }
+            else if (FileChooser.NO_FILE_SELECTED.equals(actionCommand)) {
+                chooser = null;
+            }
             else if ("manual".equals(actionCommand)) {
 
                 //WebView webView = new WebView( AndroidMeActivity.DEFAULT_ACTIVITY );
@@ -98,13 +102,7 @@ public class MainMenu extends Frame implements ActionListener {
                 MiniUtil.showAbout();
             }
             else if ("quit".equals(actionCommand)) {
-                System.exit(0);
-            }
-            else if ("join game".equals(actionCommand)) {
-                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
-            }
-            else if ("start server".equals(actionCommand)) {
-                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
+                Midlet.exit();
             }
             else if ("donate".equals(actionCommand)) {
                 try {
@@ -116,6 +114,12 @@ public class MainMenu extends Frame implements ActionListener {
             }
             else if ("online".equals(actionCommand)) {
         	controller.openLobby();
+            }
+            else if ("join game".equals(actionCommand)) {
+                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
+            }
+            else if ("start server".equals(actionCommand)) {
+                OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
             }
             else {
                 System.err.println("Unknown command: "+actionCommand);
