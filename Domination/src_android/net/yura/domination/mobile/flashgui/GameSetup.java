@@ -14,7 +14,6 @@ import net.yura.domination.mobile.MiniUtil;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ButtonGroup;
 import net.yura.mobile.gui.ChangeListener;
-import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
 import net.yura.mobile.gui.components.Component;
@@ -44,12 +43,12 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
     XULLoader newgame;
     Button autoplaceall;
     private boolean localgame;
-    
+
     // online play
     private String[] allowedMaps;
     String lobbyMapName;
     // end online play
-    
+
     public GameSetup(Risk risk,MiniFlashRiskAdapter controller) {
         myrisk = risk;
         this.controller = controller;
