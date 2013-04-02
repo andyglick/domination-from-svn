@@ -69,14 +69,7 @@ public class CardsDialog extends Frame implements ActionListener {
 		Artillery = Image.createImage(cards, w*2, 0, w, h, 0);
                 Wildcard = Image.createImage(cards, w*3, 0, w, h, 0);
 
-                
-                XULLoader loader;
-                try {
-                    loader = XULLoader.load( Midlet.getResourceAsStream("/cards.xml") , this, resb);
-                }
-                catch(Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+                XULLoader loader = GameActivity.getPanel("/cards.xml", this);
                 
                 setContentPane( (Panel)loader.getRoot() );
                 

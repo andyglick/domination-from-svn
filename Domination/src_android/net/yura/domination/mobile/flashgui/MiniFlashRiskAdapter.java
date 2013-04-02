@@ -17,7 +17,8 @@ import net.yura.mobile.logging.Logger;
 public class MiniFlashRiskAdapter implements RiskListener {
 
     private Risk myRisk;
-    private MiniFlashGUI mainFrame;
+    private MainMenu mainmenu;
+    private GameSetup gameSetup;
     private GameActivity gameFrame;
 
     public net.yura.lobby.mini.MiniLobbyClient lobby;
@@ -31,12 +32,8 @@ public class MiniFlashRiskAdapter implements RiskListener {
     void openLobby() {
     	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
-                final MiniFlashGUI frame = mainFrame;
-                if (frame!=null) {
-                    frame.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
-                }
-                // frame can be null if we have a game open at this same point as we click new game
-                // in that case we do not do anything as the user is now faced with a game screen
+                show("setup");
+                gameSetup.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
             }
             public String getAppName() {
                 return "AndroidDomination";
@@ -51,7 +48,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
         mapFrame.setMaximum(true);
         mapFrame.setVisible(true);
     }
-    
+
     void createLobbyGame(String name,String options,int numPlayers,int timeout) {
 	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
     }
@@ -76,27 +73,50 @@ public class MiniFlashRiskAdapter implements RiskListener {
 //        }
     }
     
-    public void openMainMenu() {
-        if (mainFrame==null) {
-            mainFrame = new MiniFlashGUI(myRisk,this);
+    private void show(String what) {
+
+        if (mainmenu!=null) {
+            mainmenu.setVisible(false);
+            mainmenu = null;
         }
-        mainFrame.openMainMenu();
+        if (gameSetup!=null) {
+            gameSetup.setVisible(false);
+            gameSetup = null;
+        }
+        if (gameFrame!=null) {
+            gameFrame.setVisible(false);
+            gameFrame = null;
+        }
+
+        if ("menu".equals(what)) {
+            mainmenu = new MainMenu(myRisk,this);
+        }
+        else if ("setup".equals(what)) {
+            gameSetup = new GameSetup(myRisk,this);
+        }
+        else if ("game".equals(what)) {
+            gameFrame = new GameActivity(myRisk,this);
+        }
+        else {
+            throw new IllegalArgumentException("unknow "+what);
+        }
+    }
+    
+    public void openMainMenu() {
+        show("menu");
+        mainmenu.openMainMenu();
     }
     
     @Override
     public void newGame(boolean t) {
-        mainFrame.openNewGame(t,null,null);
+        show("setup");
+        gameSetup.openNewGame(t,null,null);
     }
 
     @Override
     public void closeGame() {
         if (move!=null) {
             move.setVisible(false);
-        }
-
-        if (gameFrame!=null) {
-            gameFrame.setVisible(false);
-            gameFrame = null;
         }
         openMainMenu();
     }
@@ -113,33 +133,27 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     @Override
     public void addPlayer(int type, String name, int color, String ip) {
-        mainFrame.updatePlayers();
+        gameSetup.updatePlayers();
     }
 
     @Override
     public void delPlayer(String name) {
-        mainFrame.updatePlayers();
+        gameSetup.updatePlayers();
     }
 
     @Override
     public void showMapPic(RiskGame p) {
-        mainFrame.showMapPic(p.getMapFile());
+        gameSetup.showMapPic(p.getMapFile());
     }
 
     @Override
     public void showCardsFile(String c, boolean m) {
-        mainFrame.showCardsFile(c,m);
+        gameSetup.showCardsFile(c,m);
     }
     
     @Override
     public void startGame(boolean s) {
-        if (mainFrame!=null) {
-            mainFrame.setVisible(false);
-            mainFrame = null;
-        }
-        if (gameFrame==null) {
-            gameFrame = new GameActivity(myRisk,this);
-        }
+        show("game");
         gameFrame.startGame(s);
     }
 
