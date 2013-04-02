@@ -149,14 +149,20 @@ public class DominationMain extends Midlet {
 
 
 
-
         risk = new Risk();
         adapter = new MiniFlashRiskAdapter(risk);
 
-        adapter.openMainMenu();
 
 
-        
+        if (getAutoSaveFile().exists()) {
+            GameActivity.logger.info("[GameActivity] LOADING FROM AUTOSAVE");
+            risk.parser( "loadgame "+getAutoSaveFileURL() );
+        }
+        else {
+            adapter.openMainMenu();
+        }
+
+
         new Thread() {
             @Override
             public void run() {
@@ -184,7 +190,15 @@ public class DominationMain extends Midlet {
         }
 
     }
-    
+
+    private final static String AUTO_SAVE_FILE_NAME = "auto.save";
+    public static File getAutoSaveFile() {
+        return new File(MiniUtil.getSaveGameDir(), AUTO_SAVE_FILE_NAME);
+    }
+    public static String getAutoSaveFileURL() {
+        return MiniUtil.getSaveGameDirURL() + AUTO_SAVE_FILE_NAME;
+    }
+
     public static class CentreIcon extends Icon {
         Icon wrappedIcon;
         public CentreIcon(Icon icon,int w,int h) {
