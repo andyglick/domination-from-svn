@@ -139,6 +139,7 @@ public class MapRenderer extends DefaultListCellRenderer {
 
         int textx = padding+getIcon().getIconWidth()+gap;
 
+        g.setFont( font );
         g.setColor( getForeground() );
         g.drawString(line1, textx, (line2!=null)?padding:(getHeight()-font.getHeight())/2);
 
