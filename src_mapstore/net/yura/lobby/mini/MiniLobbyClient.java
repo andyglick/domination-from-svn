@@ -66,8 +66,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         
         list = (List)loader.find("ResultList");
-        list.setCellRenderer( new GameRenderer(this) );
-        list.setFixedCellHeight( MapChooser.adjustSizeToDensityFromMdpi(50) );
+        GameRenderer r = new GameRenderer(this);
+        list.setCellRenderer( r );
+        list.setFixedCellHeight( Math.max( MapChooser.adjustSizeToDensityFromMdpi(50), r.getFixedCellHeight() ) );
         list.setFixedCellWidth(10); // will streach
         
         ComboBox box = (ComboBox)loader.find("listView");
