@@ -153,8 +153,9 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (Midlet.getPlatform() == Midlet.PLATFORM_ME4SE) {
             list.setDoubleClick(true);
         }
-        list.setCellRenderer( new MapRenderer(this) );
-        list.setFixedCellHeight( XULLoader.adjustSizeToDensity(75) ); // mdpi = 100
+        MapRenderer r = new MapRenderer(this);
+        list.setCellRenderer( r );
+        list.setFixedCellHeight( Math.max( XULLoader.adjustSizeToDensity(75) , r.getFixedCellHeight() ) ); // mdpi = 100
         list.setFixedCellWidth(10); // will streach
 
         client = new MapServerClient(this);

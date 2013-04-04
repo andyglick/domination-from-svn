@@ -18,7 +18,9 @@ import net.yura.mobile.gui.plaf.Style;
  */
 public class MapRenderer extends DefaultListCellRenderer {
 
-    String line2;
+    private static final int TOTAL_LINES_OF_TEXT = 5;
+    
+    String line1,line2;
 
     private ProgressBar bar = new ProgressBar();
     private Component list;
@@ -77,7 +79,7 @@ public class MapRenderer extends DefaultListCellRenderer {
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Component c = super.getListCellRendererComponent(list, null, index, isSelected, cellHasFocus);
 
         this.list = list;
         
@@ -88,14 +90,14 @@ public class MapRenderer extends DefaultListCellRenderer {
         if (value instanceof Category) {
             Category category = (Category)value;
 
-            setText( category.getName() );
+            line1 = category.getName();
             
             iconUrl = category.getIconURL();
         }
         else if (value instanceof Map) {
             map = (Map)value;
 
-            setText( map.getName() );
+            line1 = map.getName();
             
             String author = map.getAuthorName();
             if (author!=null && !"".equals(author)) {
@@ -107,14 +109,12 @@ public class MapRenderer extends DefaultListCellRenderer {
             }
 
             if (line2!=null) {
-                line2 = getFirstLines(line2,4);
+                line2 = getFirstLines(line2,TOTAL_LINES_OF_TEXT-1);
             }
             
             iconUrl = map.getPreviewUrl();
         }
         // else just do nothing
-
-        setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
         
         //iconUrl = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
@@ -135,19 +135,20 @@ public class MapRenderer extends DefaultListCellRenderer {
             setIcon(loading);
         }
 
-        super.paintComponent(g);
-        
+        super.paintComponent(g); // paint the icon
+
+        int textx = padding+getIcon().getIconWidth()+gap;
+
+        g.setColor( getForeground() );
+        g.drawString(line1, textx, (line2!=null)?padding:(getHeight()-font.getHeight())/2);
+
         if (line2!=null) {
-            Icon i = getIcon();
-
             int state = getCurrentState();
-
             // if NOT focused or selected
             if ( (state&Style.FOCUSED)==0 && (state&Style.SELECTED)==0 ) {
                 g.setColor( theme.getForeground(Style.DISABLED) );
             }
-
-            g.drawString(line2, padding + (i!=null?i.getIconWidth()+gap:0), padding + getFont().getHeight() + gap);
+            g.drawString(line2, textx , padding + getFont().getHeight() + gap);
         }
 
         if (map!=null) {
@@ -183,13 +184,8 @@ public class MapRenderer extends DefaultListCellRenderer {
         setIcon(icon);
     }
 
-    public void workoutMinimumSize() {
-        super.workoutMinimumSize();
-
-        // TODO could be done better!
-        if (line2!=null && getIcon()==null ) {
-            height = height + getFont().getHeight()+gap;
-        }
+    public int getFixedCellHeight() {
+        return padding*2 + Math.max(loading.getIconHeight(), getFont().getHeight()*TOTAL_LINES_OF_TEXT+gap );
     }
 
     public static String getFirstLines(String input,int lines) {
