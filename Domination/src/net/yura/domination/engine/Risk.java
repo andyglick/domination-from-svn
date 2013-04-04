@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -58,7 +57,6 @@ public class Risk extends Thread {
 	// crashes on a mac too much
 	//private SealedObject Undo;
 	private ByteArrayOutputStream Undo = new ByteArrayOutputStream();
-	private int replayCommand;
 
 	protected boolean unlimitedLocalMode;
 	private boolean autoplaceall;
@@ -1395,12 +1393,9 @@ RiskUtil.printStackTrace(e);
 					try {
                                                 // can not undo when defending yourself as it is not really your go
 						if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
-							Vector commands = game.getCommands();
+                                                        //game = (RiskGame)Undo.getObject( nullCipher );
 							ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
 							game = (RiskGame)in.readObject();
-							commands.setSize(replayCommand);
-							game.setCommands(commands);
-							//game = (RiskGame)Undo.getObject( nullCipher );
 
 							output =resb.getString( "core.undo.undone");
 						}
@@ -2428,24 +2423,17 @@ RiskUtil.printStackTrace(e);
 
 	}
 
-        public static boolean skipUndo; // sometimes on some JVMs this just does not work
+        boolean skipUndo; // sometimes on some JVMs this just does not work
 	private void saveGameToUndoObject() {
 
             if (skipUndo) return;
 
             if ( unlimitedLocalMode ) {
-            	Vector commands = game.getCommands();
-                
+
                 // the game is saved
                 try {
-
-                    game.setCommands(null);
-
                     Undo.reset();
                     game.saveGame(Undo);
-                    
-                    replayCommand = commands.size();
-
                 }
                 catch (OutOfMemoryError e) {
                     // what can we do :-(
@@ -2457,11 +2445,12 @@ RiskUtil.printStackTrace(e);
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
                     RiskUtil.printStackTrace(e);
                 }
-                finally {
-                	game.setCommands(commands);
-                }
             }
 	}
+        
+        public void setSkipUndo(boolean skip) {
+            skipUndo = skip;
+        }
 
 	public void disconnected() {
 
