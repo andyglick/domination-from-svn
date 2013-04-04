@@ -23,7 +23,7 @@ public class GameRenderer extends DefaultListCellRenderer {
     MiniLobbyClient lobby;
     ScaledIcon sicon;
     Game game;
-    String line2,part2;
+    String line1,line2,part2;
     
     public GameRenderer(MiniLobbyClient l) {
         lobby = l;
@@ -36,9 +36,11 @@ public class GameRenderer extends DefaultListCellRenderer {
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Component c = super.getListCellRendererComponent(list, null, index, isSelected, cellHasFocus);
 
         game = (Game)value;
+        
+        line1 = game.getName();
 
         sicon.setIcon( lobby.game.getIconForGame(game) );
         setIcon(sicon);
@@ -61,21 +63,29 @@ public class GameRenderer extends DefaultListCellRenderer {
         return c;
     }
 
+    public int getFixedCellHeight() {
+        return padding*2 + Math.max(sicon.getIconHeight(), getFont().getHeight()*2+gap+padding*2 );
+    }
+
     public void paintComponent(Graphics2D g) {
+
+        // draw icon
         super.paintComponent(g);
 
+        int offsetx = padding+getIcon().getIconWidth()+gap;
+        g.setFont( font );
         g.setColor( getForeground() );
 
-        Font font = g.getFont();
-        String action;
-        int color;
+        // draw line1
+        g.drawString(line1, offsetx, padding);
 
-        switch (game.getState( lobby.whoAmI() )) {
-            case Game.STATE_CAN_JOIN: action = "Join"; color=ColorUtil.GREEN; break;
-            case Game.STATE_CAN_LEAVE: action = "Leave"; color=ColorUtil.RED; break;
-            case Game.STATE_CAN_PLAY: action = "Play"; color=ColorUtil.BLUE; break;
-            case Game.STATE_CAN_WATCH: action = "Watch"; color=ColorUtil.WHITE; break;
-            default: action = null; color=0; break;
+        if (clock.isVisible()) {
+            int offsety = getHeight()-clock.getHeight()-padding;
+            clock.setForeground( getForeground() );
+            g.translate(offsetx, offsety);
+            clock.paint(g);
+            g.translate(-offsetx, -offsety);
+            offsetx = offsetx + clock.getWidth()+padding;
         }
 
         int state = getCurrentState();
@@ -84,27 +94,25 @@ public class GameRenderer extends DefaultListCellRenderer {
             g.setColor( theme.getForeground(Style.DISABLED) );
         }
 
-        if (line2!=null) {            
-            Icon i = getIcon();            
-            int offsetx = padding + (i!=null?i.getIconWidth()+gap:0);
-            if (clock.isVisible()) {
-                int offsety = getHeight()-clock.getHeight()-padding;
-                clock.setForeground( getForeground() );
-                g.translate(offsetx, offsety);
-                clock.paint(g);
-                g.translate(-offsetx, -offsety);
-                offsetx = offsetx + clock.getWidth()+padding;
-            }
+        // draw line2
+        int offsety=getHeight()-font.getHeight()-padding;
+        int space = getWidth()-offsetx-font.getWidth("10/10");            
+        String drawString = font.getWidth(line2)>space?line2.substring(0, TextArea.searchStringCharOffset(line2, font, space))+extension:line2;
+        g.drawString(drawString, offsetx, offsety);
 
-            int offsety=getHeight()-font.getHeight()-padding;
-            int space = getWidth()-offsetx-font.getWidth("10/10");            
-            String drawString = font.getWidth(line2)>space?line2.substring(0, TextArea.searchStringCharOffset(line2, font, space))+extension:line2;
-            g.drawString(drawString, offsetx, offsety);
-        }
-        if (part2!=null) {
-            g.drawString(part2, getWidth()-font.getWidth(part2)-padding, getHeight()-font.getHeight()-padding);
-        }
+        // draw part2 of line2
+        g.drawString(part2, getWidth()-font.getWidth(part2)-padding, getHeight()-font.getHeight()-padding);
 
+        // draw action button
+        String action;
+        int color;
+        switch (game.getState( lobby.whoAmI() )) {
+            case Game.STATE_CAN_JOIN: action = "Join"; color=ColorUtil.GREEN; break;
+            case Game.STATE_CAN_LEAVE: action = "Leave"; color=ColorUtil.RED; break;
+            case Game.STATE_CAN_PLAY: action = "Play"; color=ColorUtil.BLUE; break;
+            case Game.STATE_CAN_WATCH: action = "Watch"; color=ColorUtil.WHITE; break;
+            default: action = null; color=0; break;
+        }
         int actionx=getWidth();
         if (action!=null) {
             int w = font.getWidth(action);
@@ -117,12 +125,13 @@ public class GameRenderer extends DefaultListCellRenderer {
             g.setColor( ColorUtil.getTextColorFor(color) );
             g.drawString(action, getWidth()-w-padding*2, padding*2);
         }
+
+        // draw red 'my turn' indicator
         if (lobby.whoAmI().equals( game.getWhosTurn() )) {
             int wh = font.getHeight();
             g.setColor(0xFFFF0000);
             g.fillOval(actionx-wh-padding, (getHeight()-wh)/2, wh, wh);
         }
-        
     }
     
     public static class ScaledIcon extends Icon {
