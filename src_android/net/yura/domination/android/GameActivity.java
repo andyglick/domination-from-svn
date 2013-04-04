@@ -24,13 +24,16 @@ public class GameActivity extends AndroidMeActivity {
             // in current thread
             try {
                 Logger.info("[GameActivity] SAVING TO AUTOSAVE");
-                RiskUtil.saveFile(DominationMain.getAutoSaveFileURL() , getRisk().getGame() );
+                // we want to save to auto.save.part and then rename it to auto.save
+                // in case the save fails for some reason so we dont end up with half a game in the file
+                RiskUtil.saveFile(DominationMain.getAutoSaveFileURL()+".part" , getRisk().getGame() );
+                File autoSaveFile = DominationMain.getAutoSaveFile();
+                RiskUtil.rename(new File(autoSaveFile.getParent(),autoSaveFile.getName()+".part"), autoSaveFile);
             }
             catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        
     }
 
     @Override

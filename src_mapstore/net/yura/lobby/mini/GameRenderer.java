@@ -8,7 +8,6 @@ import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.model.Game;
 import net.yura.lobby.util.TimeoutUtil;
-import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
