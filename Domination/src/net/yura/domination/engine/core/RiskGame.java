@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.HashSet;
 
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.RiskObjectOutputStream;
@@ -644,7 +645,19 @@ transient - A keyword in the Java programming language that indicates that a fie
     }
 
 	public boolean canTrade() {
-		return getBestTrade(currentPlayer.getCards(), 0) != null;
+		return getBestTrade(currentPlayer.getCards(), 0, null) > 0;
+	}
+	
+	private static class IntermediateResult {
+		String[] types;
+		@Override
+		public int hashCode() {
+			return Arrays.hashCode(types);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			return Arrays.equals(types, ((IntermediateResult)obj).types);
+		}
 	}
 	
 	/**
@@ -655,50 +668,77 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param tradesToScan
 	 * @return
 	 */
-	public Card[] getBestTrade(List cards, int tradesToScan) {
-		Card[] result = new Card[3];
+	public int getBestTrade(List<Card> cards, int tradesToScan, Card[] bestResult) {
+		return getBestTrade(cards, new boolean[cards.size()], tradesToScan, cards.size(), bestResult, 0);
+	}
+	
+	private int getBestTrade(List<Card> cards, boolean[] used, int tradesToScan, int cardsRemaining, Card[] bestResult, int start) {
+		cardsRemaining -= 3;
 		int bestValue = 0;
-		Card[] bestResult = new Card[3];
 		int orig = tradesToScan;
-		for (int a = 0; a < cards.size() - 2; a++) {
-			result[0] = (Card) cards.get(a);
+		HashSet<IntermediateResult> seen = null;
+		Card carda = null;
+		Card cardb = null;
+		Card cardc = null;
+		for (int a = start; a < cards.size() - 2; a++) {
+			if (used[a]) {
+				continue;
+			}
+			carda = cards.get(a);
 			for (int b = (a + 1); b < cards.size() - 1; b++) {
-				result[1] = (Card) cards.get(b);
+				if (used[b]) {
+					continue;
+				}
+				cardb = cards.get(b);
 				for (int c = (b + 1); c < cards.size(); c++) {
-					result[2] = (Card) cards.get(c);
+					if (used[c]) {
+						continue;
+					}
+					cardc = cards.get(c);
 					tradesToScan--;
-					int value = getTradeAbsValue( result[0].getName(), result[1].getName(), result[2].getName(), getCardMode());
+					int value = getTradeAbsValue( carda.getName(), cardb.getName(), cardc.getName(), getCardMode());
 					if (value == 0) {
 						if (tradesToScan < 0 && bestValue > 0) {
-							return bestResult;
+							return bestValue;
 						}
 						continue;
 					}
-					//dynamic programming if there are a lot of cards
-					if (cards.size() > 5 && orig > 0) {
-						Vector remainingCards = new Vector(cards);
-						for (int i = 0; i < result.length; i++) {
-							remainingCards.remove(result[i]);
+					if (cardsRemaining >= 3 && orig > 0) {
+						IntermediateResult ir = new IntermediateResult();
+						ir.types = new String[3];
+						ir.types[0] = carda.getName();
+						ir.types[1] = cardb.getName();
+						ir.types[2] = cardc.getName();
+						Arrays.sort(ir.types);
+						if (seen == null) {
+							seen = new HashSet<IntermediateResult>();
 						}
-						Card[] next = getBestTrade(remainingCards, orig/100);
-						if (next != null) {
-							value += getTradeAbsValue( next[0].getName(), next[1].getName(), next[2].getName(), getCardMode());
+						if (!seen.add(ir)) {
+							continue;
 						}
+						used[a] = true;
+						used[b] = true;
+						used[c] = true;
+						value += getBestTrade(cards, used, tradesToScan, cardsRemaining, null, start + 1);
+						used[a] = false;
+						used[b] = false;
+						used[c] = false;
 					}
 					if (value > bestValue) {
 						bestValue = value;
-						System.arraycopy(result, 0, bestResult, 0, result.length);
+						if (bestResult != null) {
+							bestResult[0] = cards.get(a);
+							bestResult[1] = cards.get(b);
+							bestResult[2] = cards.get(c);
+						}
 					}
 					if (tradesToScan < 0) {
-						return bestResult;
+						return bestValue;
 					}
 				}
 			}
 		}
-		if (bestValue == 0) {
-			return null;
-		}
-		return bestResult;
+		return bestValue;
 	}
 
 	public int getNewCardState() {

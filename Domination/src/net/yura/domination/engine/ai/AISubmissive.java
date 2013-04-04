@@ -50,20 +50,24 @@ public class AISubmissive implements AI {
                     return "endtrade";
             }
 
-            Card[] result = game.getBestTrade(cards, tradeCombinationsToScan());
+            Card[] result = new Card[3]; 
 
-            if (result != null) {
-                    String output = "trade ";
-                    output = getCardName(result[0], output);
-                    output = output + " ";
-                    output = getCardName(result[1], output);
-                    output = output + " ";
-                    output = getCardName(result[2], output);
-                    return output;
+            if (game.getBestTrade(cards, tradeCombinationsToScan(), result) > 0) {
+                    return getTrade(result);
             }
 
             return "endtrade";
     }
+
+	protected String getTrade(Card[] result) {
+		String output = "trade ";
+		output = getCardName(result[0], output);
+		output = output + " ";
+		output = getCardName(result[1], output);
+		output = output + " ";
+		output = getCardName(result[2], output);
+		return output;
+	}
 
     /**
     * @return a bounding factor for the number of trades to scan
