@@ -165,8 +165,7 @@ public class Country implements Serializable {
 	 * @return owner
 	 */
 	public Player getOwner() {
-		if (owner != null) return owner;
-		else return null;
+		return owner;
 	}
 
 	/**
