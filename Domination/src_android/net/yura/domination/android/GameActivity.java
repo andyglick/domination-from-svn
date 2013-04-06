@@ -21,17 +21,28 @@ public class GameActivity extends AndroidMeActivity {
             // in game thread, we do not want to do it there
             //getRisk().parser("savegame "+getAutoSaveFileURL());
 
-            // in current thread
+            Thread thread = new Thread(null,null,"Domination-onSaveInstanceState", 100000000) {
+                public void run() {
+                    // in current thread
+                    try {
+                        Logger.info("[GameActivity] SAVING TO AUTOSAVE");
+                        // we want to save to auto.save.part and then rename it to auto.save
+                        // in case the save fails for some reason so we dont end up with half a game in the file
+                        RiskUtil.saveFile(DominationMain.getAutoSaveFileURL()+".part" , getRisk().getGame() );
+                        File autoSaveFile = DominationMain.getAutoSaveFile();
+                        RiskUtil.rename(new File(autoSaveFile.getParent(),autoSaveFile.getName()+".part"), autoSaveFile);
+                    }
+                    catch (Throwable ex) {
+                        ex.printStackTrace();
+                    }
+                };
+            };
+            thread.start();
             try {
-                Logger.info("[GameActivity] SAVING TO AUTOSAVE");
-                // we want to save to auto.save.part and then rename it to auto.save
-                // in case the save fails for some reason so we dont end up with half a game in the file
-                RiskUtil.saveFile(DominationMain.getAutoSaveFileURL()+".part" , getRisk().getGame() );
-                File autoSaveFile = DominationMain.getAutoSaveFile();
-                RiskUtil.rename(new File(autoSaveFile.getParent(),autoSaveFile.getName()+".part"), autoSaveFile);
+                thread.join();
             }
-            catch (Exception ex) {
-                ex.printStackTrace();
+            catch(InterruptedException in) {
+                Thread.currentThread().interrupt();
             }
         }
     }
