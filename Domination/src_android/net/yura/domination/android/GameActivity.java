@@ -18,14 +18,15 @@ public class GameActivity extends AndroidMeActivity {
         Logger.info("[GameActivity] onSaveInstanceState");
         // if the system wants to kill our activity we need to save the game if we have one
         if ( shouldSaveGame() ) {
-            // in game thread, we do not want to do it there
+            Logger.info("[GameActivity] SAVING TO AUTOSAVE");
+            // in game thread, we do not want to do it there as we will not know when its finished
             //getRisk().parser("savegame "+getAutoSaveFileURL());
 
             Thread thread = new Thread(null,null,"Domination-onSaveInstanceState", 100000000) {
+                @Override
                 public void run() {
                     // in current thread
                     try {
-                        Logger.info("[GameActivity] SAVING TO AUTOSAVE");
                         // we want to save to auto.save.part and then rename it to auto.save
                         // in case the save fails for some reason so we dont end up with half a game in the file
                         RiskUtil.saveFile(DominationMain.getAutoSaveFileURL()+".part" , getRisk().getGame() );
