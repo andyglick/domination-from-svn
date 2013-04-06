@@ -69,7 +69,7 @@ public class GameActivity extends AndroidMeActivity {
 
     private Risk getRisk() {
         DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
-        return dmain.risk;
+        return dmain==null?null:dmain.risk;
     }
 
 }
