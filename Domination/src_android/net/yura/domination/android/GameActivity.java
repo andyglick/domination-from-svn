@@ -64,7 +64,7 @@ public class GameActivity extends AndroidMeActivity {
 
     private boolean shouldSaveGame() {
         Risk risk = getRisk();
-        return risk.getGame()!=null && risk.getLocalGame();
+        return risk!=null && risk.getGame()!=null && risk.getLocalGame();
     }
 
     private Risk getRisk() {
