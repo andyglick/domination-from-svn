@@ -100,7 +100,6 @@ public class AICapital extends AIDomination {
 						if (gameState.commonThreat == null && gameState.orderedPlayers.size() > 1 && ps.attackValue > (ps.strategic?3:4)*primaryDefense) {
 							gameState.commonThreat = ps;
 							if (!gameState.targetPlayers.contains(ps.p)) {
-								gameState.targetPlayers = new ArrayList<Player>(gameState.targetPlayers);
 								gameState.targetPlayers.add(ps.p);
 							}
 						}
