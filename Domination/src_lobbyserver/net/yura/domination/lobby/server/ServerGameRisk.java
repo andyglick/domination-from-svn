@@ -285,14 +285,35 @@ public class ServerGameRisk extends TurnBasedGame {
 
                         oldIds.add(playerid);
 
-                        int aliveHumans=0;
+                        int aliveHumans=0,aliveAIs=0;
                         for (Player player:(List<Player>)myrisk.getGame().getPlayers()) {
-                            if (player.getType()==Player.PLAYER_HUMAN && (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) ) {
-                                aliveHumans++;
+                            // check they are alive
+                            if (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) {
+                                if (player.getType()==Player.PLAYER_HUMAN) {
+                                    aliveHumans++;
+                                }
+                                else if (player.getType()!=Player.PLAYER_AI_CRAP) {
+                                    aliveAIs++;
+                                }
                             }
                         }
                         if (aliveHumans==0) {
                             gameFinished( whoHasMostPoints() );
+                            
+                            // We have no humans and no ais, (we only have resigned human, crap/submissive ais)
+                            // so we must pause the game or it will get stuck in a loop of placing armies and
+                            // nothing else actually happening, and will never finish.
+
+                            // We need this check as if someone is still watching the game, the game does not get
+                            // destroyed and will take up more and more space in memory, as round after round goes
+                            // by and nothing actually happens
+
+                            // TODO in LobbyClientGUI it is possible to re-join a game at this stage, and the game
+                            // will still be paused so it will not actually do anything, then again, if the TurnBasedGame.finished
+                            // flag is set, the game will get destroyed when all human players are not watching it anyway
+                            if (aliveAIs==0) {
+                                myrisk.setPaued(true);
+                            }
                         }
 		}
                 else {
