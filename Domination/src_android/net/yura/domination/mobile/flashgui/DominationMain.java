@@ -6,17 +6,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.RiskMiniIO;
+import net.yura.grasshopper.ApplicationInfoProvider;
+import net.yura.grasshopper.BugSubmitter;
+import net.yura.grasshopper.LogList;
 import net.yura.grasshopper.SimpleBug;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
@@ -54,6 +59,15 @@ public class DominationMain extends Midlet {
         try {
 
             SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" "+product+" "+version , TranslationBundle.getBundle().getLocale().toString() );
+
+            BugSubmitter.setApplicationInfoProvider( new ApplicationInfoProvider() {
+                public void addInfoForSubmit(Map map) {
+                    RiskGame game = risk.getGame();
+                    if (game!=null) {
+                        map.put("gameLog", new LogList( game.getCommands() ));
+                    }
+                }
+            } );
 
             CoreUtil.setupLogging();
 
