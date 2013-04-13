@@ -2787,6 +2787,7 @@ RiskUtil.printStackTrace(e);
 
         private synchronized void closeGame() {
 
+            // shutdown the network connection for this game
             if ( onlinePlayClient != null ) {
                 onlinePlayClient.closeGame();
                 onlinePlayClient = null;
@@ -2794,7 +2795,14 @@ RiskUtil.printStackTrace(e);
                 // in case lobby had set us some other address we reset it
                 myAddress = createRandomUniqueAddress();
             }
-            
+
+            // if there are more commands for this game from the network we should clear them
+            if (!inbox.isEmpty()) {
+                System.out.println("clearing commands "+inbox);
+                inbox.clear();
+            }
+
+            // shutdown the GUI for this game
             if (game!=null) {
                 // does not work from here
                 closeBattle();
