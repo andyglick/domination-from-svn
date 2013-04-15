@@ -49,6 +49,8 @@ public class DominationMain extends Midlet {
     
     public DominationMain() {
 
+        Service.SERVICES_LOCATION = "assets/services/";
+        
         // IO depends on this, so we need to do this first
         RiskUtil.streamOpener = new RiskMiniIO();
 
@@ -128,8 +130,6 @@ public class DominationMain extends Midlet {
     @Override
     public void initialize(DesktopPane rootpane) {
 
-        Service.SERVICES_LOCATION = "assets/services/";
-
         SynthLookAndFeel synth;
 
         try {
@@ -167,14 +167,23 @@ public class DominationMain extends Midlet {
         adapter = new MiniFlashRiskAdapter(risk);
 
 
-
-        if (getAutoSaveFile().exists()) {
-            GameActivity.logger.info("[GameActivity] LOADING FROM AUTOSAVE");
-            risk.parser( "loadgame "+getAutoSaveFileURL() );
-        }
-        else {
-            adapter.openMainMenu();
-        }
+        // this needs to run in the UI thread, otherwise 1 thread could be trying to read the auto.save file
+        // and another trying to delete it, so we do all actions on the file in the same (UI) thread
+        DesktopPane.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                File autoSaveFile = getAutoSaveFile();
+                if (autoSaveFile.exists()) {
+                    GameActivity.logger.info("[GameActivity] LOADING FROM AUTOSAVE");
+                    // rename the file before we load it with the game thread so it does not get deleted by another thread
+                    RiskUtil.rename(autoSaveFile, new File(autoSaveFile.getParent(),autoSaveFile.getName()+".load"));
+                    risk.parser( "loadgame "+getAutoSaveFileURL()+".load" );
+                }
+                else {
+                    adapter.openMainMenu();
+                }
+            }
+        });
 
 
         new Thread() {
@@ -191,17 +200,17 @@ public class DominationMain extends Midlet {
         //risk.parser("newplayer ai hard green greg");
         //risk.parser("startgame domination increasing");
 
-        
-        try {
-            //File saves = new File( net.yura.android.AndroidMeApp.getIntance().getFilesDir() ,"saves");
-            //File sdsaves = new File("/sdcard/Domination-saves");
-            //copyFolder(saves, sdsaves);
-            //copyFolder(sdsaves, saves);
-            //System.out.println("files"+ Arrays.asList( saves.list() ) );
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
+//        try {
+//            File saves = new File( net.yura.android.AndroidMeApp.getIntance().getFilesDir() ,"saves");
+//            File sdsaves = new File("/sdcard/Domination-saves");
+//            copyFolder(saves, sdsaves);
+//            copyFolder(sdsaves, saves);
+//            System.out.println("files"+ Arrays.asList( saves.list() ) );
+//        }
+//        catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
 
     }
 

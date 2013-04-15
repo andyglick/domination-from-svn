@@ -72,7 +72,11 @@ public class MiniFlashRiskAdapter implements RiskListener {
 //            menu.add(button);
 //        }
     }
-    
+
+    // TODO ########### NOT THREAD SAFE!!! ############
+    // gameFrame.setVisible(false) can throw a "this window is not visible" error
+    // as we may be opening a game, and opening a gamesetup in another thread
+    // (in lobby, quickly click on a game and newgame button right after)
     private void show(String what) {
 
         if (mainmenu!=null) {
@@ -98,7 +102,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
             gameFrame = new GameActivity(myRisk,this);
         }
         else {
-            throw new IllegalArgumentException("unknow "+what);
+            throw new IllegalArgumentException("unknown "+what);
         }
     }
     
