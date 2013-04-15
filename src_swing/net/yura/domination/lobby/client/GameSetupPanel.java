@@ -96,6 +96,10 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	 */
 	public GameSetupPanel() {
 
+                // ALL PROBLEMS COME FROM THIS!!!! (in applet mode)
+                // when this was at the start of the init loads of class problems started
+                resb = TranslationBundle.getBundle();
+
 		setLayout(null);
 
 		Dimension d = new Dimension(700, 600);
@@ -227,17 +231,17 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 		playernum.setOpaque(false);
 		add(playernum);
 
-		playernum.add(new JLabel("human"));
+		playernum.add(new JLabel( resb.getString("newgame.player.type.human") ));
 		playernum.add(human);
 
-		playernum.add(new JLabel("easy ai"));
+		playernum.add(new JLabel( resb.getString("newgame.player.type.easyai") ));
 		playernum.add(aieasy);
 
-                JLabel aialabel = new JLabel("average ai");
+                JLabel aialabel = new JLabel( resb.getString("newgame.player.type.averageai") );
 		playernum.add(aialabel);
 		playernum.add(aiaverage);
 
-                playernum.add(new JLabel("hard ai"));
+                playernum.add(new JLabel( resb.getString("newgame.player.type.hardai") ));
 		playernum.add(aihard);
 
 // temp hack while we do not have a average AI on the server
@@ -250,40 +254,38 @@ aialabel.setVisible(false);
 
 
 
-// ALL PROBLEMS COME FROM THIS!!!!
-// when this was at the start of the init loads of class problems started
-resb = TranslationBundle.getBundle();
-
+                int bw1 = 119;
+                int bw2 = 180;
+                int bh = 25;
 
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
 		NewGameFrame.sortOutButton( domination );
-		domination.setBounds(380, 370, 90 , 25 );
+		domination.setBounds(380, 370, bw1 , bh );
 		domination.addActionListener(this);
 
 		capital = new JRadioButton(resb.getString("newgame.mode.capital"));
 		NewGameFrame.sortOutButton( capital );
-		capital.setBounds(380, 390, 90 , 25 );
+		capital.setBounds(380, 390, bw1 , bh );
 		capital.addActionListener(this);
 
 		mission = new JRadioButton(resb.getString("newgame.mode.mission"));
 		NewGameFrame.sortOutButton( mission );
-		mission.setBounds(380, 410, 90 , 25 );
+		mission.setBounds(380, 410, bw1 , bh );
 		mission.addActionListener(this);
 
-
-
+                
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
 		NewGameFrame.sortOutButton( increasing );
-		increasing.setBounds(500,370,90,25);
+		increasing.setBounds(500,370,bw2,bh);
 
 		fixed = new JRadioButton(resb.getString("newgame.cardmode.fixed"));
 		NewGameFrame.sortOutButton( fixed );
-		fixed.setBounds(500,390,90,25);
+		fixed.setBounds(500,390,bw2,bh);
 
                 italian = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		NewGameFrame.sortOutButton( italian );
-		italian.setBounds(500,410,90,25);
+		italian.setBounds(500,410,bw2,bh);
 
 
 		GameTypeButtonGroup.add ( domination );
@@ -305,11 +307,11 @@ resb = TranslationBundle.getBundle();
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
 		NewGameFrame.sortOutButton( AutoPlaceAll );
-		AutoPlaceAll.setBounds(380, 440, 120 , 25 );
+		AutoPlaceAll.setBounds(380, 440, bw1 , bh );
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
 		NewGameFrame.sortOutButton( recycle );
-		recycle.setBounds(500, 440, 120 , 25 );
+		recycle.setBounds(500, 440, bw2 , bh );
 
 		add(AutoPlaceAll);
 		add(recycle);
