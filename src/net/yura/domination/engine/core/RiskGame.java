@@ -1132,40 +1132,24 @@ transient - A keyword in the Java programming language that indicates that a fie
 	/**
 	 * Moves a number of armies from the attacking country to defending country
 	 * @param noa Number of armies to be moved
-	 * @return boolean Return trues if you can move the number of armies across, returns false if you cannot
+	 * @return 1 or 2 if you can move the number of armies across (2 if you won the game), returns 0 if you cannot
 	 */
 	public int moveArmies(int noa) {
-
-		int result=0;
 
 		if (gameState==STATE_BATTLE_WON && mustmove>0 && noa>= mustmove && noa<attacker.getArmies() ) {
 
 			attacker.removeArmies(noa);
 			defender.addArmies(noa);
 
+			gameState=tradeCap?STATE_TRADE_CARDS:STATE_ATTACKING;
+
 			attacker=null;
 			defender=null;
-
 			mustmove=0;
 
-			if (tradeCap==true) {
-				gameState=STATE_TRADE_CARDS;
-			}
-			else {
-				gameState=STATE_ATTACKING;
-			}
-
-			result=1;
-
-			if ( checkPlayerWon() ) {
-				result=2;
-			}
-
-			return result;
-
+			return checkPlayerWon()?2:1;
 		}
-		return result;
-
+		return 0;
 	}
 
 	/**
@@ -1197,11 +1181,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			currentPlayer.currentStatistic.addRetreat();
 
+			gameState=STATE_ATTACKING; // go to attack phase
+			//System.out.print("Retreating\n");
+
 			attacker=null;
 			defender=null;
 
-			gameState=STATE_ATTACKING; // go to attack phase
-			//System.out.print("Retreating\n");
 			return true;
 		}
 		return false;
