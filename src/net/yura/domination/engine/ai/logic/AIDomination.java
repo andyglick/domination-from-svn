@@ -1820,7 +1820,7 @@ public class AIDomination extends AISubmissive {
     	    		if (specialCase && game.getCardMode() == RiskGame.CARD_FIXED_SET) {
     	    			needed = additionalTroopsNeeded(game.getAttacker(), gameState);
     	    		}
-    				needed += (4 * cont.getArmyValue())/Math.min(1, cont.getBorderCountries().size());    
+    				needed += (4 * cont.getArmyValue())/Math.max(1, cont.getBorderCountries().size());    
     			}
     		} else if (specialCase) {
     			needed += game.getMaxDefendDice();
