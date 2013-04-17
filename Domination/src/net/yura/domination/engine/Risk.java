@@ -239,7 +239,7 @@ public class Risk extends Thread {
                 command = c;
             }
             public String toString() {
-                return type+" "+command;
+                return (type==UI_COMMAND?"UI":"NETWORK")+" "+command;
             }
         }
         
