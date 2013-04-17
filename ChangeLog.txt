@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		36
+	Android		37
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -19,9 +19,13 @@ CURRENT VERSION:
 	world map (world.map) is now higher resolution (800x500)
 	MapEditor can load TEG/JTEG xml maps
 	Card Ownership view shows you the cards you own when you dont own the country in Yellow
+	online game setup ui fixes
 
+	Android 37 nullpointer in 2 exit events fixed (hack)
+		   nullpointer in quit game and open stats activity at the same time fixed (hack)
 	Android 36 grasshopper update
 		   game opening and hiding at same time/del and load auto.save in different threads fix
+		   AI error in map Artic Map (divide by zero if there is no way out of a continent) fixed
 	Android 35 StackOverflowError in onSaveInstanceState fix
 	Android 34 auto.save file fails to fully create on some systems, then the load fails to load it leaving the user with a blank screen
 	Android 33 find Closest Country if we are not touching a actual Country
