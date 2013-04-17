@@ -1,5 +1,6 @@
 package net.yura.domination.engine;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
@@ -52,7 +53,9 @@ public class SwingMEWrapper {
         },files,true);
 
         wrapper.add( chooser.getRoot() );
-        
+
+        wrapper.setPreferredSize(new Dimension(400,600));
+
         wrapper.showDialog(parent, TranslationBundle.getBundle().getString("newgame.choosemap") );
         
         // WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT WAIT
