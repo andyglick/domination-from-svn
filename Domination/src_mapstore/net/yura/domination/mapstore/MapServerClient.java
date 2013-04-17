@@ -12,7 +12,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Midlet;
@@ -182,7 +181,6 @@ logger.info("Make Request: "+request);
         while( ( i = is.read(data,0,COPY_BLOCK_SIZE ) ) != -1  ) {
             out.write(data,0,i);
         }
-
     }
     
     
@@ -256,13 +254,13 @@ logger.info("Make Request: "+request);
             }
         }
         
-        private void gotRes(String url, InputStream is) {
+        private void gotRes(String url, InputStream is) throws Exception {
             // this does not support spaces in file names
             //String fileName = url.substring(mapContext.length());
-            
+
             String fileName = getPath(mapContext, url);
             String saveToDiskName = fileName + ".part";
-            
+
             OutputStream out = null;
             try {
                 out = RiskUtil.streamOpener.saveMapFile(saveToDiskName);
@@ -281,7 +279,7 @@ logger.info("Make Request: "+request);
                     if (pic==null || crd==null || map==null || "".equals(pic) || "".equals(crd) || "".equals(map)) {
                         throw new RuntimeException("info not found for map: "+mapUID+" in file: "+saveToDiskName+" info="+info);
                     }
-                    
+
                     downloadFile( pic );
                     downloadFile( crd );
                     downloadFile( map );
@@ -291,16 +289,15 @@ logger.info("Make Request: "+request);
                 }
             }
             catch (Exception ex) {
-                RiskUtil.printStackTrace(ex);
                 error = true;
+                throw ex; // throwing here will call ignoreErrorInDownload -> gotResponse
             }
             finally {
                 FileUtil.close(is);
                 FileUtil.close(out);
-                
-                gotResponse(url);
             }
-
+            // only call gotResponse when everything is finished and went ok and we didnt throw any exceptions
+            gotResponse(url);
         }
 
         private boolean ignoreErrorInDownload(String url) {
