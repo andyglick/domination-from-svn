@@ -102,11 +102,11 @@ public class MainMenu extends Frame implements ActionListener {
                 MiniUtil.showAbout();
             }
             else if ("quit".equals(actionCommand)) {
-                // logging desktop as sometimes is is null here, and not sure why
-                // and when its null, we can not exit, as its our only static ref
-                GameActivity.logger.info("user quit "+net.yura.mobile.gui.DesktopPane.getDesktopPane() );
-
-                Midlet.exit();
+                // HACK: if the user hits quit 2 times in a row,
+                // the 2nd event may throw a nullpointer as desktopPane is set to null after the 1st
+                if (net.yura.mobile.gui.DesktopPane.getDesktopPane() != null) {
+                    Midlet.exit();
+                }
             }
             else if ("donate".equals(actionCommand)) {
                 try {
