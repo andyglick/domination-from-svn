@@ -1696,8 +1696,9 @@ RiskUtil.printStackTrace(e);
 					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endtrade"); }
 
 				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showcards, trade, endtrade"); }
-
+				else {
+                                    output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showcards, trade"+(game.canEndTrade()?", endtrade":"") );
+                                }
 			}
 			else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
 
