@@ -1,9 +1,11 @@
 package net.yura.domination.android;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.GameActivity;
 import net.yura.mobile.util.Properties;
@@ -70,7 +72,9 @@ public class StatsActivity extends Activity {
     
     List<Player> getPlayersStats() {
         DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
-        return dmain.risk.getGame().getPlayersStats();
+        RiskGame game = dmain.risk.getGame();
+        // if we open the stats activity at the same time as closing the game, avoid throwing a error
+        return game==null?Collections.EMPTY_LIST:game.getPlayersStats();
     }
 
     @Override
