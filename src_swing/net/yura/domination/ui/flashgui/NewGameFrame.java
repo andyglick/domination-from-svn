@@ -207,45 +207,47 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ButtonGroup GameTypeButtonGroup = new ButtonGroup();
 		ButtonGroup CardTypeButtonGroup = new ButtonGroup();
 
+                int bw1 = 99;
+                int bw2 = 130;
+                int bh = 25;
+                
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
 		sortOutButton( domination );
-		domination.setBounds(60, 370, 90 , 25 );
+		domination.setBounds(60, 370, bw1 , bh );
 		domination.addActionListener(this);
 
 		capital = new JRadioButton(resb.getString("newgame.mode.capital"));
 		sortOutButton( capital );
-		capital.setBounds(60, 390, 90 , 25 );
+		capital.setBounds(60, 390, bw1 , bh );
 		capital.addActionListener(this);
 
 		mission = new JRadioButton(resb.getString("newgame.mode.mission"));
 		sortOutButton( mission );
-		mission.setBounds(60, 410, 90 , 25 );
+		mission.setBounds(60, 410, bw1 , bh );
 		mission.addActionListener(this);
-
-                int col2w = 130;
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
 		sortOutButton( AutoPlaceAll );
-		AutoPlaceAll.setBounds(60, 440, 100 , 25 );
+		AutoPlaceAll.setBounds(60, 440, bw1 , bh );
                 AutoPlaceAll.setSelected( "true".equals(myrisk.getRiskConfig("default.autoplaceall")) );
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
 		sortOutButton( recycle );
-		recycle.setBounds(160, 440, col2w , 25 );
+		recycle.setBounds(160, 440, bw2 , bh );
                 recycle.setSelected( "true".equals(myrisk.getRiskConfig("default.recyclecards")) );
 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
 		sortOutButton( increasing );
-		increasing.setBounds(160,370,col2w,25);
+		increasing.setBounds(160,370,bw2,bh);
 
 		fixed = new JRadioButton(resb.getString("newgame.cardmode.fixed"));
 		sortOutButton( fixed );
-		fixed.setBounds(160,390,col2w,25);
+		fixed.setBounds(160,390,bw2,bh);
 
                 italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		sortOutButton( italianLike );
-		italianLike.setBounds(160,410,col2w,25);
+		italianLike.setBounds(160,410,bw2,bh);
 
 		//AutoEndGo = new JCheckBox("Auto End Go");
 		//sortOutButton( AutoEndGo );
