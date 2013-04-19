@@ -27,7 +27,7 @@ public class TegMapLoader {
         }
         public int filterRGB(int x, int y, int rgb) {
             int alpha = ColorUtil.getAlpha(rgb);
-            return alpha==0xFF ? color : 0;
+            return alpha > 127 ? color : 0;
         }
     }
     
