@@ -11,8 +11,8 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
@@ -82,8 +82,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param r the risk main program
 	 */
 
-	public BattleDialog(GameFrame parent, boolean modal, Risk r)
-	{
+	public BattleDialog(GameFrame parent, boolean modal, Risk r) {
 		super(parent, modal);
 		gui = parent;
 		myrisk = r;
@@ -117,7 +116,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 		initGUI();
 		pack();
-
 	}
 
 	/*
@@ -154,13 +152,11 @@ public class BattleDialog extends JDialog implements MouseListener {
         }
 
         public void reset() {
-
                 button.setEnabled(false);
                 retreat.setVisible(false);
 		canRetreat=false;
 		max=0;
 		setTitle(resb.getString("battle.title"));
-
 	}
 
 	/** This method is called from within the constructor to initialize the dialog. */
@@ -193,7 +189,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		button.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-
 						gui.go( "roll " + nod );
 						// nod=0; // NEVER PUT THIS HERE
 					}
@@ -203,9 +198,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 		retreat.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-
 						gui.go( "retreat" );
-
 					}
 				}
 		);
@@ -222,9 +215,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 			new java.awt.event.WindowAdapter() {
 				public void windowClosing(java.awt.event.WindowEvent evt) {
 					if (canRetreat) {
-
 						gui.go( "retreat" );
-
 					}
 				}
 			}
@@ -236,7 +227,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		int xaCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
 		int yaCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
 		arrow = new Polygon(xaCoords, yaCoords, xaCoords.length);
-
 	}
 
 	/**
@@ -244,16 +234,11 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param n number of dice
 	 */
 	public void setNODAttacker(int n) {
-
 		att=null;
 		def=null;
-
 		noda = n;
-
 		battle.repaint();
-
 		timer.start();
-
 	}
 
 	/**
@@ -261,9 +246,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param n number of dice
 	 */
 	public void setNODDefender(int n) {
-
 		nodd = n;
-
 	}
 
 	/**
@@ -284,7 +267,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		def=defi;
 
 		battle.repaint();
-
 	}
 
 	/**
@@ -294,18 +276,14 @@ public class BattleDialog extends JDialog implements MouseListener {
 	public Action spinDiceAction() {
 		return new AbstractAction("spin dice action") {
 			public void actionPerformed (ActionEvent e) {
-
 				// repaint here slows the game down a lot!
 				//repaint();
-
 				drawDiceAnimated( battle.getGraphics() );
-
 			}
 		};
 	}
 
 	public void drawDiceAnimated(Graphics g) {
-
 
 		if (noda != 0) {
 
@@ -319,7 +297,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 			}
 
 			//g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
-
 		}
 
 		if (nodd != 0) {
@@ -334,7 +311,6 @@ public class BattleDialog extends JDialog implements MouseListener {
                         }
 
 			//g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
-
 		}
 	}
 
@@ -362,7 +338,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		}
 
 		battle.repaint();
-
 	}
 
 	private static Random r = new Random();
@@ -501,7 +476,6 @@ public class BattleDialog extends JDialog implements MouseListener {
                                 if (deadDice > 2) {
                                     g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
                                 }
-
 			}
                         // selecting the number of dice to defend
 			else if (max != 0 ) {
@@ -522,7 +496,6 @@ public class BattleDialog extends JDialog implements MouseListener {
                                 else if (max > 2) {
                                     g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
                                 }
-
 			}
                         // battle open and waiting for the attacker to select there number of dice
 			else if (max == 0 && nodd == 0 && atti == null && defi == null ) {
@@ -552,9 +525,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 					if (AdeadDice > 2) {
 						g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
 					}
-
 				}
-
 			}
 
                         // #####################################################
@@ -566,24 +537,20 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 
 				if (defi[0] >= atti[0]) {
-
 					g2.setColor( Color.blue );
 
 					int xCoords[] = {339, 339, 140};
 					int yCoords[] = {180, 200, 190};
 
 					g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
 				}
 				else {
-
 					g2.setColor( Color.red );
 
 					int xCoords[] = {140, 140, 339};
 					int yCoords[] = {180, 200, 190};
 
 					g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
 				}
 
 				if (atti.length > 1 && defi.length > 1) {
@@ -596,7 +563,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 						int yCoords[] = {211, 231, 221};
 
 						g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
 					}
 					else {
 
@@ -606,31 +572,26 @@ public class BattleDialog extends JDialog implements MouseListener {
 						int yCoords[] = {211, 231, 221};
 
 						g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
 					}
 				}
 
                                 if (atti.length > 2 && defi.length > 2) {
 
                                     if (defi[2] >= atti[2]) {
-
                                             g2.setColor( Color.blue );
 
                                             int xCoords[] = {339, 339, 140};
                                             int yCoords[] = {242, 262, 252};
 
                                             g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
                                     }
                                     else {
-
                                             g2.setColor( Color.red );
 
                                             int xCoords[] = {140, 140, 339};
                                             int yCoords[] = {242, 262, 252};
 
                                             g2.fillPolygon(xCoords, yCoords, xCoords.length);
-
                                     }
                                 }
 
@@ -655,11 +616,8 @@ public class BattleDialog extends JDialog implements MouseListener {
                                 if (defi.length > 2) {
                                     drawDice(false, defi[2] , 339, 242, g2 );
                                 }
-
 			}
-
 		}
-
 	}
 
 	/**
@@ -675,14 +633,10 @@ public class BattleDialog extends JDialog implements MouseListener {
 		//Graphics2D g = die.createGraphics();
 
 		if (isAttacker) {
-
 			g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 0, 0, this );
-
 		}
 		else {
-
 			g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 0, 0, this );
-
 		}
 
 		int size=3;
@@ -692,20 +646,17 @@ public class BattleDialog extends JDialog implements MouseListener {
 		if (result==0) {
 
 			g.fillOval(9, 9, size, size);
-
 		}
 		else if (result==1) {
 
 			g.fillOval(3, 3, size, size);
 			g.fillOval(15, 15, size, size);
-
 		}
 		else if (result==2) {
 
 			g.fillOval(3, 3, size, size);
 			g.fillOval(9, 9, size, size);
 			g.fillOval(15, 15, size, size);
-
 		}
 		else if (result==3) {
 
@@ -713,7 +664,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 			g.fillOval(15, 3, size, size);
 			g.fillOval(15, 15, size, size);
 			g.fillOval(3, 15, size, size);
-
 		}
 		else if (result==4) {
 
@@ -722,7 +672,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 			g.fillOval(15, 15, size, size);
 			g.fillOval(3, 15, size, size);
 			g.fillOval(9, 9, size, size);
-
 		}
 		else if (result==5) {
 
@@ -732,11 +681,9 @@ public class BattleDialog extends JDialog implements MouseListener {
 			g.fillOval(3, 15, size, size);
 			g.fillOval(9, 3, size, size);
 			g.fillOval(9, 15, size, size);
-
 		}
 
 		g.translate(-dx, -dy);
-
 	}
 
 	/**
@@ -772,7 +719,6 @@ public class BattleDialog extends JDialog implements MouseListener {
                 }
 
 		return B;
-
 	}
 
 	/**
@@ -788,30 +734,23 @@ public class BattleDialog extends JDialog implements MouseListener {
 			if (click == 1) { nod=1; }
 			if (click == 2 && max > 1) { nod=2; }
 			if (click == 3 && max > 2) { nod=3; }
-
 		}
 		else if (max != 0) {
 
 			if (click == 4) { nod=1; }
 			if (click == 5 && max > 1) { nod=2; }
 			if (click == 6 && max > 2) { nod=3; }
-
 		}
 
 		battle.repaint();
-
 	}
 
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) { }
 
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) { }
 
-	public void mousePressed(MouseEvent e) {
-	}
+	public void mousePressed(MouseEvent e) { }
 
-	public void mouseReleased(MouseEvent e) {
-	}
+	public void mouseReleased(MouseEvent e) { }
 
 }
