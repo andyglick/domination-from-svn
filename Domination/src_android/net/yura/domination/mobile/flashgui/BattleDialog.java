@@ -9,6 +9,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mapstore.MapRenderer;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.KeyEvent;
 import net.yura.mobile.gui.components.Button;
@@ -80,11 +81,11 @@ public class BattleDialog extends Frame implements ActionListener {
     @Override
     public void actionPerformed(String actionCommand) {
         if ("fight".equals( actionCommand )) {
-            go("roll "+nod);
+            go("roll "+ (canRetreat?noda:nodd) );
         }
         else if ("kill".equals( actionCommand )) {
             if (kill.isSelected()) {
-                go("roll "+max);
+                go("roll "+ (canRetreat?noda:nodd) );
             }
         }
         else if ("retreat".equals( actionCommand )) {
@@ -97,86 +98,34 @@ public class BattleDialog extends Frame implements ActionListener {
         }
     }
 
-    int[] att,def; // these are the dice results
-    int noda,nodd; // these are the number of spinning dice
-    int c1num,c2num;
-    Image c1img,c2img;
-    boolean ani,canRetreat;
-    int nod,max;
+    private void go(String input) {
+        
+        int gameState = myrisk.getGame().getState();
+        
+        if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
+
+                //this does not close it, just resets its params
+                blockInput();
+        }
+        
+        myrisk.parser(input);
+    }
+
     @Override
     public void run() throws InterruptedException {
-
-        while(ani) {
+        while(spinA||spinD) {
             repaint();
             wait(200);
         }
-
     }
 
-
-	/**
-	 * Sets number of attacking dice
-	 * @param n number of dice
-	 */
-	public void setNODAttacker(int n) {
-
-		att=null;
-		def=null;
-
-		noda = n;
-
-		repaint();
-
-                ani = true;
-		getDesktopPane().animateComponent(this);
-
-	}
-
-	/**
-	 * Sets number of defending dice
-	 * @param n number of dice
-	 */
-	public void setNODDefender(int n) {
-
-		nodd = n;
-
-	}
-
-    public void showDiceResults(int[] atti, int[] defi) {
-
-            ani = false;
-
-            noda=0;
-            nodd=0;
-
-            att=atti;
-            def=defi;
-
-            repaint();
-
-    }
-
-    void needInput(int n, boolean c) {
-
-        rollButton.setFocusable(true);
-        max=n;
-        nod=max;
-        canRetreat=c;
-
-        att=null;
-        def=null;
-
-        setTitle(resb.getProperty(canRetreat?"battle.select.attack":"battle.select.defend"));
-        retreat.setVisible(canRetreat);
-        kill.setVisible(canRetreat);
-
-        revalidate();
-        repaint();
-        
-        if (canRetreat && kill.isSelected()) {
-            go("roll "+max);
-        }
-    }
+    int[] att,def; // these are the dice results
+    private int noda,nodd; // these are the number of spinning dice
+    private boolean spinA,spinD;
+    int c1num,c2num;
+    Image c1img,c2img;
+    boolean canRetreat;
+    int max;
 
     void setup(int c1num, int c2num,Image c1img,Image c2img) {
         this.c1num = c1num;
@@ -190,26 +139,15 @@ public class BattleDialog extends Frame implements ActionListener {
         noda=0;
         nodd=0;
 
+        spinA = false;
+        spinD = false;
+
         kill.setSelected(false);
         
-        reset();
+        blockInput();
     }
-    
-    private void go(String input) {
-        
-        int gameState = myrisk.getGame().getState();
-        
-        if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
 
-                //this does not close it, just resets its params
-                reset();
-        }
-        
-        myrisk.parser(input);
-        
-    }
-    
-    public void reset() {
+    public void blockInput() {
         rollButton.setFocusable(false);
         retreat.setVisible(false);
         kill.setVisible(false);
@@ -219,6 +157,71 @@ public class BattleDialog extends Frame implements ActionListener {
         
         revalidate();
         repaint();
+    }
+
+    /**
+     * Sets number of attacking dice
+     * @param n number of dice
+     */
+    public void setNODAttacker(int n) {
+            att=null;
+            def=null;
+
+            noda = n;
+            spinA = true;
+            repaint();
+
+            getDesktopPane().animateComponent(this);
+    }
+
+    /**
+     * Sets number of defending dice
+     * @param n number of dice
+     */
+    public void setNODDefender(int n) {
+            nodd = n;
+            spinD = true;
+            repaint();
+    }
+
+    public void showDiceResults(int[] atti, int[] defi) {
+            att=atti;
+            def=defi;
+            spinA = false;
+            spinD = false;
+            repaint();
+    }
+
+    void needInput(int n, boolean c) {
+        max=n;
+        canRetreat=c;
+
+        if (canRetreat) {
+            if (noda==0 || noda > max) {
+                noda = max;
+            }
+        }
+        else {
+            if (nodd==0 || nodd > max) {
+                nodd = max;
+            }
+        }
+
+        att=null;
+        def=null;
+
+        rollButton.setFocusable(true);
+        setTitle(resb.getProperty(canRetreat?"battle.select.attack":"battle.select.defend"));
+        retreat.setVisible(canRetreat);
+        kill.setVisible(canRetreat);
+
+        revalidate();
+        repaint();
+        
+        if (canRetreat && kill.isSelected()) {
+            // dont want to "click" on kill as it will deselect the button
+            go("roll "+ (canRetreat?noda:nodd) );
+        }
     }
 
     private static final int DICE_NORMAL = 0;
@@ -274,19 +277,20 @@ public class BattleDialog extends Frame implements ActionListener {
         int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
         int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
 
-        // selecting the number of attacking dice
-        if (max != 0 && canRetreat) {
-
+        // if we need input
+        if (max != 0) {
+            // selecting the number of attacking dice
+            if (canRetreat) {
                 g.drawSprite(red_dice, DICE_NORMAL, ax, y1);
 
-                if (nod > 1) {
+                if (noda > 1) {
                     g.drawSprite( red_dice , DICE_NORMAL , ax, y2);
                 }
                 else if (max > 1) {
                     g.drawSprite( red_dice , DICE_DARK , ax, y2 );
                 }
 
-                if (nod > 2) {
+                if (noda > 2) {
                     g.drawSprite( red_dice, DICE_NORMAL , ax, y3 );
                 }
                 else if (max > 2) {
@@ -294,70 +298,58 @@ public class BattleDialog extends Frame implements ActionListener {
                 }
 
                 // draw the dead dice
-
                 g.drawSprite( blue_dice , DICE_DARK , dx, y1 );
-
                 if (deadDice > 1) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
-
                 if (deadDice > 2) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
-
-        }
-        // selecting the number of dice to defend
-        else if (max != 0 ) {
-
+            }
+            // selecting the number of dice to defend
+            else {
                 g.drawSprite( blue_dice , DICE_NORMAL , dx, y1 );
 
-                if (nod > 1) {
+                if (nodd > 1) {
                     g.drawSprite( blue_dice , DICE_NORMAL , dx, y2 );
                 }
                 else if (max > 1) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
 
-
-                if (nod > 2) {
+                if (nodd > 2) {
                     g.drawSprite( blue_dice , DICE_NORMAL , dx, y3 );
                 }
                 else if (max > 2) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
-
+            }
         }
         // battle open and waiting for the attacker to select there number of dice
-        else if (max == 0 && nodd == 0 && atti == null && defi == null ) {
+        else if (atti == null && defi == null && !spinD) {
 
                 // draw the dead dice
                 g.drawSprite( blue_dice , DICE_DARK , dx, y1 );
-
                 if (deadDice > 1) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y2 );
                 }
-
                 if (deadDice > 2) {
                     g.drawSprite( blue_dice , DICE_DARK , dx, y3 );
                 }
 
-                if (noda == 0) {
-
+                if (!spinA) {
                         // draw dead dice for attacker
                         int AdeadDice = myrisk.hasArmiesInt(c1num)-1;
                         // we assume that the attacker can attack with max of 3 dice
 
                         g.drawSprite( red_dice , DICE_DARK , ax, y1 );
-
                         if (AdeadDice > 1) {
                                 g.drawSprite( red_dice , DICE_DARK , ax, y2 );
                         }
                         if (AdeadDice > 2) {
                                 g.drawSprite( red_dice , DICE_DARK , ax, y3 );
                         }
-
                 }
-
         }
 
         // #####################################################
@@ -365,34 +357,26 @@ public class BattleDialog extends Frame implements ActionListener {
 
         final int SPINS_OFFSET = 3;
 
-        if (noda != 0) {
-
+        if (spinA) {
                 g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y1);
-
                 if (noda > 1) {
                         g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y2);
                 }
                 if (noda > 2) {
                         g.drawSprite( red_dice, SPINS_OFFSET+r.nextInt( 6 ) , ax, y3);
                 }
-
                 //g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
 
-        }
-
-        if (nodd != 0) {
-
-                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y1);
-
-                if (nodd > 1) {
-                        g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y2);
+                if (spinD) {
+                        g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y1);
+                        if (nodd > 1) {
+                                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y2);
+                        }
+                        if (nodd > 2) {
+                                g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y3);
+                        }
+                        //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
                 }
-                if (nodd > 2) {
-                    g.drawSprite( blue_dice, SPINS_OFFSET+r.nextInt( 6 ) , dx, y3);
-                }
-
-                //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
-
         }
 
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
@@ -438,7 +422,6 @@ public class BattleDialog extends Frame implements ActionListener {
 
                 // draw attacker dice
                 drawDice(true, atti[0] , ax, y1, g );
-
                 if (atti.length > 1) {
                         drawDice(true, atti[1] , ax, y2, g );
                 }
@@ -448,16 +431,13 @@ public class BattleDialog extends Frame implements ActionListener {
 
                 // draw defender dice
                 drawDice(false, defi[0] , dx, y1, g );
-
                 if (defi.length > 1) {
                         drawDice(false, defi[1] , dx, y2, g );
                 }
-
                 if (defi.length > 2) {
                     drawDice(false, defi[2] , dx, y3, g );
                 }
         }
-
     }
 
     public void drawDice(boolean isAttacker, int result,int dx,int dy,Graphics2D g) {
@@ -514,6 +494,83 @@ public class BattleDialog extends Frame implements ActionListener {
 		}
 
 		g.translate(-dx, -dy);
+    }
+
+    public int insideButton(int x, int y) {
+
+        int imageAreaHeight = getImageAreaHeight();
+        int heightOfComponents = ((MoveDialog.DialogLayout)getContentPane().getLayout()).getHeightOfComponents(getContentPane());
+        // this is the MIDDLE of the images area
+        int xOffset = getContentPane().getWidth() / 2;
+        int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/4 + getContentPane().getY();
+        
+        int y1 = yOffset + imageAreaHeight/4; // top of dice
+        
+        // just in case in the middle of the draw the att and def get set to null
+        int[] atti=att;
+        int[] defi=def;
+        
+        // this is the max defend dice allowed for this battle
+        int deadDice = myrisk.hasArmiesInt(c2num);
+        if (deadDice > myrisk.getGame().getMaxDefendDice()) {
+            deadDice = myrisk.getGame().getMaxDefendDice();
+        }
+
+        int w = getWidth();
+        int diceWidth = red_dice.getWidth();
+        
+        int ax = w/2 - MoveDialog.distanceFromCenter - diceWidth/2;
+        int dx = w/2 + MoveDialog.distanceFromCenter - diceWidth/2;
+
+        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+
+
+
+
+        int W=red_dice.getWidth();
+        int H=red_dice.getHeight();
+
+        if (x >= ax && x < (ax + W) && y >= y1 && y < (y1 + H)) {
+                return 1;
+        }
+        else if (x >= ax && x < (ax + W) && y >= y2 && y < (y2 + H)) {
+                return 2;
+        }
+        else if (x >= ax && x < (ax + W) && y >= y3 && y < (y3 + H)) {
+                return 3;
+        }
+        else if (x >= dx && x < (dx + W) && y >= y1 && y < (y1 + H)) {
+                return 4;
+        }
+        else if (x >= dx && x < (dx + W) && y >= y2 && y < (y2 + H)) {
+                return 5;
+        }
+        else if (x >= dx && x < (dx + W) && y >= y3 && y < (y3 + H)) {
+                return 6;
+        }
+        return 0;
+    }
+
+    @Override
+    public void processMouseEvent(int type, int x, int y, KeyEvent keys) {
+        super.processMouseEvent(type, x, y, keys);
+        if (type == DesktopPane.RELEASED) {
+            int click=insideButton(x,y);
+            if (max != 0) {
+                if (canRetreat) {
+                    if (click == 1) { noda=1; }
+                    if (click == 2 && max > 1) { noda=2; }
+                    if (click == 3 && max > 2) { noda=3; }
+                }
+                else {
+                    if (click == 4) { nodd=1; }
+                    if (click == 5 && max > 1) { nodd=2; }
+                    if (click == 6 && max > 2) { nodd=3; }
+                }
+                repaint();
+            }
+        }
     }
 
 }
