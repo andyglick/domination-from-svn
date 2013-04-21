@@ -2470,6 +2470,10 @@ RiskUtil.printStackTrace(e);
                     Player defendingPlayer = game.getDefender().getOwner();
                     if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
                             controller.openBattle( game.getAttacker().getColor() , game.getDefender().getColor() );
+                            // we are opeing the battle at a strange point, when NODAttacker is already set, so we should update it on the battle
+                            if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+                                controller.setNODAttacker(game.getAttackerDice());
+                            }
                             battle=true;
                     }
             }
