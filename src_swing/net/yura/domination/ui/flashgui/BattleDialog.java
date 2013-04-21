@@ -116,49 +116,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 		pack();
 	}
 
-	/*
-	 * @param a the number of attacking armies
-	 * @param b the number of defending armies
-	 * @param ai the image of attacker
-	 * @param bi the image of defender
-	 * @param country1	attacking country
-	 * @param country2	defending country
-	 * @param c1 color of the attacker
-	 * @param c2 color of the defender
-	 */
-	public void setup(int a, int b, BufferedImage ai, BufferedImage bi, Country country1, Country country2, Color c1, Color c2) {
-		c1num=a;
-		c2num=b;
-
-		c1img = ai;
-		c2img = bi;
-
-		this.country1 = country1;
-		this.country2 = country2;
-
-		color1=c1;
-		color2=c2;
-
-		att=null;
-		def=null;
-
-		noda=0;
-		nodd=0;
-
-                spinA = false;
-                spinD = false;
-
-                blockInput();
-        }
-
-        public void blockInput() {
-                button.setEnabled(false);
-                retreat.setVisible(false);
-		canRetreat=false;
-		max=0;
-		setTitle(resb.getString("battle.title"));
-	}
-
 	/** This method is called from within the constructor to initialize the dialog. */
 	private void initGUI() {
 		resb = TranslationBundle.getBundle();
@@ -229,6 +186,63 @@ public class BattleDialog extends JDialog implements MouseListener {
 	}
 
 	/**
+	 * Spins the images of the dice
+	 * @return Action
+	 */
+	public Action spinDiceAction() {
+		return new AbstractAction("spin dice action") {
+			public void actionPerformed (ActionEvent e) {
+				// repaint here slows the game down a lot!
+				//repaint();
+				drawDiceAnimated( battle.getGraphics() );
+			}
+		};
+	}
+
+	/*
+	 * @param a the number of attacking armies
+	 * @param b the number of defending armies
+	 * @param ai the image of attacker
+	 * @param bi the image of defender
+	 * @param country1	attacking country
+	 * @param country2	defending country
+	 * @param c1 color of the attacker
+	 * @param c2 color of the defender
+	 */
+	public void setup(int a, int b, BufferedImage ai, BufferedImage bi, Country country1, Country country2, Color c1, Color c2) {
+		c1num=a;
+		c2num=b;
+
+		c1img = ai;
+		c2img = bi;
+
+		this.country1 = country1;
+		this.country2 = country2;
+
+		color1=c1;
+		color2=c2;
+
+		att=null;
+		def=null;
+
+		noda=0;
+		nodd=0;
+
+                spinA = false;
+                spinD = false;
+
+                blockInput();
+        }
+
+        public void blockInput() {
+                button.setEnabled(false);
+                retreat.setVisible(false);
+		canRetreat=false;
+		max=0;
+		setTitle(resb.getString("battle.title"));
+	}
+
+	/**
 	 * Sets number of attacking dice
 	 * @param n number of dice
 	 */
@@ -265,20 +279,6 @@ public class BattleDialog extends JDialog implements MouseListener {
                 spinA = false;
                 spinD = false;
 		battle.repaint();
-	}
-
-	/**
-	 * Spins the images of the dice
-	 * @return Action
-	 */
-	public Action spinDiceAction() {
-		return new AbstractAction("spin dice action") {
-			public void actionPerformed (ActionEvent e) {
-				// repaint here slows the game down a lot!
-				//repaint();
-				drawDiceAnimated( battle.getGraphics() );
-			}
-		};
 	}
 
 	/**
@@ -681,32 +681,31 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @return int type of button
 	 */
 	public int insideButton(int x, int y) {
-
+                int ax=120;
+                int dx=339;
 		int W=21;
 		int H=21;
 
-		int B=0;
-
-		if (x >= 120 && x < (120 + W) && y >= 180 && y < (180 + H)) {
-			B=1;
+		if (x >= ax && x < (ax + W) && y >= 180 && y < (180 + H)) {
+			return 1;
 		}
-		else if (x >= 120 && x < (120 + W) && y >= 211 && y < (211 + H)) {
-			B=2;
+		else if (x >= ax && x < (ax + W) && y >= 211 && y < (211 + H)) {
+			return 2;
 		}
-		else if (x >= 120 && x < (120 + W) && y >= 242 && y < (242 + H)) {
-			B=3;
+		else if (x >= ax && x < (ax + W) && y >= 242 && y < (242 + H)) {
+			return 3;
 		}
-		else if (x >= 339 && x < (339 + W) && y >= 180 && y < (180 + H)) {
-			B=4;
+		else if (x >= dx && x < (dx + W) && y >= 180 && y < (180 + H)) {
+			return 4;
 		}
-		else if (x >= 339 && x < (339 + W) && y >= 211 && y < (211 + H)) {
-			B=5;
+		else if (x >= dx && x < (dx + W) && y >= 211 && y < (211 + H)) {
+			return 5;
 		}
-                else if (x >= 339 && x < (339 + W) && y >= 232 && y < (232 + H)) {
-                        B=6;
+                else if (x >= dx && x < (dx + W) && y >= 232 && y < (232 + H)) {
+                        return 6;
                 }
 
-		return B;
+		return 0;
 	}
 
 	/**
@@ -726,8 +725,8 @@ public class BattleDialog extends JDialog implements MouseListener {
 			if (click == 5 && max > 1) { nodd=2; }
 			if (click == 6 && max > 2) { nodd=3; }
                     }
+                    battle.repaint();
 		}
-		battle.repaint();
 	}
 
 	public void mouseEntered(MouseEvent e) { }
