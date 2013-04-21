@@ -32,7 +32,6 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * <p> Battle Dialog for FlashGUI </p>
  * @author Yura Mamyrin
  */
-
 public class BattleDialog extends JDialog implements MouseListener {
 
 	private GameFrame gui;
@@ -62,11 +61,10 @@ public class BattleDialog extends JDialog implements MouseListener {
 	private int[] att;
 	private int[] def;
 
-	private int max;
-	private int nod;
+	private int max; // indicates input is needed if > 0
 
-	private int noda;
-	private int nodd;
+	private int noda,nodd;
+        private boolean spinA,spinD;
 
 	private BufferedImage[] attackerSpins;
 	private BufferedImage[] defenderSpins;
@@ -129,7 +127,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param c2 color of the defender
 	 */
 	public void setup(int a, int b, BufferedImage ai, BufferedImage bi, Country country1, Country country2, Color c1, Color c2) {
-
 		c1num=a;
 		c2num=b;
 
@@ -148,10 +145,13 @@ public class BattleDialog extends JDialog implements MouseListener {
 		noda=0;
 		nodd=0;
 
-                reset();
+                spinA = false;
+                spinD = false;
+
+                blockInput();
         }
 
-        public void reset() {
+        public void blockInput() {
                 button.setEnabled(false);
                 retreat.setVisible(false);
 		canRetreat=false;
@@ -189,8 +189,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 		button.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						gui.go( "roll " + nod );
-						// nod=0; // NEVER PUT THIS HERE
+						gui.go( "roll " + (canRetreat?noda:nodd) );
 					}
 				}
 		);
@@ -237,6 +236,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 		att=null;
 		def=null;
 		noda = n;
+                spinA = true;
 		battle.repaint();
 		timer.start();
 	}
@@ -247,6 +247,8 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 */
 	public void setNODDefender(int n) {
 		nodd = n;
+                spinD = true;
+                battle.repaint();
 	}
 
 	/**
@@ -255,17 +257,13 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param defi the defending results
 	 */
 	public void showDiceResults(int[] atti, int[] defi) {
-
 		if( timer.isRunning() ) {
 			timer.stop();
 		}
-
-		noda=0;
-		nodd=0;
-
 		att=atti;
 		def=defi;
-
+                spinA = false;
+                spinD = false;
 		battle.repaint();
 	}
 
@@ -283,60 +281,30 @@ public class BattleDialog extends JDialog implements MouseListener {
 		};
 	}
 
-	public void drawDiceAnimated(Graphics g) {
-
-		if (noda != 0) {
-
-			g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 176, this);
-
-			if (noda > 1) {
-				g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 207, this);
-			}
-			if (noda > 2) {
-				g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 238, this);
-			}
-
-			//g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
-		}
-
-		if (nodd != 0) {
-
-			g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 176, this);
-
-			if (nodd > 1) {
-				g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 207, this);
-			}
-                        if (nodd > 2) {
-                            g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 238, this);
-                        }
-
-			//g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
-		}
-	}
-
 	/**
 	 * Checks to see if input is needed
 	 * @param n Maximum number of dice
 	 * @param c If you can retreat
 	 */
 	public void needInput(int n, boolean c) {
-
 		button.setEnabled(true);
 		max=n;
-		nod=max;
 		canRetreat=c;
-
 		att=null;
 		def=null;
-
 		if (canRetreat) {
+                        if (noda==0 || noda > max) {
+                            noda = max;
+                        }
 			retreat.setVisible(true);
 			setTitle(resb.getString("battle.select.attack"));
 		}
 		else {
+                        if (nodd==0 || nodd > max) {
+                            nodd = max;
+                        }
 			setTitle(resb.getString("battle.select.defend"));
 		}
-
 		battle.repaint();
 	}
 
@@ -349,19 +317,12 @@ public class BattleDialog extends JDialog implements MouseListener {
 		 * @param g The graphics
 		 */
 		public void paintComponent(Graphics g) {
-
-			// just in case in the middle of the draw the att and def get set to null
-			int[] atti=att;
-			int[] defi=def;
-
 			//super.paintComponent(g);
 
 			g.drawImage( Back ,0 ,0 ,this );
 
 			if (canRetreat) {
-
 				g.drawImage( Battle.getSubimage(481, 133, 98, 40) ,336 ,265 ,this );
-
 			}
 
 			g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
@@ -437,188 +398,215 @@ public class BattleDialog extends JDialog implements MouseListener {
 				g2.drawString( String.valueOf( noa ) , 340, 105 );
 			}
 
-                        // #####################################################
-                        // ################## drawing DICE!!!!! ################
-
-                        // this is the max defend dice allowed for this battle
-                        int deadDice = myrisk.hasArmiesInt(c2num);
-                        if (deadDice > myrisk.getGame().getMaxDefendDice()) {
-                            deadDice = myrisk.getGame().getMaxDefendDice();
-                        }
-
-                        // selecting the number of attacking dice
-			if (max != 0 && canRetreat) {
-
-				g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 180, this );
-
-				if (nod > 1) {
-                                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 211, this );
-				}
-				else if (max > 1) {
-                                    g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
-				}
-
-				if (nod > 2) {
-                                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 242, this );
-				}
-				else if (max > 2) {
-                                    g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
-				}
-
-				// draw the dead dice
-
-				g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
-
-				if (deadDice > 1) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
-				}
-
-                                if (deadDice > 2) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
-                                }
-			}
-                        // selecting the number of dice to defend
-			else if (max != 0 ) {
-
-				g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 180, this );
-
-				if (nod > 1) {
-                                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 211, this );
-				}
-				else if (max > 1) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
-				}
-
-
-                                if (nod > 2) {
-                                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 242, this );
-                                }
-                                else if (max > 2) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
-                                }
-			}
-                        // battle open and waiting for the attacker to select there number of dice
-			else if (max == 0 && nodd == 0 && atti == null && defi == null ) {
-
-				// draw the dead dice
-				g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
-
-				if (deadDice > 1) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
-				}
-
-                                if (deadDice > 2) {
-                                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
-                                }
-
-				if (noda == 0) {
-
-					// draw dead dice for attacker
-					int AdeadDice = myrisk.hasArmiesInt(c1num)-1;
-                                        // we assume that the attacker can attack with max of 3 dice
-
-					g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 180, this );
-
-					if (AdeadDice > 1) {
-						g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
-					}
-					if (AdeadDice > 2) {
-						g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
-					}
-				}
-			}
-
-                        // #####################################################
-                        // ##################### END DICE ######################
-
+                        drawDiceSelect(g);
 			drawDiceAnimated(g);
-
-			if (atti != null && defi != null ) {
-
-
-				if (defi[0] >= atti[0]) {
-					g2.setColor( Color.blue );
-
-					int xCoords[] = {339, 339, 140};
-					int yCoords[] = {180, 200, 190};
-
-					g2.fillPolygon(xCoords, yCoords, xCoords.length);
-				}
-				else {
-					g2.setColor( Color.red );
-
-					int xCoords[] = {140, 140, 339};
-					int yCoords[] = {180, 200, 190};
-
-					g2.fillPolygon(xCoords, yCoords, xCoords.length);
-				}
-
-				if (atti.length > 1 && defi.length > 1) {
-
-					if (defi[1] >= atti[1]) {
-
-						g2.setColor( Color.blue );
-
-						int xCoords[] = {339, 339, 140};
-						int yCoords[] = {211, 231, 221};
-
-						g2.fillPolygon(xCoords, yCoords, xCoords.length);
-					}
-					else {
-
-						g2.setColor( Color.red );
-
-						int xCoords[] = {140, 140, 339};
-						int yCoords[] = {211, 231, 221};
-
-						g2.fillPolygon(xCoords, yCoords, xCoords.length);
-					}
-				}
-
-                                if (atti.length > 2 && defi.length > 2) {
-
-                                    if (defi[2] >= atti[2]) {
-                                            g2.setColor( Color.blue );
-
-                                            int xCoords[] = {339, 339, 140};
-                                            int yCoords[] = {242, 262, 252};
-
-                                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
-                                    }
-                                    else {
-                                            g2.setColor( Color.red );
-
-                                            int xCoords[] = {140, 140, 339};
-                                            int yCoords[] = {242, 262, 252};
-
-                                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
-                                    }
-                                }
-
-
-				// draw attacker dice
-				drawDice(true, atti[0] , 120, 180, g2 );
-
-				if (atti.length > 1) {
-					drawDice(true, atti[1] , 120, 211, g2 );
-				}
-				if (atti.length > 2) {
-					drawDice(true, atti[2] , 120, 242, g2 );
-				}
-
-				// draw defender dice
-				drawDice(false, defi[0] , 339, 180, g2 );
-
-				if (defi.length > 1) {
-					drawDice(false, defi[1] , 339, 211, g2 );
-				}
-
-                                if (defi.length > 2) {
-                                    drawDice(false, defi[2] , 339, 242, g2 );
-                                }
-			}
+			drawDiceResults(g);
 		}
 	}
+
+        private void drawDiceSelect(Graphics g) {
+
+            // this is the max defend dice allowed for this battle
+            int deadDiceD = myrisk.hasArmiesInt(c2num);
+            if (deadDiceD > myrisk.getGame().getMaxDefendDice()) {
+                deadDiceD = myrisk.getGame().getMaxDefendDice();
+            }
+
+            // if we need input
+            if (max != 0) {
+                // selecting the number of attacking dice
+                if (canRetreat) {
+                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 180, this );
+
+                    if (noda > 1) {
+                        g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 211, this );
+                    }
+                    else if (max > 1) {
+                        g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
+                    }
+
+                    if (noda > 2) {
+                        g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 242, this );
+                    }
+                    else if (max > 2) {
+                        g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
+                    }
+
+                    // draw the dead dice
+                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
+                    if (deadDiceD > 1) {
+                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                    }
+                    if (deadDiceD > 2) {
+                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                    }
+                }
+                // selecting the number of dice to defend
+                else {
+                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 180, this );
+
+                    if (nodd > 1) {
+                        g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 211, this );
+                    }
+                    else if (max > 1) {
+                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                    }
+
+                    if (nodd > 2) {
+                        g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 242, this );
+                    }
+                    else if (max > 2) {
+                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                    }
+                }
+            }
+            // battle open and waiting for the attacker to select there number of dice
+            else if (att == null && def == null && !spinD) {
+                    BufferedImage deadD = Battle.getSubimage(502, 21, 21, 21);
+
+                    // draw the dead dice
+                    g.drawImage( deadD , 339, 180, this );
+                    if (deadDiceD > 1) {
+                        g.drawImage( deadD , 339, 211, this );
+                    }
+                    if (deadDiceD > 2) {
+                        g.drawImage( deadD , 339, 242, this );
+                    }
+
+                    if (!spinA) {
+                            BufferedImage deadA = Battle.getSubimage(502, 0, 21, 21);
+
+                            // draw dead dice for attacker
+                            int deadDiceA = myrisk.hasArmiesInt(c1num)-1;
+                            // we assume that the attacker can attack with max of 3 dice
+
+                            g.drawImage( deadA , 120, 180, this );
+                            if (deadDiceA > 1) {
+                                    g.drawImage( deadA , 120, 211, this );
+                            }
+                            if (deadDiceA > 2) {
+                                    g.drawImage( deadA , 120, 242, this );
+                            }
+                    }
+            }
+        }
+
+        public void drawDiceAnimated(Graphics g) {
+            if (spinA) {
+                    g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 176, this);
+
+                    if (noda > 1) {
+                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 207, this);
+                    }
+                    if (noda > 2) {
+                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 238, this);
+                    }
+                    //g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
+
+                    if (spinD) {
+                            g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 176, this);
+
+                            if (nodd > 1) {
+                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 207, this);
+                            }
+                            if (nodd > 2) {
+                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 238, this);
+                            }
+                            //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
+                    }
+            }
+	}
+
+        private void drawDiceResults(Graphics g2) {
+
+            // just in case in the middle of the draw the att and def get set to null
+            int[] atti=att;
+            int[] defi=def;
+
+            if (atti != null && defi != null ) {
+
+                    if (defi[0] >= atti[0]) {
+                            g2.setColor( Color.blue );
+
+                            int xCoords[] = {339, 339, 140};
+                            int yCoords[] = {180, 200, 190};
+
+                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                    }
+                    else {
+                            g2.setColor( Color.red );
+
+                            int xCoords[] = {140, 140, 339};
+                            int yCoords[] = {180, 200, 190};
+
+                            g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                    }
+
+                    if (atti.length > 1 && defi.length > 1) {
+
+                            if (defi[1] >= atti[1]) {
+
+                                    g2.setColor( Color.blue );
+
+                                    int xCoords[] = {339, 339, 140};
+                                    int yCoords[] = {211, 231, 221};
+
+                                    g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                            }
+                            else {
+
+                                    g2.setColor( Color.red );
+
+                                    int xCoords[] = {140, 140, 339};
+                                    int yCoords[] = {211, 231, 221};
+
+                                    g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                            }
+                    }
+
+                    if (atti.length > 2 && defi.length > 2) {
+
+                        if (defi[2] >= atti[2]) {
+                                g2.setColor( Color.blue );
+
+                                int xCoords[] = {339, 339, 140};
+                                int yCoords[] = {242, 262, 252};
+
+                                g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                        }
+                        else {
+                                g2.setColor( Color.red );
+
+                                int xCoords[] = {140, 140, 339};
+                                int yCoords[] = {242, 262, 252};
+
+                                g2.fillPolygon(xCoords, yCoords, xCoords.length);
+                        }
+                    }
+
+
+                    // draw attacker dice
+                    drawDice(true, atti[0] , 120, 180, g2 );
+
+                    if (atti.length > 1) {
+                            drawDice(true, atti[1] , 120, 211, g2 );
+                    }
+                    if (atti.length > 2) {
+                            drawDice(true, atti[2] , 120, 242, g2 );
+                    }
+
+                    // draw defender dice
+                    drawDice(false, defi[0] , 339, 180, g2 );
+
+                    if (defi.length > 1) {
+                            drawDice(false, defi[1] , 339, 211, g2 );
+                    }
+
+                    if (defi.length > 2) {
+                            drawDice(false, defi[2] , 339, 242, g2 );
+                    }
+            }
+        }
 
 	/**
 	 * Gets the dice
@@ -626,7 +614,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param result Result of the dice
 	 * @return BufferedImage The image of the die
 	 */
-	public void drawDice(boolean isAttacker, int result,final int dx,final int dy,Graphics2D g) {
+	public void drawDice(boolean isAttacker, int result,final int dx,final int dy,Graphics g) {
 
 		//BufferedImage die = new BufferedImage(21, 21, java.awt.image.BufferedImage.TYPE_INT_RGB );
                 g.translate(dx, dy);
@@ -726,22 +714,19 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param e A mouse event
 	 */
 	public void mouseClicked(MouseEvent e) {
-
 		int click=insideButton(e.getX(),e.getY());
-
-		if (max != 0 && canRetreat) {
-
-			if (click == 1) { nod=1; }
-			if (click == 2 && max > 1) { nod=2; }
-			if (click == 3 && max > 2) { nod=3; }
+		if (max != 0) {
+                    if (canRetreat) {
+			if (click == 1) { noda=1; }
+			if (click == 2 && max > 1) { noda=2; }
+			if (click == 3 && max > 2) { noda=3; }
+                    }
+                    else {
+			if (click == 4) { nodd=1; }
+			if (click == 5 && max > 1) { nodd=2; }
+			if (click == 6 && max > 2) { nodd=3; }
+                    }
 		}
-		else if (max != 0) {
-
-			if (click == 4) { nod=1; }
-			if (click == 5 && max > 1) { nod=2; }
-			if (click == 6 && max > 2) { nod=3; }
-		}
-
 		battle.repaint();
 	}
 

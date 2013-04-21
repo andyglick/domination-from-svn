@@ -840,7 +840,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
 
 			//this does not close it, just resets its params
-			battledialog.reset();
+			battledialog.blockInput();
 		}
 
 
