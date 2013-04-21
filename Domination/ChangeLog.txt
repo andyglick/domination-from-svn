@@ -21,6 +21,7 @@ CURRENT VERSION:
 	Card Ownership view shows you the cards you own when you dont own the country in Yellow
 	online game setup ui fixes
 	FlashGUI will remember the number of dice you are attacking/defending with in a given battle
+	fixed: FlashGUI move and attack dialog countries that are too big need to be shown smaller
 
 	Android 37 nullpointer in 2 exit events fixed (hack)
 		   nullpointer in quit game and open stats activity at the same time fixed (hack)

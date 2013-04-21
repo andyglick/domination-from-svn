@@ -333,7 +333,7 @@ public class MoveDialog extends JDialog {
 				g.drawImage(Move.getSubimage(480, 0, 98, 41), 46, 245, this);
 			}
 
-			draw(g, 
+			paintMove(g, 
                                 c1img, c2img,
                                 color, color,
                                 country1.getName(), country2.getName(),
@@ -344,7 +344,7 @@ public class MoveDialog extends JDialog {
 		}
 	}
 
-        static void draw(Graphics g,
+        static void paintMove(Graphics g,
                 BufferedImage c1img,BufferedImage c2img,
                 Color color1, Color color2,
                 String name1,String name2,
@@ -353,8 +353,8 @@ public class MoveDialog extends JDialog {
 			Graphics2D g2 = (Graphics2D)g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                        g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), null);
-			g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), null);
+                        drawCountry(g2, c1img, 130, 100);
+                        drawCountry(g2, c2img, 350, 100);
 
 			FontRenderContext frc = g2.getFontRenderContext();
 			Font font = g2.getFont();
@@ -405,4 +405,22 @@ public class MoveDialog extends JDialog {
 				g2.drawString( String.valueOf( noa2i ) , 340, 105 );
 			}
         }
+
+        static void drawCountry(Graphics2D g, BufferedImage img, int x, int y) {
+
+            int maxW = 200;
+            int maxH = 140;
+
+            int w = img.getWidth();
+            int h = img.getHeight();
+
+            if (w > maxW || h > maxH) {
+                double scale = Math.min(maxW/(double)w,maxH/(double)h);
+                w = (int)( scale * w );
+                h = (int)( scale * h );
+            }
+
+            g.drawImage(img, x - w/2, y - h/2, x + w/2, y + h/2, 0, 0, img.getWidth(), img.getHeight(), null);
+        }
+
 }

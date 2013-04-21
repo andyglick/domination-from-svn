@@ -317,7 +317,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 				g.drawImage( Battle.getSubimage(481, 133, 98, 40) ,336 ,265 ,this );
 			}
 
-                        MoveDialog.draw(g,
+                        MoveDialog.paintMove(g,
                                 c1img, c2img,
                                 color1, color2, 
                                 country1.getName(), country2.getName(),
