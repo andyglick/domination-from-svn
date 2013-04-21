@@ -7,7 +7,6 @@ import java.util.List;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
