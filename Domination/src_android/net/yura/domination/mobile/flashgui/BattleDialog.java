@@ -245,7 +245,7 @@ public class BattleDialog extends Frame implements ActionListener {
 
         //g.setColor(0xFFFF0000);
         //g.drawRect( (getContentPane().getWidth()-imageAreaHeight)/2 , (getContentPane().getHeight()-heightOfComponents)/2 + getContentPane().getY(), imageAreaHeight, imageAreaHeight);
-        
+
         MoveDialog.paintMove(g,
                 xOffset,yOffset,
                 c1img,c2img,
@@ -256,8 +256,15 @@ public class BattleDialog extends Frame implements ActionListener {
         // #####################################################
         // ################## drawing DICE!!!!! ################
 
+        int[] diceXs = getDiceX();
+        int ax=diceXs[0],dx=diceXs[1];
+
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        
+        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+
+
+
         // just in case in the middle of the draw the att and def get set to null
         int[] atti=att;
         int[] defi=def;
@@ -267,15 +274,6 @@ public class BattleDialog extends Frame implements ActionListener {
         if (deadDice > myrisk.getGame().getMaxDefendDice()) {
             deadDice = myrisk.getGame().getMaxDefendDice();
         }
-
-        int w = getWidth();
-        int diceWidth = red_dice.getWidth();
-        
-        int ax = w/2 - MoveDialog.distanceFromCenter - diceWidth/2;
-        int dx = w/2 + MoveDialog.distanceFromCenter - diceWidth/2;
-
-        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
-        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
 
         // if we need input
         if (max != 0) {
@@ -496,37 +494,31 @@ public class BattleDialog extends Frame implements ActionListener {
 		g.translate(-dx, -dy);
     }
 
+    private int[] getDiceX() {
+        int w = getWidth();
+        int diceWidth = red_dice.getWidth();
+        int ax = w/2 - MoveDialog.distanceFromCenter - diceWidth/2;
+        int dx = w/2 + MoveDialog.distanceFromCenter - diceWidth/2;
+        return new int[] {ax,dx};
+    }
+    
     public int insideButton(int x, int y) {
 
+        // <copy-pasta>
         int imageAreaHeight = getImageAreaHeight();
         int heightOfComponents = ((MoveDialog.DialogLayout)getContentPane().getLayout()).getHeightOfComponents(getContentPane());
         // this is the MIDDLE of the images area
         int xOffset = getContentPane().getWidth() / 2;
         int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/4 + getContentPane().getY();
-        
+
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        
-        // just in case in the middle of the draw the att and def get set to null
-        int[] atti=att;
-        int[] defi=def;
-        
-        // this is the max defend dice allowed for this battle
-        int deadDice = myrisk.hasArmiesInt(c2num);
-        if (deadDice > myrisk.getGame().getMaxDefendDice()) {
-            deadDice = myrisk.getGame().getMaxDefendDice();
-        }
-
-        int w = getWidth();
-        int diceWidth = red_dice.getWidth();
-        
-        int ax = w/2 - MoveDialog.distanceFromCenter - diceWidth/2;
-        int dx = w/2 + MoveDialog.distanceFromCenter - diceWidth/2;
-
         int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
         int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        // </copy-pasta>
 
 
-
+        int[] diceXs = getDiceX();
+        int ax=diceXs[0],dx=diceXs[1];
 
         int W=red_dice.getWidth();
         int H=red_dice.getHeight();
