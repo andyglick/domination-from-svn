@@ -70,7 +70,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 	private BufferedImage[] defenderSpins;
 
 	private java.util.ResourceBundle resb;
-	private Polygon arrow;
 	private JPanel battle;
 
 	/**
@@ -176,13 +175,6 @@ public class BattleDialog extends JDialog implements MouseListener {
 				}
 			}
 		);
-
-		int x=110;
-		int y=40;
-
-		int xaCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
-		int yaCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
-		arrow = new Polygon(xaCoords, yaCoords, xaCoords.length);
 	}
 
 	/**
@@ -325,78 +317,18 @@ public class BattleDialog extends JDialog implements MouseListener {
 				g.drawImage( Battle.getSubimage(481, 133, 98, 40) ,336 ,265 ,this );
 			}
 
-			g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
+                        MoveDialog.draw(g,
+                                c1img, c2img,
+                                color1, color2, 
+                                country1.getName(), country2.getName(),
+                                myrisk.hasArmiesInt(c1num),myrisk.hasArmiesInt(c2num) );
 
-			g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
-
-			Graphics2D g2 = (Graphics2D)g;
-
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-			FontRenderContext frc = g2.getFontRenderContext();
+                        Graphics2D g2 = (Graphics2D)g;
+                        FontRenderContext frc = g2.getFontRenderContext();
 			Font font = g2.getFont();
-			g2.setColor( Color.black );
-			TextLayout tl;
-
-			tl = new TextLayout( country1.getName(), font, frc); // Display
-			tl.draw( g2, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
-
-			tl = new TextLayout( country2.getName(), font, frc); // Display
-			tl.draw( g2, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
-
-			tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
+                        TextLayout tl = new TextLayout( resb.getString("battle.select.dice") , font, frc);
+                        g2.setColor( Color.BLACK );
 			tl.draw( g2, (float) (240-(tl.getBounds().getWidth()/2)), 320f );
-
-			Ellipse2D ellipse;
-
-
-			g2.setColor( color1 );
-
-			ellipse = new Ellipse2D.Double();
-			ellipse.setFrame( 120 , 90 , 20, 20);
-			g2.fill(ellipse);
-
-			g2.setColor( color2 );
-
-			ellipse = new Ellipse2D.Double();
-			ellipse.setFrame( 340 , 90 , 20, 20);
-			g2.fill(ellipse);
-
-
-			g2.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
-
-
-			g2.fillPolygon( arrow );
-
-			int noa;
-
-			g2.setColor( RiskUIUtil.getTextColorFor(color1) );
-
-			noa = myrisk.hasArmiesInt(c1num);
-
-			if (noa < 10) {
-				g2.drawString( String.valueOf( noa ) , 126, 105 );
-			}
-			else if (noa < 100) {
-				g2.drawString( String.valueOf( noa ) , 123, 105 );
-			}
-			else {
-				g2.drawString( String.valueOf( noa ) , 120, 105 );
-			}
-
-			g2.setColor( RiskUIUtil.getTextColorFor(color2) );
-
-			noa = myrisk.hasArmiesInt(c2num);
-
-			if (noa < 10) {
-				g2.drawString( String.valueOf( noa ) , 346, 105 );
-			}
-			else if (noa < 100) {
-				g2.drawString( String.valueOf( noa ) , 343, 105 );
-			}
-			else {
-				g2.drawString( String.valueOf( noa ) , 340, 105 );
-			}
 
                         drawDiceSelect(g);
 			drawDiceAnimated(g);

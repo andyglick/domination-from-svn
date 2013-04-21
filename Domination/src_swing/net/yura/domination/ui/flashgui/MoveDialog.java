@@ -2,26 +2,26 @@
 
 package net.yura.domination.ui.flashgui;
 
-import java.awt.Graphics;
-import javax.swing.JPanel;
-import java.awt.Dimension;
-import javax.swing.JButton;
-import java.awt.Frame;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
-import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.RenderingHints;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -53,9 +53,17 @@ public class MoveDialog extends JDialog {
 	private JSlider slider;
 	private java.util.ResourceBundle resb;
 	private JButton cancel;
-	private Polygon arrow;
+	private final static Polygon arrow;
 	private movePanel movepanel;
 
+        static {
+		int x=110;
+		int y=40;
+		int xCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
+		int yCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
+		arrow = new Polygon(xCoords, yCoords, xCoords.length);
+        }
+        
 	public MoveDialog(Frame parent, boolean modal) {
 
 		super(parent, modal);
@@ -74,79 +82,11 @@ public class MoveDialog extends JDialog {
 
 	}
 
-	public void setup(boolean tm, int m, int a, int b, BufferedImage ai, BufferedImage bi, Country country1, Country country2, Color c) {
-
-		tacmove=tm;
-
-		c1img = ai;
-		c2img = bi;
-
-		this.country1 = country1;
-		this.country2 = country2;
-
-		move=m;
-
-		csrc=a;
-		cdes=b;
-
-		color=c;
-
-
-		// set title
-		if (tacmove) {
-			setTitle(resb.getString("move.title.tactical"));
-			cancel.setVisible(true);
-		}
-		else {
-			setTitle(resb.getString("move.title.captured"));
-			cancel.setVisible(false);
-		}
-
-
-		// all this coz for some reason u cant reuse a JSlider, the labels start getting painted wrong
-		movepanel.remove(slider);
-
-		slider = new JSlider(move,csrc-1,move);
-
-
-		int spacig = Math.round( (csrc-1)/10f );
-
-		if (spacig==0) {
-			slider.setMajorTickSpacing(1);
-		}
-		else {
-			slider.setMajorTickSpacing( spacig );
-			slider.setMinorTickSpacing(1);
-		}
-
-		slider.setPaintTicks( true );
-		slider.setPaintLabels( true );
-		slider.setSnapToTicks( true );
-		slider.setOpaque( false );
-
-		slider.addChangeListener(
-			new ChangeListener() {
-				public void stateChanged(ChangeEvent e) {
-
-					move = slider.getValue();
-					movepanel.repaint();
-
-				}
-			}
-		);
-
-		slider.setBounds(90, 180, 300, 50);
-
-		movepanel.add(slider);
-	}
-
-	/** This method is called from within the constructor to initialize the form. */
-
 	/**
+         * This method is called from within the constructor to initialize the form.
 	 * Initialises the GUI
 	 */
-	private void initGUI()
-	{
+	private void initGUI() {
 		resb = TranslationBundle.getBundle();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -303,29 +243,83 @@ public class MoveDialog extends JDialog {
 				}
 			}
 		);
-
-		int x=110;
-		int y=40;
-
-		int xCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
-		int yCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
-		arrow = new Polygon(xCoords, yCoords, xCoords.length);
-
-
 	}
 
-	/** Exit the Application */
+	public void setup(boolean tm, int m, int a, int b, BufferedImage ai, BufferedImage bi, Country country1, Country country2, Color c) {
+
+		tacmove=tm;
+
+		c1img = ai;
+		c2img = bi;
+
+		this.country1 = country1;
+		this.country2 = country2;
+
+		move=m;
+
+		csrc=a;
+		cdes=b;
+
+		color=c;
+
+
+		// set title
+		if (tacmove) {
+			setTitle(resb.getString("move.title.tactical"));
+			cancel.setVisible(true);
+		}
+		else {
+			setTitle(resb.getString("move.title.captured"));
+			cancel.setVisible(false);
+		}
+
+
+		// all this coz for some reason u cant reuse a JSlider, the labels start getting painted wrong
+		movepanel.remove(slider);
+
+		slider = new JSlider(move,csrc-1,move);
+
+
+		int spacig = Math.round( (csrc-1)/10f );
+
+		if (spacig==0) {
+			slider.setMajorTickSpacing(1);
+		}
+		else {
+			slider.setMajorTickSpacing( spacig );
+			slider.setMinorTickSpacing(1);
+		}
+
+		slider.setPaintTicks( true );
+		slider.setPaintLabels( true );
+		slider.setSnapToTicks( true );
+		slider.setOpaque( false );
+
+		slider.addChangeListener(
+			new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+
+					move = slider.getValue();
+					movepanel.repaint();
+
+				}
+			}
+		);
+
+		slider.setBounds(90, 180, 300, 50);
+
+		movepanel.add(slider);
+	}
 
 	/**
+         * Exit the Application
 	 * Closes the GUI
 	 */
 	public void exitForm() {
 		setVisible(false);
-
 	}
 
-	class movePanel extends JPanel
-	{
+	class movePanel extends JPanel {
 
 		/**
 		 * Paints the graphic
@@ -336,78 +330,79 @@ public class MoveDialog extends JDialog {
 			g.drawImage(MoveBack, 0, 0, this);
 
 			if (tacmove) {
-
 				g.drawImage(Move.getSubimage(480, 0, 98, 41), 46, 245, this);
-
 			}
 
-			g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), this);
+			draw(g, 
+                                c1img, c2img,
+                                color, color,
+                                country1.getName(), country2.getName(),
+                                csrc-move,cdes+move );
 
-			g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), this);
+                        g.setColor( RiskUIUtil.getTextColorFor(color) );
+			g.drawString( Integer.toString(move) , 240, 104);
+		}
+	}
 
+        static void draw(Graphics g,
+                BufferedImage c1img,BufferedImage c2img,
+                Color color1, Color color2,
+                String name1,String name2,
+                int noa1i, int noa2i
+                ) {
 			Graphics2D g2 = (Graphics2D)g;
-
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                        g.drawImage(c1img, 130-(c1img.getWidth()/2), 100-(c1img.getHeight()/2), null);
+			g.drawImage(c2img, 350-(c2img.getWidth()/2), 100-(c2img.getHeight()/2), null);
 
 			FontRenderContext frc = g2.getFontRenderContext();
 			Font font = g2.getFont();
 			g2.setColor( Color.black );
 			TextLayout tl;
 
-			tl = new TextLayout( country1.getName() , font, frc); // Display
-			tl.draw( g2, (float) (130-(tl.getBounds().getWidth()/2)), (float)40 );
+			tl = new TextLayout( name1, font, frc); // Display
+			tl.draw( g2, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
 
-			tl = new TextLayout( country2.getName() , font, frc); // Display
-			tl.draw( g2, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
-
-			g2.setColor( color );
+			tl = new TextLayout( name2, font, frc); // Display
+			tl.draw( g2, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
 
 			Ellipse2D ellipse;
 
+			g2.setColor( color1 );
 			ellipse = new Ellipse2D.Double();
 			ellipse.setFrame( 120 , 90 , 20, 20);
 			g2.fill(ellipse);
 
+			g2.setColor( color2 );
 			ellipse = new Ellipse2D.Double();
 			ellipse.setFrame( 340 , 90 , 20, 20);
 			g2.fill(ellipse);
 
-			g2.setColor( new Color(color.getRed(), color.getGreen(), color.getBlue(), 150) );
+			g2.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
 
 			g2.fillPolygon( arrow );
 
-			g2.setColor( RiskUIUtil.getTextColorFor(color) );
-
-			int noa;
-
-			noa = csrc-move;
-
-			if (noa < 10) {
-				g2.drawString( String.valueOf( noa ) , 126, 105 );
+			g2.setColor( RiskUIUtil.getTextColorFor(color1) );
+			if (noa1i < 10) {
+				g2.drawString( String.valueOf( noa1i ) , 126, 105 );
 			}
-			else if (noa < 100) {
-				g2.drawString( String.valueOf( noa ) , 123, 105 );
+			else if (noa1i < 100) {
+				g2.drawString( String.valueOf( noa1i ) , 123, 105 );
 			}
 			else {
-				g2.drawString( String.valueOf( noa ) , 120, 105 );
+				g2.drawString( String.valueOf( noa1i ) , 120, 105 );
 			}
 
-			noa = cdes+move;
-
-			if (noa < 10) {
-				g2.drawString( String.valueOf( noa ) , 346, 105 );
+			g2.setColor( RiskUIUtil.getTextColorFor(color2) );
+			if (noa2i < 10) {
+				g2.drawString( String.valueOf( noa2i ) , 346, 105 );
 			}
-			else if (noa < 100) {
-				g2.drawString( String.valueOf( noa ) , 343, 105 );
+			else if (noa2i < 100) {
+				g2.drawString( String.valueOf( noa2i ) , 343, 105 );
 			}
 			else {
-				g2.drawString( String.valueOf( noa ) , 340, 105 );
+				g2.drawString( String.valueOf( noa2i ) , 340, 105 );
 			}
-
-			g2.drawString( Integer.toString(move) , 240, 104);
-
-		}
-
-	}
-
+        }
 }
