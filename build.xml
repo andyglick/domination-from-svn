@@ -288,10 +288,14 @@ ${basedir}/installer/izpack/standalone-compiler.jar
 		description="Generates a Windows .exe file from the izPack installer"
 		if="launch4j.available">
 
+		<copy todir="${dir.build}" overwrite="true" filtering="true">
+			<fileset dir="${launch4j.dir}" includes="my_install.xml"/>
+		</copy>
+
 		<taskdef name="launch4j"
 		    classname="net.sf.launch4j.ant.Launch4jTask"
 		    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-		<launch4j configFile="${launch4j.dir}/my_install.xml" />
+		<launch4j configFile="${dir.build}/my_install.xml"/>
 	</target>
 
 	<target name="distribution.launch4j.unavailable"
