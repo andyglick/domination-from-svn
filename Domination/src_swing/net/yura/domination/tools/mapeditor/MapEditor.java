@@ -799,7 +799,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			removeBadMapColors();
 		}
                 else if (a.getActionCommand().equals("bam")) {
-			bam();
+                    
+                        int result = JOptionPane.showConfirmDialog(this, new Object[] {
+                                new javax.swing.ImageIcon(this.getClass().getResource("bam.png")),
+                                "Are you sure you want to add country regions wherever the country badge is?\n"+
+                                "This action is not reversible so please save a copy of your map first." },"BAM?",JOptionPane.OK_CANCEL_OPTION);
+
+                        if (result==JOptionPane.OK_OPTION) {
+                            bam();
+                        }
 		}
 		else {
 			throw new RuntimeException("unknown command: "+a.getActionCommand());

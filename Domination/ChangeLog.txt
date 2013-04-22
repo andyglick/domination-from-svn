@@ -27,6 +27,7 @@ CURRENT VERSION:
 		   nullpointer in quit game and open stats activity at the same time fixed (hack)
 		   show errors in saving file as well as in downloading it to the user (IOException: No space left on device)
 		   on Android can select the number of dice to attack and defend
+		   achartengine update
 	Android 36 grasshopper update
 		   game opening and hiding at same time/del and load auto.save in different threads fix
 		   AI error in map Artic Map (divide by zero if there is no way out of a continent) fixed
