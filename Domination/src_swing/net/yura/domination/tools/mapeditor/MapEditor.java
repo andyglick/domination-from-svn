@@ -268,18 +268,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		disjoin = newJRadioButton("disjoin",false,modes,modesPanel);
 		draw = newJRadioButton("draw",false,modes,modesPanel);
 
-		fixButton = new JButton("del bad map colors");
-		fixButton.setActionCommand("fix");
-		fixButton.addActionListener(this);
-		modesPanel.add(fixButton);
-		fixButton.setEnabled(false);
-
-		bamButton = new JButton("BAM");
+		bamButton = new JButton("Auto Draw");
 		bamButton.setActionCommand("bam");
 		bamButton.addActionListener(this);
 		modesPanel.add(bamButton);
 		bamButton.setEnabled(false);
 
+		fixButton = new JButton("del bad map colors");
+		fixButton.setActionCommand("fix");
+		fixButton.addActionListener(this);
+		modesPanel.add(fixButton);
+		fixButton.setEnabled(false);
+                
 		add(modesPanel, BorderLayout.SOUTH );
 
 		JPanel topPanel = new JPanel();
@@ -803,7 +803,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         int result = JOptionPane.showConfirmDialog(this, new Object[] {
                                 new javax.swing.ImageIcon(this.getClass().getResource("bam.png")),
                                 "Are you sure you want to add country regions wherever the country badge is?\n"+
-                                "This action is not reversible so please save a copy of your map first." },"BAM?",JOptionPane.OK_CANCEL_OPTION);
+                                "This action is not reversible so please save a copy of your map first." },"Auto Draw?",JOptionPane.OK_CANCEL_OPTION);
 
                         if (result==JOptionPane.OK_OPTION) {
                             bam();
