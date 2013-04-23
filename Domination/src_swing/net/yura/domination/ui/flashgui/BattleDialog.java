@@ -168,7 +168,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                     new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             if (annihilate.isSelected()) {
-                                gui.go( "roll" + (canRetreat?noda:nodd) );
+                                gui.go( "roll " + (canRetreat?noda:nodd) );
                             }
                         }
                     }
@@ -299,27 +299,30 @@ public class BattleDialog extends JDialog implements MouseListener {
 	 * @param c If you can retreat
 	 */
 	public void needInput(int n, boolean c) {
-		button.setEnabled(true);
 		max=n;
 		canRetreat=c;
-		att=null;
-		def=null;
+
 		if (canRetreat) {
                         if (noda==0 || noda > max) {
                             noda = max;
                         }
-			retreat.setVisible(true);
-                        annihilate.setVisible(true);
-			setTitle(resb.getString("battle.select.attack"));
 		}
 		else {
                         if (nodd==0 || nodd > max) {
                             nodd = max;
                         }
-			setTitle(resb.getString("battle.select.defend"));
 		}
+
+		att=null;
+		def=null;
+
+		button.setEnabled(true);
+                setTitle(resb.getString(canRetreat?"battle.select.attack":"battle.select.defend"));
+                retreat.setVisible(canRetreat);
+                annihilate.setVisible(canRetreat);
+
 		battle.repaint();
-                
+
                 if (canRetreat && annihilate.isSelected()) {
                     // dont want to "click" on kill as it will deselect the button
                     gui.go("roll "+ (canRetreat?noda:nodd) );
