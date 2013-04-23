@@ -7,22 +7,21 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
@@ -48,7 +47,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 	private JButton button;
 	private JButton retreat;
-        private JButton annihilate;
+        private AbstractButton annihilate;
 
 	private Country country1;
 	private Country country2;
@@ -145,24 +144,34 @@ public class BattleDialog extends JDialog implements MouseListener {
 		retreat.setText(resb.getString("battle.retreat"));
 		retreat.setBounds(342, 270, 88, 31);
 
-                annihilate = GameFrame.makeRiskButton( Battle.getSubimage(485, 5, w, h), Battle.getSubimage(481, 41, w, h), Battle.getSubimage(481, 73, w, h), Battle.getSubimage(485, 5, w, h) );
-		annihilate.setText(resb.getString("battle.annihilate"));
+                annihilate = new JToggleButton(resb.getString("battle.annihilate"));
+                NewGameFrame.sortOutButton( annihilate, Battle.getSubimage(485, 5, w, h), Battle.getSubimage(481, 73, w, h), Battle.getSubimage(481, 41, w, h) );
 		annihilate.setBounds(50, 270, 88, 31);
 
 		button.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						gui.go( "roll " + (canRetreat?noda:nodd) );
-					}
-				}
+                    new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            gui.go( "roll " + (canRetreat?noda:nodd) );
+                        }
+                    }
 		);
 
 		retreat.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						gui.go( "retreat" );
-					}
-				}
+                    new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            gui.go( "retreat" );
+                        }
+                    }
+		);
+
+                annihilate.addActionListener(
+                    new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            if (annihilate.isSelected()) {
+                                gui.go( "roll" + (canRetreat?noda:nodd) );
+                            }
+                        }
+                    }
 		);
 
 		battle.add(retreat);
@@ -231,6 +240,8 @@ public class BattleDialog extends JDialog implements MouseListener {
                 spinA = false;
                 spinD = false;
 
+                annihilate.setSelected(false);
+                
                 blockInput();
         }
 
@@ -308,6 +319,11 @@ public class BattleDialog extends JDialog implements MouseListener {
 			setTitle(resb.getString("battle.select.defend"));
 		}
 		battle.repaint();
+                
+                if (canRetreat && annihilate.isSelected()) {
+                    // dont want to "click" on kill as it will deselect the button
+                    gui.go("roll "+ (canRetreat?noda:nodd) );
+                }
 	}
 
 	private static Random r = new Random();
