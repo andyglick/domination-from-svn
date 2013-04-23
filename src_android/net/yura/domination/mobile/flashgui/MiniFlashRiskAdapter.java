@@ -167,42 +167,39 @@ public class MiniFlashRiskAdapter implements RiskListener {
     @Override
     public void needInput(int s) {
 
-        switch(s) {
-            case RiskGame.STATE_ROLLING:
-                battle.needInput(myRisk.getGame().getNoAttackDice(), true);
-                break;
-            case RiskGame.STATE_DEFEND_YOURSELF:
-                battle.needInput(myRisk.getGame().getNoDefendDice(), false);
-                break;
-            case RiskGame.STATE_BATTLE_WON:
-                RiskGame game = myRisk.getGame();
-                int min = game.getMustMove();
-                int c1num = game.getAttacker().getColor();
-                int c2num = game.getDefender().getColor();
-                if (move==null) {
-                    move = new MoveDialog(myRisk) {
-                        @Override
-                        public void setVisible(boolean b) {
-                            super.setVisible(b);
-                            if (!b) {
-                                move=null;
-                            }
+        if (gameFrame!=null) {
+                gameFrame.needInput(s);
+        
+                switch(s) {
+                    case RiskGame.STATE_ROLLING:
+                        battle.needInput(myRisk.getGame().getNoAttackDice(), true);
+                        break;
+                    case RiskGame.STATE_DEFEND_YOURSELF:
+                        battle.needInput(myRisk.getGame().getNoDefendDice(), false);
+                        break;
+                    case RiskGame.STATE_BATTLE_WON:
+                        RiskGame game = myRisk.getGame();
+                        int min = game.getMustMove();
+                        int c1num = game.getAttacker().getColor();
+                        int c2num = game.getDefender().getColor();
+                        if (move==null) {
+                            move = new MoveDialog(myRisk) {
+                                @Override
+                                public void setVisible(boolean b) {
+                                    super.setVisible(b);
+                                    if (!b) {
+                                        move=null;
+                                    }
+                                }
+                            };
                         }
-                    };
+                        Image c1img = gameFrame.pp.getCountryImage(c1num);
+                        Image c2img = gameFrame.pp.getCountryImage(c2num);
+                        move.setupMove(min, c1num, c2num, c1img, c2img, false);
+                        move.setVisible(true);
+                        break;
                 }
-                Image c1img = gameFrame.pp.getCountryImage(c1num);
-                Image c2img = gameFrame.pp.getCountryImage(c2num);
-                move.setupMove(min, c1num, c2num, c1img, c2img, false);
-                move.setVisible(true);
-                break;
         }
-        //else { // this will update the state in the gameframe
-
-            if (gameFrame!=null) {
-                    gameFrame.needInput(s);
-            }
-        //}
-
     }
 
     @Override

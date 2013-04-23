@@ -122,27 +122,16 @@ public class FlashRiskAdapter implements RiskListener {
 	 * @param s determines what needs input
 	 */
 	public void needInput(int s) {
-
 		if ( gameFrame.isVisible() ) {
-
+                        gameFrame.needInput(s);
+                    
 			if (s == RiskGame.STATE_ROLLING) {
-
 				battledialog.needInput(myrisk.getGame().getNoAttackDice(), true);
-
 			}
 			else if (s == RiskGame.STATE_DEFEND_YOURSELF) {
-
 				battledialog.needInput(myrisk.getGame().getNoDefendDice(), false);
-
 			}
-			//else { // this will update the state in the gameframe
-
-				gameFrame.needInput(s);
-
-			//}
-
 		}
-
 	}
 
 	/**
