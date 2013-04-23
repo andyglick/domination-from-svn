@@ -48,6 +48,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 	private JButton button;
 	private JButton retreat;
+        private JButton annihilate;
 
 	private Country country1;
 	private Country country2;
@@ -90,26 +91,28 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 		Back = Battle.getSubimage(0, 0, 480, 350);
 
+                int x=580;
+                int i=0;
 		int w=29;
 		int h=29;
 
 		attackerSpins = new BufferedImage[6];
 
-		attackerSpins[0] = Battle.getSubimage(481, 43, w, h);
-		attackerSpins[1] = Battle.getSubimage(481, 73, w, h);
-		attackerSpins[2] = Battle.getSubimage(481, 103, w, h);
-		attackerSpins[3] = Battle.getSubimage(541, 43, w, h);
-		attackerSpins[4] = Battle.getSubimage(541, 73, w, h);
-		attackerSpins[5] = Battle.getSubimage(541, 103, w, h);
+		attackerSpins[0] = Battle.getSubimage(x, h*i++, w, h);
+		attackerSpins[1] = Battle.getSubimage(x, h*i++, w, h);
+		attackerSpins[2] = Battle.getSubimage(x, h*i++, w, h);
+		attackerSpins[3] = Battle.getSubimage(x, h*i++, w, h);
+		attackerSpins[4] = Battle.getSubimage(x, h*i++, w, h);
+		attackerSpins[5] = Battle.getSubimage(x, h*i++, w, h);
 
 		defenderSpins = new BufferedImage[6];
 
-		defenderSpins[0] = Battle.getSubimage(511, 43, w, h);
-		defenderSpins[1] = Battle.getSubimage(511, 73, w, h);
-		defenderSpins[2] = Battle.getSubimage(511, 103, w, h);
-		defenderSpins[3] = Battle.getSubimage(571, 43, w, h);
-		defenderSpins[4] = Battle.getSubimage(571, 73, w, h);
-		defenderSpins[5] = Battle.getSubimage(571, 103, w, h);
+		defenderSpins[0] = Battle.getSubimage(x, h*i++, w, h);
+		defenderSpins[1] = Battle.getSubimage(x, h*i++, w, h);
+		defenderSpins[2] = Battle.getSubimage(x, h*i++, w, h);
+		defenderSpins[3] = Battle.getSubimage(x, h*i++, w, h);
+		defenderSpins[4] = Battle.getSubimage(x, h*i++, w, h);
+		defenderSpins[5] = Battle.getSubimage(x, h*i++, w, h);
 
 		initGUI();
 		pack();
@@ -134,13 +137,17 @@ public class BattleDialog extends JDialog implements MouseListener {
 		int w=88;
 		int h=31;
 
-		button = GameFrame.makeRiskButton( Battle.getSubimage(196, 270, w, h), Battle.getSubimage(481, 270, w, h), Battle.getSubimage(481, 238, w, h), Battle.getSubimage(481, 302, w, h) );
+		button = GameFrame.makeRiskButton( Battle.getSubimage(196, 270, w, h), Battle.getSubimage(481, 242, w, h), Battle.getSubimage(481, 210, w, h), Battle.getSubimage(481, 274, w, h) );
 		button.setText(resb.getString("battle.roll"));
 		button.setBounds(196, 270, 88, 31);
 
-		retreat = GameFrame.makeRiskButton( Battle.getSubimage(487, 138, w, h), Battle.getSubimage(481, 206, w, h), Battle.getSubimage(481, 174, w, h), Battle.getSubimage(487, 138, w, h) );
+		retreat = GameFrame.makeRiskButton( Battle.getSubimage(487, 110, w, h), Battle.getSubimage(481, 178, w, h), Battle.getSubimage(481, 146, w, h), Battle.getSubimage(487, 110, w, h) );
 		retreat.setText(resb.getString("battle.retreat"));
 		retreat.setBounds(342, 270, 88, 31);
+
+                annihilate = GameFrame.makeRiskButton( Battle.getSubimage(485, 5, w, h), Battle.getSubimage(481, 41, w, h), Battle.getSubimage(481, 73, w, h), Battle.getSubimage(485, 5, w, h) );
+		annihilate.setText(resb.getString("battle.annihilate"));
+		annihilate.setBounds(50, 270, 88, 31);
 
 		button.addActionListener(
 				new ActionListener() {
@@ -160,6 +167,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 		battle.add(retreat);
 		battle.add(button);
+                battle.add(annihilate);
 
 		getContentPane().add(battle);
 
@@ -229,6 +237,7 @@ public class BattleDialog extends JDialog implements MouseListener {
         public void blockInput() {
                 button.setEnabled(false);
                 retreat.setVisible(false);
+                annihilate.setVisible(false);
 		canRetreat=false;
 		max=0;
 		setTitle(resb.getString("battle.title"));
@@ -289,6 +298,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                             noda = max;
                         }
 			retreat.setVisible(true);
+                        annihilate.setVisible(true);
 			setTitle(resb.getString("battle.select.attack"));
 		}
 		else {
@@ -314,7 +324,8 @@ public class BattleDialog extends JDialog implements MouseListener {
 			g.drawImage( Back ,0 ,0 ,this );
 
 			if (canRetreat) {
-				g.drawImage( Battle.getSubimage(481, 133, 98, 40) ,336 ,265 ,this );
+				g.drawImage( Battle.getSubimage(481, 105, 98, 40) ,336 ,265 ,this ); // retreat
+                                g.drawImage( Battle.getSubimage(481, 0, 98, 40) ,46 ,265 ,this ); // annihilate
 			}
 
                         MoveDialog.paintMove(g,
@@ -336,6 +347,11 @@ public class BattleDialog extends JDialog implements MouseListener {
 		}
 	}
 
+        final static int MINI_DICE_X=481;
+        final static int MINI_DICE_Y=306;
+        final static int MINI_DICE_WIDTH=21;
+        final static int MINI_DICE_HEIGHT=21;
+        
         private void drawDiceSelect(Graphics g) {
 
             // this is the max defend dice allowed for this battle
@@ -344,105 +360,110 @@ public class BattleDialog extends JDialog implements MouseListener {
                 deadDiceD = myrisk.getGame().getMaxDefendDice();
             }
 
+            BufferedImage liveA = Battle.getSubimage(MINI_DICE_X, MINI_DICE_Y, MINI_DICE_WIDTH, MINI_DICE_HEIGHT);
+            BufferedImage liveD = Battle.getSubimage(MINI_DICE_X, MINI_DICE_Y+MINI_DICE_HEIGHT, MINI_DICE_WIDTH, MINI_DICE_HEIGHT);
+            BufferedImage deadA = Battle.getSubimage(MINI_DICE_X+MINI_DICE_WIDTH, MINI_DICE_Y, MINI_DICE_WIDTH, MINI_DICE_HEIGHT);
+            BufferedImage deadD = Battle.getSubimage(MINI_DICE_X+MINI_DICE_WIDTH, MINI_DICE_Y+MINI_DICE_HEIGHT, MINI_DICE_WIDTH, MINI_DICE_HEIGHT);
+
             // if we need input
             if (max != 0) {
                 // selecting the number of attacking dice
                 if (canRetreat) {
-                    g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 180, this );
+                    g.drawImage( liveA , 120, DRAW_DICE_Y+4, this );
 
                     if (noda > 1) {
-                        g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 211, this );
+                        g.drawImage( liveA , 120, DRAW_DICE_Y+35, this );
                     }
                     else if (max > 1) {
-                        g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 211, this );
+                        g.drawImage( deadA , 120, DRAW_DICE_Y+35, this );
                     }
 
                     if (noda > 2) {
-                        g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 120, 242, this );
+                        g.drawImage( liveA , 120, DRAW_DICE_Y+66, this );
                     }
                     else if (max > 2) {
-                        g.drawImage( Battle.getSubimage(502, 0, 21, 21) , 120, 242, this );
+                        g.drawImage( deadA , 120, DRAW_DICE_Y+66, this );
                     }
 
                     // draw the dead dice
-                    g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 180, this );
+                    g.drawImage( deadD , 339, DRAW_DICE_Y+4, this );
                     if (deadDiceD > 1) {
-                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+35, this );
                     }
                     if (deadDiceD > 2) {
-                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+66, this );
                     }
                 }
                 // selecting the number of dice to defend
                 else {
-                    g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 180, this );
+                    g.drawImage( liveD , 339, DRAW_DICE_Y+4, this );
 
                     if (nodd > 1) {
-                        g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 211, this );
+                        g.drawImage( liveD , 339, DRAW_DICE_Y+35, this );
                     }
                     else if (max > 1) {
-                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 211, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+35, this );
                     }
 
                     if (nodd > 2) {
-                        g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 339, 242, this );
+                        g.drawImage( liveD , 339, DRAW_DICE_Y+66, this );
                     }
                     else if (max > 2) {
-                        g.drawImage( Battle.getSubimage(502, 21, 21, 21) , 339, 242, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+66, this );
                     }
                 }
             }
             // battle open and waiting for the attacker to select there number of dice
             else if (att == null && def == null && !spinD) {
-                    BufferedImage deadD = Battle.getSubimage(502, 21, 21, 21);
 
                     // draw the dead dice
-                    g.drawImage( deadD , 339, 180, this );
+                    g.drawImage( deadD , 339, DRAW_DICE_Y+4, this );
                     if (deadDiceD > 1) {
-                        g.drawImage( deadD , 339, 211, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+35, this );
                     }
                     if (deadDiceD > 2) {
-                        g.drawImage( deadD , 339, 242, this );
+                        g.drawImage( deadD , 339, DRAW_DICE_Y+66, this );
                     }
 
                     if (!spinA) {
-                            BufferedImage deadA = Battle.getSubimage(502, 0, 21, 21);
 
                             // draw dead dice for attacker
                             int deadDiceA = myrisk.hasArmiesInt(c1num)-1;
                             // we assume that the attacker can attack with max of 3 dice
 
-                            g.drawImage( deadA , 120, 180, this );
+                            g.drawImage( deadA , 120, DRAW_DICE_Y+4, this );
                             if (deadDiceA > 1) {
-                                    g.drawImage( deadA , 120, 211, this );
+                                    g.drawImage( deadA , 120, DRAW_DICE_Y+35, this );
                             }
                             if (deadDiceA > 2) {
-                                    g.drawImage( deadA , 120, 242, this );
+                                    g.drawImage( deadA , 120, DRAW_DICE_Y+66, this );
                             }
                     }
             }
         }
 
+        final static int DRAW_DICE_Y = 170;
+        
         public void drawDiceAnimated(Graphics g) {
             if (spinA) {
-                    g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 176, this);
+                    g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, DRAW_DICE_Y, this);
 
                     if (noda > 1) {
-                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 207, this);
+                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, DRAW_DICE_Y+31, this);
                     }
                     if (noda > 2) {
-                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, 238, this);
+                            g.drawImage( attackerSpins[ r.nextInt( 6 ) ] , 116, DRAW_DICE_Y+62, this);
                     }
                     //g.drawString("ROLLING ATTACKER " + noda +"    " + Math.random() , 50, 100);
 
                     if (spinD) {
-                            g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 176, this);
+                            g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, DRAW_DICE_Y, this);
 
                             if (nodd > 1) {
-                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 207, this);
+                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, DRAW_DICE_Y+31, this);
                             }
                             if (nodd > 2) {
-                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, 238, this);
+                                    g.drawImage( defenderSpins[ r.nextInt( 6 ) ] , 335, DRAW_DICE_Y+62, this);
                             }
                             //g.drawString("ROLLING DEFENDER " + nodd +"    " + Math.random(), 300, 100);
                     }
@@ -461,7 +482,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                             g2.setColor( Color.blue );
 
                             int xCoords[] = {339, 339, 140};
-                            int yCoords[] = {180, 200, 190};
+                            int yCoords[] = {DRAW_DICE_Y+4, DRAW_DICE_Y+24, DRAW_DICE_Y+14};
 
                             g2.fillPolygon(xCoords, yCoords, xCoords.length);
                     }
@@ -469,7 +490,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                             g2.setColor( Color.red );
 
                             int xCoords[] = {140, 140, 339};
-                            int yCoords[] = {180, 200, 190};
+                            int yCoords[] = {DRAW_DICE_Y+4, DRAW_DICE_Y+24, DRAW_DICE_Y+14};
 
                             g2.fillPolygon(xCoords, yCoords, xCoords.length);
                     }
@@ -481,7 +502,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                                     g2.setColor( Color.blue );
 
                                     int xCoords[] = {339, 339, 140};
-                                    int yCoords[] = {211, 231, 221};
+                                    int yCoords[] = {DRAW_DICE_Y+35, DRAW_DICE_Y+55, DRAW_DICE_Y+45};
 
                                     g2.fillPolygon(xCoords, yCoords, xCoords.length);
                             }
@@ -490,7 +511,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                                     g2.setColor( Color.red );
 
                                     int xCoords[] = {140, 140, 339};
-                                    int yCoords[] = {211, 231, 221};
+                                    int yCoords[] = {DRAW_DICE_Y+35, DRAW_DICE_Y+55, DRAW_DICE_Y+45};
 
                                     g2.fillPolygon(xCoords, yCoords, xCoords.length);
                             }
@@ -502,7 +523,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                                 g2.setColor( Color.blue );
 
                                 int xCoords[] = {339, 339, 140};
-                                int yCoords[] = {242, 262, 252};
+                                int yCoords[] = {DRAW_DICE_Y+66, DRAW_DICE_Y+86, DRAW_DICE_Y+76};
 
                                 g2.fillPolygon(xCoords, yCoords, xCoords.length);
                         }
@@ -510,7 +531,7 @@ public class BattleDialog extends JDialog implements MouseListener {
                                 g2.setColor( Color.red );
 
                                 int xCoords[] = {140, 140, 339};
-                                int yCoords[] = {242, 262, 252};
+                                int yCoords[] = {DRAW_DICE_Y+66, DRAW_DICE_Y+86, DRAW_DICE_Y+76};
 
                                 g2.fillPolygon(xCoords, yCoords, xCoords.length);
                         }
@@ -518,24 +539,24 @@ public class BattleDialog extends JDialog implements MouseListener {
 
 
                     // draw attacker dice
-                    drawDice(true, atti[0] , 120, 180, g2 );
+                    drawDice(true, atti[0] , 120, DRAW_DICE_Y+4, g2 );
 
                     if (atti.length > 1) {
-                            drawDice(true, atti[1] , 120, 211, g2 );
+                            drawDice(true, atti[1] , 120, DRAW_DICE_Y+35, g2 );
                     }
                     if (atti.length > 2) {
-                            drawDice(true, atti[2] , 120, 242, g2 );
+                            drawDice(true, atti[2] , 120, DRAW_DICE_Y+66, g2 );
                     }
 
                     // draw defender dice
-                    drawDice(false, defi[0] , 339, 180, g2 );
+                    drawDice(false, defi[0] , 339, DRAW_DICE_Y+4, g2 );
 
                     if (defi.length > 1) {
-                            drawDice(false, defi[1] , 339, 211, g2 );
+                            drawDice(false, defi[1] , 339, DRAW_DICE_Y+35, g2 );
                     }
 
                     if (defi.length > 2) {
-                            drawDice(false, defi[2] , 339, 242, g2 );
+                            drawDice(false, defi[2] , 339, DRAW_DICE_Y+66, g2 );
                     }
             }
         }
@@ -553,10 +574,10 @@ public class BattleDialog extends JDialog implements MouseListener {
 		//Graphics2D g = die.createGraphics();
 
 		if (isAttacker) {
-			g.drawImage( Battle.getSubimage(481, 0, 21, 21) , 0, 0, this );
+			g.drawImage( Battle.getSubimage(MINI_DICE_X, MINI_DICE_Y, MINI_DICE_WIDTH, MINI_DICE_HEIGHT) , 0, 0, this );
 		}
 		else {
-			g.drawImage( Battle.getSubimage(481, 21, 21, 21) , 0, 0, this );
+			g.drawImage( Battle.getSubimage(MINI_DICE_X, MINI_DICE_Y+MINI_DICE_HEIGHT, MINI_DICE_WIDTH, MINI_DICE_HEIGHT) , 0, 0, this );
 		}
 
 		int size=3;
@@ -618,22 +639,22 @@ public class BattleDialog extends JDialog implements MouseListener {
 		int W=21;
 		int H=21;
 
-		if (x >= ax && x < (ax + W) && y >= 180 && y < (180 + H)) {
+		if (x >= ax && x < (ax + W) && y >= DRAW_DICE_Y+4 && y < (DRAW_DICE_Y+4 + H)) {
 			return 1;
 		}
-		else if (x >= ax && x < (ax + W) && y >= 211 && y < (211 + H)) {
+		else if (x >= ax && x < (ax + W) && y >= DRAW_DICE_Y+35 && y < (DRAW_DICE_Y+35 + H)) {
 			return 2;
 		}
-		else if (x >= ax && x < (ax + W) && y >= 242 && y < (242 + H)) {
+		else if (x >= ax && x < (ax + W) && y >= DRAW_DICE_Y+66 && y < (DRAW_DICE_Y+66 + H)) {
 			return 3;
 		}
-		else if (x >= dx && x < (dx + W) && y >= 180 && y < (180 + H)) {
+		else if (x >= dx && x < (dx + W) && y >= DRAW_DICE_Y+4 && y < (DRAW_DICE_Y+4 + H)) {
 			return 4;
 		}
-		else if (x >= dx && x < (dx + W) && y >= 211 && y < (211 + H)) {
+		else if (x >= dx && x < (dx + W) && y >= DRAW_DICE_Y+35 && y < (DRAW_DICE_Y+35 + H)) {
 			return 5;
 		}
-                else if (x >= dx && x < (dx + W) && y >= 232 && y < (232 + H)) {
+                else if (x >= dx && x < (dx + W) && y >= DRAW_DICE_Y+66 && y < (DRAW_DICE_Y+66 + H)) {
                         return 6;
                 }
 

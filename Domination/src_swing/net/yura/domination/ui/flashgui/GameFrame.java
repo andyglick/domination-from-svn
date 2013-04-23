@@ -1127,10 +1127,10 @@ public class GameFrame extends JFrame implements KeyListener {
 	}//private void goOn()
 
 
-	public static JButton makeRiskButton(Image gobutton1, Image gobutton2, Image gobutton3, Image gobutton4) {
+	public static JButton makeRiskButton(Image normal, Image pressed, Image hover, Image disabled) {
 		JButton button = new JButton();
-		NewGameFrame.sortOutButton( button, gobutton1, gobutton3, gobutton2 );
-		button.setDisabledIcon( new ImageIcon( gobutton4 ) );
+		NewGameFrame.sortOutButton( button, normal, hover, pressed );
+		button.setDisabledIcon( new ImageIcon( disabled ) );
 		return button;
 	}
 
