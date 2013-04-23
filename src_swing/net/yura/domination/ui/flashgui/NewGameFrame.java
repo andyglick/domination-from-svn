@@ -1132,11 +1132,11 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	 * @param button2 Image
 	 * @param button3 Image
 	 */
-	public static void sortOutButton(AbstractButton button, Image button1, Image button2, Image button3) {
+	public static void sortOutButton(AbstractButton button, Image nornal, Image hover, Image pressed) {
 
-		button.setIcon( new ImageIcon( button1 ) );
-                button.setRolloverIcon( new ImageIcon( button2 ) );
-                Icon down = new ImageIcon( button3 );
+		button.setIcon( new ImageIcon( nornal ) );
+                button.setRolloverIcon( new ImageIcon( hover ) );
+                Icon down = new ImageIcon( pressed );
                 button.setRolloverSelectedIcon( down );
                 button.setSelectedIcon( down );
                 button.setPressedIcon( down );
