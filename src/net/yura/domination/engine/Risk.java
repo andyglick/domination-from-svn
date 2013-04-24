@@ -2899,17 +2899,25 @@ RiskUtil.printStackTrace(e);
                         // get all the players and make all with the ip of the leaver become nutral
 			List players = game.getPlayers();
                         Player leaver=null;
-			for (int c=0; c< players.size() ; c++) {
-				Player player = (Player)players.get(c);
-				// AI will never have players addr for lobby game
-				if ( player.getName().equals(name) ) {
-                                        player.rename( newName );
-					player.setType( newType );
-					player.setAddress( newAddress );
-                                        leaver=player;
-                                        break;
-				}
-			}
+                        for (int c=0; c< players.size(); c++) {
+                            Player player = (Player)players.get(c);
+                            if (player.getName().equals(newName)) {
+                                throw new IllegalArgumentException("can not rename \""+name+"\". someone with new name \""+newName+"\" is already in this game");
+                            }
+                            if (player.getName().equals(name)) {
+                                leaver=player;
+                            }
+                        }
+
+                        if (leaver==null) {
+                            throw new IllegalArgumentException("can not find player with name \""+name+"\"");
+                        }
+
+                        // AI will never have players addr for lobby game
+                        leaver.rename( newName );
+                        leaver.setType( newType );
+                        leaver.setAddress( newAddress );
+
                         // if the person whos go it is has just left
 			if (leaver == game.getCurrentPlayer()) {
                             getInput();
