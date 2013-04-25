@@ -847,13 +847,9 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (Addr.equals("PLAYER")) { // a server command
 
-			String Pname = GetNext();
+			int index = Integer.parseInt( GetNext() );
 
-			while ( StringT.hasMoreElements() ) {
-				Pname = Pname +" "+ GetNext();
-			}
-
-			Player p = game.setCurrentPlayer( Pname );
+			Player p = game.setCurrentPlayer( index );
 
 			controller.sendMessage("Game started", false, false);
 
@@ -871,7 +867,6 @@ RiskUtil.printStackTrace(e);
 				needInput=false;
 			}
 			else {
-
 				saveGameToUndoObject();
 			}
 
@@ -1228,7 +1223,7 @@ RiskUtil.printStackTrace(e);
 
                                                         if ( shouldGameCommand(Addr) ) {
                                                             
-                                                            gameCommand(Addr, "PLAYER", game.getRandomPlayer() );
+                                                            gameCommand(Addr, "PLAYER", String.valueOf( game.getRandomPlayer() ) );
 
                                                             // do that mission thing
                                                             if (game.getGameMode()== RiskGame.MODE_SECRET_MISSION ) {

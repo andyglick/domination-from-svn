@@ -33,9 +33,9 @@ import net.yura.domination.engine.translation.TranslationBundle;
 public class RiskGame implements Serializable { // transient
 
 	private static final long serialVersionUID = 8L;
-
 	public final static String SAVE_VERSION = String.valueOf(serialVersionUID);
-	public final static String NETWORK_VERSION = "11";
+
+	public final static String NETWORK_VERSION = "12";
 
 	public final static int MAX_PLAYERS = 6;
 	public final static Continent ANY_CONTINENT = new Continent("any","any", 0, 0);
@@ -399,12 +399,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @param name The name of the current player
 	 * @return Player Returns the current player in the game
 	 */
-	public Player setCurrentPlayer(String name) {
-
-		for (int c=0; c< Players.size() ; c++) {
-			if (  ((Player)Players.elementAt( c )).getName().equals(name)  ) { currentPlayer=((Player)Players.elementAt( c )) ; }
-		}
-
+	public Player setCurrentPlayer(int c) {
+                currentPlayer = (Player)Players.get(c);
 		return currentPlayer;
 
 	}
@@ -413,10 +409,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Gets the current player in the game
 	 * @return String Returns the name of a randomly picked player from the set of players
 	 */
-	public String getRandomPlayer() {
-
-		return ((Player)Players.elementAt( r.nextInt( Players.size() ) )).getName();
-
+	public int getRandomPlayer() {
+                return r.nextInt( Players.size() );
 	}
 
 	/**
