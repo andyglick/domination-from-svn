@@ -269,7 +269,6 @@ public class ServerGameRisk extends TurnBasedGame {
 		// such as cheating
 	}
 
-        private List<String> oldIds = new java.util.Vector();
         @Override
 	public void playerResigns(String username) {
 
@@ -282,8 +281,6 @@ public class ServerGameRisk extends TurnBasedGame {
 			myrisk.renamePlayer(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
 
                         sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
-
-                        oldIds.add(playerid);
 
                         int aliveHumans=0,aliveAIs=0;
                         for (Player player:(List<Player>)myrisk.getGame().getPlayers()) {
@@ -349,19 +346,16 @@ public class ServerGameRisk extends TurnBasedGame {
         
         @Override
         public void playerJoins(String newuser) {
-            if (oldIds.isEmpty()) {
-                throw new RuntimeException("no slots left");
+
+            Player player = myrisk.findEmptySpot();
+            if (player==null) {
+                throw new RuntimeException("no AI CRAP found in game");
             }
-            else {
-                String playerid = oldIds.remove(0);
-                Player player = myrisk.findEmptySpot();
-                if (player==null) {
-                    throw new RuntimeException("no AI CRAP found in game");
-                }
-                String oldName = player.getName();
-                myrisk.renamePlayer(oldName, newuser, playerid, Player.PLAYER_HUMAN);
-                sendRename(oldName,newuser,playerid,Player.PLAYER_HUMAN);
-            }
+            String playerid = "player"+( myrisk.getGame().getPlayers().indexOf(player) +1);
+            String oldName = player.getName();
+            myrisk.renamePlayer(oldName, newuser, playerid, Player.PLAYER_HUMAN);
+            sendRename(oldName,newuser,playerid,Player.PLAYER_HUMAN);
+
             // TODO
             //if paused and oldIds.isEmpty() now, we can kick off another game
         }
