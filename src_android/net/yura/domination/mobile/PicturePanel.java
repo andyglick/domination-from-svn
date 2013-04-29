@@ -8,6 +8,7 @@ import collisionphysics.BallWorld;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -481,8 +482,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                 }
 
 
-                Map<Country,Player> capitals = new HashMap(game.getNoPlayers());
+                Map<Country,Player> capitals = Collections.EMPTY_MAP;
                 if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && game.getState() != RiskGame.STATE_SELECT_CAPITAL ) {
+                    capitals = new HashMap(game.getNoPlayers());
                     List<Player> players = game.getPlayers();
                     for (int c=0; c<players.size(); c++) {
                         Player player = players.get(c);
