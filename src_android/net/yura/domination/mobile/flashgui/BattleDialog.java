@@ -250,6 +250,7 @@ public class BattleDialog extends Frame implements ActionListener {
                 xOffset,yOffset,
                 c1img,c2img,
                 color1,color2,
+                myrisk.getCountryCapital(c1num),myrisk.getCountryCapital(c2num),
                 myrisk.getCountryName(c1num),myrisk.getCountryName(c2num),
                 csrc,cdes,0);
 

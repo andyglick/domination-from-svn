@@ -8,7 +8,10 @@ import collisionphysics.BallWorld;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
@@ -49,8 +52,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
         private Risk myrisk;
         private int c1,c2,cc;
-        private Font font;
-        private String strCountry;
+        //private Font font;
+        //private String strCountry;
 
         // all the image data when the map is loaded
         private Image img;
@@ -81,7 +84,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 myrisk=r;
 
-                this.strCountry = TranslationBundle.getBundle().getString( "picturepanel.country");
+                //this.strCountry = TranslationBundle.getBundle().getString( "picturepanel.country");
 
                 img = null;
                 map = null;
@@ -173,16 +176,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 int noc = game.getCountries().length;
 
                 BALL_SIZE = game.getCircleSize();
-                String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
-                float d = (density!=null)?Float.parseFloat(density):1.0F;
-                if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {
-                    font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (BALL_SIZE*0.75) /d +0.5) );
-                }
-                else {
-                    font = theme.getFont( Style.ALL ); // TODO HACK any size fonts do not work on me4se!!
-                }
-
-                
+               
                 
 
                 Image newImg;
@@ -379,7 +373,10 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 drawHighLightImage(g,cc);
                         }
 
-                        if (myrisk.getGame().getState()==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
+                        RiskGame game = myrisk.getGame();
+                        int state = game.getState();
+                        
+                        if (state==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
                             Player me = myrisk.getGame().getCurrentPlayer();
                             List<Card> cards = me.getCards();
                             for (Card card:cards) {
@@ -390,24 +387,31 @@ public class PicturePanel extends ImageView implements MapPanel {
                             }
                         }
 
-                        g.setFont(font);
-                        
-                        drawArmies(g);
-
-                        if (cc != NO_COUNTRY) {
-
-                                String text = this.strCountry + " "+ myrisk.getCountryName( cc );
-                                int w = font.getWidth(text);
-                                int h = font.getHeight();
-
-                                g.setColor( 0x96FFFFFF );
-                                g.fillRect( 5 , 5, w+3, h+1 );
-
-                                g.setColor( 0xFF000000 );
-                                g.drawString(text, 6, 15);
+                        if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
+                                Country attacker = game.getAttacker();
+                                Country defender = game.getDefender();
+                                if (attacker!=null && defender!=null) {
+                                    drawHighLightImage(g, attacker.getColor() );
+                                    drawHighLightImage(g, defender.getColor() );
+                                }
                         }
+                        
+                        
+//                        if (cc != NO_COUNTRY) {
+//                                String text = this.strCountry + " "+ myrisk.getCountryName( cc );
+//                                int w = font.getWidth(text);
+//                                int h = font.getHeight();
+//                                g.setColor( 0x96FFFFFF );
+//                                g.fillRect( 5 , 5, w+3, h+1 );
+//                                g.setColor( 0xFF000000 );
+//                                g.drawString(text, 6, 15);
+//                        }
 
                         g2.scale(1/s,1/s);
+                        
+                        // we HAVE to draw all vectors none-scaled, as on android scaling vector(circles/text) does not work with hardware acceleration
+                        drawArmies(g,s);
+                        
                         g.translate(-x,-y);
                 }
 
@@ -424,69 +428,48 @@ public class PicturePanel extends ImageView implements MapPanel {
          * Paints the army components
          * @param g2 a 2D Graphics object.
          */
-        public void drawArmies(Graphics2D g2) {
-
-                DirectGraphics g = DirectUtils.getDirectGraphics(g2.getGraphics());
-
+        public void drawArmies(Graphics2D g2,double scale) {
                 RiskGame game = myrisk.getGame();
-
-                Country[] v = game.getCountries();
-                
                 int state = game.getState();
 
-                int r = BALL_SIZE/2;
-                
+                int ballSize = (int)(BALL_SIZE*scale);
+                Country[] v = game.getCountries();
+
                 if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
+                        DirectGraphics g = DirectUtils.getDirectGraphics(g2.getGraphics());
+                    
                         Country attacker = game.getAttacker();
                         Country defender = game.getDefender();
 
                         if (attacker!=null && defender!=null) {
-                        
-                            int a=attacker.getColor();
-                            int b=defender.getColor();
-
-                            drawHighLightImage(g2,a);
-                            drawHighLightImage(g2,b);
-
-                            int ac = attacker.getOwner().getColor();
-
-                            int argb = colorWithAlpha( ac, 150 );
-
-                            if ( Math.abs( attacker.getX() - defender.getX() ) > (map.length / 2) ) {
-
-                                    if ( attacker.getX() > (map.length / 2) ) { // ie the attacker is on the right
-
-                                        Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()+map.length, defender.getY(), BALL_SIZE );
-                                        Polygon pol2 = makeArrow( attacker.getX()-map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
-
+                            int argb = colorWithAlpha( attacker.getOwner().getColor() , 150 );
+                            int ax = (int)(attacker.getX()*scale);
+                            int ay = (int)(attacker.getY()*scale);
+                            int dx = (int)(defender.getX()*scale);
+                            int dy = (int)(defender.getY()*scale);
+                            int mapWidth = (int)(map.length*scale);
+                            if ( Math.abs( ax - dx ) > (mapWidth / 2) ) {
+                                    if ( ax > (mapWidth / 2) ) { // ie the attacker is on the right
+                                        Polygon pol1 = makeArrow( ax, ay, dx+mapWidth, dy, ballSize );
+                                        Polygon pol2 = makeArrow( ax-mapWidth, ay, dx, dy, ballSize );
                                         g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                         g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
-
                                     }
                                     else { // the attacker is on the left
-
-                                        Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX()-map.length, defender.getY(), BALL_SIZE );
-                                        Polygon pol2 = makeArrow( attacker.getX()+map.length, attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
-
+                                        Polygon pol1 = makeArrow( ax, ay, dx-mapWidth, dy, ballSize );
+                                        Polygon pol2 = makeArrow( ax+mapWidth, ay, dx, dy, ballSize );
                                         g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
                                         g.fillPolygon(pol2.xpoints,0, pol2.ypoints, 0, pol2.npoints, argb );
                                     }
-
                             }
                             else {
-
-                                Polygon pol1 = makeArrow( attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), BALL_SIZE );
-
+                                Polygon pol1 = makeArrow( ax, ay, dx, dy, ballSize );
                                 g.fillPolygon(pol1.xpoints,0, pol1.ypoints, 0, pol1.npoints, argb );
-
                             }
-
                         }
-
                 }
 
-                
                 if (oldState != state) { // if the state has changed!!!
                     oldState = state;
                     if (state == RiskGame.STATE_GAME_OVER) {
@@ -497,13 +480,22 @@ public class PicturePanel extends ImageView implements MapPanel {
                     }
                 }
 
-                Country t;
-                for (int c=0; c< v.length ; c++) {
 
-                        t = v[c];
+                Map<Country,Player> capitals = new HashMap(game.getNoPlayers());
+                if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && game.getState() != RiskGame.STATE_SELECT_CAPITAL ) {
+                    List<Player> players = game.getPlayers();
+                    for (int c=0; c<players.size(); c++) {
+                        Player player = players.get(c);
+                        Country capital = player.getCapital();
+                        if (capital!=null) {
+                            capitals.put(capital, player);
+                        }
+                    }
+                }
 
+                for (int c=0; c< v.length; c++) {
+                        Country t = v[c];
                         if ( t.getOwner() != null ) {
-
                                 int x,y;
                                 if (ballWorld==null) {
                                     x = t.getX();
@@ -513,64 +505,57 @@ public class PicturePanel extends ImageView implements MapPanel {
                                     x = (int)ballWorld.balls[c].x;
                                     y = (int)ballWorld.balls[c].y;
                                 }
-                            
-                                g.setARGBColor( ((Player)t.getOwner()).getColor() );
-
-                                g2.fillOval( x-r , y-r , BALL_SIZE, BALL_SIZE );
-
-                                g.setARGBColor( ColorUtil.getTextColorFor( ((Player)t.getOwner()).getColor() ) );
-
-                                int h = y -(font.getHeight()/2 -1);
-                                String noa=String.valueOf(t.getArmies());
-
-                                g2.drawString( noa, x - (font.getWidth(noa)/2) , h );
-
+                                drawArmy(g2, t.getOwner().getColor(), t.getArmies(), (int)(x*scale), (int)(y*scale), ballSize, capitals.get(t) );
                         }
-
                 }
+        }
 
-                if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state != RiskGame.STATE_SELECT_CAPITAL ) {
+        // cache font for reuse
+        static int fontBallSize;
+        static Font font = DesktopPane.getDefaultTheme("").getFont( Style.ALL ); // default font in case making fonts fails
+        public static void drawArmy(Graphics2D g, int countryOwnerColor, int armies, int x,int y,int ballSize,Player capital) {
 
-                        int stroke = BALL_SIZE / 10;
-                    
-                        int old = g2.getGraphics().getStrokeWidth();
-                        g2.getGraphics().setStrokeWidth( stroke );
-                        List players = game.getPlayers();
+            int r = ballSize/2;
+            g.setColor( countryOwnerColor );
+            g.fillArc( x-r , y-r , ballSize, ballSize, 0, 360 );
 
-                        for (int c=0; c< players.size() ; c++) {
 
-                                Country capital = ((Player)players.get(c)).getCapital();
-
-				if ( capital !=null ) {
-					
-                                        int pos = capital.getColor()-1;
-
-                                        int x,y;
-                                        if (ballWorld==null) {
-                                            x = v[pos].getX();
-                                            y = v[pos].getY();
-                                        }
-                                        else {
-                                            x = (int)ballWorld.balls[pos].x;
-                                            y = (int)ballWorld.balls[pos].y;
-                                        }
-                                        
-                                        
-                                        g.setARGBColor( ColorUtil.getTextColorFor( ((Player)capital.getOwner()).getColor() ) );
-
-                                        g2.drawArc( x-r , y-r , BALL_SIZE, BALL_SIZE , 0, 360);
-
-                                        g.setARGBColor( ((Player)players.get(c)).getColor() );
-
-                                        int size = BALL_SIZE + (stroke*2);
-                                        g2.drawArc( x-(size/2) , y-(size/2) , size, size, 0, 360);
-
-                                }
-
-                        }
-                        g2.getGraphics().setStrokeWidth(old);
+            // TODO any size fonts do not work on me4se!!
+            if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {
+                if (ballSize!=fontBallSize) {
+                    String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
+                    float d = (density!=null)?Float.parseFloat(density):1.0F;
+                    font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (ballSize*0.75) /d +0.5) );
+                    fontBallSize = ballSize;
                 }
+            }
 
+
+            int h = y -(font.getHeight()/2 -1);
+            String noa=String.valueOf(armies);
+
+            g.setColor( ColorUtil.getTextColorFor( countryOwnerColor ) );
+            g.setFont(font);
+            g.drawString( noa, x - (font.getWidth(noa)/2) , h );
+
+            if ( capital!=null ) {
+                int capitalColor = capital.getColor();
+                int stroke = ballSize / 10;
+
+                int old = g.getGraphics().getStrokeWidth();
+                g.getGraphics().setStrokeWidth( stroke );
+
+                g.setColor( ColorUtil.getTextColorFor( capitalColor ) );
+
+                g.drawArc( x-r , y-r , ballSize, ballSize , 0, 360);
+
+                g.setColor( capitalColor );
+
+                int size = ballSize + (stroke*2);
+                g.drawArc( x-(size/2) , y-(size/2) , size, size, 0, 360);
+
+                g.getGraphics().setStrokeWidth(old);
+            }
         }
 
         BallWorld ballWorld;

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
@@ -144,6 +145,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
                 xOffset,yOffset,
                 c1img,c2img,
                 color,color,
+                myrisk.getCountryCapital(c1num),myrisk.getCountryCapital(c2num),
                 myrisk.getCountryName(c1num),myrisk.getCountryName(c2num),
                 csrc-move,cdes+move,move);
     }
@@ -154,6 +156,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
             int xMiddle,int yMiddle,
             Image c1img,Image c2img,
             int color1, int color2,
+            Player capital1,Player capital2,
             String name1,String name2,
             int noa1i, int noa2i, int move
             ) {
@@ -179,11 +182,8 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         //tl = new TextLayout( country2.getName() , font, frc); // Display
         //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
 
-        g.setColor( color1 );
-        g.fillOval( xMiddle-distanceFromCenter -(fh/2) , yMiddle-(fh/2) , fh, fh);
-        
-        g.setColor( color2 );
-        g.fillOval( xMiddle+distanceFromCenter -(fh/2) , yMiddle-(fh/2) , fh, fh );
+        PicturePanel.drawArmy(g, color1, noa1i, xMiddle-distanceFromCenter, yMiddle, fh, capital1);
+        PicturePanel.drawArmy(g, color2, noa2i, xMiddle+distanceFromCenter, yMiddle, fh, capital2);
 
         int xOffset = XULLoader.adjustSizeToDensity(52);
         int yOffset = XULLoader.adjustSizeToDensity(15);
@@ -192,19 +192,9 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
         g2.fillPolygon(xCoords, 0, yCoords, 0, xCoords.length, PicturePanel.colorWithAlpha(color1, 150) );
 
-        
-        String noa1=String.valueOf(noa1i),noa2=String.valueOf(noa2i);
-
-        int textY = yMiddle-(fh/2);
-        
-        g.setColor( ColorUtil.getTextColorFor(color1) );
-        g.drawString( String.valueOf( noa1 ) , xMiddle-distanceFromCenter -font.getWidth(noa1)/2, textY );
-
-        g.setColor( ColorUtil.getTextColorFor(color2) );
-        g.drawString( String.valueOf( noa2 ) , xMiddle+distanceFromCenter -font.getWidth(noa2)/2, textY );
-
         if (move > 0) {
-            g.drawString( Integer.toString(move) , xMiddle -7, textY );
+            g.setColor( ColorUtil.getTextColorFor(color1) );
+            g.drawString( Integer.toString(move) , xMiddle -7, yMiddle-(fh/2) );
         }
 
         g.setColor(0xFFFFFFFF); // white
