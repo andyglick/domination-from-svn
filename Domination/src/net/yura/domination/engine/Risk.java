@@ -2709,6 +2709,17 @@ RiskUtil.printStackTrace(e);
 		}
 
 	}
+	
+	public Player getCountryCapital(int c) {
+	    Country t = game.getCountryInt(c);
+	    List<Player> players = game.getPlayers();
+	    for (Player player: players) {
+	        if (player.getCapital() == t) {
+	            return player;
+	        }
+	    }
+	    return null;
+	}
 
 	/**
 	 * returns the country display name
