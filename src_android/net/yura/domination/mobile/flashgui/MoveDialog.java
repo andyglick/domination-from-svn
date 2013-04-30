@@ -9,6 +9,7 @@ import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.ChangeListener;
@@ -182,8 +183,9 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         //tl = new TextLayout( country2.getName() , font, frc); // Display
         //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
 
-        PicturePanel.drawArmy(g, color1, noa1i, xMiddle-distanceFromCenter, yMiddle, fh, capital1);
-        PicturePanel.drawArmy(g, color2, noa2i, xMiddle+distanceFromCenter, yMiddle, fh, capital2);
+        int size = Math.max(fh, MapChooser.adjustSizeToDensityFromMdpi(20) );
+        PicturePanel.drawArmy(g, color1, noa1i, xMiddle-distanceFromCenter, yMiddle, size, capital1);
+        PicturePanel.drawArmy(g, color2, noa2i, xMiddle+distanceFromCenter, yMiddle, size, capital2);
 
         int xOffset = XULLoader.adjustSizeToDensity(52);
         int yOffset = XULLoader.adjustSizeToDensity(15);
