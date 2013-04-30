@@ -77,7 +77,7 @@ public class Risk extends Thread {
 
         public static final String[] types = new String[] { "human","ai easy","ai easy","ai easy","ai average","ai average" };
         public static final String[] names = new String[] { "player","bob","fred","ted","yura","lala"};
-        public static final String[] colors = new String[] { "green","blue","red","cyan","magenta","yellow"};
+        public static final String[] colors = new String[] { "cyan","green","magenta","red","blue","yellow"};
 
 	public Risk() {
                 // default Android value does not work
