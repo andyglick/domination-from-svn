@@ -391,9 +391,9 @@ public class GameActivity extends Frame implements ActionListener {
                 if (localGame) menu.add( savebutton );
                 menu.add( graphbutton );
                 if (localGame) menu.add( undobutton );
+                menu.add( options );
                 menu.add( AutoEndGo );
                 menu.add( AutoDefend );
-                menu.add( options );
                 //menu.add( helpbutton );
 
                 controller.addExtraButtons(menu);
