@@ -123,6 +123,11 @@ public class GameActivity extends Frame implements ActionListener {
         undobutton.addActionListener(this);
         undobutton.setActionCommand("undo");
 
+        options = new Button( resb.getProperty("swing.menu.options") );
+        options.setIcon( new Icon("/ic_menu_preferences.png") );
+        options.setActionCommand("options");
+        options.addActionListener(this);
+
         AutoEndGo = new CheckBox( resb.getProperty("game.menu.autoendgo") );
         AutoEndGo.setActionCommand("autoendgo");
         AutoEndGo.addActionListener(this);
@@ -131,10 +136,6 @@ public class GameActivity extends Frame implements ActionListener {
         AutoDefend.setActionCommand("autodefend");
         AutoDefend.addActionListener(this);
 
-        options = new Button( resb.getProperty("swing.menu.options") );
-        options.setActionCommand("options");
-        options.addActionListener(this);
-        
         Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
         helpbutton.addActionListener(this);
         helpbutton.setActionCommand("help");
