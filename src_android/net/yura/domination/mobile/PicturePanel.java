@@ -23,6 +23,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -512,15 +513,32 @@ public class PicturePanel extends ImageView implements MapPanel {
                 }
         }
 
+        static Map<Integer,Image> icons = new HashMap();
+        static {
+            icons.put(ColorUtil.RED,Midlet.createImage("/color_red.png"));
+            icons.put(ColorUtil.BLUE,Midlet.createImage("/color_blue.png"));
+            icons.put(ColorUtil.YELLOW,Midlet.createImage("/color_yellow.png"));
+            icons.put(ColorUtil.CYAN,Midlet.createImage("/color_cyan.png"));
+            icons.put(ColorUtil.GREEN,Midlet.createImage("/color_green.png"));
+            icons.put(ColorUtil.MAGENTA,Midlet.createImage("/color_magenta.png"));
+        }
         // cache font for reuse
         static int fontBallSize;
         static Font font = DesktopPane.getDefaultTheme("").getFont( Style.ALL ); // default font in case making fonts fails
         public static void drawArmy(Graphics2D g, int countryOwnerColor, int armies, int x,int y,int ballSize,Player capital) {
-
             int r = ballSize/2;
-            g.setColor( countryOwnerColor );
-            g.fillArc( x-r , y-r , ballSize, ballSize, 0, 360 );
 
+            Image icon = DominationMain.getBoolean("color_blind",false)?icons.get( countryOwnerColor ):null;
+            if (icon!=null) {
+                int w = (int)(ballSize*1.1);
+                int h = (int)(icon.getHeight()*(w/(double)icon.getWidth()));
+                g.drawScaledImage(icon, x-(w/2) , y-(w/2) , w, h);
+            }
+            else {
+                g.setColor( countryOwnerColor );
+                g.fillArc( x-r , y-r , ballSize, ballSize, 0, 360 );
+            }
+            
 
             // TODO any size fonts do not work on me4se!!
             if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {

@@ -3,12 +3,11 @@ package net.yura.domination.android;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.mobile.flashgui.DominationMain;
-import net.yura.domination.mobile.flashgui.GameActivity;
-import net.yura.mobile.util.Properties;
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.CategorySeries;
@@ -21,10 +20,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import net.yura.domination.engine.core.Statistic;
+import net.yura.domination.engine.translation.TranslationBundle;
 
 public class StatsActivity extends Activity {
 
-    Properties resb = GameActivity.resb;
+    private ResourceBundle resb = TranslationBundle.getBundle();
     
     public interface EnumConverter<T> {
         public T convert();

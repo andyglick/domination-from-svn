@@ -1,16 +1,27 @@
 package net.yura.domination.android;
 
 import java.io.File;
-
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
+import net.yura.android.AndroidPreferences;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.mobile.logging.Logger;
 
 public class GameActivity extends AndroidMeActivity {
+    
+    @Override
+    protected void onSingleCreate() {
+        
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        DominationMain.appPreferences = new AndroidPreferences(preferences);
+        
+        super.onSingleCreate();
+    }
     
     @Override
     protected void onSaveInstanceState(Bundle outState) {

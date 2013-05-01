@@ -69,8 +69,8 @@ public class GameActivity extends Frame implements ActionListener {
     String status;
     int gameState;
 
-    private CheckBox AutoEndGo,AutoDefend,showToasts;
-    private Button cardsbutton,missionbutton;
+    private CheckBox AutoEndGo,AutoDefend;
+    private Button cardsbutton,missionbutton,options;
 
     Menu menu;
     MiniFlashRiskAdapter controller;
@@ -131,8 +131,9 @@ public class GameActivity extends Frame implements ActionListener {
         AutoDefend.setActionCommand("autodefend");
         AutoDefend.addActionListener(this);
 
-        showToasts = new CheckBox( resb.getProperty("game.menu.showtoasts") );
-        showToasts.setSelected(true);
+        options = new Button( resb.getProperty("swing.menu.options") );
+        options.setActionCommand("options");
+        options.addActionListener(this);
         
         Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
         helpbutton.addActionListener(this);
@@ -391,7 +392,7 @@ public class GameActivity extends Frame implements ActionListener {
                 if (localGame) menu.add( undobutton );
                 menu.add( AutoEndGo );
                 menu.add( AutoDefend );
-                menu.add( showToasts );
+                menu.add( options );
                 //menu.add( helpbutton );
 
                 controller.addExtraButtons(menu);
@@ -465,6 +466,9 @@ public class GameActivity extends Frame implements ActionListener {
         }
         else if ("cards".equals(actionCommand)) {
             openCards();
+        }
+        else if ("options".equals(actionCommand)) {
+            Midlet.openURL("nativeNoResult://net.yura.domination.android.GamePreferenceActivity");
         }
         else {
             throw new IllegalArgumentException("unknown command "+actionCommand);
@@ -614,7 +618,7 @@ public class GameActivity extends Frame implements ActionListener {
             
             repaint(); // SwingGUI has this here, if here then not needed in set status
             
-            if (isFocused() && showToasts.isSelected() ) {
+            if (isFocused() && DominationMain.getBoolean("show_toasts", false) ) {
                 toast(status);
             }
     }
