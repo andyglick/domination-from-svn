@@ -11,6 +11,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
@@ -43,6 +45,9 @@ public class DominationMain extends Midlet {
         String versionCode = System.getProperty("versionCode");
         version = versionCode!=null ? versionCode : "?me4se?";
     }
+    
+    public static Preferences appPreferences;
+    
     
     public Risk risk;
     public MiniFlashRiskAdapter adapter;
@@ -234,6 +239,11 @@ public class DominationMain extends Midlet {
             // paint real icon in the middle of this icon
             wrappedIcon.paintIcon(c, g, x + (getIconWidth()-wrappedIcon.getIconWidth())/2, y + (getIconHeight()-wrappedIcon.getIconHeight())/2);
         }
+    }
+
+    public static boolean getBoolean(String key, boolean deflt) {
+        if (appPreferences==null) return deflt;
+        return appPreferences.getBoolean(key, deflt);
     }
 
 }
