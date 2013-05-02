@@ -468,7 +468,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
      */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
-            Midlet.openURL("nativeNoResult://net.yura.android.ToastActivity?message="+Url.encode(message));
+            Midlet.openURL("toast://show?message="+Url.encode(message));
         }
     }
     
