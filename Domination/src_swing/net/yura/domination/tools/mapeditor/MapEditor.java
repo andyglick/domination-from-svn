@@ -979,6 +979,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
         }
 
         private void delIslands() {
+            long startTime = System.currentTimeMillis();
             BufferedImage map = editPanel.getImageMap();
             int width = map.getWidth();
             int[] pixels = map.getRGB(0,0,width,map.getHeight(),null,0,width);
@@ -1023,13 +1024,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     }
                 }
                 islands.remove(largestIsland);
-                for (List<Integer> island: islands) {
-                    for (int pos: island) {
-                        pixels[pos] = 0xFFFFFFFF;
-                    }
+                for (List<Integer> island: islands) for (int pos: island) {
+                    pixels[pos] = 0xFFFFFFFF;
                 }
             }
-
+System.out.println("finished! took "+(System.currentTimeMillis()-startTime));
             map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
             repaint();
         }
