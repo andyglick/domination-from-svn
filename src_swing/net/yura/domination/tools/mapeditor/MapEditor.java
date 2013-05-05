@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -979,7 +980,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
         private void delIslands() {
             BufferedImage map = editPanel.getImageMap();
-            int[] pixels = map.getRGB(0,0,map.getWidth(),map.getHeight(),null,0,map.getWidth());
+            int width = map.getWidth();
+            int[] pixels = map.getRGB(0,0,width,map.getHeight(),null,0,width);
 
             Map<Integer,List<Integer>> colorToPositions = new HashMap();
             for (int c=0;c<pixels.length;c++) {
@@ -989,13 +991,32 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     positions.add(c);
                 }
             }
-            
+
             for (List<Integer> positions:colorToPositions.values()) {
                 List<Integer> largestIsland=null;
                 List<List<Integer>> islands = new ArrayList();
                 while (!positions.isEmpty()) {
                     List<Integer> island = new ArrayList();
-                    getIsland(positions.get(0), positions, island, map.getWidth());
+                    Stack<Integer> stack = new Stack();
+                    stack.push( positions.get(0) );
+                    while (!stack.isEmpty()) {
+                        int position = stack.pop();
+                        int index = positions.indexOf(position);
+                        if (index>=0) {
+                            int pos = positions.remove(index);
+                            island.add(pos);
+                            if (position >= width) {
+                                stack.push( position-width ); // top
+                            }
+                            if (position % width != 0) {
+                                stack.push( position-1 ); // left
+                            }
+                            if ((position+1) % width != 0) {
+                                stack.push( position+1 ); // right
+                            }
+                            stack.push( position + width ); // bottom
+                        }
+                    }
                     islands.add(island);
                     if (largestIsland==null || island.size() > largestIsland.size()) {
                         largestIsland = island;
@@ -1009,31 +1030,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 }
             }
 
-            map.setRGB(0,0,map.getWidth(),map.getHeight(),pixels,0,map.getWidth());
+            map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
             repaint();
-        }
-        
-        private void getIsland(int position, List<Integer> positions, List<Integer> island,int width) {
-            int index = positions.indexOf(position);
-            if (index>=0) {
-                int pos = positions.remove(index);
-                island.add(pos);
-
-                if (position >= width) {
-                    int top = position-width;
-                    getIsland(top, positions, island, width);
-                }
-                if (position % width != 0) {
-                    int left = position-1;
-                    getIsland(left, positions, island, width);
-                }
-                if ((position+1) % width != 0) {
-                    int right = position+1;
-                    getIsland(right, positions, island, width);
-                }
-                int bottom = position + width;
-                getIsland(bottom, positions, island, width);
-            }
         }
 
 	static BufferedImage makeRGBImage(BufferedImage INipic) {
