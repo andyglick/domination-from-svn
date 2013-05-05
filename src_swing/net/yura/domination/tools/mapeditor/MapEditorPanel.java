@@ -2,21 +2,21 @@
 
 package net.yura.domination.tools.mapeditor;
 
-import java.util.Map;
-import java.util.List;
-import java.awt.image.BufferedImage;
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.awt.AlphaComposite;
-import java.awt.image.IndexColorModel;
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
@@ -212,11 +212,9 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	}
 
 	public void setCountry(Country a) {
-
 	    if (selected != a) {
 
 		selected = a;
-
 
 		int width = map.getWidth();
 		int height =  map.getHeight();
@@ -224,52 +222,37 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		int[] pixels1 = map.getRGB(0,0,width,height,null,0,width);
 		int[] pixels2 = drawImage.getRGB(0,0,width,height,null,0,width);
 
+                int redColor = Color.RED.getRGB();
+                
 		for (int c=0;c<pixels1.length;c++) {
-
 			if (selected!=null && selected.getColor() == (pixels1[c]&0xff) ) {
-
-				pixels2[c] = -65536; // Color.RED.getRGB()
-
+				pixels2[c] = redColor;
 			}
 			else {
-
 				pixels2[c] = 0;
-
 			}
 		}
 
 		drawImage.setRGB(0,0,width,height,pixels2,0,width);
-
 		repaint();
-
 	    }
-
 	}
 
 	public void setAlpha(int a) {
-
 		alpha = a/100F;
-
 	}
 
 	public void setBrush(int a) {
-
 		brush = (a==0)?1:a;
-
 	}
         
 	public void setMode(int a) {
-
 		mode = a;
-
 		dragpoint = null;
-
 		repaint();
-
 	}
 
     public void paintComponent(Graphics g) {
-
 	super.paintComponent(g);
 
 	Graphics2D g0 = (Graphics2D)g;
@@ -465,7 +448,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	public void drawLine(Point a,Point b,boolean draw) {
 
-
 		if (selected!=null || !draw) {
 
 			// this fixes a really odd bug with drawing lines on indexed images
@@ -493,7 +475,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 			g1.dispose();
 			g2.dispose();
-
 		}
 	}
 
@@ -520,9 +501,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	}
 
 	public Point getPoint(MouseEvent e) {
-
 		return new Point( e.getX()/zoom,e.getY()/zoom );
-
 	}
 
 	// #############################################################
@@ -531,18 +510,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-
 	if (e.getWheelRotation() < 0) {
-
 	    editor.zoom(true);
-
 	}
 	else {
-
 	    editor.zoom(false);
-
 	}
-
     }
 
 	public void mouseClicked(MouseEvent e) {
@@ -641,7 +614,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		    }
 
 		}
-
 	}
 
 	private boolean xdrag;
@@ -653,7 +625,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 				( (e.getModifiers() & MouseEvent.BUTTON3_MASK) == MouseEvent.BUTTON3_MASK)
 
 		)) {
-
 
 			Point point = getPoint(e);
 
@@ -685,25 +656,17 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 				drawLine(dragpoint,dragpoint, ( (e.getModifiers() & MouseEvent.BUTTON1_MASK) == MouseEvent.BUTTON1_MASK) );
 
 				repaint();
-
 			}
-
-
 		}
-
 	}
 
         public void mouseReleased(MouseEvent e) {
 
 		if (mode == MODE_MOVE) {
-
 			dragpoint=null;
-
 		}
 		else if (mode == MODE_MOVEALL) {
-
 			dragpoint=null;
-
 		}				// ((JViewport)getParent()).getViewRect()
 		else if (mode == MODE_DRAW && !getVisibleRect().contains(e.getPoint()) ) {
 
@@ -711,7 +674,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 			dragpoint=null;
 			repaint();
 		}
-
 	}
 
         public void mouseDragged(MouseEvent e) {
@@ -757,7 +719,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 			dragpoint = point;
 
 			repaint();
-
 		}
 		else if (mode == MODE_DRAW && dragpoint!=null) {
 
@@ -777,17 +738,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 			dragpoint = end;
 
 			repaint();
-
 		}
-
 	    }
-
 	}
 
         public void mouseExited(MouseEvent e) {
-
 		if (mode == MODE_DRAW) {
-
 			if (
 
 				( (e.getModifiers() & MouseEvent.BUTTON1_MASK) != MouseEvent.BUTTON1_MASK) &&
@@ -797,21 +753,14 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 				dragpoint = null;
 				repaint();
 			}
-
 		}
-
 	}
 
 	public void mouseMoved(MouseEvent e) {
-
 		if (mode == MODE_DRAW) {
-
 			dragpoint = getPoint(e);
-
 			repaint();
-
 		}
-
 	}
 
         public void mouseEntered(MouseEvent e) {}
