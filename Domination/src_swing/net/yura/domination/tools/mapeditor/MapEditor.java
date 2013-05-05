@@ -105,6 +105,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	private JButton loadimagemap;
 	private JButton fixButton;
         private JButton bamButton;
+        private JButton cleanIslands;
 
 	private JButton zoomin;
 	private JButton zoomout;
@@ -145,8 +146,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	public MapEditor(Risk r,SwingGUIPanel panel) {
-
-            this.panel = panel;
+		this.panel = panel;
 
 		setName( "Map Editor" );
 
@@ -274,12 +274,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		modesPanel.add(bamButton);
 		bamButton.setEnabled(false);
 
+		cleanIslands = new JButton("del islands");
+		cleanIslands.setActionCommand("islands");
+		cleanIslands.addActionListener(this);
+		modesPanel.add(cleanIslands);
+		cleanIslands.setEnabled(false);
+
+
 		fixButton = new JButton("del bad map colors");
 		fixButton.setActionCommand("fix");
 		fixButton.addActionListener(this);
 		modesPanel.add(fixButton);
 		fixButton.setEnabled(false);
-                
+
 		add(modesPanel, BorderLayout.SOUTH );
 
 		JPanel topPanel = new JPanel();
@@ -419,6 +426,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		loadimagemap.setEnabled(true);
 		fixButton.setEnabled(true);
                 bamButton.setEnabled(true);
+                cleanIslands.setEnabled(true);
 
                 fileName = fname;
                 imgFile = img;
@@ -809,6 +817,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             bam();
                         }
 		}
+		else if (a.getActionCommand().equals("islands")) {
+			delIslands();
+		}
 		else {
 			throw new RuntimeException("unknown command: "+a.getActionCommand());
 		}
@@ -966,6 +977,65 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             editPanel.repaint();
         }
 
+        private void delIslands() {
+            BufferedImage map = editPanel.getImageMap();
+            int[] pixels = map.getRGB(0,0,map.getWidth(),map.getHeight(),null,0,map.getWidth());
+
+            Map<Integer,List<Integer>> colorToPositions = new HashMap();
+            for (int c=0;c<pixels.length;c++) {
+                if (pixels[c] != 0xFFFFFFFF) {
+                    List<Integer> positions = colorToPositions.get( pixels[c] );
+                    if (positions==null) { positions = new ArrayList(); colorToPositions.put(pixels[c], positions); }
+                    positions.add(c);
+                }
+            }
+            
+            for (List<Integer> positions:colorToPositions.values()) {
+                List<Integer> largestIsland=null;
+                List<List<Integer>> islands = new ArrayList();
+                while (!positions.isEmpty()) {
+                    List<Integer> island = new ArrayList();
+                    getIsland(positions.get(0), positions, island, map.getWidth());
+                    islands.add(island);
+                    if (largestIsland==null || island.size() > largestIsland.size()) {
+                        largestIsland = island;
+                    }
+                }
+                islands.remove(largestIsland);
+                for (List<Integer> island: islands) {
+                    for (int pos: island) {
+                        pixels[pos] = 0xFFFFFFFF;
+                    }
+                }
+            }
+
+            map.setRGB(0,0,map.getWidth(),map.getHeight(),pixels,0,map.getWidth());
+            repaint();
+        }
+        
+        private void getIsland(int position, List<Integer> positions, List<Integer> island,int width) {
+            int index = positions.indexOf(position);
+            if (index>=0) {
+                int pos = positions.remove(index);
+                island.add(pos);
+
+                if (position >= width) {
+                    int top = position-width;
+                    getIsland(top, positions, island, width);
+                }
+                if (position % width != 0) {
+                    int left = position-1;
+                    getIsland(left, positions, island, width);
+                }
+                if ((position+1) % width != 0) {
+                    int right = position+1;
+                    getIsland(right, positions, island, width);
+                }
+                int bottom = position + width;
+                getIsland(bottom, positions, island, width);
+            }
+        }
+
 	static BufferedImage makeRGBImage(BufferedImage INipic) {
 
 		BufferedImage ipic = new BufferedImage(INipic.getWidth(), INipic.getHeight(), BufferedImage.TYPE_INT_BGR);
@@ -981,13 +1051,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		g1.dispose();
 
 		return ipic;
-
 	}
 
 	public void zoom(boolean in) {
-
 		setZoom( (in)?(zoomint+1):(zoomint-1) );
-
 	}
 
 	private void setZoom(int a) {
@@ -1003,7 +1070,6 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		zoom.setText(zoomint+"x");
 
 		editPanel.zoom(a);
-
 	}
 
 	public void showError(Throwable ex) {
