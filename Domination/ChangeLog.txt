@@ -16,6 +16,8 @@ CURRENT VERSION:
 1.1.1.5
 
 	annihilate button added to FlashGUI attack screen
+	Czech and Slovak languages added by Viliam Tomcanyi
+	del islands tool added to the MapEditor
 
 	Android 38 option for color blind people added
 
