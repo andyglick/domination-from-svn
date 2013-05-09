@@ -18,10 +18,10 @@ TODO:
 Desktop:
 
     in statistics add a number of cards graph, so you can see the number of other peoples cards for FlashGUI and SwingGUI
-    add command line options like "Domination.jar -server"
     [Donate] button on main menu needs to say something else [vote/donate for next feature]
     (Flash GUI) Although the position of the game board seems to be saved, it's size is not. Nor is the position of new game, choose game [& size] (which is inevitably too small), stats, cards, battle (select attacking dice), disposition (move armies to captured country).
     make it say u can trade 3 different cards
+    MapEditor - when you zoom with the mouse wheel, it should center the map on where the mouse it
     redo graph to use doubles instead of ints for scale
     should let u stop a game if it is in replay mode
     put in a pause finction, maybe when FlashGUI menu is open
@@ -105,6 +105,7 @@ New Game Option Ideas:
 
 Command Line:
 
+    add command line options like "Domination.jar -server"
     the console prompt is not getting the text for it from the translation file
     should let you use country names in the console
     make it not case sensitive in the console
