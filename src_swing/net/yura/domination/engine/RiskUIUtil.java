@@ -27,6 +27,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1067,6 +1069,22 @@ public class RiskUIUtil {
                 // setup the maps dir for none applets
                 setupMapsDir(null);
 	}
+
+    public static void openFile(String[] argv, Risk r) {
+        List files = new ArrayList();
+        for (int c=0;c<argv.length;c++) {
+            String arg = argv[c];
+            if (arg.indexOf('=')<0 && arg.length()>0 && arg.charAt(0)!='-') {
+                files.add(arg);
+            }
+        }
+        if (files.size()==1) {
+            r.parser("loadgame "+files.get(0));
+        }
+        else if (files.size() > 1) {
+            JOptionPane.showMessageDialog(null, "unknown command: "+files );
+        }
+    }
 
     public static Color getTextColorFor(Color color) {
         return new Color( ColorUtil.getTextColorFor(color.getRGB()) );

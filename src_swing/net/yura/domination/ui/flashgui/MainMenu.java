@@ -688,8 +688,9 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
                 Risk r = new Risk();
 		newMainMenuFrame(r ,JFrame.EXIT_ON_CLOSE );
 
-		RiskUIUtil.checkForUpdates(r);
+                RiskUIUtil.openFile(argv,r);
 
+		RiskUIUtil.checkForUpdates(r);
 	}
 
 	public static MainMenu newMainMenuFrame(Risk r,int a) {
