@@ -18,6 +18,7 @@ CURRENT VERSION:
 	annihilate button added to FlashGUI attack screen
 	Czech and Slovak languages added by Viliam Tomcanyi
 	del islands tool added to the MapEditor
+	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 
 	Android 38 option for color blind people added
 
