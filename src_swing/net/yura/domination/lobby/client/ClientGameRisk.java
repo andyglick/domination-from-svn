@@ -21,7 +21,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
@@ -153,8 +155,8 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 		final ImageIcon borderimage = new ImageIcon( ClientGameRisk.class.getResource("back.jpg") );
 
 
-
-		final Box sidepanel = new Box(javax.swing.BoxLayout.Y_AXIS);/* {
+                final Box sidepanelTop = new Box(javax.swing.BoxLayout.Y_AXIS);
+		final Box sidepanelBottom = new Box(javax.swing.BoxLayout.Y_AXIS);/* {
 
 			public void paintComponent(java.awt.Graphics g) {
 
@@ -200,24 +202,26 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 		panel3.add( startButton );
 		panel3.add( aboutButton );
 
-		sidepanel.add( panel1 );
-		sidepanel.add( panel2 );
-		sidepanel.add( playerListArea );
-		sidepanel.add( panel3 );
-		sidepanel.add( chatBoxArea );
+		sidepanelTop.add( panel1 );
+		sidepanelTop.add( panel2 );
+		sidepanelTop.add( playerListArea );
+		sidepanelBottom.add( panel3 );
+		sidepanelBottom.add( chatBoxArea );
+
+                int bigPadding = 20;
+
+                JSplitPane sidepanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
+                sidepanel.setDividerSize(bigPadding);
+                sidepanel.setTopComponent(sidepanelTop);
+                sidepanel.setBottomComponent(sidepanelBottom);
+
+		panel2.setBorder( BorderFactory.createMatteBorder(bigPadding, 0, bigPadding, 0, borderimage ) );
+		((BasicSplitPaneUI)sidepanel.getUI()).getDivider().setBorder( BorderFactory.createMatteBorder(0, 0, bigPadding, 0, borderimage ) );
+		chatBoxArea.setBorder( BorderFactory.createMatteBorder(bigPadding, 0, 0, 0, borderimage ) );
+		sidepanel.setBorder( BorderFactory.createMatteBorder(bigPadding, bigPadding, bigPadding, bigPadding, borderimage ) );
 
 
-		//panel2.setBorder( new EmptyBorder(20, 0, 20, 0) );
-		panel2.setBorder( BorderFactory.createMatteBorder(20, 0, 20, 0, borderimage ) );
-		playerListArea.setBorder( BorderFactory.createMatteBorder(0, 0, 20, 0, borderimage ) );
-		chatBoxArea.setBorder( BorderFactory.createMatteBorder(20, 0, 0, 0, borderimage ) );
-		sidepanel.setBorder( BorderFactory.createMatteBorder(20, 20, 20, 20, borderimage ) );
-
-		Dimension topsize = new Dimension(160,120);
-
-		playerListArea.setPreferredSize( topsize );
-		playerListArea.setMaximumSize( topsize );
-		playerListArea.setMinimumSize( topsize );
+		playerListArea.setPreferredSize( new Dimension(160,120) );
 
 		sidepanel.setPreferredSize( new Dimension(200,600) );
 
