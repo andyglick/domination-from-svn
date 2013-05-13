@@ -545,7 +545,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 if (ballSize!=fontBallSize) {
                     String density = System.getProperty("display.scaledDensity"); // use scaledDensity, as in the FontManager scaledDensity is also used
                     float d = (density!=null)?Float.parseFloat(density):1.0F;
-                    font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, (int) -( (ballSize*0.75) /d +0.5) );
+                    int fontSize = Math.max( (int) ((ballSize*0.75) /d +0.5) , 1);
+                    font = new Font(javax.microedition.lcdui.Font.FACE_PROPORTIONAL,javax.microedition.lcdui.Font.STYLE_PLAIN, -fontSize );
                     fontBallSize = ballSize;
                 }
             }
