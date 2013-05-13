@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.yura.domination"
-      android:versionCode="38"
-      android:versionName="38"
+      android:versionCode="39"
+      android:versionName="39"
       android:installLocation="auto">
       
     <!-- android:targetSdkVersion 11 to hide the legacy menu button on tablets -->
@@ -71,7 +71,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="net.yura.android.OptionPaneActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/OptionPane"/>
         <activity android:name="net.yura.android.WebViewActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name="net.yura.android.LoadingDialog" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@android:style/Theme.NoDisplay"/>
         <activity android:name="net.yura.domination.android.StatsActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />

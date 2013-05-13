@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		38
+	Android		39
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	del islands tool added to the MapEditor
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 
+	Android 39 better notifications
 	Android 38 option for color blind people added
 
 1.1.1.4
