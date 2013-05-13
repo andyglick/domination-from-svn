@@ -306,8 +306,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             games.set(index,game);
             
             // if this game is not open and its our turn
-            if (whoAmI().equals( game.getWhosTurn() ) && openGameId != game.getId()) {
-                notify( game.getType().getName(), "It is your go: "+game.getName() ); // TODO copy/paste same code as on server
+            if (whoAmI().equals(game.getWhosTurn())) {
+                notify( game.getType().getName(), "It is your go: "+game.getName(), openGameId==game.getId() ); // TODO copy/paste same code as on server
             }
         }
         else {
@@ -457,12 +457,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    static void notify(String title,String message) {
+    static void notify(String title,String message,boolean onlyBackground) {
         String icon = "icon";
-        Midlet.openURL("notify://dummyServer?title="+Url.encode(title)+"&message="+Url.encode(message)+"&icon="+Url.encode(icon));
+        Midlet.openURL("notify://dummyServer?title="+Url.encode(title)+"&message="+Url.encode(message)+"&icon="+Url.encode(icon)+"&onlyBackground="+onlyBackground);
         // not used &num=4
     }
-    
+
     /**
      * @see net.yura.domination.mobile.flashgui.GameActivity#toast(java.lang.String) 
      */
