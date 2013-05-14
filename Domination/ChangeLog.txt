@@ -21,6 +21,7 @@ CURRENT VERSION:
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 
 	Android 39 better notifications
+		   prefActivity theme on Honeycomb fix
 	Android 38 option for color blind people added
 
 1.1.1.4
