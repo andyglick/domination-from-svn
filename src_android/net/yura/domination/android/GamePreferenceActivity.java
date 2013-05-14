@@ -11,6 +11,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.view.View;
 
 public class GamePreferenceActivity extends PreferenceActivity {
 
@@ -23,6 +24,10 @@ public class GamePreferenceActivity extends PreferenceActivity {
             setPreferenceScreen( makePreferenceScreen(getPreferenceManager(),this) );
         }
         else {
+            // hack to get rid of strange square on honeycomb
+            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                ((View)getListView().getParent()).setBackgroundDrawable(null);
+            }
             getFragmentManager().beginTransaction().replace(android.R.id.content, new GamePreferenceFragment()).commit();
         }
     }
