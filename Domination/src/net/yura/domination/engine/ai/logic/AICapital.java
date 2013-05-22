@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -51,12 +53,15 @@ public class AICapital extends AIDomination {
 		}
 		return border;
 	}
-	
+
 	/**
 	 * Overrides the planning behavior to consider taking capital logic
 	 */
-	protected String plan(boolean attack, List<Country> attackable,
-			GameState gameState, Map<Country, AttackTarget> targets) {
+	@Override
+	protected String planObjective(boolean attack, List<Country> attackable,
+		GameState gameState, Map<Country, AttackTarget> targets,
+		Set<Country> allCountriesTaken, boolean pressAttack,
+		boolean shouldEndAttack, boolean highProbability) {
 		if (game.getSetup()) {
 			Map<Player, Integer> owned = new HashMap<Player, Integer>();
 			for (Iterator<Country> i = gameState.capitals.iterator(); i.hasNext();) {
@@ -71,9 +76,16 @@ public class AICapital extends AIDomination {
 			}
 			double num = gameState.capitals.size();
 			Integer myowned = owned.get(player);
+			if (myowned == null) {
+				myowned = 0;
+			}
+			double percentOwned = myowned.intValue()/num;
+			double ratio = gameState.me.playerValue/gameState.orderedPlayers.get(0).playerValue;
+			
 			//offensive planning
-			if (myowned != null && myowned.intValue()/num >= .5) {
-				String result = planCapitalMove(attack, attackable, gameState, targets, null, true);
+			if (highProbability || (isIncreasingSet() && (ratio/3 > percentOwned )) 
+					|| (percentOwned >= .5 && (isIncreasingSet() || ratio > 1))) {
+				String result = planCapitalMove(attack, attackable, gameState, targets, null, highProbability, allCountriesTaken, !highProbability, shouldEndAttack);
 				if (result != null) {
 					return result;
 				}
@@ -104,11 +116,14 @@ public class AICapital extends AIDomination {
 							}
 						}
 						if (ps.attackValue > 2*primaryDefense) {
-							//can we take one - TODO: coordinate with break continent
-							String result = planCapitalMove(attack, attackable, gameState, targets, e.getKey(), false);
-							if (result != null) {
-								return result;
-							}
+							if (myowned < 2) {
+								//can we take one - TODO: coordinate with break continent
+								String result = planCapitalMove(attack, attackable, gameState, targets, e.getKey(), false, allCountriesTaken, !highProbability, shouldEndAttack);
+								if (result != null) {
+									return result;
+								}
+							} 
+							//else TODO: should we directly do a fortification
 						}
 						break;
 					}
@@ -121,14 +136,17 @@ public class AICapital extends AIDomination {
 			Country c = findCapital();
 			return getPlaceCommand(c, 1);
 		}
-		return super.plan(attack, attackable, gameState, targets);
+		return null;
 	}
 	
 	/**
 	 * Plans to take one (owned by the target player) or all of the remaining capitals.
+	 * @param allCountriesTaken 
+	 * @param lowProbability 
+	 * @param shouldEndAttack 
 	 */
 	private String planCapitalMove(boolean attack, List<Country> attackable,
-			GameState gameState, Map<Country, AttackTarget> targets, Player target, boolean allOrNone) {
+			GameState gameState, Map<Country, AttackTarget> targets, Player target, boolean allOrNone, Set<Country> allCountriesTaken, boolean lowProbability, boolean shouldEndAttack) {
 		int remaining = player.getExtraArmies();
 		List<AttackTarget> toAttack = new ArrayList<AttackTarget>();
 		for (Iterator<Country> i = gameState.capitals.iterator(); i.hasNext();) {
@@ -159,10 +177,13 @@ public class AICapital extends AIDomination {
 		}	
 		if (!toAttack.isEmpty()) {
 			if (allOrNone) {
-				Collections.sort(toAttack); //hardest first
-			} else {
-				Collections.sort(toAttack, Collections.reverseOrder()); 
+				EliminationTarget et = new EliminationTarget();
+				et.allOrNone = allOrNone;
+				et.attackTargets = toAttack;
+				et.ps = gameState.orderedPlayers.get(0);
+				return eliminate(attackable, targets, gameState, attack, remaining, allCountriesTaken, et, shouldEndAttack, lowProbability);
 			}
+			Collections.sort(toAttack, Collections.reverseOrder()); 
 			AttackTarget at = toAttack.get(0);
 			int route = findBestRoute(attackable, gameState, attack, null, at, gameState.targetPlayers.get(0), targets);
 			Country start = attackable.get(route);
