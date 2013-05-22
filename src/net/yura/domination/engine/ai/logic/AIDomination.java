@@ -257,6 +257,7 @@ public class AIDomination extends AISubmissive {
 			int[] troops = new int[game.getPlayers().size()];
 
 			boolean hasPlacement = false;
+			Player otherOwner = null;
 			for (int j = 0; j < ct.size(); j++) {
 				Country country = ct.get(j);
 				if (country.getOwner() == null) {
@@ -271,6 +272,10 @@ public class AIDomination extends AISubmissive {
 					troops[index.intValue()]++;
 					if (country.getOwner() == player) {
 						hasPlacement = true;
+					} else if (otherOwner == null) {
+						otherOwner = country.getOwner();
+					} else if (otherOwner != country.getOwner() && r.nextBoolean()) {
+						hasPlacement = true; //this is contested
 					}
 				}
 			}
@@ -476,6 +481,11 @@ public class AIDomination extends AISubmissive {
 				}
 			}
 			
+			String objective = planObjective(attack, attackable, gameState, targets, allCountriesTaken, pressAttack, shouldEndAttack, true);
+			if (objective != null) {
+				return objective;
+			}
+			
 			if (type == PLAYER_AI_HARD && gameState.orderedPlayers.size() > 1 
 					&& (isIncreasingSet() || gameState.me.playerValue > gameState.orderedPlayers.get(0).playerValue)) {
 				//consider low probability eliminations
@@ -532,7 +542,7 @@ public class AIDomination extends AISubmissive {
 					return result;
 				}
 			}
-
+			
 			if (!attack && (gameState.orderedPlayers.size() > 1 || player.getCapital() != null || player.getMission() != null)) {
 				String result = fortify(gameState, attackable, true, v);
 				if (result != null) {
@@ -561,6 +571,11 @@ public class AIDomination extends AISubmissive {
 			if (result != null) {
 				return result;
 			}
+		}
+		
+		String objective = planObjective(attack, attackable, gameState, targets, allCountriesTaken, pressAttack, shouldEndAttack, false);
+		if (objective != null) {
+			return objective;
 		}
 		
 		//take over a continent
@@ -638,6 +653,12 @@ public class AIDomination extends AISubmissive {
 		return super.getPlaceArmies();
 	}
 
+	protected String planObjective(boolean attack, List<Country> attackable,
+			GameState gameState, Map<Country, AttackTarget> targets,
+			Set<Country> allCountriesTaken, boolean pressAttack, boolean shouldEndAttack, boolean highProbability) {
+		return null;
+	}
+
 	protected boolean shouldProactivelyFortify(Continent c, boolean attack,
 			List<Country> attackable, GameState gameState,
 			Map<Country, AttackTarget> targets, boolean pressAttack,
@@ -646,7 +667,7 @@ public class AIDomination extends AISubmissive {
 				&& gameState.commonThreat == null && !attack && ensureRiskCard(attackable, gameState, targets, pressAttack, continents)==null;
 	}
 
-	private boolean isIncreasingSet() {
+	protected boolean isIncreasingSet() {
 		return game.getCardMode() == RiskGame.CARD_INCREASING_SET && (type != PLAYER_AI_HARD || game.getNewCardState() > 12) && (!game.getCards().isEmpty() || game.isRecycleCards());
 	}
 
@@ -897,12 +918,21 @@ public class AIDomination extends AISubmissive {
 						at.add(t);
 					}
 					enemyTerritories++;
+					int toAttack = 0;
 					if (gameState.commonThreat == null || gameState.commonThreat.p != country.getOwner()) {
-						enemyTroops += country.getArmies();
+						toAttack += country.getArmies();
 					} else {
 						//this will draw the attack toward continents mostly controlled by the common threat
-						enemyTroops += country.getArmies()/2;
+						toAttack += country.getArmies()/2;
 					}
+					if (toAttack >= game.getMaxDefendDice() && (t == null || t.remaining <= 0)) {
+						if (game.getMaxDefendDice() == 2) {
+							toAttack = 3*toAttack/2;
+						} else {
+							toAttack *= 2;
+						}
+					}
+					enemyTroops += toAttack;
 				}
 				//account for the immediate neighbours
 				if (!country.getCrossContinentNeighbours().isEmpty()) {
@@ -1365,7 +1395,7 @@ public class AIDomination extends AISubmissive {
 	 * Determine if elimination is possible.  Rather than performing a more
 	 * advanced combinatorial search, this planning takes simple heuristic passes
 	 */
-	private String eliminate(List<Country> attackable, Map<Country, AttackTarget> targets, GameState gameState, boolean attack, int remaining, Set<Country> allCountriesTaken, EliminationTarget et, boolean shouldEndAttack, boolean lowProbability) {
+	protected String eliminate(List<Country> attackable, Map<Country, AttackTarget> targets, GameState gameState, boolean attack, int remaining, Set<Country> allCountriesTaken, EliminationTarget et, boolean shouldEndAttack, boolean lowProbability) {
 		AttackTarget selection = null;
 		int bestRoute = 0;
 		if (type == PLAYER_AI_EASY || (type == PLAYER_AI_AVERAGE && !et.allOrNone && r.nextInt(3) != 0) || (!et.allOrNone && !et.target && shouldEndAttack && attack)) {
