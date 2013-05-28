@@ -17,6 +17,7 @@ TODO:
 
 Desktop:
 
+    for fixed cards mode, the dialog does not show how many armies you will get when you select the cards yo trade
     in statistics add a number of cards graph, so you can see the number of other peoples cards for FlashGUI and SwingGUI
     [Donate] button on main menu needs to say something else [vote/donate for next feature]
     (Flash GUI) Although the position of the game board seems to be saved, it's size is not. Nor is the position of new game, choose game [& size] (which is inevitably too small), stats, cards, battle (select attacking dice), disposition (move armies to captured country).
@@ -54,6 +55,7 @@ Android:
     When bulding with ant, to extra jars for grasshopper are not included
     on ldpi "Start Game" button still not visable
     add "custom player" button and dialog to GameSetup screen
+    some way to del saved games when they are not needed any more
 
 Android Donate to Feature:
 
