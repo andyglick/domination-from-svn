@@ -1,1 +1,2 @@
-start javaw -jar @game.name@.jar
+cd %~dp0
+start javaw -jar @game.name@.jar %*
