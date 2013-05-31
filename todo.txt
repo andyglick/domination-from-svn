@@ -76,6 +76,9 @@ Website/General:
 
 New Game Option Ideas:
 
+    15 army limit per country
+    unlimited reinforce moves
+    defender can retreat to an adjacent country
     In army displacement phase after the battle phase, you can shift your troups how you want. But you con only shift troups between countries wich have a connection. Either they lies direct side by side or the countries have a contact over own land.
     option: If a new round starts each player who holds his own capital get's 1 or x additional armie(s) -> (fix placed at the capital) If you hold a capital of another player you get additional armies too -> (fix placed at the capital)
     Connected Empire Bonus Each player receives a extra bonus of armies equal to largest connected empire divided by 3.
