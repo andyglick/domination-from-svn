@@ -17,6 +17,7 @@ import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.KeyEvent;
@@ -136,9 +137,9 @@ public class GameActivity extends Frame implements ActionListener {
         AutoDefend.setActionCommand("autodefend");
         AutoDefend.addActionListener(this);
 
-        Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
-        helpbutton.addActionListener(this);
-        helpbutton.setActionCommand("help");
+        //Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
+        //helpbutton.addActionListener(this);
+        //helpbutton.setActionCommand("help");
         
         
         menu = new Menu();
@@ -463,7 +464,22 @@ public class GameActivity extends Frame implements ActionListener {
                         )
             );
 
-            OptionPane.showMessageDialog(null, toString(html) , resb.getProperty("swing.menu.help"), OptionPane.INFORMATION_MESSAGE);
+            Button ok = new Button( (String)DesktopPane.get("okText") );
+            ok.setActionCommand("dismissInfo");
+            Button help = new Button( resb.getProperty("game.menu.manual") );
+            help.setActionCommand("help");
+
+            OptionPane.showOptionDialog(this,
+                    toString(html),
+                    resb.getProperty("swing.menu.help"),
+                    0,
+                    OptionPane.INFORMATION_MESSAGE,
+                    null,
+                    new Button[] {ok,help},
+                    ok);
+        }
+        else if ("dismissInfo".equals(actionCommand)) {
+            // do not need to do anything
         }
         else if ("cards".equals(actionCommand)) {
             openCards();
