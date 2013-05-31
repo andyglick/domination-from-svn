@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		40
+	Android		41
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	del islands tool added to the MapEditor
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 
+	Android 41 rules added
 	Android 40 newHost command added for changing lobby servers
 		   VenezuEla spelling on luca map fix
 		   AI: minor improvements and refinement of capital planning
