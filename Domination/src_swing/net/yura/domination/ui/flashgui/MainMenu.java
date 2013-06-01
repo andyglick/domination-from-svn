@@ -6,7 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,8 +15,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.event.MouseInputListener;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -210,10 +209,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			FontRenderContext frc = g2.getFontRenderContext();
-			Font font = g2.getFont();
 			g2.setColor( Color.black );
-			TextLayout tl;
 
 			/* This adds underlines to the strings, but it doesn't look good and is too much effort for that
 			java.text.AttributedString as = new java.text.AttributedString(resBundle.getString( "mainmenu.newgame"));
@@ -222,39 +218,33 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			tl = new TextLayout( as.getIterator(), frc);
 			*/
 			
-			tl = new TextLayout( resBundle.getString( "mainmenu.newgame") , font, frc);
-			tl.draw( g2, (float) (122-tl.getBounds().getWidth()/2), (float)247 );
+                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.newgame"),'N', 122, 247 );
 
 			if (serverRunning) {
-				tl = new TextLayout( resBundle.getString( "mainmenu.stopserver") , font, frc);
-				tl.draw( g2, (float) (277-tl.getBounds().getWidth()/2), (float)247 );
-
+                                drawStringCenteredAt( g2, resBundle.getString( "mainmenu.stopserver"),'S', 277, 247 );
 				g.drawImage( Server, 340, 490, this );
-
 			}
 			else {
-				tl = new TextLayout( resBundle.getString( "mainmenu.startserver") , font, frc);
-				tl.draw( g2, (float) (277-tl.getBounds().getWidth()/2), (float)247 );
+                                drawStringCenteredAt( g2, resBundle.getString( "mainmenu.startserver"),'S', 277, 247 );
 			}
 
-			tl = new TextLayout( resBundle.getString( "mainmenu.loadgame"), font, frc);
-			tl.draw( g2, (float) (122-tl.getBounds().getWidth()/2), (float)309 );
+                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.loadgame"),'L', 122, 309 );
 
-			tl = new TextLayout( resBundle.getString( "mainmenu.help") , font, frc);
-			tl.draw( g2, (float) (277-tl.getBounds().getWidth()/2), (float)309 );
+                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.help"),'H', 277, 309 );
 
-			tl = new TextLayout( resBundle.getString( "mainmenu.joingame") , font, frc);
-			tl.draw( g2, (float) (122-tl.getBounds().getWidth()/2), (float)369 );
+                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.joingame"),'J', 122, 369 );
 
-			tl = new TextLayout( resBundle.getString( "mainmenu.about") , font, frc);
-			tl.draw( g2, (float) (277-tl.getBounds().getWidth()/2), (float)369 );
+                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.about"),'A', 277, 369 );
 
-			font = new java.awt.Font("Arial", java.awt.Font.BOLD, 24);
-
+			//font = new java.awt.Font("Arial", java.awt.Font.BOLD, 24);
 			//tl = new TextLayout( resBundle.getString( "mainmenu.quit") , font, frc);
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
-
 	}
+        
+        private void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
+            FontMetrics metrics = g.getFontMetrics(g.getFont());
+            BasicGraphicsUtils.drawString(g, text, ch, x - metrics.stringWidth(text)/2, y);
+        }
 
 
 	private int button;
