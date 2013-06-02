@@ -19,8 +19,10 @@ CURRENT VERSION:
 	Czech and Slovak languages added by Viliam Tomcanyi
 	del islands tool added to the MapEditor
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
+	done: get rid of "[X]" brakets from main menu
 
 	Android 41 rules added
+		   no square brackets in main menu
 	Android 40 newHost command added for changing lobby servers
 		   VenezuEla spelling on luca map fix
 		   AI: minor improvements and refinement of capital planning
