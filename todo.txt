@@ -2,6 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO:
 
+    in Desktop Domination online play should make a sound and flash the window if the window is not focused
     add a notify sound for when its the player's turn?
     Italian mode change "Also, if the player can have the combination of cards that correspond to territories' he actually employed, receives two armed more for each card. "
     MapStore search should search local files too!
@@ -122,7 +123,7 @@ Command Line:
 
 Help:
 
-    Help needs to be Finished, needs to have game rules
+    Help needs to be Finished
     update help files with the crads fixed thingy
     Add network commands to help in commands section and add "info" command
     Help should use css
