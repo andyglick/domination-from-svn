@@ -151,7 +151,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
                 csrc-move,cdes+move,move);
     }
 
-    public static int distanceFromCenter = MapChooser.adjustSizeToDensityFromMdpi(108);
+    public static int distanceFromCenter = XULLoader.adjustSizeToDensity(108);
 
     public static void paintMove(Graphics2D g,
             int xMiddle,int yMiddle,
@@ -183,12 +183,12 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         //tl = new TextLayout( country2.getName() , font, frc); // Display
         //tl.draw( g, (float) (350-(tl.getBounds().getWidth()/2)), (float)40 );
 
-        int size = Math.max(fh, MapChooser.adjustSizeToDensityFromMdpi(20) );
+        int size = Math.max(fh, XULLoader.adjustSizeToDensity(20) );
         PicturePanel.drawArmy(g, color1, noa1i, xMiddle-distanceFromCenter, yMiddle, size, capital1);
         PicturePanel.drawArmy(g, color2, noa2i, xMiddle+distanceFromCenter, yMiddle, size, capital2);
 
-        int xOffset = MapChooser.adjustSizeToDensityFromMdpi(70);
-        int yOffset = MapChooser.adjustSizeToDensityFromMdpi(20);
+        int xOffset = XULLoader.adjustSizeToDensity(70);
+        int yOffset = XULLoader.adjustSizeToDensity(20);
         int xCoords[] = {xMiddle-xOffset, xMiddle, xMiddle, xMiddle+xOffset, xMiddle, xMiddle, xMiddle-xOffset};
         int yCoords[] = {yMiddle-yOffset,  yMiddle-yOffset,  yMiddle-yOffset*2, yMiddle, yMiddle+yOffset*2,  yMiddle+yOffset, yMiddle+yOffset};
         DirectGraphics g2 = DirectUtils.getDirectGraphics(g.getGraphics());
@@ -211,8 +211,8 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         int maxW = distanceFromCenter * 2;
         int maxH = distanceFromCenter;
         
-        int w = MapChooser.adjustSizeToDensityFromMdpi( img.getWidth() );
-        int h = MapChooser.adjustSizeToDensityFromMdpi( img.getHeight() );
+        int w = XULLoader.adjustSizeToDensity( img.getWidth() );
+        int h = XULLoader.adjustSizeToDensity( img.getHeight() );
         
         if (w > maxW || h > maxH) {
             double scale = Math.min(maxW/(double)w,maxH/(double)h);
@@ -291,7 +291,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
         public DialogLayout(int imageAreaHeight) {
             this.imageAreaHeight = imageAreaHeight;
-            gap = MapChooser.adjustSizeToDensityFromMdpi(7);
+            gap = XULLoader.adjustSizeToDensity(7);
         }
         
         

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.TimeZone;
 import javax.microedition.lcdui.Graphics;
 import net.yura.domination.engine.ColorUtil;
-import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.model.Game;
 import net.yura.lobby.util.TimeoutUtil;
 import net.yura.mobile.gui.Graphics2D;
@@ -13,6 +12,7 @@ import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.TextArea;
+import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.Style;
 import net.yura.swingme.core.AnalogClock;
 
@@ -27,9 +27,9 @@ public class GameRenderer extends DefaultListCellRenderer {
     public GameRenderer(MiniLobbyClient l) {
         lobby = l;
         setName("ListRendererCollapsed"); // get rid of any padding
-        sicon = new ScaledIcon( MapChooser.adjustSizeToDensityFromMdpi(75),MapChooser.adjustSizeToDensityFromMdpi(47) );
+        sicon = new ScaledIcon( XULLoader.adjustSizeToDensity(75),XULLoader.adjustSizeToDensity(47) );
         //int size = (int) (getFont().getHeight()*1.5);
-        int size = MapChooser.adjustSizeToDensityFromMdpi(25);
+        int size = XULLoader.adjustSizeToDensity(25);
         clock.setSize( size, size );
         clock.setBackground(0x00FFFFFF);
     }
