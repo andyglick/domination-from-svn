@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapRenderer;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
@@ -68,14 +69,7 @@ public class BattleDialog extends Frame implements ActionListener {
     }
     
     private int getImageAreaHeight() {
-        
-        // mdpi
-        // 90 for countries
-        // 90 for dice
-        // full height 180
-        // 180 * 0.75 = 135
-        
-        return XULLoader.adjustSizeToDensity(135);
+        return MapChooser.adjustSizeToDensityFromMdpi(180);
     }
 
     @Override
@@ -261,8 +255,8 @@ public class BattleDialog extends Frame implements ActionListener {
         int ax=diceXs[0],dx=diceXs[1];
 
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
-        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        int y2 = y1 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
+        int y3 = y2 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
 
 
 
@@ -513,8 +507,8 @@ public class BattleDialog extends Frame implements ActionListener {
         int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/4 + getContentPane().getY();
 
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
-        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(1);
+        int y2 = y1 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
+        int y3 = y2 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
         // </copy-pasta>
 
 

@@ -13,6 +13,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
@@ -238,7 +239,7 @@ public class GameActivity extends Frame implements ActionListener {
         
         Panel bottom = new Panel(new BorderLayout());
         
-        int g = XULLoader.adjustSizeToDensity(1);
+        int g = MapChooser.adjustSizeToDensityFromMdpi(2);
         Panel gamepanel2 = new Panel( new GridBagLayout(3, g, g, g, g, g) );
         gamepanel2.setName("TransPanel");
 
@@ -274,7 +275,7 @@ public class GameActivity extends Frame implements ActionListener {
         public void paintComponent(Graphics2D g) {
             int[] colors = myrisk.getPlayerColors();
             
-            int w = XULLoader.adjustSizeToDensity(20);
+            int w = MapChooser.adjustSizeToDensityFromMdpi(28);
             
             int x=0;
             for (int c=0; c < colors.length ; c++) {
@@ -288,7 +289,7 @@ public class GameActivity extends Frame implements ActionListener {
         @Override
         protected void workoutMinimumSize() {
             width = 10;
-            height = XULLoader.adjustSizeToDensity(2);
+            height = MapChooser.adjustSizeToDensityFromMdpi(3);
         }
     }
     

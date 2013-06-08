@@ -155,7 +155,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
         MapRenderer r = new MapRenderer(this);
         list.setCellRenderer( r );
-        list.setFixedCellHeight( Math.max( XULLoader.adjustSizeToDensity(75) , r.getFixedCellHeight() ) ); // mdpi = 100
+        list.setFixedCellHeight( Math.max( adjustSizeToDensityFromMdpi(100) , r.getFixedCellHeight() ) );
         list.setFixedCellWidth(10); // will streach
 
         client = new MapServerClient(this);

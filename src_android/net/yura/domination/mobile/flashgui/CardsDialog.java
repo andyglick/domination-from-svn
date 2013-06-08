@@ -205,7 +205,7 @@ public class CardsDialog extends Frame implements ActionListener {
 		public CardPanel (Card c) {
 			card=c;
 
-			int cardWidth=XULLoader.adjustSizeToDensity(50);
+			int cardWidth=MapChooser.adjustSizeToDensityFromMdpi(68);
 			//int cardHeight=100;
 
                         // height will be set by the scrollarea height in the XML file
@@ -233,16 +233,16 @@ public class CardsDialog extends Frame implements ActionListener {
 				//String text = card.getCountry().getName(); // Display
 
 				Image i = pp.getCountryImage( card.getCountry().getColor() );
-                                
+
                                 int ownerColor=0;
-                                
+
                                 ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
                                 m.preConcat(PicturePanel.gray);
                                 if ( isOwnedCurrentPlayer( this ) ) {
                                     ownerColor = card.getCountry().getOwner().getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
-                                
+
                                 if (i!=null) { // i can be null if we had a outofmem in the picturepanel
                                     g.getGraphics().setColorMarix(m);
                                     g.drawScaledImage(i, (getWidth()-imgSize)/2, getHeight()/2 - imgSize, imgSize, imgSize);
@@ -315,6 +315,9 @@ public class CardsDialog extends Frame implements ActionListener {
                             }
                         }
                         extraArmiesCard = newSelected;
+                        if (extraArmiesCard!=null) {
+                            extraArmiesCard.repaint();
+                        }
                     }
                     else if (isSelected() && extraArmiesCard==null && isOwnedCurrentPlayer(this) ) {
                         extraArmiesCard = this;
