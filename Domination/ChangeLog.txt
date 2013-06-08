@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		41
+	Android		42
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -21,6 +21,7 @@ CURRENT VERSION:
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 	done: get rid of "[X]" brakets from main menu
 
+	Android 42 images overlapping fix for samsung galaxy s4
 	Android 41 rules added
 		   no square brackets in main menu
 	Android 40 newHost command added for changing lobby servers
