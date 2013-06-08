@@ -205,7 +205,7 @@ public class CardsDialog extends Frame implements ActionListener {
 		public CardPanel (Card c) {
 			card=c;
 
-			int cardWidth=MapChooser.adjustSizeToDensityFromMdpi(68);
+			int cardWidth=XULLoader.adjustSizeToDensity(68);
 			//int cardHeight=100;
 
                         // height will be set by the scrollarea height in the XML file
@@ -226,7 +226,7 @@ public class CardsDialog extends Frame implements ActionListener {
                         //g2.setColor( 0xFF000000 );
                         //g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
                     
-                        int imgSize = MapChooser.adjustSizeToDensityFromMdpi(50);
+                        int imgSize = XULLoader.adjustSizeToDensity(50);
                         
 			if (!(card.getName().equals(Card.WILDCARD))) {
 

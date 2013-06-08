@@ -69,7 +69,7 @@ public class BattleDialog extends Frame implements ActionListener {
     }
     
     private int getImageAreaHeight() {
-        return MapChooser.adjustSizeToDensityFromMdpi(180);
+        return XULLoader.adjustSizeToDensity(180);
     }
 
     @Override
@@ -255,8 +255,8 @@ public class BattleDialog extends Frame implements ActionListener {
         int ax=diceXs[0],dx=diceXs[1];
 
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        int y2 = y1 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
-        int y3 = y2 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
+        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(2);
+        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(2);
 
 
 
@@ -507,8 +507,8 @@ public class BattleDialog extends Frame implements ActionListener {
         int yOffset = (getContentPane().getHeight()-heightOfComponents)/2 + imageAreaHeight/4 + getContentPane().getY();
 
         int y1 = yOffset + imageAreaHeight/4; // top of dice
-        int y2 = y1 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
-        int y3 = y2 + red_dice.getHeight() + MapChooser.adjustSizeToDensityFromMdpi(2);
+        int y2 = y1 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(2);
+        int y3 = y2 + red_dice.getHeight() + XULLoader.adjustSizeToDensity(2);
         // </copy-pasta>
 
 

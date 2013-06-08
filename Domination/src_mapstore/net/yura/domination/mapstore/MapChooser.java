@@ -60,7 +60,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
 
     // these are both weak caches, they only keep a object if someone else holds it or a key
-    private static ImageManager iconCache = new ImageManager( adjustSizeToDensityFromMdpi(150),adjustSizeToDensityFromMdpi(94) ); // 150x94
+    private static ImageManager iconCache = new ImageManager( XULLoader.adjustSizeToDensity(150),XULLoader.adjustSizeToDensity(94) ); // 150x94
     private static java.util.Map mapCache = new WeakHashMap();
     private static Cache repo;
     static {
@@ -155,7 +155,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
         MapRenderer r = new MapRenderer(this);
         list.setCellRenderer( r );
-        list.setFixedCellHeight( Math.max( adjustSizeToDensityFromMdpi(100) , r.getFixedCellHeight() ) );
+        list.setFixedCellHeight( Math.max( XULLoader.adjustSizeToDensity(100) , r.getFixedCellHeight() ) );
         list.setFixedCellWidth(10); // will streach
 
         client = new MapServerClient(this);
@@ -300,22 +300,6 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (repo!=null && !repo.containsKey( url ) ) {
             repo.put( url , data );
         }
-    }
-    
-
-    public static int adjustSizeToDensityFromMdpi(int size) {
-	String density = System.getProperty("display.density");
-	if (density!=null) {
-	    return (int)(Float.parseFloat(density) * size + 0.5F);
-	}
-	return size;
-//        // HACK to avoid double conversion
-//        String dpi = XULLoader.getDPI();
-//        if (dpi == null || "mdpi".equals(dpi)) {
-//            return size;
-//        }
-//        // otherwise we can get this happen: 150 mdpi -> 113 ldpi -> 151 mdpi
-//        return XULLoader.adjustSizeToDensity( (int)(size * 0.75 +0.5) );
     }
 
     public static Map createMap(String file) {
