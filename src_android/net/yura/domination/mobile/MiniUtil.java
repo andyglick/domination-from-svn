@@ -78,7 +78,7 @@ public class MiniUtil {
                 "<p>"+author+"</p>"+
                 "<p>"+copyright+"</p>"+
                // "<p>"+ resb.getString("about.comments") +"</p>"+
-                "<p>DPI: "+System.getProperty("display.dpi")+" Size: "+System.getProperty("display.size")+"</p>"+
+                "<p>DPI: "+System.getProperty("display.dpi")+" Density: "+System.getProperty("display.density")+" Size: "+System.getProperty("display.size")+"</p>"+
                 "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
                 "<p>"+BugUIInfo.getLookAndFeel()+"</p>"+
                 "</html>";
