@@ -993,6 +993,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 }
             }
 
+            List<List<Integer>> allIslands = new ArrayList();
             for (List<Integer> positions:colorToPositions.values()) {
                 List<Integer> largestIsland=null;
                 List<List<Integer>> islands = new ArrayList();
@@ -1024,13 +1025,23 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     }
                 }
                 islands.remove(largestIsland);
-                for (List<Integer> island: islands) for (int pos: island) {
-                    pixels[pos] = 0xFFFFFFFF;
+                allIslands.addAll(islands);
+            }
+            System.out.println("finished! took "+(System.currentTimeMillis()-startTime));
+
+            if (allIslands.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "no islands found");
+            }
+            else {
+                int result = JOptionPane.showConfirmDialog(this, allIslands.size()+" islands found, are you sure you want to delete them from the map?", "Del Islands?", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    for (List<Integer> island: allIslands) for (int pos: island) {
+                        pixels[pos] = 0xFFFFFFFF;
+                    }
+                    map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
+                    repaint();                
                 }
             }
-System.out.println("finished! took "+(System.currentTimeMillis()-startTime));
-            map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
-            repaint();
         }
 
 	static BufferedImage makeRGBImage(BufferedImage INipic) {
