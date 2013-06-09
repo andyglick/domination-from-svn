@@ -19,6 +19,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
@@ -32,6 +34,7 @@ public class RiskUtil {
 	public static final String GAME_NAME;
 //	private static final String DEFAULT_MAP;
 
+        private static final Logger logger = Logger.getLogger(RiskUtil.class.getName());
 	public static RiskIO streamOpener;
 
 	private final static Properties settings;
@@ -136,7 +139,7 @@ public class RiskUtil {
         }
 
         public static void printStackTrace(Throwable ex) {
-            java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
+            logger.log(Level.WARNING, null, ex);
         }
 
         public static void donate() throws Exception {
@@ -263,7 +266,7 @@ public class RiskUtil {
                     prefs.flush();
                 }
                 catch(Exception ex) {
-                    RiskUtil.printStackTrace(ex);
+                    logger.log(Level.INFO, "can not flush prefs", ex);
                 }
 
             }
