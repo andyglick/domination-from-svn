@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import com.google.android.gcm.GCMRegistrar;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 public class GCMActivity extends Activity {
@@ -17,8 +18,11 @@ public class GCMActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	try {
-            setup();
-            //unregister();
+	    // TODO we do not support push on BB yet as they have not given us a push token
+	    if (!"BlackBerry".equals(Build.BRAND)) {
+                setup();
+                //unregister();
+	    }
 	}
 	catch (UnsupportedOperationException th) {
 	    logger.log(Level.INFO, "gmc fail", th);
