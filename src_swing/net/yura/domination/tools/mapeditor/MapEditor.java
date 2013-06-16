@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -1033,7 +1034,28 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 JOptionPane.showMessageDialog(this, "no islands found");
             }
             else {
-                int result = JOptionPane.showConfirmDialog(this, allIslands.size()+" islands found, are you sure you want to delete them from the map?", "Del Islands?", JOptionPane.YES_NO_OPTION);
+                Map<Integer,Integer> counts = new TreeMap();
+                for (List<Integer> island: allIslands) {
+                    int islandSize = island.size();
+                    if (counts.get(islandSize)==null) {
+                        counts.put(islandSize, 1);
+                    }
+                    else {
+                        counts.put(islandSize, counts.get(islandSize)+1);
+                    }
+                }
+                StringBuilder table = new StringBuilder();
+                table.append("<table border=\"1\"><tr><th>size</th><th>count</th></tr>");
+                for (Integer islandSize: counts.keySet()) {
+                    table.append("<tr><td>");
+                    table.append( islandSize );
+                    table.append("</td><td>");
+                    table.append( counts.get(islandSize) );
+                    table.append("</td></tr>");
+                }
+                table.append("</table>");
+
+                int result = JOptionPane.showConfirmDialog(this, "<html>"+allIslands.size()+" islands found:"+table+"are you sure you want to delete them from the map?", "Del Islands?", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     for (List<Integer> island: allIslands) for (int pos: island) {
                         pixels[pos] = 0xFFFFFFFF;
