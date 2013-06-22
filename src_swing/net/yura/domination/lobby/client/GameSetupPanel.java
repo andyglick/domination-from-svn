@@ -339,6 +339,9 @@ aialabel.setVisible(false);
                 bottompanel.add(new JLabel(resb.getString("newgame.label.timeout"))); // "Turn Timeout:"
                 int hour = 60*60;
                 Timeout[] timeouts = new Timeout[] {
+                    new Timeout("10sec",10),
+                    new Timeout("20sec",20),
+                    new Timeout("30sec",30),
                     new Timeout("1min",60),
                     new Timeout("5min",60*5),
                     new Timeout("10min",60*10),
@@ -351,6 +354,7 @@ aialabel.setVisible(false);
                     new Timeout("24hours",hour*24)
                 };
 		timeout = new JComboBox(timeouts);
+                timeout.setSelectedIndex(3 /* 1 minute */);
 		bottompanel.add(timeout);
                 
                 bottompanel.setBounds(150, 525, 400 , 80 ); // should be 528
