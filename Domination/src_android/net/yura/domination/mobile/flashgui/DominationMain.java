@@ -68,11 +68,28 @@ public class DominationMain extends Midlet {
             SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" "+product+" "+version , TranslationBundle.getBundle().getLocale().toString() );
 
             BugSubmitter.setApplicationInfoProvider( new ApplicationInfoProvider() {
+                @Override
                 public void addInfoForSubmit(Map map) {
                     RiskGame game = risk.getGame();
                     if (game!=null) {
                         map.put("gameLog", new LogList( game.getCommands() ));
                     }
+                }
+                @Override
+                public boolean ignoreError(LogRecord record) {
+                    String className = record.getSourceClassName();
+                    String methodName = record.getSourceMethodName();
+                    if ("java.net.InetAddress".equals(className) && "lookupHostByName".equals(methodName)) {
+                        return true;
+                    }
+                    if ("java.net.InetAddress".equals(className) && "getByName".equals(methodName)) {
+                        return true;
+                    }
+                    if ("java.net.AddressCache".equals(className) && "customTtl".equals(methodName)) {
+                        return true;
+                    }
+                    
+                    return false;
                 }
             } );
 
