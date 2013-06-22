@@ -221,7 +221,7 @@ public class RiskUtil {
                     prefs.flush();
                 }
                 catch(Exception ex) {
-                    RiskUtil.printStackTrace(ex);
+                    logger.log(Level.INFO, "can not flush prefs", ex);
                 }
 
             }
