@@ -52,15 +52,22 @@ public class MapRenderer extends DefaultListCellRenderer {
     
     public static Sprite getSprite(String name,int cols,int rows) {
         Image img = Midlet.createImage(name);
-        int w = img.getWidth()/cols;
-        int h = img.getHeight()/rows;
-        if ( img.getWidth() % w != 0 || img.getHeight() % h != 0) {
-            img = Image.createImage(img, 0, 0, w*cols, h*rows, 0);
+        try {
+            int w = img.getWidth()/cols;
+            int h = img.getHeight()/rows;
+            if ( img.getWidth() % w != 0 || img.getHeight() % h != 0) {
+                img = Image.createImage(img, 0, 0, w*cols, h*rows, 0);
+            }
+            return new Sprite(img, w, h); // 29x29
         }
-        return new Sprite(img, w, h); // 29x29
+        catch(RuntimeException ex) {
+            throw new RuntimeException("error creating sprite "+name+" "+img+" "+
+                    (img!=null?"("+img.getWidth()+"x"+img.getHeight()+") ":"")+
+                    cols+"x"+rows,ex);
+        }
     }
-    
-    
+
+
     public void animate() {
         bar.animate();
 
