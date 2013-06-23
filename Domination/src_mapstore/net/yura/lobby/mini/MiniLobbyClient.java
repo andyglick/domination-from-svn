@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import javax.microedition.lcdui.Display;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.mapstore.MapChooser;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.client.LobbyClient;
 import net.yura.lobby.client.LobbyCom;
@@ -19,13 +18,16 @@ import net.yura.lobby.model.Game;
 import net.yura.lobby.model.GameType;
 import net.yura.lobby.model.Player;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.ComboBox;
+import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
+import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.TextField;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
@@ -39,7 +41,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private static final String LOBBY_SERVER = "lobby.yura.net";
     //private static final String LOBBY_SERVER = "192.168.0.2";
-    
+
     XULLoader loader;
     List list;
 
@@ -49,28 +51,28 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     String myusername;
     GameType theGameType;
     int openGameId = -1;
-    
+
     private Properties resBundle;
-    
+
     public MiniLobbyClient(MiniLobbyGame lobbyGame) {
         game = lobbyGame;
         game.addLobbyGameMoveListener(this);
 
         resBundle = game.getProperties();
-        
+
         try {
             loader = XULLoader.load( Midlet.getResourceAsStream("/ms_lobby.xml") , this, resBundle);
         }
         catch(Exception ex) {
             throw new RuntimeException(ex);
         }
-        
+
         list = (List)loader.find("ResultList");
         GameRenderer r = new GameRenderer(this);
         list.setCellRenderer( r );
         list.setFixedCellHeight( Math.max( XULLoader.adjustSizeToDensity(50), r.getFixedCellHeight() ) );
         list.setFixedCellWidth(10); // will streach
-        
+
         ComboBox box = (ComboBox)loader.find("listView");
         ViewChooser viewChooser = new ViewChooser( (Option[])box.getItems().toArray(new Option[box.getItemCount()]) );
         loader.swapComponent("listView", viewChooser);
@@ -95,42 +97,42 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         button.setMnemonic(0);
         button.setVisible(false);
     }
-    
+
     ActionListener closeListener;
     public void addCloseListener(ActionListener al) {
         closeListener = al;
     }
-    
+
     public void destroy() {
         mycom.disconnect();
     }
-    
+
     public static String getMyUUID() {
-        
+
         java.util.Properties prop = new java.util.Properties();
-        
+
         File lobbySettingsFile = new File( System.getProperty("user.home"),".lobby" );
-        
+
         try {
             prop.load( new FileInputStream(lobbySettingsFile) );
         }
         catch (Exception ex) { }
-        
+
         String uuid = prop.getProperty("uuid");
         if (uuid!=null) {
             return uuid;
         }
         uuid = UUID.randomUUID().toString();
         prop.setProperty("uuid", uuid);
-        
+
         try {
             prop.store(new FileOutputStream(lobbySettingsFile), "yura.net Lobby");
         }
         catch (Exception ex) { }
-        
+
         return uuid;
     }
-    
+
     public Panel getRoot() {
         return ((Panel)loader.getRoot());
     }
@@ -139,7 +141,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void actionPerformed(String actionCommand) {
-        
+
         if ("listSelect".equals(actionCommand)) {
             final Game game = (Game)list.getSelectedValue();
             if (game!=null) {
@@ -211,7 +213,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             }
         }
         else if ("filter".equals(actionCommand)) {
-            filter();
+            filter(false);
         }
         else if ("login".equals(actionCommand)) {
             // TODO
@@ -227,31 +229,31 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void sendGameMessage(String messagefromgui) {
         mycom.sendGameMessage(openGameId,messagefromgui);
     }
-    
-    
+
+
     public void closeGame() {
         mycom.closeGame(openGameId);
         openGameId = -1;
     }
-    
+
     public void createNewGame(Game game) {
         game.setType(theGameType); // we can only make a game of this type
         mycom.createNewGame(game);
     }
-    
+
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWM LobbyClient MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
-    
+
 
     public ClassLoader getClassLoader(GameType gameType) {
         return getClass().getClassLoader();
     }
 
     public void connected() {
-	
+
 	Midlet.openURL("nativeNoResult://net.yura.domination.android.GCMActivity");
-	
+
         mycom.getGameTypes();
     }
 
@@ -271,9 +273,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         OptionPane.showMessageDialog(null, error, "Error", OptionPane.ERROR_MESSAGE);
     }
 
-    
-    
-    
+
+
+
 
     public void setUsername(String name, boolean guest) {
         myusername = name;
@@ -284,13 +286,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void addGameType(java.util.List gametypes) {
-        
+
         for (int c=0;c<gametypes.size();c++) {
             GameType gametype = (GameType)gametypes.get(c);
-        
+
             if (game.isMyGameType(gametype) ) {
                 theGameType = gametype;
-                
+
                 mycom.getGames( gametype );
             }
             else {
@@ -301,21 +303,21 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private java.util.List games = Collections.synchronizedList( new ArrayList() );
     public void addOrUpdateGame(Game game) {
-        int index = games.indexOf(game);
+        int index = Collections.binarySearch(games, game);
         if (index>=0) {
             games.set(index,game);
-            
+
             // if this game is not open and its our turn
             if (whoAmI().equals(game.getWhosTurn())) {
                 notify( game.getType().getName(), "It is your go: "+game.getName(), openGameId==game.getId() ); // TODO copy/paste same code as on server
             }
         }
         else {
-            games.add(game);
+            games.add(-index -1, game);
         }
-        filter();
+        filter(true);
     }
-    
+
     public boolean amAPlayer() {
         if (openGameId ==-1) {
             return false;
@@ -328,7 +330,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
         return false;
     }
-    
+
     public void resign() {
         mycom.leaveGame( openGameId );
     }
@@ -344,15 +346,46 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             }
         }
         if (found!=null) {
-            list.removeElement(found);
-            getRoot().revalidate();
-            getRoot().repaint();
+//            list.removeElement(found);
+//            getRoot().revalidate();
+//            getRoot().repaint();
+            filter(true);
         }
     }
 
-    void filter() {
+    void filter(boolean update) {
         ViewChooser box = (ViewChooser)loader.find("listView");
-        list.setListData( RiskUtil.asVector( filter(games, ((Option)box.getSelectedItem()).getKey() ) ) );
+        java.util.List newGameList = filter(games, ((Option)box.getSelectedItem()).getKey() );
+
+        Object selected = list.getSelectedValue();
+        int visIndex = list.getFirstVisibleIndex();
+        Object visItem = (visIndex>=0&&visIndex<list.getSize())?list.getElementAt(visIndex):null;
+
+        list.setListData( RiskUtil.asVector( newGameList ) );
+
+        if (update) {
+            if (selected!=null) {
+                int newIndex = Collections.binarySearch(newGameList, selected);
+                if (newIndex>=0) {
+                    list.setSelectedIndex( newIndex );
+                }
+            }
+            if (visItem!=null) {
+                Component view = ((ScrollPane)DesktopPane.getAncestorOfClass(ScrollPane.class, list)).getView();
+                int newIndex = Collections.binarySearch(newGameList, visItem);
+                if (newIndex > visIndex) {
+                    view.setLocation(view.getX(), view.getY()-list.getFixedCellHeight());
+                }
+                else if (newIndex < visIndex) {
+                    view.setLocation(view.getX(), view.getY()+list.getFixedCellHeight());
+                }
+            }
+        }
+        else {
+            list.setSelectedIndex(-1);
+            if (list.getSize()>0) list.ensureIndexIsVisible(0);
+        }
+
         getRoot().revalidate();
         getRoot().repaint();
     }
@@ -464,12 +497,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     /**
-     * @see net.yura.domination.mobile.flashgui.GameActivity#toast(java.lang.String) 
+     * @see net.yura.domination.mobile.flashgui.GameActivity#toast(java.lang.String)
      */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
             Midlet.openURL("toast://show?message="+Url.encode(message));
         }
     }
-    
+
 }
