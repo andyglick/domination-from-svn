@@ -52,7 +52,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     //public static final String SERVER_URL="http://domination.sf.net/maps2/maps/";
     //public static final String MAP_PAGE=SERVER_URL+"";
     //public static final String CATEGORIES_PAGE=SERVER_URL+"maps.xml";
-    
+
     // theos server
     public static final String SERVER_URL="http://maps.yura.net/";
     public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( Risk.RISK_VERSION );
@@ -71,7 +71,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             System.err.println("[MapChooser] no cache: "+ex);
         }
     }
-    
+
     private Properties resBundle = CoreUtil.wrap(TranslationBundle.getBundle());
 
     private XULLoader loader;
@@ -96,7 +96,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             RiskUtil.printStackTrace(ex);
         }
     }
-    
+
     public MapChooser(ActionListener al,java.util.List mapfiles,boolean mapStore) {
         this.al = al;
         this.mapfiles = mapfiles;
@@ -109,11 +109,11 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
 
         Panel TabBar = (Panel)loader.find("TabBar");
-        
+
         if (TabBar!=null) {
-        
+
             if (mapStore) {
-            
+
                 java.util.List buttons = TabBar.getComponents();
 
                 Icon on,off;
@@ -164,13 +164,13 @@ public class MapChooser implements ActionListener,MapServerListener {
         activateGroup("MapView");
 
         MapUpdateService.getInstance().addObserver( (BadgeButton)loader.find("updateButton") );
-        
+
     }
 
     public void destroy() {
-        
+
         MapUpdateService.getInstance().deleteObserver( (BadgeButton)loader.find("updateButton") );
-        
+
         client.kill();
         client=null;
 
@@ -179,7 +179,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     public static Icon getLocalIconForMap(Map map) {
         return getIconForMapOrCategory(map, null, map.getPreviewUrl(), null);
     }
-    
+
     /**
      * @param key can be a Map or a Category
      */
@@ -230,7 +230,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                         try {
                             System.out.println("[MapChooser] ### Going to re-encode img: "+url);
                             InputStream min = RiskUtil.openMapStream(url);
-                            Image img = MapChooser.createImage(min);                    
+                            Image img = MapChooser.createImage(min);
                             img = ImageUtil.scaleImage(img, 150, 94);
                             ByteArrayOutputStream out = new ByteArrayOutputStream();
                             ImageUtil.saveImage(img, out);
@@ -254,15 +254,18 @@ public class MapChooser implements ActionListener,MapServerListener {
                     gotImg(key, in);
                 }
             }
-            
+
         }
         return aicon;
     }
-    
+
     private static void gotImg(Object obj,InputStream in) {
         try {
             Image img = MapChooser.createImage(in);
             iconCache.gotImg(obj, img);
+        }
+        catch (OutOfMemoryError err) {
+            Logger.info(err); // nothing we can do here
         }
         catch (Exception ex) {
             throw new RuntimeException("failed to decode img "+obj, ex);
@@ -295,7 +298,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                 list.repaint();
             }
     }
-    
+
     private static void cache(String url,byte[] data) {
         if (repo!=null && !repo.containsKey( url ) ) {
             repo.put( url , data );
@@ -303,7 +306,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     public static Map createMap(String file) {
-        
+
         WeakReference wr = (WeakReference)mapCache.get(file);
         if (wr!=null) {
             Map map = (Map)wr.get();
@@ -344,18 +347,18 @@ public class MapChooser implements ActionListener,MapServerListener {
         map.setPreviewUrl( prv );
 
         map.setVersion( (String)info.get("ver") );
-                
+
         mapCache.put(file, new WeakReference(map));
-                
+
         return map;
-        
+
     }
-    
+
     public static String getFileUID(String mapUrl) {
             int i = mapUrl.lastIndexOf('/');
             return (i>=0)?mapUrl.substring(i+1):mapUrl;
     }
-    
+
     void makeRequestForMap(String a,String b) {
         client.makeRequestXML( MAP_PAGE , a, b);
     }
@@ -370,7 +373,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                 // we create a Map object for every localy stored map
                 Map map = createMap(file);
-                
+
                 riskmaps.add( map );
             }
 
@@ -382,7 +385,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                     return String.CASE_INSENSITIVE_ORDER.compare(m1.getName(), m2.getName());
                 }
             });
-            
+
             setListData( null, riskmaps );
 
         }
@@ -406,7 +409,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             mainCatList(actionCommand);
 
             java.util.List mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
-            
+
             Component updateAll = loader.find("updateAll");
             if (mapsToUpdate.isEmpty()) {
                 updateAll.setVisible(false);
@@ -488,7 +491,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             System.out.println("Unknown command "+actionCommand);
         }
     }
-    
+
     public void click(Map map) {
         String fileUID = getFileUID( map.getMapUrl() );
 
@@ -545,28 +548,28 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
 
     }
-    
+
     public static boolean fileExists(String fileUID) {
-        
+
         java.io.InputStream file=null;
         try {
             file = RiskUtil.openMapStream(fileUID);
         }
         catch (Exception ex) { } // not found?
         finally{ net.yura.mobile.io.FileUtil.close(file); }
-        
+
         return (file!=null); // we already have this file
     }
-    
+
     private void chosenMap(String mapName) {
-        
+
         selectedMap = mapName;
         al.actionPerformed(null);
 
     }
-    
+
     public static String getURL(String context,String mapUrl) {
-        
+
         if (mapUrl.indexOf(':')<0 && context!=null) { // we do not have a full URL, so we pre-pend the context
             if (mapUrl.startsWith("/")) {
                 mapUrl = context.substring(0, context.indexOf('/', "http://.".length()) ) + mapUrl;
@@ -575,7 +578,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                 mapUrl = context + mapUrl;
             }
         }
-        
+
         return mapUrl;
     }
 
@@ -628,7 +631,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
 
     }
-    
+
     public void onXMLError(String error) {
         show("Error");
     }
@@ -640,7 +643,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         // TODO make this better
         OptionPane.showMessageDialog(null, error , "Error!", OptionPane.ERROR_MESSAGE);
     }
-    
+
     public void downloadFinished(String download) {
 
         if ( !this.mapfiles.contains( download ) ) {
@@ -667,7 +670,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
         return url;
     }
-    
+
     private void setListData(String url,java.util.List items) {
         String context = getContext(url);
         ((MapRenderer)list.getCellRenderer()).setContext(context);
@@ -687,7 +690,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (list.getSize()>0) {
             list.ensureIndexIsVisible(0);
         }
-        
+
         list.setVisible( "ResultList".equals(name) );
         noMatches.setVisible( "NoMatches".equals(name) );
         allUpToDate.setVisible( "AllUpToDate".equals(name) );
@@ -704,11 +707,11 @@ public class MapChooser implements ActionListener,MapServerListener {
         actionPerformed(mincat);
 
     }
-    
+
     public boolean willDownload(Map map) {
-        
+
         String mapUID = MapChooser.getFileUID( map.getMapUrl() );
-        
+
         // if we dont have a local file with the same uid
         if ( !mapfiles.contains( mapUID ) ) {
             return true;
@@ -718,7 +721,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     /**
-     * @see net.yura.domination.engine.RiskUIUtil#read(java.io.InputStream) 
+     * @see net.yura.domination.engine.RiskUIUtil#read(java.io.InputStream)
      */
     public static Image createImage(InputStream in) throws IOException {
         try {
