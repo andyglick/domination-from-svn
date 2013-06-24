@@ -293,6 +293,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             if (game.isMyGameType(gametype) ) {
                 theGameType = gametype;
 
+                // we are making a new request for all games, so first we clear the current list
+                games.clear();
+                filter(false);
+
                 mycom.getGames( gametype );
             }
             else {
@@ -337,6 +341,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void removeGame(int gameid) {
         Game found=null;
+        // TODO: could be changed to use binarySearch
         for (int c=0;c<games.size();c++) {
             Game game = (Game)games.get(c);
             if ( gameid == game.getId() ) {
@@ -349,6 +354,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 //            list.removeElement(found);
 //            getRoot().revalidate();
 //            getRoot().repaint();
+            // TODO: we create a whole new Vector just to remove 1 element!
             filter(true);
         }
     }
@@ -371,14 +377,16 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 }
             }
             if (visItem!=null) {
+                // as we know this is a update, it means 1 item has either been added or 1 item has been removed
                 Component view = ((ScrollPane)DesktopPane.getAncestorOfClass(ScrollPane.class, list)).getView();
                 int newIndex = Collections.binarySearch(newGameList, visItem);
-                if (newIndex > visIndex) {
+                if (newIndex > visIndex) { // item added to top
                     view.setLocation(view.getX(), view.getY()-list.getFixedCellHeight());
                 }
-                else if (newIndex < visIndex) {
+                else if (newIndex < visIndex) { // item removed from top
                     view.setLocation(view.getX(), view.getY()+list.getFixedCellHeight());
                 }
+                // we ignore any change that happens bellow out first visible item
             }
         }
         else {
