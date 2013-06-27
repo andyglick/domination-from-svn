@@ -20,6 +20,7 @@ CURRENT VERSION:
 	del islands tool added to the MapEditor
 	can load a savegame file by double clicking on it or "Domination.jar c:\test.save"
 	done: get rid of "[X]" brakets from main menu
+	strange nativenoresult popups in windows 7 fixed
 
 	Android 43 10,20,30sec online game timeouts added
 	Android 42 images overlapping fix for samsung galaxy s4
