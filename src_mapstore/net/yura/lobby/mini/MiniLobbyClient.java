@@ -252,7 +252,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void connected() {
 
-	Midlet.openURL("nativeNoResult://net.yura.domination.android.GCMActivity");
+        // GCM push only works on android
+        if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
+            Midlet.openURL("nativeNoResult://net.yura.domination.android.GCMActivity");
+        }
 
         mycom.getGameTypes();
     }
@@ -509,7 +512,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
      */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
-            Midlet.openURL("toast://show?message="+Url.encode(message));
+            if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
+                Midlet.openURL("toast://show?message="+Url.encode(message));
+            }
+            else {
+                DesktopPane.getDesktopPane().toast(message);
+            }
         }
     }
 
