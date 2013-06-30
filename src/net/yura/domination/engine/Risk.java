@@ -2428,8 +2428,10 @@ RiskUtil.printStackTrace(e);
 
                 // the game is saved
                 try {
-                    Undo.reset();
-                    game.saveGame(Undo);
+                    synchronized (Undo) {
+                        Undo.reset();
+                        game.saveGame(Undo);
+                    }
                 }
                 catch (OutOfMemoryError e) {
                     // what can we do :-(
@@ -2443,7 +2445,11 @@ RiskUtil.printStackTrace(e);
                 }
             }
 	}
-        
+
+	public byte[] getLastSavedState() {
+	    return Undo.toByteArray();
+	}
+
         public void setSkipUndo(boolean skip) {
             skipUndo = skip;
         }
