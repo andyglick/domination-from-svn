@@ -5,7 +5,7 @@ import net.yura.domination.engine.core.RiskGame;
 
 public class ServerRisk extends Risk {
 
-	private ServerGameRisk sgr;
+	ServerGameRisk sgr;
 	private boolean paused;
 	private boolean killflag;
 	private boolean waiting;
@@ -49,7 +49,7 @@ public class ServerRisk extends Risk {
 		inbox.add(a+" "+b);
 		notify();
 	}
-        
+
 	public synchronized void setKillFlag() {
 		killflag = true;
                 paused = false;
@@ -63,7 +63,7 @@ public class ServerRisk extends Risk {
 
 	@Override
 	// must catch all messages from the ais (and humans too now)
-	public void parser(String m) { //  synchronized 
+	public void parser(String m) { //  synchronized
 		//System.out.print("\tGOT: "+m+"\n");
 		// address must match for ai to know when to take its turn
 		// game.getCurrentPlayer().getAddress()
