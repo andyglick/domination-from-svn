@@ -49,7 +49,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 public class GameFrame extends JFrame implements KeyListener {
 
         public static final Color UI_COLOR = Color.RED;
-    
+
 	private BufferedImage gameImg;
 	private Risk myrisk;
 	private PicturePanel pp;
@@ -479,7 +479,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-            
+
 		gameState=0; // -1 or 0 means no input needed
 		mapView=PicturePanel.VIEW_CONTINENTS;
 
@@ -634,8 +634,15 @@ public class GameFrame extends JFrame implements KeyListener {
 	}
 
 	public void needInput(int s) {
-
 		gameState=s;
+
+
+                // if for some strange reason this dialog is open and we need some other input, close it
+                // this can happen if we timeout in a game during battle won move stage
+                if (gameState!=RiskGame.STATE_BATTLE_WON && movedialog.isVisible()) {
+                    movedialog.exitForm();
+                }
+
 
 		String goButtonText=null;
 
@@ -728,10 +735,8 @@ public class GameFrame extends JFrame implements KeyListener {
 
 
 		if (goButtonText!=null) {
-
 			gobutton.setEnabled(true);
 			gobutton.setText(goButtonText);
-
 		}
 		else {
 			gobutton.setEnabled(false);
@@ -855,6 +860,11 @@ public class GameFrame extends JFrame implements KeyListener {
 	}
 
 	public void noInput() {
+
+                // if we timeout on our turn, we need to close this dialog
+                if(movedialog.isVisible()) {
+                    movedialog.exitForm();
+                }
 
 		cardsbutton.setEnabled(false);
 		missionbutton.setEnabled(false);
@@ -1020,10 +1030,10 @@ public class GameFrame extends JFrame implements KeyListener {
 	 */
 	private void doUndo()
 	{
-            
+
                 pp.setC1(PicturePanel.NO_COUNTRY);
                 pp.setC2(PicturePanel.NO_COUNTRY);
-            
+
 		go("undo");
 	}//private void doUndo()
 
@@ -1158,7 +1168,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 					// can not use this as it may be not a int
 					//Integer.parseInt( event.getKeyChar() + ""));
-					
+
 			}
 
 			//no modifier button pressed

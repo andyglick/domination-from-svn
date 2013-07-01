@@ -24,6 +24,7 @@ CURRENT VERSION:
 
 	Android 43 10,20,30sec online game timeouts added
 		   fixed: game sometimes auto-saving in a broken state while ai is playing
+		   fixed: move dialogs stay open after timeout
 	Android 42 images overlapping fix for samsung galaxy s4
 	Android 41 rules added
 		   no square brackets in main menu

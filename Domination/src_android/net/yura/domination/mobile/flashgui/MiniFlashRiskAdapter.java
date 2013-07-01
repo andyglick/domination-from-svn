@@ -22,13 +22,13 @@ public class MiniFlashRiskAdapter implements RiskListener {
     private GameActivity gameFrame;
 
     public net.yura.lobby.mini.MiniLobbyClient lobby;
-    
+
     public MiniFlashRiskAdapter(Risk risk) {
         myRisk = risk;
         risk.addRiskListener( this );
     }
 
-    
+
     void openLobby() {
     	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
@@ -42,7 +42,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 return DominationMain.version;
             }
         } );
-        
+
         Frame mapFrame = new Frame( lobby.getTitle() );
         mapFrame.setContentPane( lobby.getRoot() );
         mapFrame.setMaximum(true);
@@ -105,12 +105,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
             throw new IllegalArgumentException("unknown "+what);
         }
     }
-    
+
     public void openMainMenu() {
         show("menu");
         mainmenu.openMainMenu();
     }
-    
+
     @Override
     public void newGame(boolean t) {
         show("setup");
@@ -154,7 +154,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void showCardsFile(String c, boolean m) {
         gameSetup.showCardsFile(c,m);
     }
-    
+
     @Override
     public void startGame(boolean s) {
         show("game");
@@ -167,9 +167,15 @@ public class MiniFlashRiskAdapter implements RiskListener {
     @Override
     public void needInput(int s) {
 
+        // if for some strange reason this dialog is open and we need some other input, close it
+        // this can happen if we timeout in a game during battle won move stage
+        if (s!=RiskGame.STATE_BATTLE_WON && move!=null && move.isVisible()) {
+            move.setVisible(false);
+        }
+
         if (gameFrame!=null) {
                 gameFrame.needInput(s);
-        
+
                 switch(s) {
                     case RiskGame.STATE_ROLLING:
                         battle.needInput(myRisk.getGame().getNoAttackDice(), true);
@@ -219,7 +225,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
         Image c1img = gameFrame.pp.getCountryImage(c1num);
         Image c2img = gameFrame.pp.getCountryImage(c2num);
-        
+
         battle.setup(c1num, c2num,c1img,c2img);
 
         // TODO: move main map to centre on where battle is happening

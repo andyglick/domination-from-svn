@@ -52,22 +52,22 @@ import net.yura.swingme.core.ViewChooser;
  * @author Yura
  */
 public class GameActivity extends Frame implements ActionListener {
- 
+
     public static final Logger logger = Logger.getLogger( GameActivity.class.getName() );
-    
+
     public static final Properties resb = CoreUtil.wrap(TranslationBundle.getBundle());
     public static final Border marble;
     static {
         marble = new BackgroundBorder( Midlet.createImage("/marble.jpg") );
     }
-    
+
     public static final String SAVE_EXTENSION = ".save";
-    
+
     Risk myrisk;
     PicturePanel pp;
     ViewChooser mapViewControl;
     Button note,gobutton,closebutton,savebutton,undobutton,graphbutton;
-    
+
     String status;
     int gameState;
 
@@ -83,12 +83,12 @@ public class GameActivity extends Frame implements ActionListener {
         setMaximum(true);
 
         setUndecorated(true);
-        
+
         setBorder(marble);
         setBackground( 0x00FFFFFF );
-        
-        
-        
+
+
+
         pp = new PicturePanel(myrisk);
 
         final MapMouseListener mml = new MapMouseListener(myrisk, pp);
@@ -107,19 +107,19 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }
         );
-        
+
         // MWMWMWMWMWMWM MENU MWMWMWMWMWMWMW
-        
+
         savebutton = new Button( resb.getProperty("game.menu.save") );
         savebutton.setIcon( new Icon("/save.png") );
         savebutton.addActionListener(this);
         savebutton.setActionCommand("save");
-        
+
         graphbutton = new Button( resb.getProperty("game.button.statistics") );
         graphbutton.setIcon( new Icon("/ic_menu_chartsettings.png") );
         graphbutton.addActionListener(this);
         graphbutton.setActionCommand("graph");
-        
+
         undobutton = new Button( resb.getProperty("game.button.undo") );
         undobutton.setIcon( new Icon("/undo.png") );
         undobutton.addActionListener(this);
@@ -141,8 +141,8 @@ public class GameActivity extends Frame implements ActionListener {
         //Button helpbutton = new Button( resb.getProperty("game.menu.manual") );
         //helpbutton.addActionListener(this);
         //helpbutton.setActionCommand("help");
-        
-        
+
+
         menu = new Menu();
         menu.setIcon( new Icon("/menu.png") );
         menu.setMnemonic(KeyEvent.KEY_SOFTKEY1);
@@ -163,51 +163,51 @@ public class GameActivity extends Frame implements ActionListener {
         note.setHorizontalAlignment(Graphics.HCENTER);
         note.setActionCommand("go");
         note.addActionListener(this);
-        
+
         cardsbutton = new Button();
         cardsbutton.setName("CardsButton");
         //cardsbutton.setIcon( new Icon("/cards_button.png") );
         cardsbutton.setToolTipText(resb.getProperty("game.button.cards"));
         cardsbutton.setActionCommand("cards");
         cardsbutton.addActionListener(this);
-        
+
         missionbutton = new Button();
         missionbutton.setName("HintButton");
         //missionbutton.setIcon( new Icon("/mission_button.png") );
         missionbutton.setToolTipText(resb.getProperty("game.button.mission"));
         missionbutton.setActionCommand("mission");
         missionbutton.addActionListener(this);
-        
+
         Panel gamecontrol = new Panel( new BorderLayout() );
         gamecontrol.setName("TransPanel");
-        
+
         Option[] options = new Option[6];
         options[0] = new Option( String.valueOf( PicturePanel.VIEW_CONTINENTS ) , resb.getProperty("game.tabs.continents") );
         options[1] = new Option( String.valueOf( PicturePanel.VIEW_OWNERSHIP ) , resb.getProperty("game.tabs.ownership") );
         options[2] = new Option( String.valueOf( PicturePanel.VIEW_BORDER_THREAT ) , resb.getProperty("game.tabs.borderthreat") );
         options[3] = new Option( String.valueOf( PicturePanel.VIEW_CARD_OWNERSHIP ) , resb.getProperty("game.tabs.cardownership") );
         options[4] = new Option( String.valueOf( PicturePanel.VIEW_TROOP_STRENGTH ) , resb.getProperty("game.tabs.troopstrength") );
-        options[5] = new Option( String.valueOf( PicturePanel.VIEW_CONNECTED_EMPIRE ) , resb.getProperty("game.tabs.connectedempire") );        
+        options[5] = new Option( String.valueOf( PicturePanel.VIEW_CONNECTED_EMPIRE ) , resb.getProperty("game.tabs.connectedempire") );
 
-        
+
         mapViewControl = new ViewChooser(options);
         mapViewControl.addActionListener(this);
         mapViewControl.setActionCommand("mapViewChanged");
-        
+
         gamecontrol.add(mapViewControl);
-        
+
         closebutton = new Button();
         closebutton.setMnemonic( KeyEvent.KEY_END );
         closebutton.setActionCommand("close");
         closebutton.addActionListener(this);
         gamecontrol.add(closebutton,Graphics.LEFT);
-        
-        gamecontrol.add(menu,Graphics.RIGHT);
-        
 
-        
-        
-        
+        gamecontrol.add(menu,Graphics.RIGHT);
+
+
+
+
+
         Panel mainWindow = new Panel( new BorderLayout() );
         scroll = new ScrollPane(pp) {
             // a little hack as we set setClip to false
@@ -232,13 +232,13 @@ public class GameActivity extends Frame implements ActionListener {
         setContentPane(contentPane);
 
     }
-    
+
     ScrollPane scroll;
-    
+
     private Panel makeBottomPanel() {
-        
+
         Panel bottom = new Panel(new BorderLayout());
-        
+
         int g = XULLoader.adjustSizeToDensity(2);
         Panel gamepanel2 = new Panel( new GridBagLayout(3, g, g, g, g, g) );
         gamepanel2.setName("TransPanel");
@@ -247,25 +247,25 @@ public class GameActivity extends Frame implements ActionListener {
         gc.rowSpan = 2;
 
         gamepanel2.add( cardsbutton, gc );
-        
+
         GridBagConstraints gc1 = new GridBagConstraints();
         gc1.rowSpan = 2;
         gc1.halign = "left";
         gc1.weightx = 1;
-        
+
         gamepanel2.add( missionbutton, gc1 );
 
         GridBagConstraints gc2 = new GridBagConstraints();
 
         gamepanel2.add( note,gc2 );
         gamepanel2.add( gobutton,gc2 );
-        
+
         bottom.add( new PlayersPanel(), Graphics.TOP );
         bottom.add(gamepanel2);
-        
+
         return bottom;
     }
-    
+
     class PlayersPanel extends Component {
         @Override
         protected String getDefaultName() {
@@ -274,9 +274,9 @@ public class GameActivity extends Frame implements ActionListener {
         @Override
         public void paintComponent(Graphics2D g) {
             int[] colors = myrisk.getPlayerColors();
-            
+
             int w = XULLoader.adjustSizeToDensity(28);
-            
+
             int x=0;
             for (int c=0; c < colors.length ; c++) {
                     g.setColor( PicturePanel.colorWithAlpha(colors[c],100) );
@@ -292,10 +292,10 @@ public class GameActivity extends Frame implements ActionListener {
             height = XULLoader.adjustSizeToDensity(3);
         }
     }
-    
+
     boolean localGame;
     /**
-     * @see net.yura.domination.ui.flashgui.GameFrame#setup(boolean) 
+     * @see net.yura.domination.ui.flashgui.GameFrame#setup(boolean)
      */
     public void startGame(boolean localGame) {
         this.localGame = localGame;
@@ -304,12 +304,12 @@ public class GameActivity extends Frame implements ActionListener {
         logger.log(Level.INFO, "Starting new game: {0}", mapFile);
 
         closebutton.setText( getLeaveCloseText(localGame) );
-        
+
         // ============================================ setup UI
 
         boolean retry=false;
         boolean error = pp != scroll.getView();
-        
+
         if (!error) Midlet.openURL("nativeNoResult://net.yura.android.LoadingDialog?message=" + Url.encode( resb.getProperty("mainmenu.loading") ));
 
         try {
@@ -325,7 +325,7 @@ public class GameActivity extends Frame implements ActionListener {
         catch (Throwable ex) { // ALL errors come here
             System.gc();
             String text = ((ex instanceof OutOfMemoryError)?"Not enough memory to load map: ":"Error loading map: ")+mapFile +" "+ex+(ex.getCause()!=null?" "+ex.getCause():"")+(error?" TWO ERRORS!!":"");
-            
+
             TextArea ta = new TextArea(text);
             ta.setLineWrap(true);
             ta.setFocusable(false);
@@ -355,7 +355,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         note.setText( resb.getString("game.pleasewait") );
         mapViewControl.resetMapView();
-        
+
         // ============================================ show
 
         // disable all buttons at the start of the game
@@ -363,16 +363,16 @@ public class GameActivity extends Frame implements ActionListener {
         for (int c=0;c<buttons.length;c++) {
             buttons[c].setFocusable(false);
         }
-        
+
         setVisible(true);
     }
-    
+
     @Override
     public void setVisible(boolean b) {
     	super.setVisible(b);
     	Midlet.openURL("wakelock://"+b);
     }
-    
+
     public void actionPerformed(String actionCommand) {
         if ("go".equals(actionCommand)) {
             goOn();
@@ -401,10 +401,10 @@ public class GameActivity extends Frame implements ActionListener {
                 controller.addExtraButtons(menu);
         }
         else if ("save".equals(actionCommand)) {
-            
+
             final TextField saveText = new TextField();
             saveText.setText( MiniUtil.getSaveGameName(myrisk.getGame()) );
-            
+
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     if ("ok".equals(actionCommand)) {
@@ -418,7 +418,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         }
         else if ("graph".equals(actionCommand)) {
-            
+
             Midlet.openURL("nativeNoResult://net.yura.domination.android.StatsActivity");
 
         }
@@ -442,17 +442,17 @@ public class GameActivity extends Frame implements ActionListener {
 
         }
         else if ("mission".equals(actionCommand)) {
-            
+
             String missionTitle = resb.getProperty("core.showmission.mission");
             String mission=myrisk.getCurrentMission();
 
             //String html = "<html><p>" + status + "</p><p><b>" +missionTitle + "</b><br/>"+ mission + "</p></html>";
-            
+
             Element html = new Element("html",
                     new Element("p",
                             status
                     ),
-                    myrisk.showHumanPlayerThereInfo()? 
+                    myrisk.showHumanPlayerThereInfo()?
                         new Element("p",
                                 new Element("b",
                                         missionTitle
@@ -492,7 +492,7 @@ public class GameActivity extends Frame implements ActionListener {
             throw new IllegalArgumentException("unknown command "+actionCommand);
         }
     }
-    
+
     void openCards() {
         CardsDialog cardsDialog = new CardsDialog( myrisk, pp);
         cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
@@ -503,14 +503,14 @@ public class GameActivity extends Frame implements ActionListener {
         try {
             Document doc = new Document();
             doc.setEncoding("UTF-8");
-            
+
             doc.addChild(element); // adding root
-            
+
             StringWriter writer = new StringWriter();
-            
+
             KXmlSerializer makeXml = new KXmlSerializer();
             makeXml.setOutput(writer);
-            
+
             doc.write(makeXml);
 
             makeXml.flush();
@@ -522,7 +522,7 @@ public class GameActivity extends Frame implements ActionListener {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public static void showClosePrompt(final Risk myrisk) {
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
@@ -532,11 +532,11 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }, resb.getProperty("game.areyousurequit"), getLeaveCloseText( myrisk.getLocalGame() ) , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
     }
-    
+
     static String getLeaveCloseText(boolean locagame) {
         return resb.getProperty( locagame ? "game.menu.close" : "game.menu.leave");
     }
-    
+
     void setGameStatus(String state) {
         status = state;
     }
@@ -612,9 +612,9 @@ public class GameActivity extends Frame implements ActionListener {
             }
 
             setGoButtonText(goButtonText);
-            
+
             note.setText(noteText==null?" ":noteText);
-            
+
             cardsbutton.setName(mustTrade?"MustTradeButton":"CardsButton");
 
             if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
@@ -633,14 +633,14 @@ public class GameActivity extends Frame implements ActionListener {
                     //AutoDefend.setBackground( Color.white );
                     AutoDefend.setSelected( myrisk.getAutoDefend() );
             }
-            
+
             repaint(); // SwingGUI has this here, if here then not needed in set status
-            
+
             if (isFocused() && DominationMain.getBoolean("show_toasts", false) ) {
                 toast(status);
             }
     }
-    
+
     private void setGoButtonText(String goButtonText) {
         if (gobutton!=null) {
             if (goButtonText!=null) {
@@ -655,7 +655,7 @@ public class GameActivity extends Frame implements ActionListener {
             }
         }
     }
-    
+
    /**
     * the armiesLeft method call from the core is not really needed as it is not
     * a event and the same data can be got by using these getters
@@ -711,6 +711,11 @@ public class GameActivity extends Frame implements ActionListener {
 
     public void noInput() {
 
+            // if we timeout on our turn, we need to close this dialog
+            if (tacMove!=null && tacMove.isVisible()) {
+                tacMove.setVisible(false);
+            }
+
             cardsbutton.setFocusable(false);
             undobutton.setFocusable(false);
             savebutton.setFocusable(false);
@@ -718,13 +723,15 @@ public class GameActivity extends Frame implements ActionListener {
             AutoDefend.setFocusable(false);
 
             setGoButtonText(null);
-            
+
             note.setText( resb.getString("game.pleasewait") );
 
             gameState=0;
 
             repaint();
     }
+
+    private MoveDialog tacMove;
 
     public void mapClick(int[] countries) {
 
@@ -763,11 +770,12 @@ public class GameActivity extends Frame implements ActionListener {
             else {
                 note.setText(" ");
 
-                MoveDialog move = new MoveDialog(myrisk) {
+                tacMove = new MoveDialog(myrisk) {
                     @Override
                     public void setVisible(boolean b) { // catch closing of the dialog
                         super.setVisible(b);
                         if (!b) {
+                            tacMove=null;
                             // clean up
                             pp.setC1(255);
                             pp.setC2(255);
@@ -779,8 +787,8 @@ public class GameActivity extends Frame implements ActionListener {
                 Image c1img = pp.getCountryImage(countries[0]);
                 Image c2img = pp.getCountryImage(countries[1]);
 
-                move.setupMove(1,countries[0] , countries[1],c1img,c2img, true);
-                move.setVisible(true);
+                tacMove.setupMove(1,countries[0] , countries[1],c1img,c2img, true);
+                tacMove.setVisible(true);
 
             }
         }
@@ -794,7 +802,7 @@ public class GameActivity extends Frame implements ActionListener {
     public int getMapView() {
         return Integer.parseInt( mapViewControl.getSelectedItem().getKey() );
     }
-    
+
     public void mapRedrawRepaint(boolean redrawNeeded, boolean repaintNeeded) {
         if (pp!=null) {
             if(redrawNeeded) {
@@ -807,7 +815,7 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     /**
-     * @see net.yura.lobby.mini.MiniLobbyClient#toast(java.lang.String) 
+     * @see net.yura.lobby.mini.MiniLobbyClient#toast(java.lang.String)
      */
     static void toast(String message) {
         if ( Display.getDisplay( Midlet.getMidlet() ).getCurrent() != null ) {
