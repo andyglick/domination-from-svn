@@ -2428,10 +2428,12 @@ RiskUtil.printStackTrace(e);
                 }
                 catch (OutOfMemoryError e) {
                     // what can we do :-(
+                    Undo.reset(); // do not keep broken data, TODO, this does NOT clean up memory
                     skipUndo = true;
                     System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
                 }
                 catch (Throwable e) {
+                    Undo.reset(); // do not keep broken data, TODO, this does NOT clean up memory
                     skipUndo = true;
                     System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
                     RiskUtil.printStackTrace(e);
