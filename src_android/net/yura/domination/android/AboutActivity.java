@@ -6,6 +6,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TabHost;
 import android.app.Activity;
@@ -38,6 +39,8 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
         WebView webView = new WebView(this);
         String prefix = "file:///android_asset/";
         if ("about".equals(tag)) {
+            WebSettings settings = webView.getSettings();
+            settings.setDefaultTextEncodingName("utf-8");
             webView.loadData(MiniUtil.getAboutHtml(), "text/html", null);
         }
         else if ("credits".equals(tag)){
