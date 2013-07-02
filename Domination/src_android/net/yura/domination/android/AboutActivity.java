@@ -40,8 +40,8 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
         String prefix = "file:///android_asset/";
         if ("about".equals(tag)) {
             WebSettings settings = webView.getSettings();
-            settings.setDefaultTextEncodingName("utf-8");
-            webView.loadData(MiniUtil.getAboutHtml(), "text/html", null);
+            settings.setDefaultTextEncodingName("utf-8"); // UTF-8 here works on only v2 android
+            webView.loadData(MiniUtil.getAboutHtml(), "text/html; charset=utf-8", null); // UTF-8 here works on only v4 android
         }
         else if ("credits".equals(tag)){
             webView.loadUrl(prefix+"help/game_credits.htm");
