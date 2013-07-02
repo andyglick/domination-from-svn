@@ -19,22 +19,22 @@ import net.yura.mobile.gui.plaf.Style;
 public class MapRenderer extends DefaultListCellRenderer {
 
     private static final int TOTAL_LINES_OF_TEXT = 5;
-    
+
     String line1,line2;
 
     private ProgressBar bar = new ProgressBar();
     private Component list;
-    
+
     private String context;
-    
+
     Image play,download;
     Icon loading;
-    
+
     MapChooser chooser;
     Map map;
-    
+
     public MapRenderer(MapChooser chooser) {
-        
+
         this.chooser = chooser;
         setName("ListRendererCollapsed"); // get rid of any padding
 
@@ -42,14 +42,14 @@ public class MapRenderer extends DefaultListCellRenderer {
         bar.setSprite(spin1);
         bar.workoutPreferredSize();
         //add(bar); // YURA do we need this???
-        
+
         play = Midlet.createImage("/ms_play.png");
         download = Midlet.createImage("/ms_download.png");
-        
+
         loading = new Icon("/ms_icon_loading.png");
 
     }
-    
+
     public static Sprite getSprite(String name,int cols,int rows) {
         Image img = Midlet.createImage(name);
         try {
@@ -62,7 +62,7 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
         catch(RuntimeException ex) {
             throw new RuntimeException("error creating sprite "+name+" "+img+" "+
-                    (img!=null?"("+img.getWidth()+"x"+img.getHeight()+") ":"")+
+                    (img!=null?"("+img.getWidth()+"x"+img.getHeight()+") m="+img.isMutable()+" ":"")+
                     cols+"x"+rows,ex);
         }
     }
@@ -75,12 +75,12 @@ public class MapRenderer extends DefaultListCellRenderer {
             list.repaint();
         }
     }
-    
-    
+
+
     public void setContext(String c) {
         context = c;
     }
-    
+
     public String getContext() {
         return context;
     }
@@ -89,7 +89,7 @@ public class MapRenderer extends DefaultListCellRenderer {
         Component c = super.getListCellRendererComponent(list, null, index, isSelected, cellHasFocus);
 
         this.list = list;
-        
+
         line2 = null; // reset everything
         map = null;
         String iconUrl=null;
@@ -98,14 +98,14 @@ public class MapRenderer extends DefaultListCellRenderer {
             Category category = (Category)value;
 
             line1 = category.getName();
-            
+
             iconUrl = category.getIconURL();
         }
         else if (value instanceof Map) {
             map = (Map)value;
 
             line1 = map.getName();
-            
+
             String author = map.getAuthorName();
             if (author!=null && !"".equals(author)) {
                 line2 = TranslationBundle.getBundle().getString("mapchooser.by").replaceAll("\\{0\\}", author);
@@ -118,11 +118,11 @@ public class MapRenderer extends DefaultListCellRenderer {
             if (line2!=null) {
                 line2 = getFirstLines(line2,TOTAL_LINES_OF_TEXT-1);
             }
-            
+
             iconUrl = map.getPreviewUrl();
         }
         // else just do nothing
-        
+
         //iconUrl = "http://www.imagegenerator.net/clippy/image.php?question="+map.getName();
 
         if (iconUrl!=null) {
@@ -136,7 +136,7 @@ public class MapRenderer extends DefaultListCellRenderer {
     }
 
     public void paintComponent(Graphics2D g) {
-        
+
         Icon icon = getIcon();
         if (icon==null || icon.getImage()==null) {
             setIcon(loading);
@@ -160,11 +160,11 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
 
         if (map!=null) {
-        
+
             int gap = 5;
 
             String mapUID = MapChooser.getFileUID( map.getMapUrl() );
-            
+
             if ( chooser.client.isDownloading( mapUID ) ) { // we need to check for this first as we may have it and also be updating it
 
                 // position spinner in top right corner
@@ -188,7 +188,7 @@ public class MapRenderer extends DefaultListCellRenderer {
                 g.drawImage(play, getWidth()-play.getWidth()-gap, gap);
             }
         }
-        
+
         setIcon(icon);
     }
 
@@ -207,5 +207,5 @@ public class MapRenderer extends DefaultListCellRenderer {
         }
         return input.substring(0, lastchar-1)+"...";
     }
-    
+
 }
