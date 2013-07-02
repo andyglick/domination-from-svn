@@ -133,9 +133,9 @@ public class Risk extends Thread {
 		catch (Exception ex) {
                     // can not find file, no problem
 		}
-                
+
                 AIManager.setWait( Integer.parseInt( riskconfig.getProperty("ai.wait") ) );
-                
+
                 myAddress = createRandomUniqueAddress();
 
 		RiskGame.setDefaultMapAndCards( riskconfig.getProperty("default.map") , riskconfig.getProperty("default.cards") );
@@ -207,7 +207,7 @@ public class Risk extends Thread {
 			return "nonet" + randomString;
 		}
         }
-        
+
 	/**
 	 * This gets the next token of the string tokenizer
 	 * @return String Returns the next token as a string
@@ -242,7 +242,7 @@ public class Risk extends Thread {
                 return (type==UI_COMMAND?"UI":"NETWORK")+" "+command;
             }
         }
-        
+
 	/**
 	 * This parses the string, calls the relavant method and displays the correct error messages
 	 * @param m The string needed for parsing
@@ -254,7 +254,7 @@ public class Risk extends Thread {
         public void parserFromNetwork(String m) {
             addToInbox( new GameCommand(GameCommand.NETWORK_COMMAND, m ) );
 	}
-        
+
         private void addToInbox(GameCommand m) {
 		synchronized(inbox) {
 			inbox.add(m);
@@ -268,7 +268,7 @@ public class Risk extends Thread {
                 inbox.notify();
             }
         }
-        
+
         boolean running = true;
 	public void run() {
             GameCommand message=null;
@@ -287,7 +287,7 @@ public class Risk extends Thread {
 
 				message = (GameCommand)inbox.remove(0);
 			}
-                        
+
                         if (message.type==GameCommand.UI_COMMAND) {
                             processFromUI(message.command);
                         }
@@ -369,7 +369,7 @@ public class Risk extends Thread {
 
                 String input = GetNext();
                 String output;
-            
+
                 controller.sendMessage(">" + message, false, false );
 
                 // NEW GAME
@@ -421,7 +421,6 @@ RiskUtil.printStackTrace(e);
                                         }
 
                                         try {
-
                                                 game = RiskGame.loadGame( filename );
 
                                                 if (game == null) {
@@ -429,6 +428,14 @@ RiskUtil.printStackTrace(e);
                                                 }
 
                                                 unlimitedLocalMode = true;
+                                                output=resb.getString( "core.loadgame.loaded");
+
+                                                Player player = game.getCurrentPlayer();
+                                                if ( player != null ) {
+                                                        // the game is saved
+                                                        saveGameToUndoObject();
+                                                        output=output+ System.getProperty("line.separator") + resb.getString( "core.loadgame.currentplayer") + " " + player.getName();
+                                                }
 
                                                 if (game.getState()==RiskGame.STATE_NEW_GAME) {
                                                     controller.newGame(true);
@@ -437,20 +444,6 @@ RiskUtil.printStackTrace(e);
                                                 else {
                                                     controller.startGame(unlimitedLocalMode);
                                                 }
-
-                                                output=resb.getString( "core.loadgame.loaded");
-
-                                                Player player = game.getCurrentPlayer();
-
-                                                if ( player != null ) {
-
-                                                        // the game is saved
-                                                        saveGameToUndoObject();
-
-                                                        output=output+ System.getProperty("line.separator") + resb.getString( "core.loadgame.currentplayer") + " " + player.getName();
-
-                                                }
-
                                         }
                                         catch (Exception ex) {
                                                 System.err.println("error loading game from file: "+filename);
@@ -610,10 +603,10 @@ RiskUtil.printStackTrace(e);
                 controller.sendMessage(output, false, true );
 
                 getInput();
-            
+
         }
-        
-        
+
+
 	/**
 	 * This parses the string, calls the relavant method and displays the correct error messages
 	 * @param mem The string needed for parsing
@@ -728,7 +721,7 @@ RiskUtil.printStackTrace(e);
                             }
 
                     }
-                
+
                 }
 		else if (Addr.equals("DICE")) { // a server command
 
@@ -962,7 +955,7 @@ RiskUtil.printStackTrace(e);
 			if (game != null && game.getCurrentPlayer() != null && game.getState()!=RiskGame.STATE_GAME_OVER ) {
 
                                 int type = game.getCurrentPlayer().getType();
-                                
+
                                 String key;
                                 if (type==Player.PLAYER_HUMAN) {
                                     key = "newgame.player.type.human";
@@ -1222,7 +1215,7 @@ RiskUtil.printStackTrace(e);
                                                         controller.startGame( unlimitedLocalMode );
 
                                                         if ( shouldGameCommand(Addr) ) {
-                                                            
+
                                                             gameCommand(Addr, "PLAYER", String.valueOf( game.getRandomPlayer() ) );
 
                                                             // do that mission thing
@@ -2089,8 +2082,8 @@ RiskUtil.printStackTrace(e);
 			//} // this was the end of "if there is somthing to pass" but not needed any more
 
                         updateBattleState();
-                        
-                        
+
+
 		}// end of parse of normal command
 
 		// give a output if there is one
@@ -2135,9 +2128,9 @@ RiskUtil.printStackTrace(e);
 
         // TODO is this thread safe???
         public void setMap(String filename) throws Exception {
-            
+
             if (game.getState()==RiskGame.STATE_NEW_GAME) {
-            
+
                 boolean yesmissions = game.setMapfile(filename);
 
                 setupPreviews(yesmissions);
@@ -2146,19 +2139,19 @@ RiskUtil.printStackTrace(e);
                 String output= RiskUtil.replaceAll( resb.getString( "core.choosemap.mapselected"), "{0}", filename);
 
                 controller.sendMessage(output, false , true);
-                
+
             }
             else {
                 controller.startGame(unlimitedLocalMode);
             }
         }
         public void getMapError(String exception) {
-            
+
             String output = resb.getString( "core.choosemap.error.unable")+" "+exception;
             controller.sendMessage(output, false , true);
             showMessageDialog(output);
         }
-        
+
 	private void setupPreviews(boolean yesmissions) {
             controller.showMapPic( game );
             controller.showCardsFile( game.getCardsFile() , yesmissions );
@@ -2200,7 +2193,7 @@ RiskUtil.printStackTrace(e);
 	private boolean showHumanPlayerThereInfo(Player p) {
 		return game.getState()==RiskGame.STATE_GAME_OVER || ( (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) ) );
 	}
-        
+
         public boolean showHumanPlayerThereInfo() {
             return showHumanPlayerThereInfo( game.getCurrentPlayer() );
         }
@@ -2244,7 +2237,7 @@ RiskUtil.printStackTrace(e);
 	public void getInput() {
 
                 setHelp();
-            
+
 		if (game==null) {
 			controller.needInput( -1 );
 		}
@@ -2315,15 +2308,15 @@ RiskUtil.printStackTrace(e);
         public String getBasicPassiveGo() {
             return ai.getOutput(game,Player.PLAYER_AI_CRAP);
         }
-        
+
         public String[] getAICommands() {
             return ai.getAICommands();
         }
-        
+
         public String getCommandFromType(int type) {
             return ai.getCommandFromType(type);
         }
-        
+
 	//public void getHumanInput() { }
 
 	public String whoWon() {
@@ -2483,7 +2476,7 @@ RiskUtil.printStackTrace(e);
                     closeBattle();
             }
         }
-        
+
 	public void closeBattle() {
 		if ( battle ) { controller.closeBattle(); battle=false; }
 	}
@@ -2599,7 +2592,7 @@ RiskUtil.printStackTrace(e);
 
                 // sometimes this method can get called if we close a game half way through a paint
                 if (g==null) return new int[0];
-            
+
 		if ( g.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
                     Country defender = g.getDefender();
                     if (defender!=null) {
@@ -2695,7 +2688,7 @@ RiskUtil.printStackTrace(e);
 	public RiskGame getGame() {
 		return game;
 	}
-        
+
         public boolean getLocalGame() {
             return unlimitedLocalMode;
         }
@@ -2715,7 +2708,7 @@ RiskUtil.printStackTrace(e);
 		}
 
 	}
-	
+
 	public Player getCountryCapital(int c) {
 	    Country t = game.getCountryInt(c);
 	    List<Player> players = game.getPlayers();
@@ -2872,7 +2865,7 @@ RiskUtil.printStackTrace(e);
             if ("game".equals(command)) {
                 String address = (String)map.get("playerId");
                 RiskGame thegame = (RiskGame)map.get("game");
-                
+
                 onlinePlayClient = lrisk;
                 myAddress = address;
                 unlimitedLocalMode = false;
@@ -2936,7 +2929,7 @@ RiskUtil.printStackTrace(e);
                         }
 		}
         }
-        
+
 	public Player findEmptySpot() {
             if (game!=null) {
                 List players = game.getPlayers();
@@ -2950,5 +2943,5 @@ RiskUtil.printStackTrace(e);
             return null;
 	}
 
-        
+
 }
