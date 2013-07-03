@@ -52,7 +52,7 @@ public class AISubmissive implements AI {
 
             Card[] result = new Card[3]; 
 
-            if (game.getBestTrade(cards, tradeCombinationsToScan(), result) > 0) {
+            if (game.getBestTrade(cards, result) > 0) {
                     return getTrade(result);
             }
 
@@ -68,13 +68,6 @@ public class AISubmissive implements AI {
 		output = getCardName(result[2], output);
 		return output;
 	}
-
-    /**
-    * @return a bounding factor for the number of trades to scan
-    */
-    public int tradeCombinationsToScan() {
-            return 1;
-    }
 
     private String getCardName(Card card1, String output) {
             if (card1.getName().equals("wildcard")) {
