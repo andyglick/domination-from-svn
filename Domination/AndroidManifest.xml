@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.yura.domination"
-      android:versionCode="43"
-      android:versionName="43"
+      android:versionCode="44"
+      android:versionName="44"
       android:installLocation="auto">
       
     <!-- android:targetSdkVersion 11 to hide the legacy menu button on tablets -->
