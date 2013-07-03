@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.HashSet;
 
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.RiskObjectOutputStream;
@@ -639,100 +639,92 @@ transient - A keyword in the Java programming language that indicates that a fie
     }
 
 	public boolean canTrade() {
-		return getBestTrade(currentPlayer.getCards(), 0, null) > 0;
-	}
-	
-	private static class IntermediateResult {
-		String[] types;
-		@Override
-		public int hashCode() {
-			return Arrays.hashCode(types);
-		}
-		@Override
-		public boolean equals(Object obj) {
-			return Arrays.equals(types, ((IntermediateResult)obj).types);
-		}
+		return getBestTrade(currentPlayer.getCards(), null) > 0;
 	}
 	
 	/**
-	 * Find the best (highest) trade where the tradesToScan helps bound the search. 
-	 * tradesToScan is not honored exactly as we'll always search to find at least one
-	 * initial match.  
+	 * Find the best (highest) trade
+	 * Simple greedy search using the various valid combinations
 	 * @param cards
-	 * @param tradesToScan
 	 * @return
 	 */
-	public int getBestTrade(List<Card> cards, int tradesToScan, Card[] bestResult) {
-		return getBestTrade(cards, new boolean[cards.size()], tradesToScan, cards.size(), bestResult, 0);
-	}
-	
-	private int getBestTrade(List<Card> cards, boolean[] used, int tradesToScan, int cardsRemaining, Card[] bestResult, int start) {
-		cardsRemaining -= 3;
-		int bestValue = 0;
-		int orig = tradesToScan;
-		HashSet<IntermediateResult> seen = null;
+	public int getBestTrade(List<Card> cards, Card[] bestResult) {
+		Map<String, List<Card>> cardTypes = new HashMap<String, List<Card>>();
+		for (Card card : cards) {
+			List<Card> cardType = cardTypes.get(card.getName());
+			if (cardType == null) { 
+				cardType = new ArrayList<Card>();
+				cardTypes.put(card.getName(), cardType);
+			}
+			cardType.add(card);
+		}
 		Card carda = null;
 		Card cardb = null;
 		Card cardc = null;
-		for (int a = start; a < cards.size() - 2; a++) {
-			if (used[a]) {
-				continue;
+		int bestValue = 0;
+		if (cardTypes.size() >= 3) {
+			carda = getCard(cardTypes, Card.CANNON);
+			if (carda == null) {
+				carda = getCard(cardTypes, Card.WILDCARD);
 			}
-			carda = cards.get(a);
-			for (int b = (a + 1); b < cards.size() - 1; b++) {
-				if (used[b]) {
-					continue;
+			cardb = getCard(cardTypes, Card.CAVALRY);
+			if (cardb == null) {
+				cardb = getCard(cardTypes, Card.WILDCARD);
+			}
+			cardc = getCard(cardTypes, Card.INFANTRY);
+			if (cardc == null) {
+				cardc = getCard(cardTypes, Card.WILDCARD);
+			}
+			bestValue = getTradeAbsValue( carda.getName(), cardb.getName(), cardc.getName(), getCardMode());
+			if (bestValue > 0) {
+				if (bestResult == null) {
+					return bestValue;
 				}
-				cardb = cards.get(b);
-				for (int c = (b + 1); c < cards.size(); c++) {
-					if (used[c]) {
-						continue;
-					}
-					cardc = cards.get(c);
-					tradesToScan--;
-					int value = getTradeAbsValue( carda.getName(), cardb.getName(), cardc.getName(), getCardMode());
-					if (value == 0) {
-						if (tradesToScan < 0 && bestValue > 0) {
-							return bestValue;
-						}
-						continue;
-					}
-					if (cardsRemaining >= 3 && orig > 0) {
-						IntermediateResult ir = new IntermediateResult();
-						ir.types = new String[3];
-						ir.types[0] = carda.getName();
-						ir.types[1] = cardb.getName();
-						ir.types[2] = cardc.getName();
-						Arrays.sort(ir.types);
-						if (seen == null) {
-							seen = new HashSet<IntermediateResult>();
-						}
-						if (!seen.add(ir)) {
-							continue;
-						}
-						used[a] = true;
-						used[b] = true;
-						used[c] = true;
-						value += getBestTrade(cards, used, tradesToScan, cardsRemaining, null, start + 1);
-						used[a] = false;
-						used[b] = false;
-						used[c] = false;
-					}
-					if (value > bestValue) {
-						bestValue = value;
-						if (bestResult != null) {
-							bestResult[0] = cards.get(a);
-							bestResult[1] = cards.get(b);
-							bestResult[2] = cards.get(c);
-						}
-					}
-					if (tradesToScan < 0) {
+				bestResult[0] = carda;
+				bestResult[1] = cardb;
+				bestResult[2] = cardc;
+			}
+		}
+		List<Card> wildCards = cardTypes.get(Card.WILDCARD);
+		int wildCardCount = wildCards==null?0:wildCards.size();
+		for (Map.Entry<String, List<Card>> entry : cardTypes.entrySet()) {
+			carda = null;
+			if (entry.getKey().equals(Card.WILDCARD)) {
+				if (wildCardCount >= 3) {
+					carda = wildCards.get(0);
+					cardb = wildCards.get(1);
+					cardc = wildCards.get(2);
+				}
+			} else {
+				List<Card> cardList = entry.getValue();
+				if (cardList.size() + wildCardCount >= 3) {
+					carda = cardList.get(0);
+					cardb = cardList.size()>1?cardList.get(1):wildCards.get(0);
+					cardc = cardList.size()>2?cardList.get(2):wildCards.get(2-cardList.size());
+				}
+			}
+			if (carda != null) {
+				int val = getTradeAbsValue( carda.getName(), cardb.getName(), cardc.getName(), getCardMode());
+				if (val > bestValue) {
+					bestValue = val;
+					if (bestResult == null) {
 						return bestValue;
 					}
+					bestResult[0] = carda;
+					bestResult[1] = cardb;
+					bestResult[2] = cardc;
 				}
 			}
 		}
 		return bestValue;
+	}
+
+	private Card getCard(Map<String, List<Card>> cardTypes, String name) {
+		List<Card> type = cardTypes.get(name);
+		if (type != null) {
+			return type.get(0);
+		}
+		return null;
 	}
 
 	public int getNewCardState() {
@@ -2829,5 +2821,9 @@ System.out.print(str+"]\n");
             }
     	}
     }
+    
+    void setCardMode(int cardMode) {
+		this.cardMode = cardMode;
+	}
     
 }

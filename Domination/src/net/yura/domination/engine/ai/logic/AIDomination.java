@@ -403,7 +403,8 @@ public class AIDomination extends AISubmissive {
 		GameState gameState = getGameState(player, false);
 		
 		//kill switch
-		if (attack && game.getCurrentPlayer().getStatistics().size() > MAX_AI_TURNS && gameState.me.playerValue < gameState.orderedPlayers.get(gameState.orderedPlayers.size() - 1).playerValue) {
+		if (attack && ((game.getCurrentPlayer().getStatistics().size() > MAX_AI_TURNS && gameState.me.playerValue < gameState.orderedPlayers.get(gameState.orderedPlayers.size() - 1).playerValue)
+				|| (game.getCurrentPlayer().getStatistics().size() > 2*MAX_AI_TURNS && gameState.me.playerValue < gameState.orderedPlayers.get(0).playerValue))) {
 			boolean keepPlaying = false;
 			for (int i = 0; i < game.getPlayers().size(); i++) {
 				Player p = (Player)game.getPlayers().get(i);
@@ -423,6 +424,21 @@ public class AIDomination extends AISubmissive {
 		}
 
 		HashMap<Country, AttackTarget> targets = searchAllTargets(attack, attackable, gameState);
+		
+		//easy seems to be too hard based upon player feedback, so this dumbs down the play with a greedy attack
+		if (attack && player.getType() == PLAYER_AI_EASY && game.getMaxDefendDice() == 2 && game.isCapturedCountry() && r.nextBoolean()) {
+			ArrayList<AttackTarget> targetList = new ArrayList<AIDomination.AttackTarget>(targets.values());
+			Collections.sort(targetList, Collections.reverseOrder());
+			for (AttackTarget at : targetList) {
+				if (at.remaining < 1) {
+					break;
+				}
+				int route = findBestRoute(attackable, gameState, attack, null, at, gameState.targetPlayers.get(0), targets);
+				Country start = attackable.get(route);
+				return getAttack(targets, at, route, start);
+			}
+		}
+		
 		return plan(attack, attackable, gameState, targets);
 	}
 
@@ -2279,14 +2295,6 @@ public class AIDomination extends AISubmissive {
     		}
     	}
     	return super.getTrade();
-    }
-    
-    @Override
-    public int tradeCombinationsToScan() {
-    	if (type == AIDomination.PLAYER_AI_EASY) {
-    		return 10000;
-    	}
-    	return 100000;
     }
     
     /**
