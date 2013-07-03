@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		43
+	Android		44
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -22,6 +22,8 @@ CURRENT VERSION:
 	done: get rid of "[X]" brakets from main menu
 	strange nativenoresult popups in windows 7 fixed
 
+	Android 44 zero data fix
+		   trade fix by hawkprime
 	Android 43 10,20,30sec online game timeouts added
 		   fixed: game sometimes auto-saving in a broken state while ai is playing
 		   fixed: move dialogs stay open after timeout

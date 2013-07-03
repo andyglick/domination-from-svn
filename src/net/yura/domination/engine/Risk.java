@@ -234,6 +234,7 @@ public class Risk extends Thread {
             public static final int NETWORK_COMMAND = 2;
             final int type;
             final String command;
+            Object notifier;
             public GameCommand(int t,String c) {
                 type = t;
                 command = c;
@@ -254,6 +255,16 @@ public class Risk extends Thread {
         public void parserFromNetwork(String m) {
             addToInbox( new GameCommand(GameCommand.NETWORK_COMMAND, m ) );
 	}
+
+        public void parserAndWait(String uiCommand) throws InterruptedException {
+            GameCommand gCommand = new GameCommand(GameCommand.UI_COMMAND, uiCommand );
+            Object lock = new Object();
+            gCommand.notifier = lock;
+            synchronized(lock) {
+                addToInbox(gCommand);
+                lock.wait();
+            }
+        }
 
         private void addToInbox(GameCommand m) {
 		synchronized(inbox) {
@@ -298,6 +309,11 @@ public class Risk extends Thread {
                             throw new RuntimeException();
                         }
 
+                        if (message.notifier != null) {
+                            synchronized (message.notifier) {
+                                message.notifier.notifyAll();
+                            }
+                        }
                 }
                 catch (Exception ex) {
 			System.err.println("ERROR processing "+ message);
