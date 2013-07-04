@@ -28,7 +28,7 @@ public class AISubmissive implements AI {
         this.game = game;
         player = game.getCurrentPlayer();
     }
-    
+
     protected Random r = new Random(); // this was always static
 
     protected RiskGame game;
@@ -50,7 +50,7 @@ public class AISubmissive implements AI {
                     return "endtrade";
             }
 
-            Card[] result = new Card[3]; 
+            Card[] result = new Card[3];
 
             if (game.getBestTrade(cards, result) > 0) {
                     return getTrade(result);
@@ -96,7 +96,7 @@ public class AISubmissive implements AI {
     public String getCapital() {
 	    return "capital " + randomCountry(player.getTerritoriesOwned()).getColor();
     }
-    
+
     public Country randomCountry(List<Country> countries) {
     	if (countries.isEmpty()) {
     		return null;
@@ -110,7 +110,7 @@ public class AISubmissive implements AI {
     }
 
 	protected String getPlaceCommand(Country country, int armies) {
-		return "placearmies " + country.getColor() + " " + (!game.getSetup()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
+		return "placearmies " + country.getColor() + " " + (!game.getSetupDone()?1:Math.max(1, Math.min(player.getExtraArmies(), armies)));
 	}
 
 }

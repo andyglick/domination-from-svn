@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Graphics;
 import javax.swing.JScrollPane;
-import java.util.Vector;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Image;
@@ -34,6 +33,7 @@ import java.awt.font.LineBreakMeasurer;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
 import java.awt.Component;
+import java.util.List;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
@@ -49,7 +49,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
 public class CardsDialog extends JDialog {
 
 	private Risk myrisk;
-	private Vector cards;
+	private List cards;
 	private JPanel myCardsPanel;
 	private JPanel TradePanel;
 	private JScrollPane CardsPlane;
@@ -112,7 +112,7 @@ public class CardsDialog extends JDialog {
 
 		cards = myrisk.getCurrentCards();
 		for (int c=0; c < cards.size(); c++) {
-			JPanel cp = new CardPanel( (Card)cards.elementAt(c) );
+			JPanel cp = new CardPanel( (Card)cards.get(c) );
 			myCardsPanel.add(cp);
 		}
 

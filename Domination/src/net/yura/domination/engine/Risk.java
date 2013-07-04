@@ -14,7 +14,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -22,7 +22,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
@@ -37,15 +36,12 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * <p> Main Risk Class </p>
  * @author Yura Mamyrin
  */
-
 public class Risk extends Thread {
 
 	public static String RISK_VERSION;
 
-	private StringTokenizer StringT;
 	protected RiskController controller;
 	protected RiskGame game;
-	//private String message;
 
         OnlineRisk onlinePlayClient;
 	private ChatArea p2pServer;
@@ -63,7 +59,7 @@ public class Risk extends Thread {
 	private boolean battle;
 	private boolean replay;
 
-	protected final Vector inbox;
+	protected final List inbox;
 
 	protected ResourceBundle resb;
 	protected Properties riskconfig;
@@ -146,7 +142,7 @@ public class Risk extends Thread {
 
 		controller = new RiskController();
 
-		inbox = new Vector();
+		inbox = new java.util.Vector();
 		this.start();
 
 	}
@@ -207,14 +203,6 @@ public class Risk extends Thread {
 			return "nonet" + randomString;
 		}
         }
-
-	/**
-	 * This gets the next token of the string tokenizer
-	 * @return String Returns the next token as a string
-	 */
-	public String GetNext() {
-		return StringT.nextToken();
-	}
 
 	public String getRiskConfig(String a) {
 		return riskconfig.getProperty(a);
@@ -343,47 +331,105 @@ public class Risk extends Thread {
                 }
                 // out of game commands
                 else if (game==null) { // if no game
-
                         noGameParser(message);
-
                 }
                 // IN GAME COMMANDS
                 else {
+                        StringTokenizer StringT = new StringTokenizer(message);
+                        String input=StringT.nextToken();
+                        String output;
 
 			// CLOSE GAME
-			if (message.equals("closegame")) {
-
-                                    controller.sendMessage("game>" + message, false, false );
-
-				//if (StringT.hasMoreTokens()==false) {
-
+			if (input.equals("closegame")) {
+				if (!StringT.hasMoreTokens()) {
                                     closeGame();
+                                    output=resb.getString("core.close.closed");
+				}
+				else {
+                                    output=RiskUtil.replaceAll( resb.getString( "core.error.syntax"), "{0}", "closegame");
+                                }
+			}
+			// SAVE GAME
+			else if (input.equals("savegame")) {
+				if (StringT.countTokens() >= 1) {
+				    if ( unlimitedLocalMode ) {
 
-                                    controller.sendMessage( resb.getString( "core.close.closed") , false, false );
+					String filename = StringT.nextToken();
+					while ( StringT.hasMoreTokens() ) {
+						filename = filename + " " + StringT.nextToken();
+					}
 
-                                    getInput();
-				//}
-				//else {
-                                //    output=RiskUtil.replaceAll( resb.getString( "core.error.syntax"), "{0}", "closegame");
-                                //}
+                                        try {
+                                            RiskUtil.saveFile(filename,game);
+                                            output=resb.getString( "core.save.saved");
+                                        }
+                                        catch (Exception ex) {
+                                            System.err.println("error saving game to file: "+filename);
+                                            RiskUtil.printStackTrace(ex);
 
+                                            output=resb.getString( "core.save.error.unable")+" "+ex;
+                                            showMessageDialog(output);
+                                        }
+				    }
+				    else {
+					output = resb.getString( "core.save.error.unable" );
+				    }
+				}
+				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "savegame filename"); }
+			}
+                        // REPLAY A GAME FROM THE GAME FILE
+			else if (input.equals("replay")) {
+				if ( StringT.hasMoreTokens()==false ) {
+				    if ( unlimitedLocalMode ) {
+					try {
+						List replayCommands = game.getCommands();
+						saveGameToUndoObject();
+						game = new RiskGame();
+						replay = true;
+						for (Iterator e = replayCommands.iterator(); e.hasNext();) {
+							inGameParser( (String)e.next() );
+							//try{ Thread.sleep(1000); }
+							//catch(InterruptedException e){}
+						}
+						replay = false;
+						output="replay of game finished";
+					}
+					catch (Exception e) {
+						output="error with replay "+e;
+						RiskUtil.printStackTrace(e);
+					}
+				    }
+				    else {
+					output="can only replay local games";
+				    }
+				}
+				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "replay"); }
 			}
                         else if ( onlinePlayClient == null ) {
                                 inGameParser( myAddress+" "+message );
+                                output=null;
                         }
                         else {
                                 // send to network
                                 onlinePlayClient.sendUserCommand( message );
+                                output=null;
                         }
+
+                        if (output!=null) {
+                            controller.sendMessage("game>" + message, false, false);
+                            controller.sendMessage(output, false, false);
+                            getInput();
+                        }
+
                 }
 
 	}
 
         private void noGameParser(String message) {
 
-                StringT = new StringTokenizer( message );
+                StringTokenizer StringT = new StringTokenizer( message );
 
-                String input = GetNext();
+                String input = StringT.nextToken();
                 String output;
 
                 controller.sendMessage(">" + message, false, false );
@@ -430,10 +476,10 @@ RiskUtil.printStackTrace(e);
 
                                 // this is not needed here as u can only get into this bit of code if game == null
                                 //if (game == null) {
-                                        String filename = GetNext();
+                                        String filename = StringT.nextToken();
 
-                                        while ( StringT.hasMoreElements() ) {
-                                                filename = filename + " " + GetNext();
+                                        while ( StringT.hasMoreTokens() ) {
+                                                filename = filename + " " + StringT.nextToken();
                                         }
 
                                         try {
@@ -488,7 +534,7 @@ RiskUtil.printStackTrace(e);
                                         // CREATE A CLIENT
                                         try {
 
-                                                onlinePlayClient = new ChatClient( this, myAddress, GetNext(), port );
+                                                onlinePlayClient = new ChatClient( this, myAddress, StringT.nextToken(), port );
 
                                                 // CREATE A GAME
                                                 game = new RiskGame();
@@ -634,8 +680,8 @@ RiskUtil.printStackTrace(e);
 		boolean needInput=true;
 		String output=null;
 
-		StringT = new StringTokenizer( message );
-                final String Addr = GetNext();
+		StringTokenizer StringT = new StringTokenizer( message );
+                final String Addr = StringT.nextToken();
 
 
                 // ERROR is not related to the game
@@ -646,10 +692,10 @@ RiskUtil.printStackTrace(e);
 
 		if (Addr.equals("ERROR")) { // server has sent us a error
 
-			String Pname = GetNext();
+			String Pname = StringT.nextToken();
 
-			while ( StringT.hasMoreElements() ) {
-				Pname = Pname +" "+ GetNext();
+			while ( StringT.hasMoreTokens() ) {
+				Pname = Pname +" "+ StringT.nextToken();
 			}
 
 			showMessageDialog(Pname);
@@ -657,7 +703,7 @@ RiskUtil.printStackTrace(e);
 		}
                 else if (Addr.equals("LEAVE")) {
 
-                    String id = GetNext();
+                    String id = StringT.nextToken();
 
                     // @todo, do we set needinput to flase, so that ai wont go twice, if its there go
                     // but then if there needinput was ignored coz this command was in the inbox, no needinput will get called
@@ -674,7 +720,7 @@ RiskUtil.printStackTrace(e);
                     output = "someone has gone: ";
 
                     // get all the players and make all with the ip of the leaver become nutral
-                    Vector leavers = game.getPlayers();
+                    List leavers = game.getPlayers();
 
                     String newPlayerAddress=null;
 
@@ -682,9 +728,9 @@ RiskUtil.printStackTrace(e);
                     // this happens in the same way on each computer
                     for (int c=0; c< leavers.size() ; c++) {
 
-                            if ( !((Player)leavers.elementAt(c)).getAddress().equals(id) ) {
+                            if ( !((Player)leavers.get(c)).getAddress().equals(id) ) {
 
-                                    newPlayerAddress = ((Player)leavers.elementAt(c)).getAddress();
+                                    newPlayerAddress = ((Player)leavers.get(c)).getAddress();
                                     break;
                             }
 
@@ -693,7 +739,7 @@ RiskUtil.printStackTrace(e);
 
                     for (int c=0; c < leavers.size(); c++) {
 
-                            Player patc = ((Player)leavers.elementAt(c));
+                            Player patc = ((Player)leavers.get(c));
 
                             if ( patc.getAddress().equals(id) ) {
 
@@ -741,22 +787,22 @@ RiskUtil.printStackTrace(e);
                 }
 		else if (Addr.equals("DICE")) { // a server command
 
-			int attSize = RiskGame.getNumber(GetNext());
-			int defSize = RiskGame.getNumber(GetNext());
+			int attSize = RiskGame.getNumber(StringT.nextToken());
+			int defSize = RiskGame.getNumber(StringT.nextToken());
 
 			output=resb.getString( "core.dice.rolling") + System.getProperty("line.separator") + resb.getString( "core.dice.results");
 
 			int att[] = new int[ attSize ];
 			output = output + " " + resb.getString( "core.dice.attacker");
 			for (int c=0; c< attSize ; c++) {
-				att[c] = RiskGame.getNumber(GetNext());
+				att[c] = RiskGame.getNumber(StringT.nextToken());
 				output = output + " " + (att[c]+1);
 			}
 
 			int def[] = new int[ defSize ];
 			output = output + " " + resb.getString( "core.dice.defender");
 			for (int c=0; c< defSize ; c++) {
-				def[c] = RiskGame.getNumber(GetNext());
+				def[c] = RiskGame.getNumber(StringT.nextToken());
 				output = output + " " + (def[c]+1);
 			}
 
@@ -856,7 +902,7 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (Addr.equals("PLAYER")) { // a server command
 
-			int index = Integer.parseInt( GetNext() );
+			int index = Integer.parseInt( StringT.nextToken() );
 
 			Player p = game.setCurrentPlayer( index );
 
@@ -887,7 +933,7 @@ RiskUtil.printStackTrace(e);
 
 				// get the cards
 				//Vector cards = game.getCards();
-				String name = GetNext();
+				String name = StringT.nextToken();
 				Card card = game.findCardAndRemoveIt( name );
 
 				((Player)game.getCurrentPlayer()).giveCard( card );
@@ -912,7 +958,7 @@ RiskUtil.printStackTrace(e);
 			output = RiskUtil.replaceAll(resb.getString( "core.player.newselected"), "{0}", newplayer.getName());
 
 			// this is not a bug! (Easter egg)
-			if ( unlimitedLocalMode && game.getSetup() && newplayer.getName().equals("Theo")) { newplayer.addArmies( newplayer.getExtraArmies() ); }
+			if ( unlimitedLocalMode && game.getSetupDone() && newplayer.getName().equals("Theo")) { newplayer.addArmies( newplayer.getExtraArmies() ); }
 
 			saveGameToUndoObject();
 
@@ -920,7 +966,7 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (Addr.equals("PLACE")) { // a server command
 
-			Country c = game.getCountryInt( Integer.parseInt( GetNext() ) );
+			Country c = game.getCountryInt( Integer.parseInt( StringT.nextToken() ) );
 			game.placeArmy( c ,1);
 			controller.sendMessage( RiskUtil.replaceAll( resb.getString( "core.place.oneplacedin"), "{0}", c.getName()) , false, false); // Display
 			output=resb.getString( "core.place.autoplaceok");
@@ -930,7 +976,7 @@ RiskUtil.printStackTrace(e);
 
 			for (int c=0; c< game.getNoCountries() ; c++) {
 
-				Country t = game.getCountryInt( Integer.parseInt( GetNext() ) );
+				Country t = game.getCountryInt( Integer.parseInt( StringT.nextToken() ) );
 				game.placeArmy( t ,1);
 				controller.sendMessage( RiskUtil.replaceAll(RiskUtil.replaceAll( resb.getString("core.place.getcountry")
 						, "{0}", ((Player)game.getCurrentPlayer()).getName())
@@ -949,14 +995,14 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (Addr.equals("MISSION")) { // a server command
 
-			Vector m = game.getMissions();
-			Vector p = game.getPlayers();
+			List m = game.getMissions();
+			List p = game.getPlayers();
 
 			for (int c=0; c< p.size() ; c++) {
 
-				int i = RiskGame.getNumber( GetNext() );
-				((Player)p.elementAt(c)).setMission( (Mission)m.elementAt(i) );
-				m.removeElementAt(i);
+				int i = RiskGame.getNumber( StringT.nextToken() );
+				((Player)p.get(c)).setMission( (Mission)m.get(i) );
+				m.remove(i);
 
 			}
 
@@ -997,7 +1043,7 @@ RiskUtil.printStackTrace(e);
 
 			//if (StringT.hasMoreTokens()) {
 
-			String input=GetNext();
+			String input=StringT.nextToken();
 			output="";
 
 			if (game.getState()==RiskGame.STATE_NEW_GAME) {
@@ -1005,10 +1051,10 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("choosemap")) {
 
 					if (StringT.countTokens() >= 1) {
-						String filename=GetNext();
+						String filename=StringT.nextToken();
 
-						while ( StringT.hasMoreElements() ) {
-							filename = filename + " " + GetNext();
+						while ( StringT.hasMoreTokens() ) {
+							filename = filename + " " + StringT.nextToken();
 						}
 
 						try {
@@ -1028,9 +1074,9 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("choosecards")) {
 
 					if (StringT.countTokens() >= 1) {
-						String filename=GetNext();
-						while ( StringT.hasMoreElements() ) {
-							filename = filename + " " + GetNext();
+						String filename=StringT.nextToken();
+						while ( StringT.hasMoreTokens() ) {
+							filename = filename + " " + StringT.nextToken();
 						}
 
 						try {
@@ -1052,17 +1098,17 @@ RiskUtil.printStackTrace(e);
 
 					if (StringT.countTokens()>=3) {
 
-						String type=GetNext();
+						String type=StringT.nextToken();
 						if (type.equals("ai")) {
-							type = type+" "+GetNext();
+							type = type+" "+StringT.nextToken();
 						}
 
-						String c=GetNext();
+						String c=StringT.nextToken();
 
 						String name="";
-						while ( StringT.hasMoreElements() ) {
-							name = name + GetNext();
-							if ( StringT.hasMoreElements() ) { name = name + " "; }
+						while ( StringT.hasMoreTokens() ) {
+							name = name + StringT.nextToken();
+							if ( StringT.hasMoreTokens() ) { name = name + " "; }
 						}
 
 						int t=getType(type);
@@ -1089,10 +1135,10 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("delplayer")) {
 
 					if (StringT.countTokens()>=1) {
-						String name=GetNext();
+						String name=StringT.nextToken();
 
-						while ( StringT.hasMoreElements() ) {
-							name = name +" "+ GetNext();
+						while ( StringT.hasMoreTokens() ) {
+							name = name +" "+ StringT.nextToken();
 						}
 
 						if ( game.delPlayer(name) ) {
@@ -1110,11 +1156,11 @@ RiskUtil.printStackTrace(e);
 
 						output=resb.getString( "core.info.title") + "\n";
 
-						Vector players = game.getPlayers();
+						List players = game.getPlayers();
 
 						for (int a=0; a< players.size() ; a++) {
 
-							output = output + resb.getString( "core.info.player") + " " + ((Player)players.elementAt(a)).getName() +"\n";
+							output = output + resb.getString( "core.info.player") + " " + ((Player)players.get(a)).getName() +"\n";
 
 						}
 
@@ -1162,7 +1208,7 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("startgame")) {
 					if (StringT.countTokens() >= 2 && StringT.countTokens() <= 4) {
 
-						int n=((Vector)game.getPlayers()).size();
+						int n=game.getPlayers().size();
 
 						int newgame_type = -1;
 						int newgame_cardType = -1;
@@ -1173,7 +1219,7 @@ RiskUtil.printStackTrace(e);
 						String crap = null;
 
 						while (StringT.hasMoreTokens()) {
-							String newOption = GetNext();
+							String newOption = StringT.nextToken();
 							if ( newOption.equals("domination") ) {
 								newgame_type = RiskGame.MODE_DOMINATION;
 							}
@@ -1294,10 +1340,10 @@ RiskUtil.printStackTrace(e);
 
 					if (StringT.countTokens() >= 1) {
 
-						String filename = GetNext();
+						String filename = StringT.nextToken();
 
-						while ( StringT.hasMoreElements() ) {
-							filename = filename + " " + GetNext();
+						while ( StringT.hasMoreTokens() ) {
+							filename = filename + " " + StringT.nextToken();
 						}
 
 						try {
@@ -1372,17 +1418,11 @@ RiskUtil.printStackTrace(e);
 
 						}
 						catch(Exception error) {
-							output="unable to play \""+filename+"\"";
+							output="unable to play \""+filename+"\" "+error;
 						}
-
-
-
 					}
 					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "play filename"); }
-
 				}
-
-
 				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "newplayer, delplayer, startgame, choosemap, choosecards, info, autosetup"); }
 
 			}
@@ -1421,97 +1461,6 @@ RiskUtil.printStackTrace(e);
 
 
 			}
-
-
-			// REPLAY A GAME FROM THE GAME FILE
-			else if (input.equals("replay")) {
-
-				if ( StringT.hasMoreTokens()==false ) {
-
-				    if ( unlimitedLocalMode ) {
-
-					try {
-
-						Vector replayCommands = game.getCommands();
-						replayCommands.remove( replayCommands.size()-1 );
-
-						saveGameToUndoObject();
-
-						game = new RiskGame();
-
-						replay = true;
-
-						for (Enumeration e = replayCommands.elements() ; e.hasMoreElements() ;) {
-
-							inGameParser( (String)e.nextElement() );
-
-							//try{ Thread.sleep(1000); }
-							//catch(InterruptedException e){}
-
-						}
-
-						replay = false;
-
-						output="replay of game finished";
-
-					}
-					catch (Exception e) {
-						System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-						RiskUtil.printStackTrace(e);
-					}
-				    }
-				    else {
-					output = resb.getString( "core.undo.error.network");
-				    }
-
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "replay"); }
-
-			}
-
-			// SAVE GAME
-			else if (input.equals("savegame")) {
-
-				if (StringT.countTokens() >= 1) {
-
-				    if ( unlimitedLocalMode ) {
-
-					Vector replayCommands = game.getCommands();
-					replayCommands.remove( replayCommands.size()-1 );
-
-					String filename = GetNext();
-
-					while ( StringT.hasMoreElements() ) {
-						filename = filename + " " + GetNext();
-					}
-
-//					if (battle) {
-//						output=resb.getString( "core.save.error.unable"); // TODO better error message, can not save during battle
-//                                                showMessageDialog(output);
-//                                        }
-//                                        else {
-                                            try {
-                                                RiskUtil.saveFile(filename,game);
-                                                output=resb.getString( "core.save.saved");
-                                            }
-                                            catch (Exception ex) {
-                                                System.err.println("error saving game to file: "+filename);
-                                                RiskUtil.printStackTrace(ex);
-
-                                                output=resb.getString( "core.save.error.unable")+" "+ex;
-                                                showMessageDialog(output);
-                                            }
-//					}
-
-				    }
-				    else {
-					output = resb.getString( "core.save.error.unable" );
-				    }
-
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "savegame filename"); }
-			}
-
 			else if (input.equals("showmission")) {
 				if (StringT.hasMoreTokens()==false) {
 
@@ -1539,15 +1488,15 @@ RiskUtil.printStackTrace(e);
 
 							if ( v[c].getOwner() != null ) {
 								output = output + ((Player)v[c].getOwner()).getName() +" ("+v[c].getArmies() +")";
-								if (game.getGameMode() == 2 && game.getSetup() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
+								if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
 
-									Vector players = game.getPlayers();
+									List players = game.getPlayers();
 
 									for (int a=0; a< players.size() ; a++) {
 
-										if ( ((Player)players.elementAt(a)).getCapital() != null && ((Player)players.elementAt(a)).getCapital() == v[c] ) {
+										if ( ((Player)players.get(a)).getCapital() != null && ((Player)players.get(a)).getCapital() == v[c] ) {
 											output = output + " " + RiskUtil.replaceAll( resb.getString( "core.showarmies.captial")
-														, "{0}", ((Player)players.elementAt(a)).getName());
+														, "{0}", ((Player)players.get(a)).getName());
 										}
 
 									}
@@ -1574,7 +1523,7 @@ RiskUtil.printStackTrace(e);
 
 					if ( showHumanPlayerThereInfo() ) {
 
-						Vector c = ((Player)game.getCurrentPlayer()).getCards();
+						List c = ((Player)game.getCurrentPlayer()).getCards();
 
 						if (c.size() == 0) {
 							output=resb.getString( "core.showcards.nocards");
@@ -1584,11 +1533,11 @@ RiskUtil.printStackTrace(e);
 
 							for (int a=0; a< c.size() ; a++) {
 
-								if ( ((Card)c.elementAt(a)).getName().equals(Card.WILDCARD) ) {
+								if ( ((Card)c.get(a)).getName().equals(Card.WILDCARD) ) {
 									output = output + " " + Card.WILDCARD; // resb.getString( "core.showcards.wildcard"); // dont use this as user needs to type it in
 								}
 								else {
-									output = output + " \"" + ((Card)c.elementAt(a)).getName() +" "+ ((Country)((Card)c.elementAt(a)).getCountry()).getName() +" ("+((Country)((Card)c.elementAt(a)).getCountry()).getColor()+")\""; // Display
+									output = output + " \"" + ((Card)c.get(a)).getName() +" "+ ((Country)((Card)c.get(a)).getCountry()).getName() +" ("+((Country)((Card)c.get(a)).getCountry()).getColor()+")\""; // Display
 								}
 
 							}
@@ -1626,7 +1575,7 @@ RiskUtil.printStackTrace(e);
 				}
 				else if (StringT.countTokens() == 1) {
 
-					String option = GetNext();
+					String option = StringT.nextToken();
 					if (option.equals("on") ) {
 						game.getCurrentPlayer().setAutoEndGo(true);
 						output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( "core.autoendgo.on"));
@@ -1655,7 +1604,7 @@ RiskUtil.printStackTrace(e);
 				}
 				else if (StringT.countTokens() == 1) {
 
-					String option = GetNext();
+					String option = StringT.nextToken();
 					if (option.equals("on") ) {
 						game.getCurrentPlayer().setAutoDefend(true);
 						output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( "core.autodefend.on"));
@@ -1676,7 +1625,7 @@ RiskUtil.printStackTrace(e);
 						// trade Japan wildcard Egypt
 						int noa=0;
 
-						Card cards[] = game.getCards(GetNext(),GetNext(),GetNext());
+						Card cards[] = game.getCards(StringT.nextToken(),StringT.nextToken(),StringT.nextToken());
 
 						if (cards[0] != null && cards[1] != null && cards[2] != null) { // if the player DOES HAVE all the cards he chose
 							noa = game.trade(cards[0], cards[1], cards[2]);
@@ -1708,9 +1657,9 @@ RiskUtil.printStackTrace(e);
 
 				if (input.equals("placearmies")) {
 					if (StringT.countTokens()==2) {
-						String country=GetNext();
+						String country=StringT.nextToken();
 						int c=RiskGame.getNumber( country );
-						int num=RiskGame.getNumber( GetNext() );
+						int num=RiskGame.getNumber( StringT.nextToken() );
 						Country t;
 
 						if (c != -1) {
@@ -1773,8 +1722,8 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("attack")) {
 					if (StringT.countTokens()==2) {
 
-						String arg1=GetNext();
-						String arg2=GetNext();
+						String arg1=StringT.nextToken();
+						String arg2=StringT.nextToken();
 						int a1=RiskGame.getNumber(arg1);
 						int a2=RiskGame.getNumber(arg2);
 
@@ -1838,7 +1787,7 @@ RiskUtil.printStackTrace(e);
 
 					if (StringT.countTokens()==1) {
 
-						int dice=RiskGame.getNumber( GetNext() );
+						int dice=RiskGame.getNumber( StringT.nextToken() );
 
 						if ( dice != -1 && game.rollA(dice) ) {
 
@@ -1884,7 +1833,7 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("move")) {
 					if (StringT.countTokens()==1) {
 
-						String num = GetNext();
+						String num = StringT.nextToken();
 						int noa;
 
 						if (num.equals("all")) {
@@ -1919,8 +1868,8 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("movearmies")) {
 					if (StringT.countTokens()==3) {
 
-						String arg1=GetNext();
-						String arg2=GetNext();
+						String arg1=StringT.nextToken();
+						String arg2=StringT.nextToken();
 						int a1=RiskGame.getNumber(arg1);
 						int a2=RiskGame.getNumber(arg2);
 
@@ -1943,7 +1892,7 @@ RiskUtil.printStackTrace(e);
 							country2=null;
 						}
 
-						int noa=RiskGame.getNumber( GetNext() );
+						int noa=RiskGame.getNumber( StringT.nextToken() );
 
 						if ( game.moveArmy(country1, country2, noa) ) {
 							//Moved {0} armies from {1} to {2}.
@@ -2011,7 +1960,7 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("capital")) {
 					if (StringT.countTokens()==1) {
 
-						String strCountry = GetNext();
+						String strCountry = StringT.nextToken();
 						int nCountryId = RiskGame.getNumber(strCountry);
 						Country t;
 
@@ -2048,7 +1997,7 @@ RiskUtil.printStackTrace(e);
 
 					if (StringT.countTokens()==1) {
 
-						int dice=RiskGame.getNumber( GetNext() );
+						int dice=RiskGame.getNumber( StringT.nextToken() );
 						if ( dice != -1 && game.rollD(dice) ) {
 
 							if ( battle ) {
@@ -2388,7 +2337,7 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
 
-			if ( game.getSetup() ) { help = help + resb.getString( "core.help.placearmies"); }
+			if ( game.getSetupDone() ) { help = help + resb.getString( "core.help.placearmies"); }
 
 			else if ( game.NoEmptyCountries() ) { help = help + resb.getString( "core.help.placearmy"); }
 
@@ -2503,11 +2452,9 @@ RiskUtil.printStackTrace(e);
 	 * Shows the cards a Player has in his/her possession
 	 * @return Vector Returns the cards in a vector
 	 */
-	public Vector getCurrentCards() {
-
+	public List getCurrentCards() {
 		//return game.getCards(); // for testing cards
 		return ((Player)game.getCurrentPlayer()).getCards();
-
 	}
 
 
@@ -2619,16 +2566,15 @@ RiskUtil.printStackTrace(e);
 		}
 
 		List Players = g.getPlayers();
-		boolean setup = g.NoEmptyCountries();
+		boolean setup = g.getSetupDone();
 
 		int num=0;
 		int start=0;
 
 		for (int c=0; c< Players.size() ; c++) {
 
-			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || setup==false ) { num++; }
+			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || !setup ) { num++; }
 			if ( ((Player)Players.get(c)) == g.getCurrentPlayer() ) { start=c; }
-
 		}
 
 		int[] playerColors = new int[num];
@@ -2637,15 +2583,12 @@ RiskUtil.printStackTrace(e);
 
 		for (int c=start; c< Players.size() ; c++) {
 
-			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || setup==false ) { playerColors[ current ] = ((Player)Players.get(c)).getColor() ; current++; }
+			if ( ((Player)Players.get(c)).getNoTerritoriesOwned() > 0 || !setup ) { playerColors[ current ] = ((Player)Players.get(c)).getColor() ; current++; }
 			if ( current==num ) { break; }
 			if ( c==Players.size()-1 ) { c=-1; }
-
-
 		}
 
 		return playerColors;
-
 	}
 
 	/**
@@ -2801,9 +2744,9 @@ RiskUtil.printStackTrace(e);
 	}
 
 	public void renamePlayer(String oldser,String newuser) {
-		Vector players = game.getPlayers();
+		List players = game.getPlayers();
 		for (int c=0;c<players.size(); c++) {
-			Player player = (Player)players.elementAt(c);
+			Player player = (Player)players.get(c);
 			if ( oldser.equals( player.getName() ) ) {
 				player.rename(newuser);
                                 break;

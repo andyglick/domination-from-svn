@@ -18,11 +18,11 @@ import net.yura.domination.engine.core.Player;
  * @author Steven Hawkins
  */
 public class AICapital extends AIDomination {
-	
+
         public AICapital(int type) {
             super(type);
         }
-    
+
 	/**
 	 * Adds the best defended capital to the border when there is a threat
 	 */
@@ -62,7 +62,7 @@ public class AICapital extends AIDomination {
 		GameState gameState, Map<Country, AttackTarget> targets,
 		Set<Country> allCountriesTaken, boolean pressAttack,
 		boolean shouldEndAttack, boolean highProbability) {
-		if (game.getSetup()) {
+		if (game.getSetupDone()) {
 			Map<Player, Integer> owned = new HashMap<Player, Integer>();
 			for (Iterator<Country> i = gameState.capitals.iterator(); i.hasNext();) {
 				Country c = i.next();
@@ -81,9 +81,9 @@ public class AICapital extends AIDomination {
 			}
 			double percentOwned = myowned.intValue()/num;
 			double ratio = gameState.me.playerValue/gameState.orderedPlayers.get(0).playerValue;
-			
+
 			//offensive planning
-			if (highProbability || (isIncreasingSet() && (ratio/3 > percentOwned )) 
+			if (highProbability || (isIncreasingSet() && (ratio/3 > percentOwned ))
 					|| (percentOwned >= .5 && (isIncreasingSet() || ratio > 1))) {
 				String result = planCapitalMove(attack, attackable, gameState, targets, null, highProbability, allCountriesTaken, !highProbability, shouldEndAttack);
 				if (result != null) {
@@ -122,7 +122,7 @@ public class AICapital extends AIDomination {
 								if (result != null) {
 									return result;
 								}
-							} 
+							}
 							//else TODO: should we directly do a fortification
 						}
 						break;
@@ -138,12 +138,12 @@ public class AICapital extends AIDomination {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Plans to take one (owned by the target player) or all of the remaining capitals.
-	 * @param allCountriesTaken 
-	 * @param lowProbability 
-	 * @param shouldEndAttack 
+	 * @param allCountriesTaken
+	 * @param lowProbability
+	 * @param shouldEndAttack
 	 */
 	private String planCapitalMove(boolean attack, List<Country> attackable,
 			GameState gameState, Map<Country, AttackTarget> targets, Player target, boolean allOrNone, Set<Country> allCountriesTaken, boolean lowProbability, boolean shouldEndAttack) {
@@ -174,7 +174,7 @@ public class AICapital extends AIDomination {
 			} else {
 				return null; //should be taken
 			}
-		}	
+		}
 		if (!toAttack.isEmpty()) {
 			if (allOrNone) {
 				EliminationTarget et = new EliminationTarget();
@@ -183,7 +183,7 @@ public class AICapital extends AIDomination {
 				et.ps = gameState.orderedPlayers.get(0);
 				return eliminate(attackable, targets, gameState, attack, remaining, allCountriesTaken, et, shouldEndAttack, lowProbability);
 			}
-			Collections.sort(toAttack, Collections.reverseOrder()); 
+			Collections.sort(toAttack, Collections.reverseOrder());
 			AttackTarget at = toAttack.get(0);
 			int route = findBestRoute(attackable, gameState, attack, null, at, gameState.targetPlayers.get(0), targets);
 			Country start = attackable.get(route);
@@ -215,11 +215,11 @@ public class AICapital extends AIDomination {
 		}
 		return super.getBattleWon(gameState);
 	}
-	
+
 	public String getCapital() {
 		return "capital " + findCapital().getColor();
 	}
-	
+
 	/**
 	 * Searches for the country with the lowest (best) score as the capital.
 	 */
@@ -238,10 +238,10 @@ public class AICapital extends AIDomination {
 		}
 		return result;
 	}
-	
+
 	protected double getContinentValue(Continent co) {
 		double value = super.getContinentValue(co);
-		if (!game.getSetup()) {
+		if (!game.getSetupDone()) {
 			//blunt the affect of continent modification so that we'll mostly consider
 			//contiguous countries
 			return Math.sqrt(value);

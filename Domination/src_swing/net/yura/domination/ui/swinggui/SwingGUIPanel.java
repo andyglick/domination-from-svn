@@ -211,7 +211,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		gameTab = new GameTab();
 		consoleTab = new ConsoleTab();
 		statisticsTab = new StatisticsTab();
-		
+
 		editorTab = new MapEditor(myrisk,this);
 
 		addTab(gameTab);
@@ -243,7 +243,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                 catch (Throwable th) {
                     RiskUtil.printStackTrace(th); // TranslationTool.jar could be missing
                 }
-                
+
                 if (RiskUIUtil.checkForNoSandbox()) {
                     addTab(new BugsPanel());
                 }
@@ -323,7 +323,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                 if (debugTab!=null) {
                     debugTab.start();
                 }
-                
+
                 net.yura.domination.engine.ai.AIManager.setWait(5);
 	}
 
@@ -334,7 +334,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	public void checkForUpdates() {
 
                 RiskUIUtil.checkForUpdates(myrisk);
-            
+
 		if (RiskUIUtil.getAddLobby()) {
 			lobby.setVisible(true);
                         revalidate();
@@ -863,7 +863,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
                     donate.setText("Donate");
                 }
                 Pix.add(donate, BorderLayout.SOUTH );
-                
+
 
 		setLayout(new java.awt.BorderLayout());
 
@@ -1096,7 +1096,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 	public void actionPerformed(ActionEvent a) {
 
                 String actionCommand = a.getActionCommand();
-            
+
 		if ("showmission".equals(actionCommand)) {
 
 			showMission( myrisk.getCurrentMission() );
@@ -1222,19 +1222,19 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			((JCheckBox)message[1]).setSelected( myrisk.getAutoDefend() );
 
 			String[] options = {
-			    "OK", 
+			    "OK",
 			    "cancel"
-			}; 
+			};
 
-			int result = JOptionPane.showOptionDialog( 
-			    this,                             // the parent that the dialog blocks 
-			    message,                                    // the dialog message array 
-			    "Options", // the title of the dialog window 
-			    JOptionPane.OK_CANCEL_OPTION,                 // option type 
-			    JOptionPane.PLAIN_MESSAGE,            // message type 
-			    null,                                       // optional icon, use null to use the default icon 
-			    options,                                    // options string array, will be made into buttons 
-			    options[0]                                  // option that should be made into a default button 
+			int result = JOptionPane.showOptionDialog(
+			    this,                             // the parent that the dialog blocks
+			    message,                                    // the dialog message array
+			    "Options", // the title of the dialog window
+			    JOptionPane.OK_CANCEL_OPTION,                 // option type
+			    JOptionPane.PLAIN_MESSAGE,            // message type
+			    null,                                       // optional icon, use null to use the default icon
+			    options,                                    // options string array, will be made into buttons
+			    options[0]                                  // option that should be made into a default button
 			);
 
 			if (result == JOptionPane.OK_OPTION ) {
@@ -1281,9 +1281,9 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 		}
                 else if ("donate".equals(actionCommand)) {
-                    
+
                         RiskUIUtil.donate(this);
-                    
+
                 }
 		else {
 
@@ -1335,7 +1335,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
             // if we do not use this here we get ClassCastException in java 1.7
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-            
+
 			gNewGame.setEnabled(false);
 			gLoadGame.setEnabled(false);
 			//gSaveGame.setEnabled(true);
@@ -1401,7 +1401,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
             // if we do not use this here we get ClassCastException in java 1.7 when we load a saved game
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-            
+
 			gNewGame.setEnabled(false);
 			gLoadGame.setEnabled(false);
 			//gSaveGame.setEnabled(true);
@@ -1459,7 +1459,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
     public static void submitBug(Component parent, String text,String from,String subjectIn,String cause) {
 
             String subject = RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
-        
+
             try {
                     net.yura.grasshopper.BugSubmitter.submitBug(text, from, subject, cause,
                             RiskUtil.GAME_NAME,
@@ -1475,7 +1475,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
                     URL url = new URL("mailto:yura@yura.net"+
                             "?subject="+URLEncoder.encode(subject, "UTF-8").replace('+', ' ')+
                             "&body="+URLEncoder.encode(text, "UTF-8").replace('+', ' '));
-                
+
                     RiskUtil.openURL(url);
                 }
                 catch (Throwable th) {
@@ -1492,7 +1492,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 	private JToolBar toolbarDebug;
 	private JMenu mDebug;
-        
+
         String cause;
 
 	public JToolBar getToolBar() {
@@ -1547,13 +1547,13 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                 JButton cr = new JButton("Clear Error");
 		cr.setActionCommand("clear error");
 		cr.addActionListener(this);
-                
+
                 JButton gc = new JButton("GC");
 		gc.setActionCommand("gc");
 		gc.addActionListener(this);
-		
-                
-                
+
+
+
 		toolbarDebug.add(tdSaveDebug);
 		toolbarDebug.add(tdPlayDebug);
 		toolbarDebug.add(tdClearDebug);
@@ -1651,8 +1651,8 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		setLeftComponent(debugPanel);
 		setRightComponent(errPanel);
 
-		setContinuousLayout(true); 
-		setOneTouchExpandable(true); 
+		setContinuousLayout(true);
+		setOneTouchExpandable(true);
 		setDividerLocation(400);
 		setBorder( BorderFactory.createEmptyBorder() );
 
@@ -1703,7 +1703,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                     catch (Throwable th) {
                         RiskUtil.printStackTrace(th);
                     }
-                    
+
 		}
 
         }
@@ -1757,15 +1757,15 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 		}
                 else if (a.getActionCommand().equals("clear error")) {
-                
+
                     errText.setText("");
                     tabbedpane.setIconAt(tabbedpane.indexOfComponent(this), null);
-                    
+
                 }
                 else if (a.getActionCommand().equals("gc")) {
-                    
+
                     System.gc();
-                    
+
                 }
 		else {
 
@@ -1958,7 +1958,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 		pp.setHighLight(PicturePanel.NO_COUNTRY);
 		// Testing.append("Submitted: \""+input+"\"\n");
 
-		if (gameState!=2 || !myrisk.getGame().getSetup() ) { blockInput(); }
+		if (gameState!=2 || !myrisk.getGame().getSetupDone() ) { blockInput(); }
 
 		myrisk.parser(input);
 
@@ -2167,12 +2167,12 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				pp.setC2(PicturePanel.NO_COUNTRY);
 
                                 tradeCards.endtrade.setVisible( myrisk.getGame().canEndTrade() );
-                                
+
                                 armiesLeft( myrisk.getGame().getCurrentPlayer().getExtraArmies() , myrisk.getGame().NoEmptyCountries() );
 				inGameCards.show(inGameInput, "tradeCards");
 			}
 			else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
-                            
+
                                 armiesLeft( myrisk.getGame().getCurrentPlayer().getExtraArmies() , myrisk.getGame().NoEmptyCountries() );
 				inGameCards.show(inGameInput, "placeArmies");
 			}
@@ -2189,13 +2189,13 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "roll");
 			}
 			else if (gameState == RiskGame.STATE_BATTLE_WON) {
-                            
+
                                 int min = myrisk.getGame().getMustMove();
                             	int max = myrisk.hasArmiesInt( myrisk.getGame().getAttacker().getColor() ) -1;
                                 slider.setMaximum(max);
                                 slider.setMinimum(min);
                                 slider.setValue(min);
-                            
+
 				inGameCards.show(inGameInput, "move");
 			}
 			else if (gameState == RiskGame.STATE_FORTIFYING) {
@@ -2205,9 +2205,9 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				inGameCards.show(inGameInput, "endgo");
 			}
 			else if (gameState == RiskGame.STATE_GAME_OVER) {
-                            
+
                                 winner.continueButton.setVisible( myrisk.getGame().canContinue() );
-                            
+
 				inGameCards.show(inGameInput, "winner");
 			}
 			else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
@@ -2278,7 +2278,7 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 			gameTab.startGame();
 			statisticsTab.startGame();
 
-                        
+
 			SwingGUIPanel.this.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
 		}
 
@@ -2404,6 +2404,8 @@ public void setNODDefender(int n) {}
 		public void paintComponent(Graphics g) {
 
 			int[] colors = myrisk.getPlayerColors();
+
+                        if (colors.length==0) return;
 
 			for (int c=0; c < colors.length ; c++) {
 				g.setColor( new Color( colors[c] ) );
@@ -2937,7 +2939,7 @@ public void setNODDefender(int n) {}
                 					colorComboBox.setSelectedIndex(0);
 							typeComboBox.setSelectedIndex(0);
 
- 							// Messages 
+ 							// Messages
 							Object[] message = new Object[6];
 
 							message[0] = resbundle.getString("newgame.label.name");
@@ -2947,21 +2949,21 @@ public void setNODDefender(int n) {}
 							message[4] = resbundle.getString("newgame.label.type");
 							message[5] = typeComboBox;
 
-							// Options 
-							String[] options = { 
+							// Options
+							String[] options = {
 								"OK",
 								"Cancel"
-							}; 
-							int result = JOptionPane.showOptionDialog( 
+							};
+							int result = JOptionPane.showOptionDialog(
 								RiskUIUtil.findParentFrame(SwingGUIPanel.this),			// the parent that the dialog blocks
-								message,				// the dialog message array 
-								"create new player",			// the title of the dialog window 
-								JOptionPane.OK_CANCEL_OPTION,		// option type 
-								JOptionPane.QUESTION_MESSAGE,		// message type 
-								null,					// optional icon, use null to use the default icon 
-								options,				// options string array, will be made into buttons 
-								options[0]				// option that should be made into a default button 
-							); 
+								message,				// the dialog message array
+								"create new player",			// the title of the dialog window
+								JOptionPane.OK_CANCEL_OPTION,		// option type
+								JOptionPane.QUESTION_MESSAGE,		// message type
+								null,					// optional icon, use null to use the default icon
+								options,				// options string array, will be made into buttons
+								options[0]				// option that should be made into a default button
+							);
 
 							if (result==0) {
 
@@ -3266,9 +3268,9 @@ public void setNODDefender(int n) {}
 							if (setupOK == true) {
 
 								if (localGame) {
-                                                                    
+
                                                                     List playerStrings = new ArrayList();
-                                                                    
+
 								    for (int c=0; c < players.getRowCount(); c++) {
 
                                                                         String name = (String)players.getValueAt(c, 0);
@@ -3276,11 +3278,11 @@ public void setNODDefender(int n) {}
 									String type = ((PlayerType)players.getValueAt(c, 2)).getType();
 
                                                                         playerStrings.add( new String[] {name,color,type} );
-                                                                        
+
 									go("newplayer "+type+" "+color+" "+name );
 
 								    }
-                                                                    
+
                                                                     RiskUtil.savePlayers(playerStrings, SwingGUIPanel.class);
 								}
 
@@ -3508,7 +3510,7 @@ public void setNODDefender(int n) {}
 	class tradeCardsPanel extends JPanel {
 
                 JButton endtrade;
-            
+
 		public tradeCardsPanel() {
 
 			endtrade = new JButton(resbundle.getString("game.button.go.endtrade"));
@@ -3889,7 +3891,7 @@ public void setNODDefender(int n) {}
 	class winnerPanel extends JPanel {
 
                 JButton continueButton;
-            
+
 		public winnerPanel() {
 
                         continueButton = new JButton(resbundle.getString("game.button.go.continue"));
@@ -3900,7 +3902,7 @@ public void setNODDefender(int n) {}
                                 }
                             }
 			);
-                        
+
                         add( new JLabel(resbundle.getString("game.over")) );
                         add(continueButton);
 		}

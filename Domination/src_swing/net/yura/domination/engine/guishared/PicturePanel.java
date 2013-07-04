@@ -106,9 +106,9 @@ public class PicturePanel extends JPanel implements MapPanel {
                 // clean up before we load new images
                 original = null;
                 countryImages = null;
-                
+
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
-                
+
 		memoryLoad(
                         RiskUIUtil.read(RiskUtil.openMapStream(game.getImageMap()) ),
                         RiskUIUtil.read(RiskUtil.openMapStream(game.getImagePic()) )
@@ -197,7 +197,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
                 pixels = null;
-                
+
 		//ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 		//ColorConvertOp Gray = new ColorConvertOp( cs , null);
 
@@ -278,7 +278,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			if (cc != NO_COUNTRY) {
                                 drawHighLightImage(g2, cc);
                         }
-                        
+
                         if (myrisk.getGame().getState()==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
                             Player me = myrisk.getGame().getCurrentPlayer();
                             List<Card> cards = me.getCards();
@@ -295,7 +295,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			if (cc != NO_COUNTRY) {
 
                                 int offset = 5;
-                            
+
 				TextLayout tl = new TextLayout( this.strCountry + " "+ myrisk.getCountryName( cc ) , g2.getFont() , g2.getFontRenderContext() );
 				int w = (int)tl.getAdvance();
 				int h = (int)tl.getAscent() + (int)tl.getDescent();
@@ -326,7 +326,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	private double getScale() {
 		return Math.min(getHeight()/(double)getMapHeight() ,getWidth()/(double)getMapWidth() );
 	}
-        
+
         public int getMapWidth() {
             return map.length;
         }
@@ -335,7 +335,7 @@ public class PicturePanel extends JPanel implements MapPanel {
         }
 
         public int BALL_SIZE=20;
-        
+
 	/**
 	 * Paints the army components
 	 * @param g2 a 2D Graphics object.
@@ -349,7 +349,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                 int state = game.getState();
 
                 int r = BALL_SIZE/2;
-                
+
 		if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
 			int a=game.getAttacker().getColor();
@@ -423,9 +423,9 @@ public class PicturePanel extends JPanel implements MapPanel {
                                 g2.setColor( new Color( ColorUtil.getTextColorFor( t.getOwner().getColor() ) ) );
 
                                 g2.setFont( getFont() );
-                                
+
                                 String noa= String.valueOf( t.getArmies() );
-                                
+
                                 int w2 = g2.getFontMetrics().stringWidth(noa) / 2;
                                 int h2 = g2.getFontMetrics().getAscent()*2/5 ;
 
@@ -435,20 +435,20 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 }
 
-		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
+		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetupDone() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
 
                         int stroke = BALL_SIZE / 10;
-                    
+
                         Stroke old = g2.getStroke();
 			g2.setStroke(new BasicStroke( stroke ));
 			List players = game.getPlayers();
 
 			for (int c=0; c< players.size() ; c++) {
-                            
+
                                 Country capital = ((Player)players.get(c)).getCapital();
 
 				if ( capital !=null ) {
-					
+
                                         int pos = capital.getColor()-1;
 
                                         int x,y;
@@ -481,7 +481,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 		}
 
 	}
-        
+
         BallWorld ballWorld;
         int oldState;
 
@@ -1136,7 +1136,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
         public final static int PREVIEW_WIDTH=203;
         public final static int PREVIEW_HEIGHT=127;
-        
+
 	public static Image getImage(RiskGame game) throws IOException {
 		// attempt to get the preview as its smaller
 		String previewName = game.getPreviewPic();
@@ -1171,7 +1171,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			//AffineTransform at = AffineTransform.getScaleInstance((double)203/s.getWidth(),(double)127/s.getHeight());
 			//g.drawRenderedImage(s,at);
 
-                        
+
                         BufferedImage tmpimg = new BufferedImage( PREVIEW_WIDTH,PREVIEW_HEIGHT, java.awt.image.BufferedImage.TYPE_INT_RGB );
 			Graphics2D g = tmpimg.createGraphics();
 
@@ -1196,7 +1196,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 			return tmpimg;
                 }
                 return img;
-                
+
 	}
 
 	public Image getImage() {
