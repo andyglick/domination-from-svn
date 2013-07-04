@@ -184,10 +184,6 @@ public class MiniFlashRiskAdapter implements RiskListener {
                         battle.needInput(myRisk.getGame().getNoDefendDice(), false);
                         break;
                     case RiskGame.STATE_BATTLE_WON:
-                        RiskGame game = myRisk.getGame();
-                        int min = game.getMustMove();
-                        int c1num = game.getAttacker().getColor();
-                        int c2num = game.getDefender().getColor();
                         if (move==null) {
                             move = new MoveDialog(myRisk) {
                                 @Override
@@ -199,10 +195,16 @@ public class MiniFlashRiskAdapter implements RiskListener {
                                 }
                             };
                         }
+                        RiskGame game = myRisk.getGame();
+                        int min = game.getMustMove();
+                        int c1num = game.getAttacker().getColor();
+                        int c2num = game.getDefender().getColor();
                         Image c1img = gameFrame.pp.getCountryImage(c1num);
                         Image c2img = gameFrame.pp.getCountryImage(c2num);
                         move.setupMove(min, c1num, c2num, c1img, c2img, false);
-                        move.setVisible(true);
+
+                        // as needInput can get called any number of times, we only show if its not visible
+                        if (!move.isVisible()) { move.setVisible(true); }
                         break;
                 }
         }
