@@ -855,7 +855,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			movedialog.exitForm();
 		}
 
-		if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetup() ) { noInput(); }
+		if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
 
 	}
 

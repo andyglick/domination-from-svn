@@ -292,13 +292,13 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		};
 
-                
+
                 gameInfo = new ObjectTableModel() {
                     public Object getObject() {
                         return myrisk.getGame();
                     }
 		};
-                
+
                 commands = new AbstractTableModel() {
 
 			private final String[] columnNames = { "No", "Command"};
@@ -310,7 +310,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			public int getRowCount() {
 				RiskGame game = myrisk.getGame();
 				if (game != null) {
-					Vector players = game.getCommands();
+					List players = game.getCommands();
 					if (players != null) {
 						return players.size();
 					}
@@ -332,8 +332,8 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			}
 
 		};
-                
-                
+
+
 		JTabbedPane views = new JTabbedPane();
 
 		views.add( "Countries" , new JScrollPane(new JTable(countriesModel)) );
@@ -348,9 +348,9 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		add( views );
 
 	}
-        
+
         abstract class ObjectTableModel extends AbstractTableModel {
-            
+
                 private final String[] columnNames = { "Name", "Value" };
                 private Field[] fields;
 
@@ -401,9 +401,9 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                                 default: throw new RuntimeException();
                         }
                 }
-                
+
                 public abstract Object getObject();
-            
+
         }
 
         abstract class CardsTableModel extends AbstractTableModel {
@@ -411,7 +411,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                 private final String[] columnNames = { "No.", "Type", "Country" };
 
                 abstract List getCards();
-                
+
                 public int getColumnCount() {
                         return columnNames.length;
                 }
@@ -468,19 +468,19 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			message[1] = new JSpinner( new SpinnerNumberModel( AIManager.getWait(),0,10000,100 ) );
 
 			String[] options = {
-			    "OK", 
+			    "OK",
 			    "cancel"
-			}; 
+			};
 
-			int result = JOptionPane.showOptionDialog( 
-			    this,                             // the parent that the dialog blocks 
-			    message,                                    // the dialog message array 
-			    "AI Options", // the title of the dialog window 
-			    JOptionPane.OK_CANCEL_OPTION,                 // option type 
-			    JOptionPane.PLAIN_MESSAGE,            // message type 
-			    null,                                       // optional icon, use null to use the default icon 
-			    options,                                    // options string array, will be made into buttons 
-			    options[0]                                  // option that should be made into a default button 
+			int result = JOptionPane.showOptionDialog(
+			    this,                             // the parent that the dialog blocks
+			    message,                                    // the dialog message array
+			    "AI Options", // the title of the dialog window
+			    JOptionPane.OK_CANCEL_OPTION,                 // option type
+			    JOptionPane.PLAIN_MESSAGE,            // message type
+			    null,                                       // optional icon, use null to use the default icon
+			    options,                                    // options string array, will be made into buttons
+			    options[0]                                  // option that should be made into a default button
 			);
 
 			if (result == JOptionPane.OK_OPTION ) {

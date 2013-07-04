@@ -703,7 +703,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         pp.setHighLight(255);
 
-        if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetup() ) { noInput(); }
+        if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
 
         myrisk.parser(input);
 

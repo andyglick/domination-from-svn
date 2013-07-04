@@ -61,7 +61,7 @@ public class RiskGame implements Serializable { // transient
 	public final static int CARD_INCREASING_SET = 0;
 	public final static int CARD_FIXED_SET = 1;
 	public final static int CARD_ITALIANLIKE_SET = 2;
-        
+
         public final static int MAX_CARDS = 5;
 
 /*
@@ -145,13 +145,13 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	private int attackerDice;
 	private int defenderDice;
-	
+
 	private transient int battleRounds;
 
 	private String ImagePic;
 	private String ImageMap;
 	private String previewPic;
-        
+
         private Map properties;
 
 	private Vector replayCommands;
@@ -204,7 +204,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		return replayCommands;
 
 	}
-	
+
 	public void setCommands(Vector replayCommands) {
 		this.replayCommands = replayCommands;
 	}
@@ -429,7 +429,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			return "";
 		}
 	}
-	
+
 	public boolean isCapturedCountry() {
 		return capturedCountry;
 	}
@@ -459,7 +459,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					}
 				}
 
-				if ((setup != Players.size()) ) { break; }
+				if (!getSetupDone()) { break; }
 
 											// && (currentPlayer.getType() != 3)
 
@@ -469,7 +469,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			//System.out.print("Curent Player: " + currentPlayer.getName() + "\n"); // testing
 
-			if ( setup == Players.size() && !(gameMode==2 && currentPlayer.getCapital() == null) ) { // ie the initial setup has been compleated
+			if ( getSetupDone() && !(gameMode==2 && currentPlayer.getCapital() == null) ) { // ie the initial setup has been compleated
 
 				workOutEndGoStats( currentPlayer );
 				currentPlayer.nextTurn();
@@ -493,7 +493,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			}
 
-			if (setup == Players.size() && gameMode==2 && currentPlayer.getCapital() == null) { // capital risk setup not finished
+			if (getSetupDone() && gameMode==2 && currentPlayer.getCapital() == null) { // capital risk setup not finished
 				gameState=STATE_SELECT_CAPITAL;
 			}
 			else if ( canTrade()==false ) { // ie the initial setup has not been compleated or there are no cards that can be traded
@@ -641,7 +641,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public boolean canTrade() {
 		return getBestTrade(currentPlayer.getCards(), null) > 0;
 	}
-	
+
 	/**
 	 * Find the best (highest) trade
 	 * Simple greedy search using the various valid combinations
@@ -652,7 +652,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Map<String, List<Card>> cardTypes = new HashMap<String, List<Card>>();
 		for (Card card : cards) {
 			List<Card> cardType = cardTypes.get(card.getName());
-			if (cardType == null) { 
+			if (cardType == null) {
 				cardType = new ArrayList<Card>();
 				cardTypes.put(card.getName(), cardType);
 			}
@@ -769,7 +769,7 @@ transient - A keyword in the Java programming language that indicates that a fie
             }
             return false;
 	}
-        
+
         public boolean canEndTrade() {
 		if (gameState==STATE_TRADE_CARDS) {
                         //in italian rules there isn't a limit to the number of risk cards that you can hold in your hand.
@@ -792,7 +792,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		if ( gameState==STATE_PLACE_ARMIES ) {
 
-			if ( setup != Players.size() ) { // ie the initial setup has not been compleated
+			if ( !getSetupDone() ) { // ie the initial setup has not been compleated
 				if (n != 1) return 0;
 				// if it has the player as a owner
 				if ( t.getOwner()==currentPlayer ) {
@@ -834,7 +834,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			if (done==1) {
 
-				if (setup == Players.size() ) { // ie the initial setup has been compleated
+				if (getSetupDone() ) { // ie the initial setup has been compleated
 					if ( currentPlayer.getExtraArmies()==0 ) { gameState=STATE_ATTACKING; }
 					else { gameState=STATE_PLACE_ARMIES; }
 				}
@@ -1007,7 +1007,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public int getDefenderDice() {
 		return defenderDice;
 	}
-	
+
 	/**
 	 * Get the number of rolls that have taken place in the current attack
 	 * @return
@@ -1352,7 +1352,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 /* @todo: maybe add this back, as crap player can never win
 
-		else if (setup == Players.size() && gameMode==1) {
+		else if (getSetupDone() && gameMode==1) {
 
 			Player target=null;
 
@@ -1377,7 +1377,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 */
 
 		// check if the player has won capital risk!
-		else if (setup == Players.size() && gameMode==MODE_CAPITAL && currentPlayer.getCapital() !=null ) {
+		else if (getSetupDone() && gameMode==MODE_CAPITAL && currentPlayer.getCapital() !=null ) {
 
 			int capitalcount=0;
 
@@ -1399,7 +1399,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		}
 		// check if the player has won mission risk!
-		else if (setup == Players.size() && gameMode==MODE_SECRET_MISSION ) {
+		else if (getSetupDone() && gameMode==MODE_SECRET_MISSION ) {
 
 			Mission m = currentPlayer.getMission();
 
@@ -1478,9 +1478,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 
 	}
-        
+
         public boolean canContinue() {
-            
+
 		if (gameState==STATE_GAME_OVER && gameMode != MODE_DOMINATION && gameMode != 1) {
 
 			int oldGameMode=gameMode;
@@ -1492,7 +1492,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
                 }
                 return false;
-            
+
         }
 
 	public boolean continuePlay() {
@@ -1500,7 +1500,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                 if (canContinue()) {
 
                         gameMode=MODE_DOMINATION;
-                    
+
 			if (tradeCap==true) { gameState=STATE_TRADE_CARDS; }
 			else if ( currentPlayer.getExtraArmies()==0 ) { gameState=STATE_ATTACKING; }
 			else { gameState=STATE_PLACE_ARMIES; }
@@ -1514,7 +1514,7 @@ transient - A keyword in the Java programming language that indicates that a fie
         public int getClosestCountry(int x, int y) {
 		Country closestCountryCanvas = null;
 		int closestDistance = Integer.MAX_VALUE;
-		
+
 		for (int index=0; index < Countries.length; index++) {
                         int distance = Countries[index].getDistanceTo(x,y);
                         if (distance < closestDistance) {
@@ -1534,11 +1534,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public void loadMap() throws Exception {
 		loadMap(true, null);
 	}
-	
+
 	public void loadMap(boolean cleanLoad, BufferedReader bufferin) throws Exception {
 
                 MapTranslator.setMap( mapfile );
-            
+
 		StringTokenizer st=null;
 
 		Vector Countries;
@@ -1787,7 +1787,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 				else if (mode == null) {
 
                                         int space = input.indexOf(' ');
-                                    
+
                                         if (input.equals("test")) {
 
 						runmaptest = true;
@@ -1802,7 +1802,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                                         else if (space >= 0) {
                                             String key = input.substring(0,space);
                                             String value = input.substring(space+1);
-                                            
+
                                             properties.put(key, value);
                                         }
                                         // else unknown section
@@ -1848,10 +1848,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Missions = new Vector();
 
                 properties = new HashMap();
-                
+
                 runmaptest = false;
                 previewPic=null;
-                
+
 		setMemoryLoad();
 
 	}
@@ -1959,16 +1959,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 					}
 
 					if (p!=null && !rawLoad) {
-                                            
+
                                             String name = p.getName();
-                                            
+
                                             String color = "color."+ColorUtil.getStringForColor( p.getColor() );
                                             java.util.ResourceBundle trans = TranslationBundle.getBundle();
                                             try { // in Java 1.4 no if (trans.containsKey(color))
                                                 name = trans.getString(color)+" "+name;
                                             }
                                             catch (Exception ex) { }
-                                            
+
                                             String oldkey ="PLAYER"+s1;
                                             String newkey = "{"+oldkey+"}";
                                             if (description.indexOf(newkey) >= 0) {
@@ -2265,17 +2265,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Checks if the set up is completely
 	 * @return boolean Return trues if the set up is complete, returns false otherwise
 	 */
-	public boolean getSetup() {
-
-		return ( setup == Players.size() );
-
-		//if (setup != Players.size() ) {
-		//	return false;
-		//}
-		//else {
-		//	return true;
-		//}
-
+	public boolean getSetupDone() {
+		return setup == Players.size();
 	}
 
 	/**
@@ -2357,7 +2348,7 @@ transient - A keyword in the Java programming language that indicates that a fie
         public Map getProperties() {
             return properties;
         }
-        
+
         int getIntProperty(String name, int defaultValue) {
             Object value = properties.get(name);
             if (value!=null) {
@@ -2373,7 +2364,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                 properties.put(name, String.valueOf(value));
             }
         }
-        
+
         public int getCircleSize() {
             return getIntProperty("circle",20);
         }
@@ -2606,7 +2597,7 @@ System.out.print(str+"]\n");
 	public Card findCardAndRemoveIt(String name) {
 
                 int cardIndex = -1;
-            
+
 		for (int c=0; c< Cards.size() ; c++) {
                         Card theCard = ((Card)Cards.elementAt(c));
 
@@ -2620,9 +2611,9 @@ System.out.print(str+"]\n");
 				cardIndex = c;
                                 break;
 			}
-                        
+
 		}
-                
+
                 // find the card and remove it
                 Card theCard = (Card)Cards.remove(cardIndex);
                 Cards.trimToSize(); // not sure if this is needed
@@ -2633,7 +2624,7 @@ System.out.print(str+"]\n");
                     Cards.addAll(used);
                     used.clear();
                 }
-                
+
 		return theCard;
 
 	}
@@ -2711,7 +2702,7 @@ System.out.print(str+"]\n");
 	public int getNoCards() {
 		return Cards.size();
 	}
-	
+
 	public boolean isRecycleCards() {
 		return recycleCards;
 	}
@@ -2809,7 +2800,7 @@ System.out.print(str+"]\n");
         if ( defender.getArmies() > maxDefendDice ) { return maxDefendDice; }
         else { return defender.getArmies(); }
     }
-    
+
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
     	in.defaultReadObject();
     	if (this.mapfile != null && gameState!=STATE_NEW_GAME) {
@@ -2821,9 +2812,9 @@ System.out.print(str+"]\n");
             }
     	}
     }
-    
+
     void setCardMode(int cardMode) {
 		this.cardMode = cardMode;
 	}
-    
+
 }

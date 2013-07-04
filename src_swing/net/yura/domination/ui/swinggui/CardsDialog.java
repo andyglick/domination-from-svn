@@ -20,7 +20,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
-import java.util.Vector;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -92,12 +92,12 @@ public class CardsDialog extends JDialog {
 
     }
 
-    public void populate(Vector cards) {
+    public void populate(List cards) {
 
         tradeButton.setEnabled(false);
 
 	for (int c=0; c < cards.size(); c++) {
-	    JPanel cp = new CardPanel( (Card)cards.elementAt(c) );
+	    JPanel cp = new CardPanel( (Card)cards.get(c) );
 	    CardsPanel.add(cp);
 	}
 

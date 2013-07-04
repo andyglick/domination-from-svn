@@ -72,7 +72,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 float scale = 1.5f;
                 float offset = 1.0f;
                 HighLight = RescaleOp(scale, offset); // 1.5f, 1.0f, null
-            
+
                 gray = new ColorMatrix();
                 gray.setSaturation(0);
         }
@@ -90,7 +90,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 img = null;
                 map = null;
-                
+
                 //setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
 
                 setName("PicturePanel");
@@ -146,7 +146,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 countryImages = null;
 
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
-                
+
                 memoryLoad(
                         MapChooser.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
                         MapChooser.createImage(RiskUtil.openMapStream(game.getImagePic()) )
@@ -160,13 +160,13 @@ public class PicturePanel extends ImageView implements MapPanel {
         public int getMapHeight() {
             return map[0].length;
         }
-        
+
         public void memoryLoad(Image m, Image original) {
 
                 cc=NO_COUNTRY;
                 c1=NO_COUNTRY;
                 c2=NO_COUNTRY;
-            
+
                 // ImageView vars
                 imgW = original.getWidth();
                 imgH = original.getHeight();
@@ -178,8 +178,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                 int noc = game.getCountries().length;
 
                 BALL_SIZE = game.getCircleSize();
-               
-                
+
+
 
                 Image newImg;
                 Image newTempimg;
@@ -193,7 +193,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                     img = null;
                     tempimg = null;
                     map = null;
-                    
+
                     newImg = Image.createImage(mW, mH);
                     newTempimg = Image.createImage(mW, mH);
                     newMap = new byte[mW][mH];
@@ -202,14 +202,14 @@ public class PicturePanel extends ImageView implements MapPanel {
                     newImg = img;
                     newTempimg = tempimg;
                     newMap = map;
-                    
+
                     img = null;
                     tempimg = null;
                     map = null;
                 }
-                
-                
-                
+
+
+
                 { Graphics zg = newImg.getGraphics(); zg.drawImage(original, 0, 0, 0); }
 
 
@@ -219,7 +219,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                     newCountryImages[c] = new CountryImage();
                 }
 
- 
+
 
                 int[] pixels = new int[m.getWidth()];
 
@@ -281,7 +281,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         Graphics g = cimg.getGraphics();
                         g.drawRegion(original, x1, y1, w, h, 0, 0, 0, 0);
                         cci.setSourceImage( cimg );
-                        
+
                         for(int y=y1; y <= y2; y++) {
                                 for(int x=0; x < w; x++) {
                                         if (newMap[x+x1][y] + 128 != (c+1) ) {
@@ -307,7 +307,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 tempimg = newTempimg;
                 map = newMap;
         }
-        
+
         public static class CountryNotFoundException extends RuntimeException {
             public CountryNotFoundException(String msg) { super(msg); }
         }
@@ -316,20 +316,20 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 Border b = getBorder();
                 if (b != null) {
-                    
+
                     double s = getScale();
                     int x = getImgX(s);
                     int y = getImgY(s);
 
                     int w = (int) (imgW * s);
                     int h = (int) (imgH * s);
-                    
+
                     g.translate(x,y);
                     b.paintBorder(this, g,w,h);
                     g.translate(-x,-y);
                 }
         }
-        
+
         /**
          * Paints the components
          * @param g a Graphics object.
@@ -362,7 +362,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                         g.drawImage(img,0,0);
 
                         int c1=this.c1,c2=this.c2,cc=this.cc; // take local copy to be thread safe
-                        
+
                         if (c1 != NO_COUNTRY) {
                                 drawHighLightImage(g,c1);
                         }
@@ -377,7 +377,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         RiskGame game = myrisk.getGame();
                         int state = game.getState();
-                        
+
                         if (state==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
                             Player me = myrisk.getGame().getCurrentPlayer();
                             List<Card> cards = me.getCards();
@@ -397,8 +397,8 @@ public class PicturePanel extends ImageView implements MapPanel {
                                     drawHighLightImage(g, defender.getColor() );
                                 }
                         }
-                        
-                        
+
+
 //                        if (cc != NO_COUNTRY) {
 //                                String text = this.strCountry + " "+ myrisk.getCountryName( cc );
 //                                int w = font.getWidth(text);
@@ -410,10 +410,10 @@ public class PicturePanel extends ImageView implements MapPanel {
 //                        }
 
                         g2.scale(1/s,1/s);
-                        
+
                         // we HAVE to draw all vectors none-scaled, as on android scaling vector(circles/text) does not work with hardware acceleration
                         drawArmies(g,s);
-                        
+
                         g.translate(-x,-y);
                 }
 
@@ -440,7 +440,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
 
                         DirectGraphics g = DirectUtils.getDirectGraphics(g2.getGraphics());
-                    
+
                         Country attacker = game.getAttacker();
                         Country defender = game.getDefender();
 
@@ -484,7 +484,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
 
                 Map<Country,Player> capitals = Collections.EMPTY_MAP;
-                if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetup() && game.getState() != RiskGame.STATE_SELECT_CAPITAL ) {
+                if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetupDone() && game.getState() != RiskGame.STATE_SELECT_CAPITAL ) {
                     capitals = new HashMap(game.getNoPlayers());
                     List<Player> players = game.getPlayers();
                     for (int c=0; c<players.size(); c++) {
@@ -538,7 +538,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 g.setColor( countryOwnerColor );
                 g.fillArc( x-r , y-r , ballSize, ballSize, 0, 360 );
             }
-            
+
 
             // TODO any size fonts do not work on me4se!!
             if (Midlet.getPlatform() == Midlet.PLATFORM_ANDROID) {
@@ -597,14 +597,14 @@ public class PicturePanel extends ImageView implements MapPanel {
                 repaint();
             }
         }
-        
+
         private void drawHighLightImage(Graphics2D g, int id) {
             CountryImage countryImage = countryImages[id-1];
-            
+
             int val = countryImage.color;
             Graphics g2 = g.getGraphics();
             ColorMatrix m;
-            
+
             if (val == 0) {
                 m = HighLight;
             }
@@ -613,12 +613,12 @@ public class PicturePanel extends ImageView implements MapPanel {
                 m.preConcat(gray);
                 m.postConcat( HighLight );
             }
-            
+
             g2.setColorMarix(m);
             g.drawImage(countryImage.getSourceImage(), countryImage.getX1(), countryImage.getY1());
             g2.setColorMarix(null);
         }
-        
+
         /**
          * Paints the arrows for the game, ie - when attacking
          * @param x1i x point of the attacker's co-ordinates.
@@ -728,7 +728,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
 
                 if (tempimg==null) return;
-                
+
                 Graphics zg = tempimg.getGraphics();
                 zg.drawImage(img ,0 ,0, 0 );
 
@@ -972,16 +972,16 @@ public class PicturePanel extends ImageView implements MapPanel {
                 });
             return cm;
         }
-        
+
         public static ColorMatrix getMatrix(int color) {
-            
+
             float r = ColorUtil.getRed(color);
             float g = ColorUtil.getGreen(color);
             float b = ColorUtil.getBlue(color);
-            
+
             float alpha = ((float)ColorUtil.getAlpha(color))/255f;
             float alpha2 = 1 - alpha;
-            
+
             ColorMatrix cm = new ColorMatrix();
             cm.set(new float[] {
                     alpha2,0,0,0,r*alpha,
@@ -1018,8 +1018,8 @@ public class PicturePanel extends ImageView implements MapPanel {
             ((g & 0xFF) << 8)  |
             ((b & 0xFF) << 0);
         }
-        
-        
+
+
         // Subclass countryImage - holds all the image information
 
         class CountryImage {
@@ -1151,9 +1151,9 @@ public class PicturePanel extends ImageView implements MapPanel {
                 }
 
         }
-        
-        
-        
+
+
+
         class Polygon {
 
             public int[] xpoints;

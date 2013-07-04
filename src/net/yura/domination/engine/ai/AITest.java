@@ -49,7 +49,7 @@ public class AITest extends AISubmissive {
 			return "placearmies " + ((Country)t.elementAt(0)).getColor() +" "+player.getExtraArmies()  ;
 		    }
 
-		    if (game.getSetup() ) {
+		    if (game.getSetupDone() ) {
 			return "placearmies " + name +" "+player.getExtraArmies() ;
 		    }
 
@@ -64,7 +64,7 @@ public class AITest extends AISubmissive {
 	Vector outputs = new Vector();
 	Attack move;
 
-	/*  // Extract method: findAttackableNeighbors() 
+	/*  // Extract method: findAttackableNeighbors()
 	Vector n;
 	for (int a=0; a< t.size() ; a++) {
 	    if ( ((Country)t.elementAt(a)).getArmies() > 1 ) {
@@ -110,7 +110,7 @@ public class AITest extends AISubmissive {
      */
     public String findAttackableTerritory(Player p) {
     	Vector countries = p.getTerritoriesOwned();
-    	
+
     	for (int i=0; i<countries.size(); i++) {
     		Vector neighbors = ((Country)countries.elementAt(i)).getNeighbours();
     		for (int j=0; j<neighbors.size(); j++) {
@@ -120,11 +120,11 @@ public class AITest extends AISubmissive {
     			}
     		}
     	}
-    	
+
     	return null;
     }
-    
-    
+
+
     /************
      * @name findAttackableNeighbors
      * @param t Vector of teritories
@@ -143,8 +143,8 @@ public class AITest extends AISubmissive {
 		n = source.getNeighbours();
 		for (int b=0; b< n.size() ; b++) {
 		    target=(Country)n.elementAt(b);
-		    if ( target.getOwner() != player && 
-			( (double)(source.getArmies()/target.getArmies()) > ratio) 
+		    if ( target.getOwner() != player &&
+			( (double)(source.getArmies()/target.getArmies()) > ratio)
 		      	) {     // simplify logic
 			//output.add( "attack " + source.getColor() + " " + target.getColor() );
 			output.add(new Attack(source,target));
