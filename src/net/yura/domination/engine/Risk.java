@@ -2085,7 +2085,7 @@ RiskUtil.printStackTrace(e);
 		}
 
 		// ask for input if u need one
-		if (needInput && inbox.isEmpty() ) {
+		if (needInput) {
 			getInput();
 		}
 
@@ -2200,6 +2200,9 @@ RiskUtil.printStackTrace(e);
 	 * This deals with trying to find out what input is required for the parser
 	 */
 	public void getInput() {
+
+                // if we have more commands we need to process, do not bother asking for input
+                if (!inbox.isEmpty()) return;
 
                 setHelp();
 
