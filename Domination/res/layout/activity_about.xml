@@ -20,7 +20,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        ads:adSize="BANNER"
-	        ads:adUnitId="a1509ed5629547e"
+	        ads:adUnitId="ca-app-pub-4647495416237114/9986796868"
 	        ads:loadAdOnCreate="true"
 	        ads:testDevices="TEST_EMULATOR, TEST_DEVICE_ID" />
 
