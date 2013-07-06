@@ -195,8 +195,8 @@ logger.info("Make Request: "+request);
 
         String mapUID;
         String mapContext;
-        Vector urls = new Vector();
-        Vector fileNames = new Vector();
+        final Vector urls = new Vector();
+        final Vector fileNames = new Vector();
         boolean error = false;
 
         MapDownload(String url) {
@@ -230,8 +230,14 @@ logger.info("Make Request: "+request);
         }
 
         private void gotResponse(String url) {
-            urls.removeElement(url);
-            if (urls.isEmpty()) {
+            boolean empty;
+
+            synchronized(urls) {
+                urls.removeElement(url);
+                empty = urls.isEmpty();
+            }
+
+            if (empty) {
                 downloads.removeElement(this);
 
                 try {
