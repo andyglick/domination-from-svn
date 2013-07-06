@@ -28,7 +28,7 @@ import net.yura.mobile.util.SystemUtil;
 public class MapServerClient extends HTTPClient {
 
     public static final Logger logger = Logger.getLogger(MapServerClient.class.getName());
-    
+
     public static final Object XML_REQUEST_ID = "XML_REQUEST";
     public static final Object MAP_REQUEST_ID = "MAP_REQUEST";
     //public static final Object IMG_REQUEST_ID = new Object();
@@ -36,6 +36,7 @@ public class MapServerClient extends HTTPClient {
     MapServerListener chooser;
 
     public MapServerClient(MapServerListener aThis) {
+        super(4);
         chooser = aThis;
     }
 
@@ -45,21 +46,21 @@ public class MapServerClient extends HTTPClient {
             super.kill();
         }
     }
-    
+
     protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
 
         MapServerListener ch = this.chooser;
-        
+
         if (request.id == MAP_REQUEST_ID && getMapDownload(request.url).ignoreErrorInDownload(request.url)) {
             return;
         }
 
         Level level  = Level.WARNING;
-        if (    ex instanceof UnknownHostException || 
-                ex instanceof SocketTimeoutException || 
-                ex instanceof ConnectException || 
+        if (    ex instanceof UnknownHostException ||
+                ex instanceof SocketTimeoutException ||
+                ex instanceof ConnectException ||
                (ex instanceof SocketException &&
-                   ("Connection timed out".equals(ex.getMessage()) || 
+                   ("Connection timed out".equals(ex.getMessage()) ||
                     "Connection reset by peer".equals(ex.getMessage())) ) ) {
             level = Level.INFO;
         }
@@ -85,7 +86,7 @@ public class MapServerClient extends HTTPClient {
 
         if (request.id == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
-            
+
             // on android BufferedInputStream makes it much fast, on desktop java does not really make a difference
             Task task = (Task)access.load( new UTF8InputStreamReader(new BufferedInputStream(is)) );
 
@@ -132,7 +133,7 @@ public class MapServerClient extends HTTPClient {
         headers.put("Cache-Control", "no-cache");
         headers.put("Pragma", "no-cache");
     }
-    
+
     void makeRequest(String url,Hashtable params,Object type) {
 
             Request request = new Request();
@@ -148,16 +149,16 @@ logger.info("Make Request: "+request);
             makeRequest(request);
 
     }
-    
+
     Vector downloads = new Vector();
-    
+
     public void downloadMap(String fullMapUrl) {
-        
+
         MapDownload download = new MapDownload(fullMapUrl);
 
         downloads.addElement(download); // TODO thread safe??
     }
-    
+
     public boolean isDownloading(String mapUID) {
         for (int c=0;c<downloads.size();c++) {
             MapDownload download = (MapDownload)downloads.elementAt(c);
@@ -177,7 +178,7 @@ logger.info("Make Request: "+request);
         }
         throw new IllegalArgumentException("no download for url "+url);
     }
-    
+
     private static void saveFile(InputStream is,OutputStream out) throws IOException {
 
         int COPY_BLOCK_SIZE=1024;
@@ -188,8 +189,8 @@ logger.info("Make Request: "+request);
             out.write(data,0,i);
         }
     }
-    
-    
+
+
     class MapDownload {
 
         String mapUID;
@@ -197,33 +198,33 @@ logger.info("Make Request: "+request);
         Vector urls = new Vector();
         Vector fileNames = new Vector();
         boolean error = false;
-        
+
         MapDownload(String url) {
-            
+
             mapUID = MapChooser.getFileUID(url);
-            
+
             mapContext = url.substring(0, url.length() - mapUID.length() );
-            
+
             downloadFile( mapUID );
         }
-        
+
         public String toString() {
             return mapUID;
         }
-        
+
         final void downloadFile(String fileName) {
             // this does not support spaces in file names
             //String url = mapContext + fileName;
-            
+
             fileNames.add(fileName);
-            
+
             String url = getURL(mapContext, fileName);
 
             urls.addElement(url);
 
             makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
         }
-        
+
         boolean hasUrl(String url) {
             return urls.contains(url);
         }
@@ -259,7 +260,7 @@ logger.info("Make Request: "+request);
                 }
             }
         }
-        
+
         private void gotRes(String url, InputStream is) throws Exception {
             // this does not support spaces in file names
             //String fileName = url.substring(mapContext.length());
@@ -310,27 +311,27 @@ logger.info("Make Request: "+request);
             //String fileName = url.substring(mapContext.length());
 
             String fileName = getPath(mapContext, url);
-            
+
             boolean fileExists = MapChooser.fileExists(fileName);
-            
+
             if (fileExists) {
                 fileNames.remove(fileName);
             }
             else {
                 error = true;
             }
-            
+
             gotResponse(url);
 
             // we got a error, but we already have this file, so ignore the error
             return fileExists;
-            
+
         }
     }
-    
-    
-    
-    
+
+
+
+
     public static String getURL(String context, String path) {
         // as we downloading a file, we need to have the correct encoding! (Hello World -> Hello%20World)
         try {
@@ -350,5 +351,5 @@ logger.info("Make Request: "+request);
             throw new RuntimeException(ex);
         }
     }
-    
+
 }
