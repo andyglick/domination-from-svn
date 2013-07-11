@@ -437,9 +437,12 @@ public class GameActivity extends Frame implements ActionListener {
             MiniUtil.openHelp();
         }
         else if ("close".equals(actionCommand)) {
-
-            showClosePrompt(myrisk);
-
+            if (controller.shouldShowClosePrompt()) {
+                showClosePrompt(myrisk);
+            }
+            else {
+                go("closegame");
+            }
         }
         else if ("mission".equals(actionCommand)) {
 
