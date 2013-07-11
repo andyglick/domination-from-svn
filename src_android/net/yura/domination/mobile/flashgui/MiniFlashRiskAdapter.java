@@ -52,6 +52,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
     void createLobbyGame(String name,String options,int numPlayers,int timeout) {
 	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
     }
+    boolean shouldShowClosePrompt() {
+        return myRisk.getLocalGame() || (lobby!=null && lobby.amAPlayer());
+    }
     void addExtraButtons(Menu menu) {
         if (lobby!=null && lobby.amAPlayer()) {
             Button button = new Button( GameActivity.resb.getString("lobby.resign"), new Icon("/ic_menu_exit.png") );

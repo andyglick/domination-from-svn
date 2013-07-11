@@ -323,6 +323,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             games.add(-index -1, game);
         }
         filter(true);
+
+        if (index<0 && game.hasPlayer(whoAmI())) {
+            // we are adding a new game that we are a player of, make this index visible
+            list.ensureIndexIsVisible(-index -1);
+        }
     }
 
     public boolean amAPlayer() {

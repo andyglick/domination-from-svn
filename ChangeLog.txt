@@ -23,6 +23,8 @@ CURRENT VERSION:
 	strange nativenoresult popups in windows 7 fixed
 
 	Android 45 gamesave during gamesetup works again
+		   does not ask to quit game if you are not in game
+		   when you make a new game make sure its visible in the list
 	Android 44 zero data fix
 		   trade fix by hawkprime
 	Android 43 10,20,30sec online game timeouts added
