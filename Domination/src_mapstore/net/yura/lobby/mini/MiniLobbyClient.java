@@ -474,7 +474,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void renamePlayer(String oldname, String newname,int newtype) {
-        game.renamePlayer(oldname,newname);
+        // if we had a player/spectator list we would rename the player there
     }
 
 

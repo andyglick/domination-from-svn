@@ -11,25 +11,23 @@ import net.yura.mobile.util.Properties;
 public interface MiniLobbyGame {
 
     void addLobbyGameMoveListener(MiniLobbyClient lgl);
-    
+
     public Properties getProperties();
 
     public boolean isMyGameType(GameType gametype);
     public Icon getIconForGame(Game game);
     public String getGameDescription(Game game);
-    
+
     /**
      * callback mlc.createNewGame(Game)
      */
     public void openGameSetup(GameType gameType);
-    
+
     public void objectForGame(Object object);
     public void stringForGame(String message);
 
-    public void renamePlayer(String oldname, String newname);
-
     void disconnected();
-    
+
     public String getAppName();
     public String getAppVersion();
 

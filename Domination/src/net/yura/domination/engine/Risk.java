@@ -31,6 +31,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.p2pclient.ChatClient;
 import net.yura.domination.engine.p2pserver.ChatArea;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.mobile.util.Url;
 
 /**
  * <p> Main Risk Class </p>
@@ -1010,6 +1011,21 @@ RiskUtil.printStackTrace(e);
 			needInput=false;
 
 		}
+                else if (Addr.equals("RENAME")) {
+                    Map map = Url.toHashtable( message.substring( Addr.length()+1 ) );
+
+                    String oldName = (String)map.get("oldName");
+                    String newName = (String)map.get("newName");
+                    String newAddress = (String)map.get("newAddress");
+                    int newType = Integer.parseInt((String)map.get("newType"));
+
+                    try {
+                        renamePlayer(oldName,newName,newAddress,newType);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
 		else { // parse this normal cammand
 
 			String echo = message.substring( Addr.length()+1 );
@@ -2746,19 +2762,6 @@ RiskUtil.printStackTrace(e);
 
 	}
 
-	public void renamePlayer(String oldser,String newuser) {
-		List players = game.getPlayers();
-		for (int c=0;c<players.size(); c++) {
-			Player player = (Player)players.get(c);
-			if ( oldser.equals( player.getName() ) ) {
-				player.rename(newuser);
-                                break;
-			}
-		}
-                // as it may be our go, we should update the help string
-                setHelp();
-	}
-
         private synchronized void closeGame() {
 
             // shutdown the network connection for this game
@@ -2836,17 +2839,7 @@ RiskUtil.printStackTrace(e);
                 setGame(thegame);
             }
             else if ("rename".equals(command)) {
-                // this type of rename is used for renaming resigned players to joined ones
-                // e.g. "TomResigned" to "Fred"
-
-                myAddress = (String)map.get("playerId");
-
-                String oldName = (String)map.get("oldName");
-                String newName = (String)map.get("newName");
-                String newAddress = (String)map.get("newAddress");
-                int newType = ((Integer)map.get("newType")).intValue();
-
-                renamePlayer(oldName,newName,newAddress,newType);
+                // sent for old clients, we can ignore
             }
             else {
                 throw new RuntimeException("unknown command "+command);
@@ -2863,35 +2856,41 @@ RiskUtil.printStackTrace(e);
                 getInput();
         }
 
-        public void renamePlayer(String name,String newName, String newAddress,int newType) {
-		if (game!=null) { // if its a actual player of the game that has left
-                        // get all the players and make all with the ip of the leaver become nutral
-			List players = game.getPlayers();
-                        Player leaver=null;
-                        for (int c=0; c< players.size(); c++) {
-                            Player player = (Player)players.get(c);
-                            if (player.getName().equals(newName)) {
-                                throw new IllegalArgumentException("can not rename \""+name+"\". someone with new name \""+newName+"\" is already in this game");
-                            }
-                            if (player.getName().equals(name)) {
-                                leaver=player;
-                            }
-                        }
+        private void renamePlayer(String name,String newName, String newAddress,int newType) {
 
-                        if (leaver==null) {
-                            throw new IllegalArgumentException("can not find player with name \""+name+"\"");
-                        }
+                // get all the players and make all with the ip of the leaver become nutral
+                List players = game.getPlayers();
+                Player leaver=null,newNamePlayer=null;
+                for (int c=0; c< players.size(); c++) {
+                    Player player = (Player)players.get(c);
+                    if (player.getName().equals(newName)) {
+                        newNamePlayer = player;
+                    }
+                    if (player.getName().equals(name)) {
+                        leaver=player;
+                    }
+                }
 
-                        // AI will never have players addr for lobby game
-                        leaver.rename( newName );
-                        leaver.setType( newType );
-                        leaver.setAddress( newAddress );
+                if (leaver==null) {
+                    throw new IllegalArgumentException("can not find player with name \""+name+"\"");
+                }
+                if (newNamePlayer!=null) {
+                    throw new IllegalArgumentException("can not rename \""+name+"\". someone with new name \""+newName+"\" is already in this game");
+                }
 
-                        // if the person whos go it is has just left
-			if (leaver == game.getCurrentPlayer()) {
-                            getInput();
-                        }
-		}
+                // AI will never have players addr for lobby game
+                leaver.rename( newName );
+                leaver.setType( newType );
+                leaver.setAddress( newAddress );
+
+                if (onlinePlayClient!=null) {
+                    if (onlinePlayClient.isThisMe(name)) {
+                        myAddress = "_watch_";
+                    }
+                    if (onlinePlayClient.isThisMe(newName)) {
+                        myAddress = newAddress;
+                    }
+                }
         }
 
 	public Player findEmptySpot() {

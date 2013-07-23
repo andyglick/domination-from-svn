@@ -24,6 +24,7 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.lobby.server.LobbySession;
 import net.yura.lobby.server.TurnBasedGame;
+import net.yura.mobile.util.Url;
 
 public class ServerGameRisk extends TurnBasedGame {
 
@@ -72,7 +73,7 @@ public class ServerGameRisk extends TurnBasedGame {
                     throw new UnsupportedOperationException("can not add maps to server");
                 }
             };
-            
+
             try {
                 GameSettings settings = new GameSettings();
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -94,10 +95,10 @@ public class ServerGameRisk extends TurnBasedGame {
         @Override
         public void setId(int id) {
             super.setId(id);
-            
+
             myrisk.setName("Domination-Game-"+id);
         }
-        
+
 	public void startGame(String startGameOptions, String[] players) {
 
 		// sort them so if player bob was green last time, they r again
@@ -138,7 +139,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
                 // BeginnerBot, RookieBot, AmateurBot and ProBot.
                 // Normal Medium Average Standard
-                
+
 		for (int c=0;c<aiaverage;c++) {
 			it.hasNext();
 			String color = it.next();
@@ -184,7 +185,7 @@ public class ServerGameRisk extends TurnBasedGame {
                 ByteArrayInputStream in = new ByteArrayInputStream(gameData);
                 ObjectInputStream oin = new ObjectInputStream(in);
                 RiskGame riskGame = (RiskGame)oin.readObject();
-                
+
                 String address=myrisk.getAddress();
                 List<Player> players = riskGame.getPlayers();
                 for (Player player:players) {
@@ -212,18 +213,18 @@ public class ServerGameRisk extends TurnBasedGame {
                 if (playerid==null) {
                     playerid="_watch_";
                 }
-                
+
 		System.out.println(username+" -> "+playerid);
 
                 HashMap map = new HashMap();
                 map.put("command", "game");
                 map.put("playerId", playerid );
                 map.put("game", myrisk.getGame() );
-                
+
 		sendObjectToClient(map, username );
 
 	}
-        
+
         private String getPlayerId(String username) {
             RiskGame game = myrisk.getGame();
             List<Player> players = game.getPlayers();
@@ -277,15 +278,22 @@ public class ServerGameRisk extends TurnBasedGame {
 		//String currentAddress = myrisk.getGame().getCurrentPlayer().getAddress();
 
 		if (playerid != null) {
+                        List<Player> players = (List<Player>)myrisk.getGame().getPlayers();
+			//myrisk.renamePlayer(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
+
                         String newName = username+"-Resigned";
-			myrisk.renamePlayer(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
-
-                        sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
-
+                        Player thePlayer=null,oldPlayer=null;
                         int aliveHumans=0,aliveAIs=0;
-                        for (Player player:(List<Player>)myrisk.getGame().getPlayers()) {
+                        for (Player player:players) {
+                            String name = player.getName();
+                            if (name.equals(username)) {
+                                thePlayer = player;
+                            }
+                            else if (name.equals(newName)) {
+                                oldPlayer = player;
+                            }
                             // check they are alive
-                            if (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) {
+                            else if (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) {
                                 if (player.getType()==Player.PLAYER_HUMAN) {
                                     aliveHumans++;
                                 }
@@ -294,9 +302,19 @@ public class ServerGameRisk extends TurnBasedGame {
                                 }
                             }
                         }
+
+                        if(thePlayer==null) { // this should never happen
+                            throw new IllegalArgumentException("can not find player "+username);
+                        }
+                        if (oldPlayer!=null) { // this should never happen
+                            throw new IllegalArgumentException("player with name already in game "+newName);
+                        }
+
+                        sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
+
                         if (aliveHumans==0) {
                             gameFinished( whoHasMostPoints() );
-                            
+
                             // We have no humans and no ais, (we only have resigned human, crap/submissive ais)
                             // so we must pause the game or it will get stuck in a loop of placing armies and
                             // nothing else actually happening, and will never finish.
@@ -328,11 +346,14 @@ public class ServerGameRisk extends TurnBasedGame {
 
         private void sendRename(String oldName,String newName,String newAddress,int newType) {
             HashMap map = new HashMap();
-            map.put("command", "rename");
             map.put("oldName", oldName);
             map.put("newName", newName);
             map.put("newAddress", newAddress);
             map.put("newType", newType);
+            myrisk.addPlayerCommandToInbox("RENAME", Url.toQueryString(RiskUtil.asHashtable(map)) );
+
+// TODO remove when no more <= 45 clients
+            map.put("command", "rename");
             for (LobbySession session: getAllClients()) {
                 String username = session.getUsername();
                 String playerid = getPlayerId(username);
@@ -342,27 +363,24 @@ public class ServerGameRisk extends TurnBasedGame {
                 map.put("playerId", playerid);
                 sendObjectToClient(map,username);
             }
+// END TODO
         }
-        
+
         @Override
         public void playerJoins(String newuser) {
-
             Player player = myrisk.findEmptySpot();
             if (player==null) {
                 throw new RuntimeException("no AI CRAP found in game");
             }
-            String playerid = "player"+( myrisk.getGame().getPlayers().indexOf(player) +1);
+            String playerId = "player"+( myrisk.getGame().getPlayers().indexOf(player) +1);
             String oldName = player.getName();
-            myrisk.renamePlayer(oldName, newuser, playerid, Player.PLAYER_HUMAN);
-            sendRename(oldName,newuser,playerid,Player.PLAYER_HUMAN);
-
-            // TODO
-            //if paused and oldIds.isEmpty() now, we can kick off another game
+            sendRename(oldName,newuser,playerId,Player.PLAYER_HUMAN);
         }
 
         @Override
 	public void renamePlayer(String oldser,String newuser) {
-	    myrisk.renamePlayer(oldser,newuser);
+            String playerId = getPlayerId(oldser);
+            sendRename(oldser,newuser,playerId,Player.PLAYER_HUMAN);
 	}
 
 
@@ -371,7 +389,7 @@ public class ServerGameRisk extends TurnBasedGame {
             String username = player.getType()==Player.PLAYER_HUMAN?player.getName():null;
             getInputFromClient(username);
 	}
-        
+
         private String whoHasMostPoints() {
 		RiskGame game = myrisk.getGame();
 		if ( game.checkPlayerWon() ) {

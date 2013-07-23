@@ -41,7 +41,7 @@ import net.yura.lobby.model.Game;
 public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
         private final static Logger logger = Logger.getLogger( ClientGameRisk.class.getName() );
-    
+
 	private final static String product;
 	private final static String version = "0.2";
 
@@ -102,14 +102,14 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             if (gsp==null) {
                 gsp = new GameSetupPanel();
             }
-            
+
             return gsp.showDialog(parent, serveroptions, myname);
 	}
 
         public Icon getIcon(String options) {
 
 		RiskMap iconedmap = GameSetupPanel.getRiskMap( RiskUtil.getMapNameFromLobbyStartGameOption(options) );
-                
+
                 // TODO this is a long task and should NOT be done in the caller thread
 		iconedmap.loadInfo();
 
@@ -301,7 +301,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
         public boolean hasSpaceToJoin() {
             return myrisk.findEmptySpot() != null;
         }
-        
+
         /**
          * this is called when I resign from a game
          */
@@ -322,13 +322,6 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                 myrisk.lobbyMessage(map, lgml.whoAmI(), this);
 	}
 
-        /**
-         * this is called when a player of this game logs in mid-game
-         */
-	public void renamePlayer(String oldser,String newuser) {
-	    myrisk.renamePlayer(oldser,newuser);
-	}
-
         // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
         // WMWMWMWMWMWMWMWMWMWMWMWMWMW OnlineRisk MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
         // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
@@ -340,6 +333,10 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
         public void sendGameCommand(String mtemp) {
             // this happens for game commands on my go
             logger.info("ignore GameCommand "+mtemp );
+        }
+
+        public boolean isThisMe(String name) {
+            return name.equals(lgml.whoAmI());
         }
 
         public void closeGame() {

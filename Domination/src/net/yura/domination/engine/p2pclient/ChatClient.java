@@ -64,4 +64,7 @@ public class ChatClient implements OnlineRisk {
             chatSocket = null;
         }
 
+        public boolean isThisMe(String name) {
+            return false;
+        }
 }
