@@ -10,4 +10,6 @@ public interface OnlineRisk {
 
     public void closeGame();
 
+    public boolean isThisMe(String name);
+
 }

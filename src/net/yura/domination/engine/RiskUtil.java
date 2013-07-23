@@ -460,6 +460,9 @@ public class RiskUtil {
         return list instanceof Vector?(Vector)list:new Vector(list);
     }
 
+    public static Hashtable asHashtable(java.util.Map map) {
+        return map instanceof Hashtable?(Hashtable)map:new Hashtable(map);
+    }
 
 
     public static String replaceAll(String string, String notregex, String replacement) {

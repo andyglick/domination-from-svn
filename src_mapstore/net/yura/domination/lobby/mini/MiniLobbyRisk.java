@@ -22,7 +22,7 @@ import net.yura.swingme.core.CoreUtil;
 public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 
     private static final Logger logger = Logger.getLogger( MiniLobbyRisk.class.getName() );
-    
+
     private Risk myrisk;
     protected MiniLobbyClient lobby;
 
@@ -47,7 +47,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     public void objectForGame(Object object) {
         java.util.Map map = (java.util.Map)object;
         myrisk.lobbyMessage(map, lobby.whoAmI(), this);
-        
+
         String command = (String)map.get("command");
         if ("game".equals(command)) {
             openGame = true;
@@ -63,19 +63,15 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         }
     }
 
-    public void renamePlayer(String oldname, String newname) {
-        myrisk.renamePlayer(oldname, newname);
-    }
-
     public void disconnected() {
         myrisk.disconnected();
     }
 
-    
-    
-    
+
+
+
     WeakHashMap mapping = new WeakHashMap();
-                    
+
     public Icon getIconForGame(Game game) {
 
         // if local map
@@ -92,7 +88,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     }
 
 
-    
+
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMW OnlineRisk MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
     // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
@@ -108,5 +104,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         openGame = false;
         lobby.closeGame();
     }
-    
+    public boolean isThisMe(String name) {
+        return name.equals(lobby.whoAmI());
+    }
 }
