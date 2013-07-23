@@ -310,7 +310,7 @@ public class ServerGameRisk extends TurnBasedGame {
                             throw new IllegalArgumentException("player with name already in game "+newName);
                         }
 
-                        sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
+                        sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP,true);
 
                         if (aliveHumans==0) {
                             gameFinished( whoHasMostPoints() );
@@ -344,7 +344,8 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
-        private void sendRename(String oldName,String newName,String newAddress,int newType) {
+        private void sendRename(String oldName,String newName,String newAddress,int newType,
+                boolean doLegacySend) {
             HashMap map = new HashMap();
             map.put("oldName", oldName);
             map.put("newName", newName);
@@ -353,15 +354,17 @@ public class ServerGameRisk extends TurnBasedGame {
             myrisk.addPlayerCommandToInbox("RENAME", Url.toQueryString(RiskUtil.asHashtable(map)) );
 
 // TODO remove when no more <= 45 clients
-            map.put("command", "rename");
-            for (LobbySession session: getAllClients()) {
-                String username = session.getUsername();
-                String playerid = getPlayerId(username);
-                if (playerid==null) {
-                    playerid="_watch_";
+            if (doLegacySend) {
+                map.put("command", "rename");
+                for (LobbySession session: getAllClients()) {
+                    String username = session.getUsername();
+                    String playerid = getPlayerId(username);
+                    if (playerid==null) {
+                        playerid="_watch_";
+                    }
+                    map.put("playerId", playerid);
+                    sendObjectToClient(map,username);
                 }
-                map.put("playerId", playerid);
-                sendObjectToClient(map,username);
             }
 // END TODO
         }
@@ -374,13 +377,13 @@ public class ServerGameRisk extends TurnBasedGame {
             }
             String playerId = "player"+( myrisk.getGame().getPlayers().indexOf(player) +1);
             String oldName = player.getName();
-            sendRename(oldName,newuser,playerId,Player.PLAYER_HUMAN);
+            sendRename(oldName,newuser,playerId,Player.PLAYER_HUMAN,true);
         }
 
         @Override
 	public void renamePlayer(String oldser,String newuser) {
             String playerId = getPlayerId(oldser);
-            sendRename(oldser,newuser,playerId,Player.PLAYER_HUMAN);
+            sendRename(oldser,newuser,playerId,Player.PLAYER_HUMAN,false);
 	}
 
 
