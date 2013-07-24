@@ -100,7 +100,7 @@ public class Player implements Serializable {
 
 	return thing;
     }
-    
+
     public List<Statistic> getStatistics() {
 		return Statistics;
 	}
@@ -227,7 +227,7 @@ public class Player implements Serializable {
     }
 
     public static final int noaFORcard = 2;
-    
+
     /**
      * Trading in the cards, adds 2 extra armies to the first country that it owns on the cards and removing the cards from the player
      * @param card1 First card
@@ -340,6 +340,10 @@ public class Player implements Serializable {
 
     public boolean getAutoDefend() {
 	return autodefend;
+    }
+
+    public boolean isAlive() {
+        return getExtraArmies() > 0 || getNoTerritoriesOwned() > 0;
     }
 
 }

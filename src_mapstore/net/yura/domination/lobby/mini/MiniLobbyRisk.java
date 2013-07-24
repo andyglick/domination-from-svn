@@ -1,10 +1,13 @@
 package net.yura.domination.lobby.mini;
 
+import java.util.List;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
@@ -45,12 +48,35 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     private boolean openGame;
 
     public void objectForGame(Object object) {
-        java.util.Map map = (java.util.Map)object;
-        myrisk.lobbyMessage(map, lobby.whoAmI(), this);
-
-        String command = (String)map.get("command");
-        if ("game".equals(command)) {
+        if (object instanceof RiskGame) {
+            RiskGame thegame = (RiskGame)object;
+            Player player = thegame.getPlayer(lobby.whoAmI());
+            String address = player==null?"_watch_":player.getAddress();
+            myrisk.setOnlinePlay(this);
+            myrisk.setAddress(address);
+            myrisk.setGame(thegame);
             openGame = true;
+        }
+// TODO remove this legacy message system
+        else if (object instanceof java.util.Map) {
+            java.util.Map map = (java.util.Map)object;
+
+            String command = (String)map.get("command");
+            if ("game".equals(command)) {
+                String address = (String)map.get("playerId");
+                RiskGame thegame = (RiskGame)map.get("game");
+                myrisk.setOnlinePlay(this);
+                myrisk.setAddress(address);
+                myrisk.setGame(thegame);
+                openGame = true;
+            }
+            else {
+                System.out.println("unknown command "+command+" "+map);
+            }
+        }
+// END TODO
+        else {
+            System.out.println("unknown object "+object);
         }
     }
 
@@ -104,7 +130,13 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         openGame = false;
         lobby.closeGame();
     }
-    public boolean isThisMe(String name) {
-        return name.equals(lobby.whoAmI());
+
+    public void playerRenamed(String oldName, String newName, String newAddress, int newType) {
+        if (oldName.equals(lobby.whoAmI())) {
+            myrisk.setAddress("_watch_");
+        }
+        if (newName.equals(lobby.whoAmI())) {
+            myrisk.setAddress(newAddress);
+        }
     }
 }

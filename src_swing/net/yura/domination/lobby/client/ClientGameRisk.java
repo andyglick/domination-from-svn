@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -29,6 +30,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
@@ -296,10 +298,6 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                 // we are here coz the game failed to open
                 leaveGame();
             }
-	}
-
-        public boolean hasSpaceToJoin() {
-            return myrisk.findEmptySpot() != null;
         }
 
         /**
@@ -318,9 +316,43 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 	}
 
 	public void gameObject(Object object) {
+            if (object instanceof RiskGame) {
+                RiskGame thegame = (RiskGame)object;
+                Player player = thegame.getPlayer(lgml.whoAmI());
+                String address = player==null?"_watch_":player.getAddress();
+                myrisk.setOnlinePlay(this);
+                myrisk.setAddress(address);
+                myrisk.setGame(thegame);
+                updateButtons();
+            }
+// TODO remove this legacy message system
+            else if (object instanceof java.util.Map) {
 		Map map = (Map)object;
-                myrisk.lobbyMessage(map, lgml.whoAmI(), this);
+
+                String command = (String)map.get("command");
+                if ("game".equals(command)) {
+                    String address = (String)map.get("playerId");
+                    RiskGame thegame = (RiskGame)map.get("game");
+                    myrisk.setOnlinePlay(this);
+                    myrisk.setAddress(address);
+                    myrisk.setGame(thegame);
+                    updateButtons();
+                }
+                else {
+                    System.out.println("unknown command "+command+" "+map);
+                }
+            }
+// END TODO
+            else {
+                System.out.println("unknown object "+object);
+            }
 	}
+
+        // TODO call this method when someone is killed in the game
+        private void updateButtons() {
+            Player player = myrisk.getGame().getPlayer(lgml.whoAmI());
+            updateButton(player!=null && player.isAlive(), myrisk.findEmptySpot() != null );
+        }
 
         // WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
         // WMWMWMWMWMWMWMWMWMWMWMWMWMW OnlineRisk MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW
@@ -341,5 +373,16 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
         public void closeGame() {
             leaveGame();
+        }
+
+        public void playerRenamed(String oldName, String newName, String newAddress, int newType) {
+            if (oldName.equals(lgml.whoAmI())) {
+                myrisk.setAddress("_watch_");
+            }
+            if (newName.equals(lgml.whoAmI())) {
+                myrisk.setAddress(newAddress);
+            }
+
+            updateButtons();
         }
 }

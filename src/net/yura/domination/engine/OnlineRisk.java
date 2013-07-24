@@ -10,6 +10,6 @@ public interface OnlineRisk {
 
     public void closeGame();
 
-    public boolean isThisMe(String name);
+    public void playerRenamed(String oldName, String newName, String newAddress, int newType);
 
 }

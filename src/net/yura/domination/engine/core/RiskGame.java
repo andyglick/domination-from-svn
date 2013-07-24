@@ -2817,4 +2817,13 @@ System.out.print(str+"]\n");
 		this.cardMode = cardMode;
 	}
 
+    public Player getPlayer(String name) {
+        for (Player player: (List<Player>)Players) {
+            if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
 }
