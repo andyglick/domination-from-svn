@@ -2825,25 +2825,9 @@ RiskUtil.printStackTrace(e);
                 unlimitedLocalMode = true;
 	}
 
-
-
-        public void lobbyMessage(Map map,String myName,OnlineRisk lrisk) {
-            String command = (String)map.get("command");
-            if ("game".equals(command)) {
-                String address = (String)map.get("playerId");
-                RiskGame thegame = (RiskGame)map.get("game");
-
-                onlinePlayClient = lrisk;
-                myAddress = address;
-                unlimitedLocalMode = false;
-                setGame(thegame);
-            }
-            else if ("rename".equals(command)) {
-                // sent for old clients, we can ignore
-            }
-            else {
-                throw new RuntimeException("unknown command "+command);
-            }
+        public void setOnlinePlay(OnlineRisk online) {
+            onlinePlayClient = online;
+            unlimitedLocalMode = onlinePlayClient==null;
         }
 
         public void setGame(RiskGame b) {
@@ -2884,13 +2868,12 @@ RiskUtil.printStackTrace(e);
                 leaver.setAddress( newAddress );
 
                 if (onlinePlayClient!=null) {
-                    if (onlinePlayClient.isThisMe(name)) {
-                        myAddress = "_watch_";
-                    }
-                    if (onlinePlayClient.isThisMe(newName)) {
-                        myAddress = newAddress;
-                    }
+                    onlinePlayClient.playerRenamed(name,newName, newAddress,newType);
                 }
+        }
+
+        public void setAddress(String address) {
+            myAddress = address;
         }
 
 	public Player findEmptySpot() {
@@ -2898,7 +2881,7 @@ RiskUtil.printStackTrace(e);
                 List players = game.getPlayers();
                 for (int c=0; c< players.size() ; c++) {
                     Player player = (Player)players.get(c);
-                    if ( player.getType() == Player.PLAYER_AI_CRAP && (player.getExtraArmies() > 0 || player.getNoTerritoriesOwned() > 0)) {
+                    if ( player.getType() == Player.PLAYER_AI_CRAP && player.isAlive()) {
                         return player;
                     }
                 }

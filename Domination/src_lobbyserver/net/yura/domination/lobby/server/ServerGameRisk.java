@@ -206,22 +206,21 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
 	public void clientHasJoined(String username) {
-
+// TODO remove this legacy crap
 		String playerid = getPlayerId(username);
-
                 // this person is NOT a player in the game, they must just be watching
                 if (playerid==null) {
                     playerid="_watch_";
                 }
-
 		System.out.println(username+" -> "+playerid);
-
                 HashMap map = new HashMap();
                 map.put("command", "game");
                 map.put("playerId", playerid );
                 map.put("game", myrisk.getGame() );
-
-		sendObjectToClient(map, username );
+                sendObjectToClient( map , username );
+// END TODO
+                // this is the new method of sending a game
+		//sendObjectToClient( myrisk.getGame() , username );
 
 	}
 
@@ -293,7 +292,7 @@ public class ServerGameRisk extends TurnBasedGame {
                                 oldPlayer = player;
                             }
                             // check they are alive
-                            else if (player.getExtraArmies()> 0 || player.getNoTerritoriesOwned() > 0) {
+                            else if (player.isAlive()) {
                                 if (player.getType()==Player.PLAYER_HUMAN) {
                                     aliveHumans++;
                                 }
@@ -358,11 +357,23 @@ public class ServerGameRisk extends TurnBasedGame {
                 map.put("command", "rename");
                 for (LobbySession session: getAllClients()) {
                     String username = session.getUsername();
-                    String playerid = getPlayerId(username);
-                    if (playerid==null) {
-                        playerid="_watch_";
+                    String playerid;
+                    if (oldName.equals(username) || newName.equals(username)) {
+                        if (newType==Player.PLAYER_HUMAN) {
+                            playerid = newAddress;
+                        }
+                        else {
+                            playerid="_watch_";
+                        }
+                    }
+                    else {
+                        playerid = getPlayerId(username);
+                        if (playerid==null) {
+                            playerid="_watch_";
+                        }
                     }
                     map.put("playerId", playerid);
+                    System.out.println("LEGACY RENAME "+map);
                     sendObjectToClient(map,username);
                 }
             }

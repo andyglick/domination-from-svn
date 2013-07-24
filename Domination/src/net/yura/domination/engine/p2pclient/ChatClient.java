@@ -64,7 +64,7 @@ public class ChatClient implements OnlineRisk {
             chatSocket = null;
         }
 
-        public boolean isThisMe(String name) {
-            return false;
+        public void playerRenamed(String oldName, String newName, String newAddress, int newType) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 }
