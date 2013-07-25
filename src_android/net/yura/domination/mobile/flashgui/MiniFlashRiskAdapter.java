@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.mobile.gui.ActionListener;
@@ -53,10 +54,10 @@ public class MiniFlashRiskAdapter implements RiskListener {
 	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
     }
     boolean shouldShowClosePrompt() {
-        return myRisk.getLocalGame() || (lobby!=null && lobby.amAPlayer());
+        return myRisk.getLocalGame() || amOnlinePlayer();
     }
     void addExtraButtons(Menu menu) {
-        if (lobby!=null && lobby.amAPlayer()) {
+        if (amOnlinePlayer()) {
             Button button = new Button( GameActivity.resb.getString("lobby.resign"), new Icon("/ic_menu_exit.png") );
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
@@ -74,6 +75,11 @@ public class MiniFlashRiskAdapter implements RiskListener {
 //            });
 //            menu.add(button);
 //        }
+    }
+
+    private boolean amOnlinePlayer() {
+        Player player = lobby==null?null:myRisk.getGame().getPlayer(lobby.whoAmI());
+        return player!=null && player.isAlive();
     }
 
     // TODO ########### NOT THREAD SAFE!!! ############

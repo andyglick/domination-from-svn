@@ -330,19 +330,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    public boolean amAPlayer() {
-        if (openGameId ==-1) {
-            return false;
-        }
-        for (int c=0;c<games.size();c++) {
-            Game g = (Game)games.get(c);
-            if (g.getId() == openGameId) {
-                return g.getState( whoAmI() ) == Game.STATE_CAN_PLAY;
-            }
-        }
-        return false;
-    }
-
     public void resign() {
         mycom.leaveGame( openGameId );
     }
