@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -38,6 +39,7 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.ui.flashgui.MainMenu;
+import net.yura.mobile.util.Url;
 
 /**
  * @author Yura Mamyrin
@@ -289,6 +291,48 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 				}
 
 			}
+
+                        @Override
+                        public boolean isCellEditable(int row, int col) {
+                            switch (col) {
+                                case 0:// name
+                                case 2:// type
+                                case 9:// address
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+
+                        @Override
+                        public void setValueAt(Object aValue, int row, int col) {
+                            Player player = (Player)myrisk.getGame().getPlayers().elementAt(row);
+
+                            try {
+                                String name = col==0?String.valueOf(aValue):player.getName();
+                                if (name.equals("")) {
+                                    throw new IllegalArgumentException("no empty name");
+                                }
+                                int type = col==2?myrisk.getType(String.valueOf(aValue)):player.getType();
+                                if (type == -1) {
+                                    throw new IllegalArgumentException("bad type "+aValue);
+                                }
+                                String address = col==9?String.valueOf(aValue):player.getAddress();
+                                if (address.equals("")) {
+                                    throw new IllegalArgumentException("no empty address");
+                                }
+
+                                HashMap map = new HashMap();
+                                map.put("oldName", player.getName());
+                                map.put("newName", name);
+                                map.put("newType", type);
+                                map.put("newAddress", address);
+                                myrisk.parserFromNetwork("RENAME "+Url.toQueryString(RiskUtil.asHashtable(map)) );
+                            }
+                            catch (Exception ex) {
+                                System.out.println("error "+ex);
+                            }
+                        }
 
 		};
 
