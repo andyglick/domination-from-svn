@@ -452,7 +452,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 		<mkdir dir="${dir.build.lobby.server.classes}"/>
 
 		<javac debug="on" srcdir="src:src_lobbyserver" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**,net/yura/domination/engine/ai/**"
-		source="1.5" target="1.5" classpath="lib/LobbyServer.jar"/>
+		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/SwingME.jar"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
@@ -523,7 +523,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 
     <target name="setup.android" description="copy maps/help/changelog/gpl into assets" >
-        
+
 	<mkdir dir="assets/maps"/>
 	<copy todir="assets/maps">
 		<fileset dir="game/${game.name}/maps" includes="**/*.*"/>
@@ -562,9 +562,9 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
                 <fileset dir="${dir.properties}" includes="**/*.properties"/>
                 <fileset dir="src_android" includes="**/*.ini"/>
         </copy>
-        
+
         <!-- copy assets into jar -->
-        
+
         <copy todir="${dir.build}/swingme">
                 <fileset dir="${basedir}" includes="assets/**"/>
         </copy>
@@ -619,11 +619,11 @@ some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
 -->
 
     <target name="android" description="build and run on android" depends="setup.android">
-        
+
         <loadproperties srcFile="local.properties" />
         <property file="ant.properties" />
         <loadproperties srcFile="project.properties" />
-        
+
         <path id="src">
           <pathelement location="src"/>
           <pathelement location="src_android"/>
@@ -631,7 +631,7 @@ some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
           <pathelement location="res_android"/>
         </path>
         <pathconvert property="source.absolute.dir" refid="src"/>
-        
+
         <fail
             message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
             unless="sdk.dir"
