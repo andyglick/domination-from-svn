@@ -2846,7 +2846,7 @@ RiskUtil.printStackTrace(e);
                 if (leaver==null) {
                     throw new IllegalArgumentException("can not find player with name \""+name+"\"");
                 }
-                if (newNamePlayer!=null) {
+                if (newNamePlayer!=null && !name.equals(newName)) {
                     throw new IllegalArgumentException("can not rename \""+name+"\". someone with new name \""+newName+"\" is already in this game");
                 }
 
