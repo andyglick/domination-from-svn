@@ -22,6 +22,8 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
@@ -38,6 +40,8 @@ import net.yura.mobile.util.Url;
  * @author Yura Mamyrin
  */
 public class Risk extends Thread {
+
+        private static final Logger logger = Logger.getLogger(Risk.class.getName());
 
 	public static String RISK_VERSION;
 
@@ -281,6 +285,7 @@ public class Risk extends Thread {
 
 					try { inbox.wait(); }
 					catch(InterruptedException e) {
+                                                // TODO fix this, this is totally wrong
 						System.err.println("InterruptedException in "+getName());
 					}
 				}
@@ -305,8 +310,7 @@ public class Risk extends Thread {
                         }
                 }
                 catch (Exception ex) {
-			System.err.println("ERROR processing "+ message);
-			RiskUtil.printStackTrace(ex);
+			logger.log(Level.WARNING,"ERROR processing "+ message,ex);
                 }
             }
         }
@@ -365,8 +369,7 @@ public class Risk extends Thread {
                                             output=resb.getString( "core.save.saved");
                                         }
                                         catch (Exception ex) {
-                                            System.err.println("error saving game to file: "+filename);
-                                            RiskUtil.printStackTrace(ex);
+                                            logger.log(Level.WARNING, "error saving game to file: "+filename,ex);
 
                                             output=resb.getString( "core.save.error.unable")+" "+ex;
                                             showMessageDialog(output);
@@ -509,8 +512,7 @@ RiskUtil.printStackTrace(e);
                                                 }
                                         }
                                         catch (Exception ex) {
-                                                System.err.println("error loading game from file: "+filename);
-                                                RiskUtil.printStackTrace(ex);
+                                                logger.log(Level.WARNING,"error loading game from file: "+filename,ex);
 
                                                 output=resb.getString( "core.loadgame.error.load")+" "+ex;
                                                 showMessageDialog(output);
@@ -1062,7 +1064,7 @@ RiskUtil.printStackTrace(e);
 			String input=StringT.nextToken();
 			output="";
 
-			if (game.getState()==RiskGame.STATE_NEW_GAME) {
+                        if (game.getState()==RiskGame.STATE_NEW_GAME) {
 
 				if (input.equals("choosemap")) {
 
@@ -1441,629 +1443,619 @@ RiskUtil.printStackTrace(e);
 				}
 				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "newplayer, delplayer, startgame, choosemap, choosecards, info, autosetup"); }
 
-			}
+                        }
+                        else {
+                            boolean aiPlayer = game.getCurrentPlayer().getType()!=Player.PLAYER_HUMAN;
+                            try {
+                                // UNDO
+                                if (input.equals("undo")) {
 
-			// UNDO
-			else if (input.equals("undo")) {
+                                    if(aiPlayer) {
+                                        throw new IllegalArgumentException("ai is trying to call undo");
+                                    }
 
-				if ( StringT.hasMoreTokens()==false ) {
+                                    if ( StringT.hasMoreTokens()==false ) {
 
-				    if ( unlimitedLocalMode ) {
+                                        if ( unlimitedLocalMode ) {
 
-					try {
-                                                // can not undo when defending yourself as it is not really your go
-						if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
-                                                        //game = (RiskGame)Undo.getObject( nullCipher );
-							ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
-							game = (RiskGame)in.readObject();
+                                            try {
+                                                    // can not undo when defending yourself as it is not really your go
+                                                    if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
+                                                            //game = (RiskGame)Undo.getObject( nullCipher );
+                                                            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
+                                                            game = (RiskGame)in.readObject();
 
-							output =resb.getString( "core.undo.undone");
-						}
-						else {
-							output =resb.getString( "core.undo.error.unable");
-						}
-					}
-					catch (Exception e) {
-						System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-						RiskUtil.printStackTrace(e);
-					}
-				    }
-				    else {
-					output = resb.getString( "core.undo.error.network");
-				    }
+                                                            output =resb.getString( "core.undo.undone");
+                                                    }
+                                                    else {
+                                                            output =resb.getString( "core.undo.error.unable");
+                                                    }
+                                            }
+                                            catch (Exception e) {
+                                                    logger.log(Level.WARNING, resb.getString( "core.loadgame.error.undo"),e);
+                                            }
+                                        }
+                                        else {
+                                            output = resb.getString( "core.undo.error.network");
+                                        }
 
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "undo"); }
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "undo"); }
 
 
-			}
-			else if (input.equals("showmission")) {
-				if (StringT.hasMoreTokens()==false) {
-
-					// only show to the right player!
-
-					if ( showHumanPlayerThereInfo() ) {
-						output = resb.getString( "core.showmission.mission") + " " + getCurrentMission();
-					}
-					else { output=resb.getString( "core.showmission.error"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showmission"); }
-			}
-			else if (input.equals("showarmies")) {
-				if (StringT.hasMoreTokens()==false) {
-
-					if ( game.getState() != RiskGame.STATE_NEW_GAME) {
-
-						Country[] v = game.getCountries();
-
-						output=resb.getString( "core.showarmies.countries") + System.getProperty("line.separator");
-
-						for (int c=0; c< v.length ; c++) {
-
-							output = output + v[c].getColor() + " " + v[c].getName()+" - "; // Display
-
-							if ( v[c].getOwner() != null ) {
-								output = output + ((Player)v[c].getOwner()).getName() +" ("+v[c].getArmies() +")";
-								if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
-
-									List players = game.getPlayers();
-
-									for (int a=0; a< players.size() ; a++) {
-
-										if ( ((Player)players.get(a)).getCapital() != null && ((Player)players.get(a)).getCapital() == v[c] ) {
-											output = output + " " + RiskUtil.replaceAll( resb.getString( "core.showarmies.captial")
-														, "{0}", ((Player)players.get(a)).getName());
-										}
-
-									}
-
-								}
-
-								output = output + System.getProperty("line.separator");
-
-							}
-							else {
-								output = output + resb.getString( "core.showarmies.noowner") + System.getProperty("line.separator");
-							}
-
-						}
-
-					}
-					else { output=resb.getString( "core.showarmies.error.unable"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showarmies"); }
-			}
-
-			else if (input.equals("showcards")) {
-				if (StringT.hasMoreTokens()==false) {
-
-					if ( showHumanPlayerThereInfo() ) {
-
-						List c = ((Player)game.getCurrentPlayer()).getCards();
-
-						if (c.size() == 0) {
-							output=resb.getString( "core.showcards.nocards");
-						}
-						else {
-							output=resb.getString( "core.showcards.youhave");
-
-							for (int a=0; a< c.size() ; a++) {
-
-								if ( ((Card)c.get(a)).getName().equals(Card.WILDCARD) ) {
-									output = output + " " + Card.WILDCARD; // resb.getString( "core.showcards.wildcard"); // dont use this as user needs to type it in
-								}
-								else {
-									output = output + " \"" + ((Card)c.get(a)).getName() +" "+ ((Country)((Card)c.get(a)).getCountry()).getName() +" ("+((Country)((Card)c.get(a)).getCountry()).getColor()+")\""; // Display
-								}
-
-							}
-						}
-
-						if(game.getCardMode()==RiskGame.CARD_FIXED_SET) {
-							output = output+"\n"+ resb.getString("cards.fixed");
-
-						}
-                                                else if(game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-							output = output+"\n"+ resb.getString("cards.italianlike");
-
-						}
-						else {
-							output = output+"\n"+ RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf(getNewCardState()) );
-						}
-
-					}
-					else { output=resb.getString( "core.showcards.error.unable"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showcards"); }
-			}
-
-			else if (input.equals("autoendgo")) {
-				if (StringT.hasMoreTokens()==false) {
-					String strSelected;
-
-					if ( game.getCurrentPlayer().getAutoEndGo() ) {
-						strSelected = "core.autoendgo.on";
-					}
-					else {
-						strSelected = "core.autoendgo.off";
-					}
-					output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( strSelected));
-				}
-				else if (StringT.countTokens() == 1) {
-
-					String option = StringT.nextToken();
-					if (option.equals("on") ) {
-						game.getCurrentPlayer().setAutoEndGo(true);
-						output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( "core.autoendgo.on"));
-					}
-					else if (option.equals("off") ) {
-						game.getCurrentPlayer().setAutoEndGo(false);
-						output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( "core.autoendgo.off"));
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.autoendgo.error.unknown"), "{0}", option); }
-
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autoendgo on/off"); }
-			}
-
-			else if (input.equals("autodefend")) {
-				if (StringT.hasMoreTokens()==false) {
-
-					String strSelected;
-					if ( game.getCurrentPlayer().getAutoDefend() ) {
-						strSelected = "core.autodefend.on";
-					}
-					else {
-						strSelected = "core.autodefend.on";
-					}
-					output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( strSelected));
-				}
-				else if (StringT.countTokens() == 1) {
-
-					String option = StringT.nextToken();
-					if (option.equals("on") ) {
-						game.getCurrentPlayer().setAutoDefend(true);
-						output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( "core.autodefend.on"));
-					}
-					else if (option.equals("off") ) {
-						game.getCurrentPlayer().setAutoDefend(false);
-						output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( "core.autodefend.off"));
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.autodefend.error.unknown"), "{0}", option); }
-
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autodefend on/off"); }
-			}
-			else if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
-
-				if (input.equals("trade")) {
-					if (StringT.countTokens()==3) {
-						// trade Japan wildcard Egypt
-						int noa=0;
-
-						Card cards[] = game.getCards(StringT.nextToken(),StringT.nextToken(),StringT.nextToken());
-
-						if (cards[0] != null && cards[1] != null && cards[2] != null) { // if the player DOES HAVE all the cards he chose
-							noa = game.trade(cards[0], cards[1], cards[2]);
-						}
-
-						if ( noa != 0 ) { // if the trade WAS SUCCESSFUL
-							output=RiskUtil.replaceAll(resb.getString( "core.trade.traded"), "{0}", "" + noa);
-						}
-						else { output=resb.getString( "core.trade.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "trade card card card"); }
-				}
-				else if (input.equals("endtrade")) {
-					if (StringT.hasMoreTokens()==false) {
-
-						if ( game.endTrade() ) {
-							output=resb.getString( "core.trade.endtrade");
-						}
-						else { output=resb.getString( "core.trade.end.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endtrade"); }
-
-				}
-				else {
-                                    output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showcards, trade"+(game.canEndTrade()?", endtrade":"") );
                                 }
-			}
-			else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
+                                else if (input.equals("showmission")) {
+                                    if (StringT.hasMoreTokens()==false) {
 
-				if (input.equals("placearmies")) {
-					if (StringT.countTokens()==2) {
-						String country=StringT.nextToken();
-						int c=RiskGame.getNumber( country );
-						int num=RiskGame.getNumber( StringT.nextToken() );
-						Country t;
+                                            // only show to the right player!
 
-						if (c != -1) {
-							t=game.getCountryInt(c);
-						}
-						else {
-							//YURA:LANG t=game.getCountryByName(country);
-							t=null;
-						}
+                                            if ( showHumanPlayerThereInfo() ) {
+                                                    output = resb.getString( "core.showmission.mission") + " " + getCurrentMission();
+                                            }
+                                            else { output=resb.getString( "core.showmission.error"); }
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showmission"); }
+                                }
+                                else if (input.equals("showarmies")) {
+                                    if (StringT.hasMoreTokens()==false) {
 
-						if ( t != null && num!=-1 && !( game.getGameMode() == 1 && t.getOwner() == null) && !( game.getGameMode() == 3 && t.getOwner() == null) ) {
+                                            if ( game.getState() != RiskGame.STATE_NEW_GAME) {
 
-							int result = game.placeArmy(t, num);
+                                                    Country[] v = game.getCountries();
 
-							if (result!=0) {
-								//{0} new army placed in: {1}
-								output = RiskUtil.replaceAll( RiskUtil.replaceAll(resb.getString( "core.place.placed")
-                                                                        , "{0}", String.valueOf(num) )
-                                                                        , "{1}", t.getName() ); // Display
+                                                    output=resb.getString( "core.showarmies.countries") + System.getProperty("line.separator");
 
-								if (result == 2) {
+                                                    for (int c=0; c< v.length ; c++) {
 
-									output=output + whoWon();
+                                                            output = output + v[c].getColor() + " " + v[c].getName()+" - "; // Display
 
-								}
+                                                            if ( v[c].getOwner() != null ) {
+                                                                    output = output + ((Player)v[c].getOwner()).getName() +" ("+v[c].getArmies() +")";
+                                                                    if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
 
-							}
-							else { output=resb.getString( "core.place.error.unable"); }
+                                                                            List players = game.getPlayers();
 
-						}
-						else { output=resb.getString( "core.place.error.invalid"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "placearmies country number"); }
-				}
-				else if (input.equals("autoplace")) {
-					if (StringT.hasMoreTokens()==false) {
+                                                                            for (int a=0; a< players.size() ; a++) {
 
-						if ( game.NoEmptyCountries() == false ) {
+                                                                                    if ( ((Player)players.get(a)).getCapital() != null && ((Player)players.get(a)).getCapital() == v[c] ) {
+                                                                                            output = output + " " + RiskUtil.replaceAll( resb.getString( "core.showarmies.captial")
+                                                                                                                    , "{0}", ((Player)players.get(a)).getName());
+                                                                                    }
 
-                                                    if (shouldGameCommand(Addr)) {
-                                                        gameCommand(Addr, "PLACE", String.valueOf( game.getEmptyCountry() ) );
+                                                                            }
+
+                                                                    }
+
+                                                                    output = output + System.getProperty("line.separator");
+
+                                                            }
+                                                            else {
+                                                                    output = output + resb.getString( "core.showarmies.noowner") + System.getProperty("line.separator");
+                                                            }
+
                                                     }
 
-						    needInput=false;
-						    output = null;
-
-						}
-						else {
-							output = resb.getString( "core.autoplace.error.unable");
-						}
-
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autoplace"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showarmies, placearmies, autoplace"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_ATTACKING) {
-
-				if (input.equals("attack")) {
-					if (StringT.countTokens()==2) {
-
-						String arg1=StringT.nextToken();
-						String arg2=StringT.nextToken();
-						int a1=RiskGame.getNumber(arg1);
-						int a2=RiskGame.getNumber(arg2);
-
-						Country country1;
-						Country country2;
-
-						if (a1 != -1) {
-							country1=game.getCountryInt(a1);
-						}
-						else {
-							//YURA:LANG country1=game.getCountryByName(arg1);
-							country1=null;
-						}
-
-						if (a2 != -1) {
-							country2=game.getCountryInt(a2);
-						}
-						else {
-							//YURA:LANG country2=game.getCountryByName(arg2);
-							country2=null;
-						}
-
-						boolean a=game.attack(country1, country2);
-
-						if ( a ) {
-							//Attack {0} ({1}) with {2} ({3}). (You can use up to {4} dice to attack)
-							output = RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.attack.attacking")
-										, "{0}", country2.getName()) // Display
-										, "{1}", "" + country2.getArmies())
-										, "{2}", country1.getName()) // Display
-										, "{3}", "" + country1.getArmies())
-										, "{4}", "" + game.getNoAttackDice() );
-
-//							Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
-//
-//							if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
-//
-//								controller.showDice(a[1], true);
-//							}
-
-						}
-						else { output=resb.getString( "core.attack.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "attack country country"); }
-				}
-				else if (input.equals("endattack")) {
-					if (StringT.hasMoreTokens()==false) {
-						if ( game.endAttack() ) {
-							output=resb.getString( "core.attack.end.ended");
-						}
-						else { output=resb.getString( "core.attack.end.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endattack"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "attack, endattack"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_ROLLING) {
-
-				if (input.equals("roll")) {
-
-					if (StringT.countTokens()==1) {
-
-						int dice=RiskGame.getNumber( StringT.nextToken() );
-
-						if ( dice != -1 && game.rollA(dice) ) {
-
-							if ( battle ) {
-
-								controller.setNODAttacker(dice);
-
-							}
-
-                                                        int n = game.getNoDefendDice();
-
-							//Rolled attacking dice, {0} defend yourself! (you can use up to {1} dice to defend)
-							output = RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.roll.rolled")
-										, "{0}", ((Player)game.getCurrentPlayer()).getName())
-										, "{1}", "" + n);
-
-//							Player defendingPlayer = ((Country)game.getDefender()).getOwner();
-//
-//							if ( showHumanPlayerThereInfo(defendingPlayer) ) {
-//								controller.showDice(n, false);
-//							}
-
-						}
-						else { output=resb.getString( "core.roll.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "roll number"); }
-				}
-				else if (input.equals("retreat")) {
-					if (StringT.hasMoreTokens()==false) {
-
-						if ( game.retreat() ) {
-							output=resb.getString( "core.retreat.retreated");
-						}
-						else { output=resb.getString( "core.retreat.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "retreat"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "roll, retreat"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_BATTLE_WON) {
-
-				if (input.equals("move")) {
-					if (StringT.countTokens()==1) {
-
-						String num = StringT.nextToken();
-						int noa;
-
-						if (num.equals("all")) {
-							noa=game.moveAll();
-						}
-						else {
-							noa=RiskGame.getNumber( num );
-						}
-
-						int mov=game.moveArmies(noa);
-
-						if ( mov != 0 ) {
-							//Moved {0} armies to captured country.
-							output = RiskUtil.replaceAll(resb.getString( "core.move.moved"), "{0}", "" + noa);
-
-							if (mov == 2) {
-
-								output=output + whoWon();
-
-							}
-
-						}
-						else { output=resb.getString( "core.move.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "move number"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "move"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_FORTIFYING) {
-
-				if (input.equals("movearmies")) {
-					if (StringT.countTokens()==3) {
-
-						String arg1=StringT.nextToken();
-						String arg2=StringT.nextToken();
-						int a1=RiskGame.getNumber(arg1);
-						int a2=RiskGame.getNumber(arg2);
-
-						Country country1;
-						Country country2;
-
-						if (a1 != -1) {
-							country1=game.getCountryInt(a1);
-						}
-						else {
-							//YURA:LANG country1=game.getCountryByName(arg1);
-							country1=null;
-						}
-
-						if (a2 != -1) {
-							country2=game.getCountryInt(a2);
-						}
-						else {
-							//YURA:LANG country2=game.getCountryByName(arg2);
-							country2=null;
-						}
-
-						int noa=RiskGame.getNumber( StringT.nextToken() );
-
-						if ( game.moveArmy(country1, country2, noa) ) {
-							//Moved {0} armies from {1} to {2}.
-							output = RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.tacmove.movedfromto")
-									, "{0}", "" + noa)
-									, "{1}", country1.getName()) // Display
-									, "{2}", country2.getName()); // Display
-						}
-						else { output=resb.getString( "core.tacmove.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "movearmies country country number"); }
-				}
-				else if (input.equals("nomove")) {
-					if (StringT.hasMoreTokens()==false) {
-						if ( game.noMove() ) {
-							output=resb.getString( "core.tacmove.no.nomoves");
-						}
-						else { output=resb.getString( "core.tacmove.no.error.unable"); }
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "nomove"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "movearmies, nomove"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_END_TURN) {
-
-				if (input.equals("endgo")) {
-					if (StringT.hasMoreTokens()==false) {
-
-						needInput=false;
-						output=null;
-
-						controller.sendMessage(resb.getString( "core.endgo.ended"), false , false);
-						DoEndGo();
-
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endgo"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "emdgo"); }
-
-			}
-			else if (game.getState()==RiskGame.STATE_GAME_OVER) {
-
-				if (input.equals("continue")) {
-					if (StringT.hasMoreTokens()==false) {
-
-						if ( game.continuePlay() ) {
-							output=resb.getString( "core.continue.successful");
-						}
-						else {
-							output=resb.getString( "core.continue.error.unable");
-						}
-
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "continue"); }
-				}
-				else {
-					//The game is over. {0} won! (current possible commands are: continue)
-					output = RiskUtil.replaceAll(resb.getString( "core.gameover.won"), "{0}", ((Player)game.getCurrentPlayer()).getName());
-				}
-
-			}
-			else if (game.getState()==RiskGame.STATE_SELECT_CAPITAL) {
-
-				if (input.equals("capital")) {
-					if (StringT.countTokens()==1) {
-
-						String strCountry = StringT.nextToken();
-						int nCountryId = RiskGame.getNumber(strCountry);
-						Country t;
-
-						if (nCountryId != -1) {
-							t = game.getCountryInt( nCountryId);
-						} else {
-							//YURA:LANG t = game.getCountryByName( strCountry);
-							t=null;
-						}
-
-						if ( t != null && game.setCapital(t) ) {
-
-							if ( showHumanPlayerThereInfo() ) {
-
-								output=RiskUtil.replaceAll(resb.getString( "core.capital.selected"), "{0}", t.getName()); // Display
-							}
-							else {
-								output=resb.getString( "core.capital.hasbeenselected");
-							}
-
-						}
-						else { output=resb.getString( "core.capital.error.unable"); }
-
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "capital country"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "capital"); }
-
-
-			}
-			else if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
-
-				if (input.equals("roll")) {
-
-					if (StringT.countTokens()==1) {
-
-						int dice=RiskGame.getNumber( StringT.nextToken() );
-						if ( dice != -1 && game.rollD(dice) ) {
-
-							if ( battle ) {
-
-								controller.setNODDefender(dice);
-
-								try{ Thread.sleep(500); }
-								catch(InterruptedException e){}
-
-							}
-							// client does a roll, and this is not called
-							if ( shouldGameCommand(Addr) ) { // recursive call
-
-								int[] attackerResults = game.rollDice( game.getAttackerDice() );
-								int[] defenderResults = game.rollDice( game.getDefenderDice() );
-
-								String serverRoll = "";
-
-								serverRoll = serverRoll + attackerResults.length + " ";
-								serverRoll = serverRoll + defenderResults.length + " ";
-
-								for (int c=0; c< attackerResults.length ; c++) {
-									serverRoll = serverRoll + attackerResults[c] + " ";
-								}
-								for (int c=0; c< defenderResults.length ; c++) {
-									serverRoll = serverRoll + defenderResults[c] + " ";
-								}
-
-                                                                gameCommand(Addr, "DICE", serverRoll );
-
-							}
-
-							output=null;
-							needInput=false;
-
-						}
-						else { output=resb.getString( "core.roll.error.unable"); }
-
-					}
-					else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "roll number"); }
-				}
-				else { output=RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "roll"); }
-
-			}
-			else { output=resb.getString( "core.error.unknownstate"); }
-
-			//} // this was the end of "if there is somthing to pass" but not needed any more
+                                            }
+                                            else { output=resb.getString( "core.showarmies.error.unable"); }
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showarmies"); }
+                                }
+
+                                else if (input.equals("showcards")) {
+                                    if (StringT.hasMoreTokens()==false) {
+
+                                            if ( showHumanPlayerThereInfo() ) {
+
+                                                    List c = ((Player)game.getCurrentPlayer()).getCards();
+
+                                                    if (c.size() == 0) {
+                                                            output=resb.getString( "core.showcards.nocards");
+                                                    }
+                                                    else {
+                                                            output=resb.getString( "core.showcards.youhave");
+
+                                                            for (int a=0; a< c.size() ; a++) {
+
+                                                                    if ( ((Card)c.get(a)).getName().equals(Card.WILDCARD) ) {
+                                                                            output = output + " " + Card.WILDCARD; // resb.getString( "core.showcards.wildcard"); // dont use this as user needs to type it in
+                                                                    }
+                                                                    else {
+                                                                            output = output + " \"" + ((Card)c.get(a)).getName() +" "+ ((Country)((Card)c.get(a)).getCountry()).getName() +" ("+((Country)((Card)c.get(a)).getCountry()).getColor()+")\""; // Display
+                                                                    }
+
+                                                            }
+                                                    }
+
+                                                    if(game.getCardMode()==RiskGame.CARD_FIXED_SET) {
+                                                            output = output+"\n"+ resb.getString("cards.fixed");
+
+                                                    }
+                                                    else if(game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+                                                            output = output+"\n"+ resb.getString("cards.italianlike");
+
+                                                    }
+                                                    else {
+                                                            output = output+"\n"+ RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf(getNewCardState()) );
+                                                    }
+
+                                            }
+                                            else { output=resb.getString( "core.showcards.error.unable"); }
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "showcards"); }
+                                }
+
+                                else if (input.equals("autoendgo")) {
+                                    if (StringT.hasMoreTokens()==false) {
+                                            String strSelected;
+
+                                            if ( game.getCurrentPlayer().getAutoEndGo() ) {
+                                                    strSelected = "core.autoendgo.on";
+                                            }
+                                            else {
+                                                    strSelected = "core.autoendgo.off";
+                                            }
+                                            output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( strSelected));
+                                    }
+                                    else if (StringT.countTokens() == 1) {
+
+                                            String option = StringT.nextToken();
+                                            if (option.equals("on") ) {
+                                                    game.getCurrentPlayer().setAutoEndGo(true);
+                                                    output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( "core.autoendgo.on"));
+                                            }
+                                            else if (option.equals("off") ) {
+                                                    game.getCurrentPlayer().setAutoEndGo(false);
+                                                    output = RiskUtil.replaceAll(resb.getString( "core.autoendgo.setto"), "{0}", resb.getString( "core.autoendgo.off"));
+                                            }
+                                            else { output=RiskUtil.replaceAll(resb.getString( "core.autoendgo.error.unknown"), "{0}", option); }
+
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autoendgo on/off"); }
+                                }
+
+                                else if (input.equals("autodefend")) {
+                                    if (StringT.hasMoreTokens()==false) {
+
+                                            String strSelected;
+                                            if ( game.getCurrentPlayer().getAutoDefend() ) {
+                                                    strSelected = "core.autodefend.on";
+                                            }
+                                            else {
+                                                    strSelected = "core.autodefend.on";
+                                            }
+                                            output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( strSelected));
+                                    }
+                                    else if (StringT.countTokens() == 1) {
+
+                                            String option = StringT.nextToken();
+                                            if (option.equals("on") ) {
+                                                    game.getCurrentPlayer().setAutoDefend(true);
+                                                    output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( "core.autodefend.on"));
+                                            }
+                                            else if (option.equals("off") ) {
+                                                    game.getCurrentPlayer().setAutoDefend(false);
+                                                    output = RiskUtil.replaceAll(resb.getString( "core.autodefend.setto"), "{0}", resb.getString( "core.autodefend.off"));
+                                            }
+                                            else { output=RiskUtil.replaceAll(resb.getString( "core.autodefend.error.unknown"), "{0}", option); }
+
+                                    }
+                                    else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autodefend on/off"); }
+                                }
+                                else if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
+
+                                    if (input.equals("trade")) {
+                                            if (StringT.countTokens()==3) {
+                                                    // trade Japan wildcard Egypt
+                                                    int noa=0;
+
+                                                    Card cards[] = game.getCards(StringT.nextToken(),StringT.nextToken(),StringT.nextToken());
+
+                                                    if (cards[0] != null && cards[1] != null && cards[2] != null) { // if the player DOES HAVE all the cards he chose
+                                                            noa = game.trade(cards[0], cards[1], cards[2]);
+                                                    }
+
+                                                    if ( noa != 0 ) { // if the trade WAS SUCCESSFUL
+                                                            output=RiskUtil.replaceAll(resb.getString( "core.trade.traded"), "{0}", "" + noa);
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.trade.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "trade card card card")); }
+                                    }
+                                    else if (input.equals("endtrade")) {
+                                            if (StringT.hasMoreTokens()==false) {
+
+                                                    if ( game.endTrade() ) {
+                                                            output=resb.getString( "core.trade.endtrade");
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.trade.end.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endtrade")); }
+                                    }
+                                    else {
+                                        throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showcards, trade"+(game.canEndTrade()?", endtrade":"") ));
+                                    }
+                                }
+                                else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
+
+                                    if (input.equals("placearmies")) {
+                                            if (StringT.countTokens()==2) {
+                                                    String country=StringT.nextToken();
+                                                    int c=RiskGame.getNumber( country );
+                                                    int num=RiskGame.getNumber( StringT.nextToken() );
+                                                    Country t;
+
+                                                    if (c != -1) {
+                                                            t=game.getCountryInt(c);
+                                                    }
+                                                    else {
+                                                            //YURA:LANG t=game.getCountryByName(country);
+                                                            t=null;
+                                                    }
+
+                                                    if ( t != null && num!=-1 && !( game.getGameMode() == 1 && t.getOwner() == null) && !( game.getGameMode() == 3 && t.getOwner() == null) ) {
+
+                                                            int result = game.placeArmy(t, num);
+
+                                                            if (result!=0) {
+                                                                    //{0} new army placed in: {1}
+                                                                    output = RiskUtil.replaceAll( RiskUtil.replaceAll(resb.getString( "core.place.placed")
+                                                                            , "{0}", String.valueOf(num) )
+                                                                            , "{1}", t.getName() ); // Display
+
+                                                                    if (result == 2) {
+                                                                            output=output + whoWon();
+                                                                    }
+
+                                                            }
+                                                            else { throw new IllegalArgumentException(resb.getString( "core.place.error.unable")); }
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.place.error.invalid")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "placearmies country number")); }
+                                    }
+                                    else if (input.equals("autoplace")) {
+                                            if (StringT.hasMoreTokens()==false) {
+                                                    if ( game.NoEmptyCountries() == false ) {
+                                                        if (shouldGameCommand(Addr)) {
+                                                            gameCommand(Addr, "PLACE", String.valueOf( game.getEmptyCountry() ) );
+                                                        }
+                                                        needInput=false;
+                                                        output = null;
+                                                    }
+                                                    else {
+                                                            throw new IllegalArgumentException(resb.getString( "core.autoplace.error.unable"));
+                                                    }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autoplace")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showarmies, placearmies, autoplace")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_ATTACKING) {
+
+                                    if (input.equals("attack")) {
+                                            if (StringT.countTokens()==2) {
+
+                                                    String arg1=StringT.nextToken();
+                                                    String arg2=StringT.nextToken();
+                                                    int a1=RiskGame.getNumber(arg1);
+                                                    int a2=RiskGame.getNumber(arg2);
+
+                                                    Country country1;
+                                                    Country country2;
+
+                                                    if (a1 != -1) {
+                                                            country1=game.getCountryInt(a1);
+                                                    }
+                                                    else {
+                                                            //YURA:LANG country1=game.getCountryByName(arg1);
+                                                            country1=null;
+                                                    }
+
+                                                    if (a2 != -1) {
+                                                            country2=game.getCountryInt(a2);
+                                                    }
+                                                    else {
+                                                            //YURA:LANG country2=game.getCountryByName(arg2);
+                                                            country2=null;
+                                                    }
+
+                                                    boolean a=game.attack(country1, country2);
+
+                                                    if ( a ) {
+                                                            //Attack {0} ({1}) with {2} ({3}). (You can use up to {4} dice to attack)
+                                                            output = RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.attack.attacking")
+                                                                                    , "{0}", country2.getName()) // Display
+                                                                                    , "{1}", "" + country2.getArmies())
+                                                                                    , "{2}", country1.getName()) // Display
+                                                                                    , "{3}", "" + country1.getArmies())
+                                                                                    , "{4}", "" + game.getNoAttackDice() );
+
+    //							Player attackingPlayer = ((Country)game.getAttacker()).getOwner();
+    //
+    //							if ( showHumanPlayerThereInfo( attackingPlayer ) ) {
+    //
+    //								controller.showDice(a[1], true);
+    //							}
+
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.attack.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "attack country country")); }
+                                    }
+                                    else if (input.equals("endattack")) {
+                                            if (StringT.hasMoreTokens()==false) {
+                                                    if ( game.endAttack() ) {
+                                                            output=resb.getString( "core.attack.end.ended");
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.attack.end.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endattack")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "attack, endattack")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_ROLLING) {
+
+                                    if (input.equals("roll")) {
+
+                                            if (StringT.countTokens()==1) {
+
+                                                    int dice=RiskGame.getNumber( StringT.nextToken() );
+
+                                                    if ( dice != -1 && game.rollA(dice) ) {
+
+                                                            if ( battle ) {
+
+                                                                    controller.setNODAttacker(dice);
+
+                                                            }
+
+                                                            int n = game.getNoDefendDice();
+
+                                                            //Rolled attacking dice, {0} defend yourself! (you can use up to {1} dice to defend)
+                                                            output = RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.roll.rolled")
+                                                                                    , "{0}", ((Player)game.getCurrentPlayer()).getName())
+                                                                                    , "{1}", "" + n);
+
+    //							Player defendingPlayer = ((Country)game.getDefender()).getOwner();
+    //
+    //							if ( showHumanPlayerThereInfo(defendingPlayer) ) {
+    //								controller.showDice(n, false);
+    //							}
+
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.roll.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "roll number")); }
+                                    }
+                                    else if (input.equals("retreat")) {
+                                            if (StringT.hasMoreTokens()==false) {
+
+                                                    if ( game.retreat() ) {
+                                                            output=resb.getString( "core.retreat.retreated");
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.retreat.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "retreat")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "roll, retreat")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_BATTLE_WON) {
+
+                                    if (input.equals("move")) {
+                                            if (StringT.countTokens()==1) {
+
+                                                    String num = StringT.nextToken();
+                                                    int noa;
+
+                                                    if (num.equals("all")) {
+                                                            noa=game.moveAll();
+                                                    }
+                                                    else {
+                                                            noa=RiskGame.getNumber( num );
+                                                    }
+
+                                                    int mov=game.moveArmies(noa);
+
+                                                    if ( mov != 0 ) {
+                                                            //Moved {0} armies to captured country.
+                                                            output = RiskUtil.replaceAll(resb.getString( "core.move.moved"), "{0}", "" + noa);
+
+                                                            if (mov == 2) {
+                                                                    output=output + whoWon();
+                                                            }
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.move.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "move number")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "move")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_FORTIFYING) {
+
+                                    if (input.equals("movearmies")) {
+                                            if (StringT.countTokens()==3) {
+
+                                                    String arg1=StringT.nextToken();
+                                                    String arg2=StringT.nextToken();
+                                                    int a1=RiskGame.getNumber(arg1);
+                                                    int a2=RiskGame.getNumber(arg2);
+
+                                                    Country country1;
+                                                    Country country2;
+
+                                                    if (a1 != -1) {
+                                                            country1=game.getCountryInt(a1);
+                                                    }
+                                                    else {
+                                                            //YURA:LANG country1=game.getCountryByName(arg1);
+                                                            country1=null;
+                                                    }
+
+                                                    if (a2 != -1) {
+                                                            country2=game.getCountryInt(a2);
+                                                    }
+                                                    else {
+                                                            //YURA:LANG country2=game.getCountryByName(arg2);
+                                                            country2=null;
+                                                    }
+
+                                                    int noa=RiskGame.getNumber( StringT.nextToken() );
+
+                                                    if ( game.moveArmy(country1, country2, noa) ) {
+                                                            //Moved {0} armies from {1} to {2}.
+                                                            output = RiskUtil.replaceAll(RiskUtil.replaceAll(RiskUtil.replaceAll(resb.getString( "core.tacmove.movedfromto")
+                                                                            , "{0}", "" + noa)
+                                                                            , "{1}", country1.getName()) // Display
+                                                                            , "{2}", country2.getName()); // Display
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.tacmove.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "movearmies country country number")); }
+                                    }
+                                    else if (input.equals("nomove")) {
+                                            if (StringT.hasMoreTokens()==false) {
+                                                    if ( game.noMove() ) {
+                                                            output=resb.getString( "core.tacmove.no.nomoves");
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.tacmove.no.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "nomove")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "movearmies, nomove")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_END_TURN) {
+
+                                    if (input.equals("endgo")) {
+                                            if (StringT.hasMoreTokens()==false) {
+
+                                                    needInput=false;
+                                                    output=null;
+
+                                                    controller.sendMessage(resb.getString( "core.endgo.ended"), false , false);
+                                                    DoEndGo();
+
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "endgo")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "emdgo")); }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_GAME_OVER) {
+
+                                    if (input.equals("continue")) {
+                                            if (StringT.hasMoreTokens()==false) {
+
+                                                    if ( game.continuePlay() ) {
+                                                            output=resb.getString( "core.continue.successful");
+                                                    }
+                                                    else {
+                                                            throw new IllegalArgumentException(resb.getString( "core.continue.error.unable"));
+                                                    }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "continue")); }
+                                    }
+                                    else {
+                                            //The game is over. {0} won! (current possible commands are: continue)
+                                            throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.gameover.won"), "{0}", game.getCurrentPlayer().getName()));
+                                    }
+
+                                }
+                                else if (game.getState()==RiskGame.STATE_SELECT_CAPITAL) {
+
+                                    if (input.equals("capital")) {
+                                            if (StringT.countTokens()==1) {
+
+                                                    String strCountry = StringT.nextToken();
+                                                    int nCountryId = RiskGame.getNumber(strCountry);
+                                                    Country t;
+
+                                                    if (nCountryId != -1) {
+                                                            t = game.getCountryInt( nCountryId);
+                                                    } else {
+                                                            //YURA:LANG t = game.getCountryByName( strCountry);
+                                                            t=null;
+                                                    }
+
+                                                    if ( t != null && game.setCapital(t) ) {
+                                                            if ( showHumanPlayerThereInfo() ) {
+                                                                    output=RiskUtil.replaceAll(resb.getString( "core.capital.selected"), "{0}", t.getName()); // Display
+                                                            }
+                                                            else {
+                                                                    output=resb.getString( "core.capital.hasbeenselected");
+                                                            }
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.capital.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "capital country")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "capital")); }
+                                }
+                                else if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+
+                                    if (input.equals("roll")) {
+
+                                            if (StringT.countTokens()==1) {
+
+                                                    int dice=RiskGame.getNumber( StringT.nextToken() );
+                                                    if ( dice != -1 && game.rollD(dice) ) {
+
+                                                            if ( battle ) {
+
+                                                                    controller.setNODDefender(dice);
+
+                                                                    try{ Thread.sleep(500); }
+                                                                    catch(InterruptedException e){}
+
+                                                            }
+                                                            // client does a roll, and this is not called
+                                                            if ( shouldGameCommand(Addr) ) { // recursive call
+
+                                                                    int[] attackerResults = game.rollDice( game.getAttackerDice() );
+                                                                    int[] defenderResults = game.rollDice( game.getDefenderDice() );
+
+                                                                    String serverRoll = "";
+
+                                                                    serverRoll = serverRoll + attackerResults.length + " ";
+                                                                    serverRoll = serverRoll + defenderResults.length + " ";
+
+                                                                    for (int c=0; c< attackerResults.length ; c++) {
+                                                                            serverRoll = serverRoll + attackerResults[c] + " ";
+                                                                    }
+                                                                    for (int c=0; c< defenderResults.length ; c++) {
+                                                                            serverRoll = serverRoll + defenderResults[c] + " ";
+                                                                    }
+
+                                                                    gameCommand(Addr, "DICE", serverRoll );
+
+                                                            }
+
+                                                            output=null;
+                                                            needInput=false;
+
+                                                    }
+                                                    else { throw new IllegalArgumentException(resb.getString( "core.roll.error.unable")); }
+                                            }
+                                            else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "roll number")); }
+                                    }
+                                    else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "roll")); }
+
+                                }
+                                else { throw new IllegalStateException(resb.getString( "core.error.unknownstate")); }
+                            }
+                            catch (IllegalArgumentException ex) {
+                                if (aiPlayer) {
+                                    logger.log(Level.WARNING,"bad command from ai "+message,ex);
+                                }
+                                output=ex.getMessage();
+                            }
+			} // this was the end of "if there is somthing to pass" but not needed any more
 
                         updateBattleState();
-
 
 		}// end of parse of normal command
 
@@ -2094,17 +2086,14 @@ RiskUtil.printStackTrace(e);
 
 		// check to see if the players go should be ended
 		if ( game != null && game.getState()==RiskGame.STATE_END_TURN && game.getCurrentPlayer().getAutoEndGo() ) {
-
 			needInput=false;
 			DoEndGo();
-
 		}
 
 		// ask for input if u need one
 		if (needInput) {
 			getInput();
 		}
-
 	}
 
         // TODO is this thread safe???
@@ -2414,13 +2403,12 @@ RiskUtil.printStackTrace(e);
                     // what can we do :-(
                     Undo.reset(); // do not keep broken data, TODO, this does NOT clean up memory
                     skipUndo = true;
-                    System.out.println(resb.getString("core.loadgame.error.undo")+" "+e);
+                    logger.log(Level.INFO,resb.getString("core.loadgame.error.undo"),e);
                 }
                 catch (Throwable e) {
                     Undo.reset(); // do not keep broken data, TODO, this does NOT clean up memory
                     skipUndo = true;
-                    System.out.print(resb.getString( "core.loadgame.error.undo") + "\n");
-                    RiskUtil.printStackTrace(e);
+                    logger.log(Level.WARNING, resb.getString( "core.loadgame.error.undo"),e);
                 }
             }
 	}
@@ -2775,7 +2763,7 @@ RiskUtil.printStackTrace(e);
 
             // if there are more commands for this game from the network we should clear them
             if (!inbox.isEmpty()) {
-                System.out.println("clearing commands "+inbox);
+                logger.log(Level.INFO,"clearing commands "+inbox);
                 inbox.clear();
             }
 
