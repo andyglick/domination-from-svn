@@ -2830,6 +2830,10 @@ RiskUtil.printStackTrace(e);
 
         private void renamePlayer(String name,String newName, String newAddress,int newType) {
 
+                if ("".equals(name) || "".equals(newName)) {
+                    throw new IllegalArgumentException("bad rename "+name+" "+newName);
+                }
+
                 // get all the players and make all with the ip of the leaver become nutral
                 List players = game.getPlayers();
                 Player leaver=null,newNamePlayer=null;
