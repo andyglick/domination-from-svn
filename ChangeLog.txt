@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		45
+	Android		46
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -22,6 +22,8 @@ CURRENT VERSION:
 	done: get rid of "[X]" brakets from main menu
 	strange nativenoresult popups in windows 7 fixed
 
+	Android 46 better checks for ai errors
+		   support for new server messages for rename
 	Android 45 gamesave during gamesetup works again
 		   does not ask to quit game if you are not in game
 		   when you make a new game make sure its visible in the list

@@ -2,6 +2,8 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO:
 
+    add dice stats patch to game
+    make SwingME act like xhdpi on mac retina screen
     in Desktop Domination online play should make a sound and flash the window if the window is not focused
     add a notify sound for when its the player's turn?
     Italian mode change "Also, if the player can have the combination of cards that correspond to territories' he actually employed, receives two armed more for each card. "
@@ -49,7 +51,6 @@ Desktop P2P:
 
 Android:
 
-    !!!! fix getBattleWon being called when "move" command has already happenned
     new icon?
     ability to select number of armies to place on android (1 or 5 or 10 or 25 ...)
     ability to speed up the game, change ai wait on android
