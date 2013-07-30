@@ -13,7 +13,6 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
@@ -468,6 +467,23 @@ public class GameActivity extends Frame implements ActionListener {
                         )
             );
 
+/* TODO, this does not work in android
+            Element table;
+            new Element("b",
+                    resb.getString("swing.button.continents")
+            ),
+            table = new Element("table")
+            Continent[] continents = myrisk.getGame().getContinents();
+            for (Continent continent:continents) {
+                Element tr;
+                table.addChild(tr = new Element("tr",
+                        new Element("td",continent.getName()),
+                        new Element("td"," - "),
+                        new Element("td",String.valueOf(continent.getArmyValue()))
+                ));
+                tr.setAttribute(null, "style", "background-color:"+ColorUtil.getHexForColor(continent.getColor())+"; color:"+ColorUtil.getHexForColor(ColorUtil.getTextColorFor(continent.getColor()))+";" );
+            }
+*/
             Button ok = new Button( (String)DesktopPane.get("okText") );
             ok.setActionCommand("dismissInfo");
             Button help = new Button( resb.getProperty("game.menu.manual") );
