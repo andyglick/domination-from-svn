@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		46
+	Android		47
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -22,6 +22,7 @@ CURRENT VERSION:
 	done: get rid of "[X]" brakets from main menu
 	strange nativenoresult popups in windows 7 fixed
 
+	Android 47 correct console output when trading cards in fixed/italian mode
 	Android 46 better checks for ai errors
 		   support for new server messages for rename
 	Android 45 gamesave during gamesetup works again
