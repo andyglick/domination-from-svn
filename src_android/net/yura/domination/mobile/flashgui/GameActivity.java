@@ -370,6 +370,9 @@ public class GameActivity extends Frame implements ActionListener {
     public void setVisible(boolean b) {
     	super.setVisible(b);
     	Midlet.openURL("wakelock://"+b);
+        if (!b && cardsDialog!=null) {
+            cardsDialog.setVisible(false);
+        }
     }
 
     public void actionPerformed(String actionCommand) {
@@ -512,8 +515,17 @@ public class GameActivity extends Frame implements ActionListener {
         }
     }
 
+    CardsDialog cardsDialog;
     void openCards() {
-        CardsDialog cardsDialog = new CardsDialog( myrisk, pp);
+        cardsDialog = new CardsDialog( myrisk, pp) {
+            @Override
+            public void setVisible(boolean b) { // catch closing of the dialog
+                super.setVisible(b);
+                if (!b) {
+                    cardsDialog=null;
+                }
+            }
+        };
         cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
         cardsDialog.setVisible(true);
     }
