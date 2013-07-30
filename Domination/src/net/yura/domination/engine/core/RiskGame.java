@@ -541,7 +541,7 @@ transient - A keyword in the Java programming language that indicates that a fie
         currentPlayer.tradeInCards(card1, card2, card3);
 
         //Return the cards to the deck
-        Vector used = getUsedCards();
+        List used = getUsedCards();
         used.add(card1);
         used.add(card2);
         used.add(card3);
@@ -555,7 +555,7 @@ transient - A keyword in the Java programming language that indicates that a fie
             tradeCap=false;
         }
 
-        return cardState;
+        return armies;
     }
 
     /**
