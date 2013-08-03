@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
+import net.yura.domination.engine.core.StatType;
+
 /**
  * <p> Risk Player </p>
  * @author Yura Mamyrin
@@ -88,17 +90,12 @@ public class Player implements Serializable {
 
     }
 
-    public int[] getStatistics(int a) {
-
-	int[] thing = new int[ Statistics.size() ];
-
-	for (int c=0; c< thing.length ; c++) {
-
-	    thing[c] = ((Statistic)Statistics.elementAt(c)).get(a);
-
+    public double[] getStatistics(StatType type) {
+	double[] statistics = new double[ Statistics.size() ];
+	for (int c=0; c< statistics.length ; c++) {
+	    statistics[c] = ((Statistic)Statistics.elementAt(c)).get(type);
 	}
-
-	return thing;
+	return statistics;
     }
 
     public List<Statistic> getStatistics() {
