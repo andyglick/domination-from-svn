@@ -1,7 +1,6 @@
 package net.yura.domination.android;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import net.yura.android.AndroidMeApp;
@@ -19,56 +18,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import net.yura.domination.engine.core.Statistic;
+import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 public class StatsActivity extends Activity {
 
     private ResourceBundle resb = TranslationBundle.getBundle();
-    
-    public interface EnumConverter<T> {
-        public T convert();
-    }
-    
-    public class ReverseEnumMap<T,V extends Enum<V> & EnumConverter<T>> extends HashMap<T, V> {
-        public ReverseEnumMap(Class<V> valueType) {
-            for (V v : valueType.getEnumConstants()) {
-                put(v.convert(), v);
-            }
-        }
-    }
-
-    
-    
-
-    enum Stat implements EnumConverter<Integer> {
-        COUNTRIES("countries",Statistic.COUNTRIES),
-        ARMIES("armies",Statistic.ARMIES),
-        KILLS("kills",Statistic.KILLS),
-        CASUALTIES("casualties",Statistic.CASUALTIES),
-        REINFORCEMENTS("reinforcements",Statistic.REINFORCEMENTS),
-        CONTINENTS("continents",Statistic.CONTINENTS),
-        EMPIRE("empire",Statistic.CONECTED_EMPIRE),
-        ATTACKS("attacks",Statistic.ATTACKS),
-        RETREATS("retreats",Statistic.RETREATS),
-        VICTORIES("victories",Statistic.COUNTRIES_WON),
-        DEFEATS("defeats",Statistic.COUNTRIES_LOST),
-        ATTACKED("attacked" ,Statistic.ATTACKED),
-        CARDS("cards" ,Statistic.CARDS);
-
-        private final String name;
-        private final int id;
-        Stat(String name, int id) {
-            this.name = name;
-            this.id = id;
-        }
-        @Override
-        public Integer convert() {
-            return id;
-        }
-    }
-    
-    final ReverseEnumMap<Integer,Stat> lookup = new ReverseEnumMap<Integer,Stat>(Stat.class);
     
     List<Player> getPlayersStats() {
         DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
@@ -82,14 +37,15 @@ public class StatsActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         setTitle( resb.getString("swing.tab.statistics") );
-        showGraph( Stat.COUNTRIES );
+        showGraph( StatType.COUNTRIES );
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        for (Stat s:Stat.values()) {
-            MenuItem item = menu.add( android.view.Menu.NONE, s.id, android.view.Menu.NONE, resb.getString("swing.toolbar." + s.name ) );
+        for (StatType statType : StatType.values()) {
+            menu.add(android.view.Menu.NONE, statType.ordinal(), android.view.Menu.NONE,
+                    resb.getString("swing.toolbar." + statType.getName()));
         }
         return true;
     }
@@ -99,20 +55,15 @@ public class StatsActivity extends Activity {
         super.onOptionsItemSelected(item);
         
         int id = item.getItemId();
-        
-        Stat stat = lookup.get( id );
-        if (stat!=null) {
-            showGraph(stat);
-        }
-        
+        showGraph(StatType.fromOrdinal(id));
         return true;
     }
     
-    public void showGraph(Stat a) {
+    public void showGraph(StatType statType) {
+        setTitle(resb.getString("swing.tab.statistics") + " - "
+                + resb.getString("swing.toolbar." + statType.getName()));
         
-        setTitle( resb.getString("swing.tab.statistics")+" - "+resb.getString("swing.toolbar." + a.name ) );
-        
-        GraphicalView gview = ChartFactory.getLineChartView(this, getDataset(a.id), getRenderer() );
+        GraphicalView gview = ChartFactory.getLineChartView(this, getDataset(statType), getRenderer());
         setContentView(gview);
     }
     
@@ -122,44 +73,38 @@ public class StatsActivity extends Activity {
         
         List<Player> players = getPlayersStats();
 
-        for (int c = 0; c < players.size(); c++) {
-        
-            Player p = players.get(c);
-            
+        for (Player p : players) {
             SimpleSeriesRenderer r = new XYSeriesRenderer();
             r.setColor( p.getColor() );
             renderer.addSeriesRenderer(r);
-
         }
         return renderer;
     }
 
-    public XYMultipleSeriesDataset getDataset(int a) {
+    public XYMultipleSeriesDataset getDataset(StatType statType) {
 
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         
         List<Player> players = getPlayersStats();
 
         //draw each player graph.
-        for (int c = 0; c < players.size(); c++) {
-            
-            Player p = players.get(c);
-            
+        for (Player p : players) {
+
             CategorySeries series = new CategorySeries( p.getName() );
-            
-            int[] PointToDraw = p.getStatistics(a);
 
-            int newPoint=0;
-            
+            double[] PointToDraw = p.getStatistics(statType);
+
+            double newPoint=0;
+
             series.add( newPoint ); // everything starts from 0
-            
-            for (int i = 0; i < PointToDraw.length; i++) {
 
-                if ( a==Statistic.COUNTRIES || a==Statistic.ARMIES || a==Statistic.CONTINENTS || a==Statistic.CONECTED_EMPIRE || a==Statistic.CARDS) {
-                    newPoint = PointToDraw[i] ;
+            for (double aPointToDraw : PointToDraw) {
+
+                if (statType.isSummable()) {
+                    newPoint += aPointToDraw;
                 }
                 else {
-                    newPoint += PointToDraw[i] ;
+                    newPoint = aPointToDraw;
                 }
 
                 series.add( newPoint );

@@ -2,14 +2,26 @@
 
 package net.yura.domination.engine.ai.logic;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
+import java.util.StringTokenizer;
 import net.yura.domination.engine.ai.AISubmissive;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.core.Statistic;
 
 /**
@@ -2270,10 +2282,10 @@ public class AIDomination extends AISubmissive {
 		int casualities = 0;
 		for (int i = stats.size() - 1; i >= end; i--) {
 			Statistic s = stats.get(i);
-			reenforcements += s.get(Statistic.REINFORCEMENTS);
-			kills += s.get(Statistic.KILLS);
-			casualities += s.get(Statistic.CASUALTIES);
-			if (s.get(Statistic.CONTINENTS) == 0) {
+			reenforcements += s.get(StatType.REINFORCEMENTS);
+			kills += s.get(StatType.KILLS);
+			casualities += s.get(StatType.CASUALTIES);
+			if (s.get(StatType.CONTINENTS) == 0) {
 				return false;
 			}
 		}
