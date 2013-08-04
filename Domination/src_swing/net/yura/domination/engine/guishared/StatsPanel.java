@@ -2,18 +2,19 @@
 
 package net.yura.domination.engine.guishared;
 
-import javax.swing.JPanel;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics;
-import java.awt.Color;
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.JPanel;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.StatType;
 
 /**
  * Statistics Graphs Panel
@@ -44,7 +45,7 @@ public class StatsPanel extends JPanel {
 
     public void paintComponent(Graphics g) {
 
-	//super.paintComponent(g); 
+	//super.paintComponent(g);
 
 	if (graph != null) {
 	    g.drawImage(graph, 0, 0, this);
@@ -55,7 +56,7 @@ public class StatsPanel extends JPanel {
 
     }
 
-    public void repaintStats(int a) {
+    public void repaintStats(StatType a) {
 
 	BufferedImage tempgraph = new BufferedImage(getWidth(),getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB ); // spX, spY
 
@@ -67,7 +68,7 @@ public class StatsPanel extends JPanel {
 
 	    Player p = (Player)players.get(i);
 
-	    int[] pstats= p.getStatistics(a);
+	    double[] pstats= p.getStatistics(a);
 
             int max = pstats.length;
             if ( max > maxTurns) {
@@ -78,13 +79,13 @@ public class StatsPanel extends JPanel {
 
 	    for (int j = 0; j < pstats.length; j++) {
 
-	      if (a==1 || a==2 || a==0 || a==6 || a==7) {
-		if (pstats[j] > graphScale) {
-		    graphScale = pstats[j];
-		}
+	      if (a.isSummable()) {
+		  temp += pstats[j];
 	      }
 	      else {
-		  temp += pstats[j];
+                  if (pstats[j] > graphScale) {
+		    graphScale = (int)pstats[j];
+                  }
 	      }
 
 
@@ -125,7 +126,7 @@ public class StatsPanel extends JPanel {
 
 	    if ( i == graphScale || bob == 0 || ( i % bob )==0 ) {
 
-		g2.setColor(Color.gray);   
+		g2.setColor(Color.gray);
 		g2.drawLine(ZeroX,(int)(ZeroY-(i*gridSizeY)),(maxTurns*gridSizeX)+ZeroX,(int)(ZeroY-(i*gridSizeY)));
 
 		g2.setColor(Color.white);
@@ -142,7 +143,7 @@ public class StatsPanel extends JPanel {
 	// draw | lines and numbers
 	for (int i = 0; i <= maxTurns ; i++) {
 
-	    g2.setColor(Color.gray);      
+	    g2.setColor(Color.gray);
 	    g2.drawLine((int)(ZeroX + (i*gridSizeX)),ZeroY,(int)(ZeroX +i*gridSizeX), (int)( ZeroY-( graphScale *gridSizeY) ) );
 
 	    if ( i == maxTurns || fred == 0 || ( i % fred )==0 ) {
@@ -159,7 +160,7 @@ public class StatsPanel extends JPanel {
 
 	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	// set hints       
+	// set hints
 	BasicStroke bs = new BasicStroke( 2.0f,BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER );
 	g2.setStroke(bs);
 
@@ -179,9 +180,9 @@ public class StatsPanel extends JPanel {
     private int gridSizeX;
     private int gridSizeY;
 
-    public void drawPlayerGraph(int a, Player p, Graphics2D g) {
+    private void drawPlayerGraph(StatType a, Player p, Graphics2D g) {
 
-	int[] PointToDraw = p.getStatistics(a);
+	double[] PointToDraw = p.getStatistics(a);
 	g.setColor(new Color( p.getColor() ) );
 
 	int oldPoint = 0;
@@ -190,11 +191,11 @@ public class StatsPanel extends JPanel {
 
 	for (i = 0; i < PointToDraw.length; i++) {
 
-	    if (a==1 || a==2 || a==0 || a==6 || a==7) {
-                newPoint = tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
+	    if (a.isSummable()) {
+                newPoint += tooBig ? PointToDraw[i]/2 : PointToDraw[i];
 	    }
 	    else {
-                newPoint += tooBig ? PointToDraw[i]/2 : PointToDraw[i] ;
+                newPoint = (int)(tooBig ? PointToDraw[i]/2 : PointToDraw[i]);
 	    }
 
             int x1 = (int)(ZeroX + i*gridSizeX);

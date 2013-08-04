@@ -1450,7 +1450,7 @@ RiskUtil.printStackTrace(e);
                                 // UNDO
                                 if (input.equals("undo")) {
 
-                                    if(aiPlayer) {
+                                    if(game.getState()!=RiskGame.STATE_GAME_OVER && aiPlayer) {
                                         throw new IllegalArgumentException("ai is trying to call undo");
                                     }
 
