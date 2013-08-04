@@ -1,16 +1,22 @@
 package net.yura.domination.android;
 
+import java.util.Arrays;
 import java.util.ResourceBundle;
+
+import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.translation.TranslationBundle;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.util.AttributeSet;
 import android.view.View;
 
 public class GamePreferenceActivity extends PreferenceActivity {
@@ -49,6 +55,28 @@ public class GamePreferenceActivity extends PreferenceActivity {
         color_blind.setKey("color_blind");
         inlinePrefCat.addPreference(color_blind);
 
+        ListPreference ai = new IntListPreference(context);
+        ai.setTitle( resb.getString("game.menu.aiSpeed") );
+        ai.setKey("ai_wait");
+        inlinePrefCat.addPreference(ai);
+
+        final String[] aiSpeeds = new String[] {
+                resb.getString("game.menu.aiSpeed.normal"),
+                resb.getString("game.menu.aiSpeed.fast"),
+                resb.getString("game.menu.aiSpeed.lightning"),
+                resb.getString("game.menu.aiSpeed.instant")};
+        final String[] aiSpeedsValues = new String[] {"500","300","100","0"};
+        ai.setEntries(aiSpeeds);
+        ai.setEntryValues(aiSpeedsValues);
+        ai.setDefaultValue(aiSpeedsValues[0]);
+        ai.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                AIManager.setWait(Integer.parseInt(String.valueOf(newValue)));
+                return true;
+            }
+        });
+
         return root;
     }
 
@@ -68,6 +96,36 @@ public class GamePreferenceActivity extends PreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setPreferenceScreen( makePreferenceScreen(getPreferenceManager(),getActivity()) );
+        }
+    }
+
+
+    public static class IntListPreference extends ListPreference {
+
+        public IntListPreference(Context context) {
+            super(context);
+        }
+        public IntListPreference(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        protected boolean persistString(String value) {
+            if(value == null) {
+                return false;
+            } else {
+                return persistInt(Integer.valueOf(value));
+            }
+        }
+
+        @Override
+        protected String getPersistedString(String defaultReturnValue) {
+            if(getSharedPreferences().contains(getKey())) {
+                int intValue = getPersistedInt(0);
+                return String.valueOf(intValue);
+            } else {
+                return defaultReturnValue;
+            }
         }
     }
 

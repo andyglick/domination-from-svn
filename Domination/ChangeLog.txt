@@ -24,6 +24,7 @@ CURRENT VERSION:
 
 	Android 48 dice stats added - patch by Jerome Abela
 		   undo at end of game fixed
+		   can change ai wait for local games
 	Android 47 correct console output when trading cards in fixed/italian mode
 		   new simple RENAME server command support
 	Android 46 better checks for ai errors
