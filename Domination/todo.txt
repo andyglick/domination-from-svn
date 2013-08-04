@@ -3,7 +3,6 @@ Risk - Yura Mamyrin (yura@yura.net)
 TODO:
 
     Fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar) please please please! 
-    add dice stats patch to game
     show continents army values in help window
     Add Bluetooth videogame mode, where more then 1 phone can play against online people without internet who are only in Bluetooth range
     add option to stop annihalation while it is in progress
@@ -57,11 +56,10 @@ Android:
 
     new icon?
     ability to select number of armies to place on android (1 or 5 or 10 or 25 ...)
-    ability to speed up the game, change ai wait on android
-    create graph of dice results to show users they are not being cheated - dice roll and attack/defense statistics.
     When bulding with ant, to extra jars for grasshopper are not included
     on ldpi "Start Game" button still not visable
     add "custom player" button and dialog to GameSetup screen
+    at least have a way of the player to set there own color
     some way to del saved games when they are not needed any more
 
 Android Donate to Feature:
