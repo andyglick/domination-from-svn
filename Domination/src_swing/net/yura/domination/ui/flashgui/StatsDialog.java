@@ -90,10 +90,13 @@ public class StatsDialog extends JDialog implements ActionListener {
 		int w=107;
 		int h=33;
 
-                for (StatType statType : STAT_TYPES) {
+                for (int c=0;c<STAT_TYPES.length;c++) {
+                        StatType statType = STAT_TYPES[c];
                         thisgraph.add(makeButton(statType.getName(), x, y, w, h, statType.ordinal()));
                         x=x+w;
-                        if (statType == StatType.CONTINENTS) {
+
+                        // when we have done half, move on to 2nd row
+                        if (c == (STAT_TYPES.length/2)-1) {
                                 x=49;
                                 y=y+h;
                         }

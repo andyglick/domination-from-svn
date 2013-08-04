@@ -1034,19 +1034,27 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		if (gameState==STATE_DEFEND_YOURSELF) { // if we were in the defending phase
 			battleRounds++;
+
+                        for (int aResult:attackerResults) {
+                            attacker.getOwner().currentStatistic.addDice(aResult);
+                        }
+                        for (int aResult:defenderResults) {
+                            defender.getOwner().currentStatistic.addDice(aResult);
+                        }
+
 			// battle away!
 			for (int c=0; c< Math.min(attackerResults.length, defenderResults.length) ; c++) {
 
 				if (attackerResults[c] > defenderResults[c]) {
 					defender.looseArmy();
-					((Player)defender.getOwner()).currentStatistic.addCasualty();
-					((Player)attacker.getOwner()).currentStatistic.addKill();
+					defender.getOwner().currentStatistic.addCasualty();
+					attacker.getOwner().currentStatistic.addKill();
 					result[2]++;
 				}
 				else {
 					attacker.looseArmy();
-					((Player)attacker.getOwner()).currentStatistic.addCasualty();
-					((Player)defender.getOwner()).currentStatistic.addKill();
+					attacker.getOwner().currentStatistic.addCasualty();
+					defender.getOwner().currentStatistic.addKill();
 					result[1]++;
 				}
 

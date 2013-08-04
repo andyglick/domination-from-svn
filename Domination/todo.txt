@@ -2,7 +2,11 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO:
 
+    Fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar) please please please! 
     add dice stats patch to game
+    show continents army values in help window
+    Add Bluetooth videogame mode, where more then 1 phone can play against online people without internet who are only in Bluetooth range
+    add option to stop annihalation while it is in progress
     make SwingME act like xhdpi on mac retina screen
     in Desktop Domination online play should make a sound and flash the window if the window is not focused
     add a notify sound for when its the player's turn?
