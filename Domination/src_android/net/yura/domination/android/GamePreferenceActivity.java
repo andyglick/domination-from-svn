@@ -22,7 +22,7 @@ import android.view.View;
 public class GamePreferenceActivity extends PreferenceActivity {
 
     private static ResourceBundle resb = TranslationBundle.getBundle();
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +58,6 @@ public class GamePreferenceActivity extends PreferenceActivity {
         ListPreference ai = new IntListPreference(context);
         ai.setTitle( resb.getString("game.menu.aiSpeed") );
         ai.setKey("ai_wait");
-        inlinePrefCat.addPreference(ai);
-
         final String[] aiSpeeds = new String[] {
                 resb.getString("game.menu.aiSpeed.normal"),
                 resb.getString("game.menu.aiSpeed.fast"),
@@ -76,6 +74,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
                 return true;
             }
         });
+        inlinePrefCat.addPreference(ai);
 
         return root;
     }
