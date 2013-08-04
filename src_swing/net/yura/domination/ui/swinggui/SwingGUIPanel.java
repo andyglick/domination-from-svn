@@ -32,7 +32,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -62,6 +61,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
@@ -69,15 +69,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import javax.swing.SwingUtilities;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Continent;
-import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.guishared.BadgeButton;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
@@ -210,8 +209,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 		gameTab = new GameTab();
 		consoleTab = new ConsoleTab();
-		statisticsTab = new StatisticsTab();
-
 		editorTab = new MapEditor(myrisk,this);
 
 		addTab(gameTab);
@@ -225,7 +222,15 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                     RiskUtil.printStackTrace(th); // midletrunner.jar could be missing
                 }
 		addTab(consoleTab);
-		addTab(statisticsTab);
+
+                try {
+                    statisticsTab = new StatisticsTab();
+                    addTab(statisticsTab);
+                }
+                catch (Throwable th) {
+                    RiskUtil.printStackTrace(th); // jfreechart could be missing
+                }
+
                 try {
                     debugTab = new DebugTab();
                     addTab(debugTab);
@@ -1785,18 +1790,15 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 	private AbstractButton[] statbuttons;
 
 	public JToolBar getToolBar() {
-
 		return toolbarStat;
 	}
 
 	public JMenu getMenu() {
-
 		return sStatistics;
 	}
 
 	public void actionPerformed(ActionEvent a) {
-
-		graph.repaintStats( Integer.parseInt( a.getActionCommand() ) );
+		graph.repaintStats(StatType.fromOrdinal(Integer.parseInt(a.getActionCommand())));
 		graph.repaint();
 	}
 
@@ -1806,74 +1808,39 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 		//##################### graph ####################
 
-
-
 		toolbarStat = new JToolBar();
 		toolbarStat.setRollover(true);
 
 		toolbarStat.setFloatable(false);
 
-
-
 		graph = new StatsPanel(myrisk);
 		graph.setBorder( BorderFactory.createLoweredBevelBorder() );
-
-
-
-		statbuttons = new AbstractButton[24];
-
-
-
-		statbuttons[0]=new JButton(resbundle.getString("swing.toolbar.countries"));
-		statbuttons[1]=new JButton(resbundle.getString("swing.toolbar.armies"));
-		statbuttons[2]=new JButton(resbundle.getString("swing.toolbar.kills"));
-		statbuttons[3]=new JButton(resbundle.getString("swing.toolbar.casualties"));
-		statbuttons[4]=new JButton(resbundle.getString("swing.toolbar.reinforcements"));
-		statbuttons[5]=new JButton(resbundle.getString("swing.toolbar.continents"));
-		statbuttons[6]=new JButton(resbundle.getString("swing.toolbar.empire"));
-		statbuttons[7]=new JButton(resbundle.getString("swing.toolbar.attacks"));
-		statbuttons[8]=new JButton(resbundle.getString("swing.toolbar.retreats"));
-		statbuttons[9]=new JButton(resbundle.getString("swing.toolbar.victories"));
-		statbuttons[10]=new JButton(resbundle.getString("swing.toolbar.defeats"));
-		statbuttons[11]=new JButton(resbundle.getString("swing.toolbar.attacked"));
-
-		for (int a=0; a<12; a++) {
-
-			statbuttons[a].setActionCommand( (a+1)+"" );
-			statbuttons[a].addActionListener(this);
-			toolbarStat.add(statbuttons[a]);
-			statbuttons[a].setEnabled(false);
-
-		}
-
-
-
 
 		// create Statistics menu item
 		sStatistics = new JMenu( resbundle.getString("swing.tab.statistics") );
 		sStatistics.setMnemonic('S');
 
-		statbuttons[12]=new JMenuItem(resbundle.getString("swing.toolbar.countries"));
-		statbuttons[13]=new JMenuItem(resbundle.getString("swing.toolbar.armies"));
-		statbuttons[14]=new JMenuItem(resbundle.getString("swing.toolbar.kills"));
-		statbuttons[15]=new JMenuItem(resbundle.getString("swing.toolbar.casualties"));
-		statbuttons[16]=new JMenuItem(resbundle.getString("swing.toolbar.reinforcements"));
-		statbuttons[17]=new JMenuItem(resbundle.getString("swing.toolbar.continents"));
-		statbuttons[18]=new JMenuItem(resbundle.getString("swing.toolbar.empire"));
-		statbuttons[19]=new JMenuItem(resbundle.getString("swing.toolbar.attacks"));
-		statbuttons[20]=new JMenuItem(resbundle.getString("swing.toolbar.retreats"));
-		statbuttons[21]=new JMenuItem(resbundle.getString("swing.toolbar.victories"));
-		statbuttons[22]=new JMenuItem(resbundle.getString("swing.toolbar.defeats"));
-		statbuttons[23]=new JMenuItem(resbundle.getString("swing.toolbar.attacked"));
+                StatType[] stats = StatType.values();
 
+		statbuttons = new AbstractButton[stats.length*2];
+		for (int a=0; a<stats.length; a++) {
+                        StatType stat = stats[a];
+                        String text = resbundle.getString("swing.toolbar."+stat.getName() );
 
-		for (int a=12; a<statbuttons.length; a++) {
+                        JButton button = new JButton(text);
+			button.setActionCommand( String.valueOf(stat.ordinal()) );
+			button.addActionListener(this);
+			button.setEnabled(false);
+                        toolbarStat.add(button);
 
-			statbuttons[a].setActionCommand( (a-11)+"" );
-			statbuttons[a].addActionListener(this);
-			sStatistics.add(statbuttons[a]);
-			statbuttons[a].setEnabled(false);
+                        JMenuItem menuItem = new JMenuItem(text);
+			menuItem.setActionCommand( String.valueOf(stat.ordinal()) );
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			sStatistics.add(menuItem);
 
+                        statbuttons[a] = button;
+                        statbuttons[a+stats.length] = menuItem;
 		}
 
 		setLayout( new BorderLayout() );
@@ -1882,25 +1849,15 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 	}
 
 	public void startGame() {
-
-			for (int a=0; a<statbuttons.length; a++) {
-
-				statbuttons[a].setEnabled(true);
-
-			}
-
+            for (int a=0; a<statbuttons.length; a++) {
+                statbuttons[a].setEnabled(true);
+            }
 	}
 
 	public void closeGame() {
-
-
-
-			for (int a=0; a<statbuttons.length; a++) {
-
-				statbuttons[a].setEnabled(false);
-
-			}
-
+            for (int a=0; a<statbuttons.length; a++) {
+                statbuttons[a].setEnabled(false);
+            }
 	}
 
 }

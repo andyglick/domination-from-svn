@@ -9,12 +9,12 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -25,26 +25,36 @@ import net.yura.domination.engine.translation.TranslationBundle;
 
 public class StatsDialog extends JDialog implements ActionListener {
 
-	private BufferedImage Back;
+        // we can only have 12 stats with the current UI, there is a total of 14, so we skip a couple
+        private static final StatType[] STAT_TYPES = {
+            StatType.COUNTRIES,
+            StatType.ARMIES,
+            StatType.KILLS,
+            StatType.CASUALTIES,
+            StatType.REINFORCEMENTS,
+            StatType.CONTINENTS,
+            StatType.CONNECTED_EMPIRE,
+            StatType.ATTACKS,
+            // skip RETREATS
+            StatType.COUNTRIES_WON,
+            StatType.COUNTRIES_LOST,
+            // skip ATTACKED
+            StatType.CARDS,
+            StatType.DICE};
+
+        private BufferedImage Back;
 	private Risk myrisk;
 	private StatsPanel graph;
 	private java.util.ResourceBundle resb;
         private ButtonGroup group;
 
 	public StatsDialog(Frame parent, boolean modal, Risk r) {
-
 		super(parent, modal);
-
 		myrisk = r;
-
 		Back = RiskUIUtil.getUIImage(this.getClass(),"graph.jpg");
-
 		initGUI();
-
 		setResizable(false);
-
 		pack();
-
 	}
 
 	/** This method is called from within the constructor to initialize the form. */
@@ -73,79 +83,23 @@ public class StatsDialog extends JDialog implements ActionListener {
 
 		thisgraph.setLayout(null);
 
-
                 group = new ButtonGroup();
-
 
 		int x=49;
 		int y=483;
-
 		int w=107;
 		int h=33;
 
-		int s=1;
+                for (StatType statType : STAT_TYPES) {
+                        thisgraph.add(makeButton(statType.getName(), x, y, w, h, statType.ordinal()));
+                        x=x+w;
+                        if (statType == StatType.CONTINENTS) {
+                                x=49;
+                                y=y+h;
+                        }
+                }
 
-                AbstractButton button1 = makeButton("countries",x,y,w,h,s);
-                button1.setSelected(true);
-		thisgraph.add(button1);
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("armies",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("kills",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("casualties",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("reinforcements",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("continents",x,y,w,h,s));
-
-		x=49;
-		y=y+h;
-		s++;
-
-		thisgraph.add(makeButton("empire",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("attacks",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("retreats",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("victories",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("defeats",x,y,w,h,s));
-
-		x=x+w;
-		s++;
-
-		thisgraph.add(makeButton("attacked",x,y,w,h,s));
-
-
+                ((AbstractButton)thisgraph.getComponent(0)).setSelected(true);
 
 		graph = new StatsPanel(myrisk);
 		graph.setBounds(50,50,640,400);
@@ -165,20 +119,19 @@ public class StatsDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent a) {
-            showGraph( Integer.parseInt( a.getActionCommand() ) );
+            showGraph(StatType.fromOrdinal(Integer.parseInt(a.getActionCommand())));
 	}
 
         public void setVisible(boolean b) {
             super.setVisible(b);
-            
             if (b) {
-                showGraph( Integer.parseInt( group.getSelection().getActionCommand() ) );
+                showGraph(StatType.fromOrdinal(Integer.parseInt(group.getSelection().getActionCommand())));
             }
         }
-        
-        public void showGraph(int type) {
-		graph.repaintStats( type );
-		graph.repaint();            
+
+        public void showGraph(StatType statType) {
+		graph.repaintStats( statType );
+		graph.repaint();
         }
 
 	/**
@@ -187,7 +140,7 @@ public class StatsDialog extends JDialog implements ActionListener {
 	private void exitForm() {
 		((GameFrame)getParent()).displayGraph();
 	}
-        
+
         private AbstractButton makeButton(String a, int x,int y,int w,int h,int s) {
 
                 AbstractButton statbutton = new JToggleButton(resb.getString("swing.toolbar."+a));
