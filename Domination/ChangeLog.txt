@@ -26,7 +26,6 @@ CURRENT VERSION:
 		   undo at end of game fixed
 		   can change ai wait for local games
 	Android 47 correct console output when trading cards in fixed/italian mode
-		   new simple RENAME server command support
 	Android 46 better checks for ai errors
 		   support for new server messages for rename
 	Android 45 gamesave during gamesetup works again
