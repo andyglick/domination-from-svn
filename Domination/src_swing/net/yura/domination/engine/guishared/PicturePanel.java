@@ -824,6 +824,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 	 */
 	public int getCountryNumber(int x, int y) {
 
+                // HACK on Mac OS X, when app is started we get a random mouseMoved event here
+                if(map==null) return NO_COUNTRY;
+
 		double s = getScale();
 
 		x = x - getDrawImageX(s);
