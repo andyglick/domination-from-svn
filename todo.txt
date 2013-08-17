@@ -6,7 +6,6 @@ TODO:
     show continents army values in help window
     Add Bluetooth videogame mode, where more then 1 phone can play against online people without internet who are only in Bluetooth range
     add option to stop annihalation while it is in progress
-    make SwingME act like xhdpi on mac retina screen
     in Desktop Domination online play should make a sound and flash the window if the window is not focused
     add a notify sound for when its the player's turn?
     Italian mode change "Also, if the player can have the combination of cards that correspond to territories' he actually employed, receives two armed more for each card. "
@@ -55,6 +54,7 @@ Desktop P2P:
 Android:
 
     new icon?
+    load big maps without OutOfMemErrors - http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
     ability to select number of armies to place on android (1 or 5 or 10 or 25 ...)
     When bulding with ant, to extra jars for grasshopper are not included
     on ldpi "Start Game" button still not visable
