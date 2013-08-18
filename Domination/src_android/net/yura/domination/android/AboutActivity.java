@@ -41,7 +41,10 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
         if ("about".equals(tag)) {
             WebSettings settings = webView.getSettings();
             settings.setDefaultTextEncodingName("utf-8"); // UTF-8 here works on only v2 android
-            webView.loadData(MiniUtil.getAboutHtml(), "text/html; charset=utf-8", null); // UTF-8 here works on only v4 android
+            String aboutHtml = MiniUtil.getAboutHtml();
+            // hack to fix bug on android
+            aboutHtml = aboutHtml.replace("%", "%25").replace("#", "%23").replace("'", "%27").replace("?", "%3f");
+            webView.loadData(aboutHtml, "text/html; charset=utf-8", null); // UTF-8 here works on only v4 android
         }
         else if ("credits".equals(tag)){
             webView.loadUrl(prefix+"help/game_credits.htm");
