@@ -24,7 +24,7 @@ public class MiniUtil {
     public static void showAbout() {
         Midlet.openURL("nativeNoResult://net.yura.domination.android.AboutActivity");
     }
-    
+
     private static void showOldAbout() {
 
         ResourceBundle resb = TranslationBundle.getBundle();
@@ -39,7 +39,7 @@ public class MiniUtil {
         changelog.setActionCommand("changelog");
         Button ok = new Button(resb.getString("about.okbutton"));
         ok.setMnemonic( KeyEvent.KEY_END );
-        
+
         OptionPane.showOptionDialog(new ActionListener() {
             public void actionPerformed(String actionCommand) {
                 try {
@@ -61,17 +61,28 @@ public class MiniUtil {
         null, new Button[] {credits,license,changelog,ok} , ok);
 
     }
-    
+
     public static String getAboutHtml() {
-        
         ResourceBundle resb = TranslationBundle.getBundle();
-        
         int year = Calendar.getInstance().get(Calendar.YEAR);
         String copyright = resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
-        
         String author = resb.getString("about.author") + " Yura Mamyrin (yura@yura.net)";
-        
+        String c1="#DA4437",c2="#F6971D",c3="#F5EA3B",c4="#65AF45",c5="#4284F3",c6="#7E3793";
+
         return "<html>" +
+                "<div style=\"" +
+// start CSS
+"background-image: -webkit-gradient(linear, left top, left bottom, " +
+    "color-stop(0%,   "+c1+"), color-stop(16.7%, "+c1+"), " +
+    "color-stop(16.7%,"+c2+"), color-stop(33.3%, "+c2+"), " +
+    "color-stop(33.3%,"+c3+"), color-stop(50%,   "+c3+"), " +
+    "color-stop(50%,  "+c4+"), color-stop(66.7%, "+c4+"), " +
+    "color-stop(66.7%,"+c5+"), color-stop(83.3%, "+c5+"), " +
+    "color-stop(83.3%,"+c6+"), color-stop(100%,  "+c6+")" +
+");"+
+"height:30px;" +
+// end CSS
+                "\"></div>"+
                 "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
                 "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
                 "<p>"+"Game Engine: "+" "+Risk.RISK_VERSION +"</p>"+
@@ -86,7 +97,7 @@ public class MiniUtil {
 
     public static List getFileList(String string) {
         List result = new java.util.Vector();
-        
+
         Enumeration en = FileUtil.getDirectoryFiles(RiskMiniIO.mapsdir);
         while (en.hasMoreElements()) {
             String file = (String)en.nextElement();
@@ -102,12 +113,12 @@ public class MiniUtil {
             if (file.endsWith("."+string) && !result.contains(file)) {
                 result.add( file );
             }
-        }        
-        
+        }
+
         return result;
     }
-    
-    
+
+
     private static File mapsDir;
     public static File getSaveMapDir() {
 
@@ -124,7 +135,7 @@ public class MiniUtil {
         mapsDir = userMaps;
         return userMaps;
     }
-    
+
     private static File savesDir;
     public static File getSaveGameDir() {
 
@@ -153,7 +164,7 @@ public class MiniUtil {
         }
         return file;
     }
-    
+
     public static void openHelp() {
         try {
             RiskUtil.openDocs("help/rules.htm");
@@ -162,5 +173,5 @@ public class MiniUtil {
             OptionPane.showMessageDialog(null,"Unable to open manual: "+e.getMessage(),"Error", OptionPane.ERROR_MESSAGE);
         }
     }
-    
+
 }
