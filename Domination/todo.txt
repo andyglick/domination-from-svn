@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO:
 
-    Fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar) please please please! 
+    in online play when the defender is not online, it should roll there dice anyway if they have auto-defend
     show continents army values in help window
     Add Bluetooth videogame mode, where more then 1 phone can play against online people without internet who are only in Bluetooth range
     add option to stop annihalation while it is in progress
@@ -53,7 +53,9 @@ Desktop P2P:
 
 Android:
 
+    crash when About or Stat Activity is open and 'Dont Keep Activities' and 'No Backgtound processes' are selected, and we go from Domination to another activity and back
     new icon?
+    fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar)
     load big maps without OutOfMemErrors - http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
     ability to select number of armies to place on android (1 or 5 or 10 or 25 ...)
     When bulding with ant, to extra jars for grasshopper are not included
@@ -80,6 +82,7 @@ Website/General:
 
 New Game Option Ideas:
 
+    badges and reward system - for every number of wins you move up from rookie to general and 5 star general etc
     15 army limit per country
     unlimited reinforce moves
     defender can retreat to an adjacent country
