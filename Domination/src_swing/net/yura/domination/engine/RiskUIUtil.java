@@ -60,18 +60,18 @@ public class RiskUIUtil {
     public static class FileInputStream extends java.io.FileInputStream {
 
         private final File file;
-        
+
         private FileInputStream(File file) throws FileNotFoundException {
             super(file);
             this.file = file;
         }
-        
+
         public File getFile() {
             return file;
         }
     }
-    
-    
+
+
     static {
         // this could have alredy been set by lobby, so only set it if its null
         if (RiskUtil.streamOpener==null) {
@@ -94,7 +94,7 @@ public class RiskUIUtil {
                         }
                         catch (Throwable ex) { // dont really care about this one, it just means the file is not found here
                             IOException exception = new IOException( ex.toString() );
-                            exception.initCause(th); // in java 1.4 
+                            exception.initCause(th); // in java 1.4
                             throw exception;
                         }
                     }
@@ -387,14 +387,14 @@ public class RiskUIUtil {
             List namesvector = new Vector();
 
             if (checkForNoSandbox()) {
-                
+
                 FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         return name.endsWith("."+a);
                     }
                 };
-                
-                
+
+
                 // get list of maps
                 File file = getSaveMapDir();
                 File [] mapsList = file.listFiles( filter );
@@ -404,7 +404,7 @@ public class RiskUIUtil {
                     }
                 }
 
-                
+
                 File file2 = getFile(mapsdir);
                 if (!file.equals(file2)) {
                     mapsList = file2.listFiles( filter );
@@ -452,7 +452,7 @@ public class RiskUIUtil {
             catch (Throwable th) {
                 RiskUtil.printStackTrace(th);
             }
-            
+
             // can not have the map store, fall back to normal map chooser
             return getNewFile(f, RiskFileFilter.RISK_MAP_FILES);
         }
@@ -492,7 +492,7 @@ public class RiskUIUtil {
             }
 
             return null;
-            
+
         }
 
 	public static String getNewFileInSandbox(Frame f,String a) {
@@ -529,20 +529,20 @@ public class RiskUIUtil {
 
 	}
 
-        
+
         public static final String SAVES_DIR = "saves/";
-        
+
 	public static String getLoadFileName(Frame frame) {
-            
+
 		if (applet!=null) {
 
 			showAppletWarning(frame);
 
 			return null;
 		}
-                
+
                 String extension = RiskFileFilter.RISK_SAVE_FILES;
-                
+
 		if (webstart!=null) {
 
 			try {
@@ -622,7 +622,7 @@ public class RiskUIUtil {
 		}
 
                 String extension = RiskFileFilter.RISK_SAVE_FILES;
-                
+
 		if (webstart!=null) {
 
 			JOptionPane.showMessageDialog(frame,"Please make sure to select a file name ending with \"."+extension+"\"");
@@ -739,7 +739,7 @@ public class RiskUIUtil {
 
 
 	}
-        
+
         public static String getOSString() {
             String patch;
             if (checkForNoSandbox()) {
@@ -818,10 +818,10 @@ public class RiskUIUtil {
 
 		return canlobby;
 	}
-        
-        
+
+
         public static void checkForUpdates(Risk risk) {
-            
+
                 if (checkForNoSandbox()) {
 
                         try {
@@ -884,7 +884,7 @@ public class RiskUIUtil {
         }
 
         public static String getURL(String v) {
-            
+
             int site = v.indexOf("http://");
             if (site >=0) {
                 int end = v.length();
@@ -898,7 +898,7 @@ public class RiskUIUtil {
                 return v.substring(site, end);
             }
             return null;
-            
+
         }
 
 	public static void runLobby(Risk risk) {
@@ -980,12 +980,12 @@ public class RiskUIUtil {
             catch(Exception e) {
                     throw new RuntimeException("Cant create file: "+ dir, e);
             }
-            
+
             return md;
-            
+
         }
-        
-        
+
+
 	private static void setupLookAndFeel() {
 
 		// set up system Look&Feel
@@ -1091,16 +1091,16 @@ public class RiskUIUtil {
     }
 
     public static void donate(Component parent) {
-        
+
         try {
                 RiskUtil.donate();
         }
         catch(Exception e) {
                 JOptionPane.showMessageDialog( parent ,"Unable to open web browser: "+e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }
-    
+
     public static boolean canWriteTo(File dir) {
         try {
             File tmp = new File(dir, "del.me");
@@ -1112,13 +1112,13 @@ public class RiskUIUtil {
         catch (Exception ex) {
             return false;
         }
-        
+
     }
-    
-    
+
+
     private static File gameDir;
     public static File getSaveGameDir() {
-        
+
         if (gameDir!=null) {
             return gameDir;
         }
@@ -1141,12 +1141,12 @@ public class RiskUIUtil {
         gameDir = userMaps;
         return userMaps;
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     private static File mapsDir;
     public static File getSaveMapDir() {
 
@@ -1172,11 +1172,11 @@ public class RiskUIUtil {
         mapsDir = userMaps;
         return userMaps;
     }
-    
-    
+
+
 
     /**
-     * @see net.yura.domination.mapstore.MapChooser#createImage(java.io.InputStream) 
+     * @see net.yura.domination.mapstore.MapChooser#createImage(java.io.InputStream)
      */
     public static BufferedImage read(InputStream in) throws IOException {
         try {
@@ -1193,6 +1193,13 @@ public class RiskUIUtil {
             catch (Throwable th) { }
         }
     }
-    
-    
+
+    public static double getDisplayDensity() {
+        try {
+            return ((Double)Class.forName("javax.microedition.midlet.ApplicationManager")
+                    .getMethod("getDisplayDensity").invoke(null)).doubleValue();
+        }
+        catch (Throwable th) { }
+        return 1;
+    }
 }
