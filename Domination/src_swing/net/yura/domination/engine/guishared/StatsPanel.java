@@ -104,8 +104,8 @@ public class StatsPanel extends JPanel {
 	int yOffset = 30; // offset from the bottom
 
 	// size of devision
-	gridSizeX = (tempgraph.getWidth()-xOffset-20) /maxTurns; // the 20 is the right offset
-	gridSizeY = (tempgraph.getHeight()-yOffset-20) /maxValue; // the 20 is the top offset
+	gridSizeX = (tempgraph.getWidth()-xOffset-20f) /maxTurns; // the 20 is the right offset
+	gridSizeY = (tempgraph.getHeight()-yOffset-20f) /maxValue; // the 20 is the top offset
 
 	// the co-ords of the Zero Zero
 	ZeroX = xOffset;
