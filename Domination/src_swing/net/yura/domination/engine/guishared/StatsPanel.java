@@ -63,7 +63,7 @@ public class StatsPanel extends JPanel {
 
 	List players = risk.getGame().getPlayersStats();
 
-	double maxValue = 0;
+	int maxValue = 0;
         int maxTurns = 0;
 	for (int i = 0; i < players.size(); i++) {
 
@@ -79,25 +79,19 @@ public class StatsPanel extends JPanel {
 	    double sum=0;
 
 	    for (int j = 0; j < pstats.length; j++) {
-
 	      if (a.isSummable()) {
 		  sum += pstats[j];
 	      }
 	      else {
                   if (pstats[j] > maxValue) {
-		    maxValue = pstats[j];
+		    maxValue = (int)pstats[j];
                   }
 	      }
-
-
 	    }
 
-
-		if (sum > maxValue) {
-		    maxValue = sum;
-		}
-		sum=0;
-
+            if (sum > maxValue) {
+                maxValue = (int)sum;
+            }
         }
 
 	// adds a space at the top and to the right of the graph
@@ -110,12 +104,12 @@ public class StatsPanel extends JPanel {
 	int yOffset = 30; // offset from the bottom
 
 	// size of devision
-	gridSizeX = (getSize().getWidth()-xOffset-20) /maxTurns; // the 20 is the right offset
-	gridSizeY = (getSize().getHeight()-yOffset-20) /maxValue; // the 20 is the top offset
+	gridSizeX = (tempgraph.getWidth()-xOffset-20) /maxTurns; // the 20 is the right offset
+	gridSizeY = (tempgraph.getHeight()-yOffset-20) /maxValue; // the 20 is the top offset
 
 	// the co-ords of the Zero Zero
 	ZeroX = xOffset;
-	ZeroY = (int)getSize().getHeight()-yOffset;
+	ZeroY = tempgraph.getHeight()-yOffset;
 
 	int bob = (int)Math.round(15f/gridSizeY);
 
@@ -147,7 +141,7 @@ public class StatsPanel extends JPanel {
 	    if ( i == maxTurns || fred == 0 || ( i % fred )==0 ) {
 
 		g2.setColor(Color.white);
-		g2.drawString(""+i,(int)(i*gridSizeX + ZeroX-3),ZeroY+20);
+		g2.drawString(String.valueOf(i),(int)(i*gridSizeX + ZeroX-3),ZeroY+20);
 
 	    }
         }
