@@ -210,7 +210,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
                 int bw1 = 99;
                 int bw2 = 130;
                 int bh = 25;
-                
+
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
 		sortOutButton( domination );
 		domination.setBounds(60, 370, bw1 , bh );
@@ -227,11 +227,13 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		mission.addActionListener(this);
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
+                AutoPlaceAll.setToolTipText( resb.getString("newgame.autoplace"));
 		sortOutButton( AutoPlaceAll );
 		AutoPlaceAll.setBounds(60, 440, bw1 , bh );
                 AutoPlaceAll.setSelected( "true".equals(myrisk.getRiskConfig("default.autoplaceall")) );
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
+                recycle.setToolTipText( resb.getString("newgame.recycle"));
 		sortOutButton( recycle );
 		recycle.setBounds(160, 440, bw2 , bh );
                 recycle.setSelected( "true".equals(myrisk.getRiskConfig("default.recyclecards")) );
@@ -293,7 +295,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
                 int typeGap = 18;
                 int typeW = 160;
                 int typeH = 25;
-                
+
 		human = new JRadioButton(resb.getString("newgame.player.type.human"), true);
 		sortOutButton( human );
 		human.setBounds(typeX, typeY, typeW , typeH);
@@ -1140,7 +1142,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
                 button.setRolloverSelectedIcon( down );
                 button.setSelectedIcon( down );
                 button.setPressedIcon( down );
-                
+
 		button.setMargin(new Insets(0,0,0,0));
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
