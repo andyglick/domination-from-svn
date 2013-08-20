@@ -16,12 +16,15 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import java.awt.Frame;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+import javax.swing.JComponent;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -64,9 +67,9 @@ public class AboutDialog extends JDialog {
 		String version=resb.getString("about.version")+" " + v;
 		String author = " Yura Mamyrin (yura@yura.net)";
 		String title		= resb.getString("about.title");
-                
+
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                
+
 		String copyright	= resb.getString("about.copyright").replaceAll("\\{0\\}", String.valueOf(year) );
 		String comments	= " " + resb.getString("about.comments");
 
@@ -166,8 +169,25 @@ public class AboutDialog extends JDialog {
 		editorPane2.setEditable(false);
 		editorPane3.setEditable(false);
 
+                JComponent colors = new JComponent() {
+                    final String[] colors={"#DA4437","#F6971D","#F5EA3B","#65AF45","#4284F3","#7E3793"};
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        int h = getHeight()/colors.length;
+                        for (int c=0;c<colors.length;c++) {
+                            g.setColor( Color.decode(colors[c]) );
+                            g.fillRect(0, c*h, getWidth(), h);
+                        }
+                    }
+                };
+                colors.setPreferredSize( new Dimension(100, 50) );
+
+                JPanel mainInfo = new JPanel(new BorderLayout());
+                mainInfo.add(infoPanel,BorderLayout.SOUTH);
+                mainInfo.add(colors);
+
 		JTabbedPane tabbedpane = new JTabbedPane();
-		tabbedpane.addTab( resb.getString("about.tab.sysinfo") , infoPanel);
+		tabbedpane.addTab( resb.getString("about.tab.sysinfo") , mainInfo);
 		tabbedpane.addTab( resb.getString("about.tab.credits"), new JScrollPane(editorPane1) );
 		tabbedpane.addTab( resb.getString("about.tab.license"), new JScrollPane(editorPane2) );
 		tabbedpane.addTab( resb.getString("about.tab.changelog"), new JScrollPane(editorPane3) );
