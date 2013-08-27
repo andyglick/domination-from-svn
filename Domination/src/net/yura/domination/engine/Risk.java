@@ -2049,7 +2049,7 @@ RiskUtil.printStackTrace(e);
                             }
                             catch (IllegalArgumentException ex) {
                                 if (aiPlayer) {
-                                    logger.log(Level.WARNING,"bad command from ai "+message,ex);
+                                    logger.log(Level.WARNING,"bad command from ai: \""+message+"\" player="+game.getCurrentPlayer()+" state="+game.getState(),ex);
                                 }
                                 output=ex.getMessage();
                             }
