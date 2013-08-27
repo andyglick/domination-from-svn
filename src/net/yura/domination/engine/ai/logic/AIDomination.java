@@ -571,7 +571,7 @@ public class AIDomination extends AISubmissive {
 				}
 			}
 
-			if (!attack && (gameState.orderedPlayers.size() > 1 || player.getCapital() != null || player.getMission() != null)) {
+			if (!attack && (gameState.orderedPlayers.size() > 1 || player.getCapital() != null || player.getMission() != null || game.getMaxDefendDice() > 2)) {
 				String result = fortify(gameState, attackable, true, v);
 				if (result != null) {
 					//prefer attack to fortification
@@ -595,7 +595,7 @@ public class AIDomination extends AISubmissive {
 				}
 			}
 		} else if (!attack) {
-			String result = fortify(gameState, attackable, true, v);
+			String result = fortify(gameState, attackable, game.getMaxDefendDice() == 2, v);
 			if (result != null) {
 				return result;
 			}
@@ -745,7 +745,7 @@ public class AIDomination extends AISubmissive {
 	private String lastAttacks(boolean attack, List<Country> attackable,
 		GameState gameState, Map<Country, AttackTarget> targets, boolean shouldEndAttack, List<Country> border) {
 		boolean isTooWeak = isTooWeak(gameState) && gameState.me.defenseValue < .5*gameState.orderedPlayers.get(0).defenseValue;
-		boolean forceReduction = game.isCapturedCountry() || game.getCards().isEmpty();
+		boolean forceReduction = game.isCapturedCountry() || game.getCards().isEmpty() || gameState.me.playerValue > 1.5*gameState.orderedPlayers.get(0).playerValue;
 		List<AttackTarget> sorted = new ArrayList<AttackTarget>(targets.values());
 		Collections.sort(sorted);
 		for (int i = sorted.size() - 1; i >= 0; i--) {
@@ -803,7 +803,9 @@ public class AIDomination extends AISubmissive {
 					//don't weaken the border for little gain
 					continue;
 				}
-				if (attackFrom.getArmies() < 3 || (game.getMaxDefendDice() > 2 && initialAttack.getArmies() > 2) || (attackFrom.getArmies() < 4 && attackFrom.getArmies() - 1 <= initialAttack.getArmies())) {
+				if (attackFrom.getArmies() < 3 || 
+						(game.getMaxDefendDice() > 2 && initialAttack.getArmies() > 2 && (gameState.me.playerValue < 1.5*gameState.orderedPlayers.get(0).playerValue  || game.isCapturedCountry())) ||
+						(attackFrom.getArmies() < 4 && attackFrom.getArmies() - 1 <= initialAttack.getArmies())) {
 					//don't make an attack where the odds are against us
 					continue;
 				}
@@ -1796,20 +1798,17 @@ public class AIDomination extends AISubmissive {
 				} else {
 					//assume 3
 					if (attack) {
-						while (toAttack >= 10 || (available >= 10 && toAttack >= 6)) {
-							toAttack -= 3;
-							available -= 5;
-						}
-					}
-					while (toAttack >= 7 || (available >= 7 && toAttack >= 3)) {
-						toAttack -= 2;
-						available -= 4;
+					    int rounds = (toAttack - 3)/3;
+					    if (rounds > 0) {
+					       toAttack -= 3*rounds;
+					       available -= (gameState.me.playerValue>gameState.orderedPlayers.get(0).playerValue?4:5)*rounds;
+					    }
 					}
 				}
-				if (attack && available == toAttack + 1) {
+				if (attack && available == toAttack + 1 && toAttack <= 2) {
 					available = 1; //special case to allow 4 on 2 and 3 on 1 attacks
 				} else {
-					if (game.getMaxDefendDice() == 2) {
+					if (game.getMaxDefendDice() == 2 || toAttack <= 2) {
 						available = available - 3*toAttack/2 - toAttack%2;
 					} else {
 						available = available - 2*toAttack;
