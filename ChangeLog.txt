@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		48
+	Android		49
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -23,6 +23,7 @@ CURRENT VERSION:
 	strange nativenoresult popups in windows 7 fixed
 	DONE: make SwingME act like xhdpi on mac retina screen
 
+	Android 49 more logging, crash in lib fix
 	Android 48 dice stats added - patch by Jerome Abela
 		   undo at end of game fixed
 		   can change ai wait for local games

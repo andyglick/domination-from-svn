@@ -85,6 +85,9 @@ public class DominationMain extends Midlet {
                     if ("java.net.AddressCache".equals(className) && "customTtl".equals(methodName)) {
                         return true;
                     }
+                    if ("rto value is too small:0".equals(record.getMessage())) {
+                        return true;
+                    }
 
                     return false;
                 }
