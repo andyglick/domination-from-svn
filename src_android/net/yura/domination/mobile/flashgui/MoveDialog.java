@@ -208,6 +208,8 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
     public static void drawCountry(Graphics2D g, Image img, int x, int y) {
 
+        if (img==null) return; // out of mem, getCountryImage returned null
+
         int maxW = distanceFromCenter * 2;
         int maxH = distanceFromCenter;
         
