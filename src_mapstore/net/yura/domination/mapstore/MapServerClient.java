@@ -1,6 +1,7 @@
 package net.yura.domination.mapstore;
 
 import java.io.BufferedInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,6 +60,7 @@ public class MapServerClient extends HTTPClient {
         if (    ex instanceof UnknownHostException ||
                 ex instanceof SocketTimeoutException ||
                 ex instanceof ConnectException ||
+               (ex instanceof EOFException && responseCode==0) || // end of stream during getResponseCode
                (ex instanceof SocketException &&
                    ("Connection timed out".equals(ex.getMessage()) ||
                     "recvfrom failed: ETIMEDOUT (Connection timed out)".equals(ex.getMessage()) ||
