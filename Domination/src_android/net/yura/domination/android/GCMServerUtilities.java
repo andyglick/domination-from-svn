@@ -2,11 +2,11 @@ package net.yura.domination.android;
 
 import com.google.android.gcm.GCMRegistrar;
 
+import net.yura.android.AndroidMeApp;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.lobby.client.AndroidLobbyClient;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.mini.MiniLobbyClient;
-import net.yura.mobile.gui.Midlet;
 import android.content.Context;
 
 public class GCMServerUtilities implements AndroidLobbyClient {
@@ -24,7 +24,7 @@ public class GCMServerUtilities implements AndroidLobbyClient {
     }
 
     static Connection getLobbyConnection() {
-        MiniLobbyClient lobby = ((DominationMain)Midlet.getMidlet()).adapter.lobby;
+        MiniLobbyClient lobby = ((DominationMain)AndroidMeApp.getMIDlet()).adapter.lobby;
         if (lobby!=null) {
             return lobby.mycom;
         }
