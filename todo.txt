@@ -2,6 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 TODO:
 
+    if switching quickly between views in the MapStore, a thumb for a Category is the same as one of the maps, so it tries to download both, and save both to cache at the same time, causing a "[yura.net Cache] already has file" error
     in online play when the defender is not online, it should roll there dice anyway if they have auto-defend
     show continents army values in help window
     Add Bluetooth videogame mode, where more then 1 phone can play against online people without internet who are only in Bluetooth range
@@ -22,6 +23,7 @@ TODO:
 
 Desktop:
 
+    find someone with a Apple Mac OS AppStore account to publish the game
     for fixed cards mode, the dialog does not show how many armies you will get when you select the cards yo trade
     in statistics add a number of cards graph, so you can see the number of other peoples cards for FlashGUI and SwingGUI
     [Donate] button on main menu needs to say something else [vote/donate for next feature]

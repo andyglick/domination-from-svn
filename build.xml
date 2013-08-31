@@ -46,7 +46,7 @@
 	<property name="dir.dist" location="dist"/>
 	<property name="dir.sources" location="src:src_swing:src_mapstore"/>
         <property name="dir.properties" location="src"/>
-        <property name="dir.libs" location="lib/httpmime-4.1.2.jar;lib/httpcore-4.1.2.jar;lib/jnlp.jar;lib/TranslationTool.jar;lib/SwingME.jar;lib/midletrunner.jar;lib/Grasshopper.jar;lib/LobbyClient.jar;lib/jfreechart-1.0.15.jar;lib/jcommon-1.0.18.jar"/>
+        <property name="dir.libs" location="libs/httpmime-4.1.2.jar;libs/httpcore-4.1.2.jar;lib/jnlp.jar;lib/TranslationTool.jar;lib/SwingME.jar;lib/midletrunner.jar;lib/Grasshopper.jar;lib/LobbyClient.jar;lib/jfreechart-1.0.15.jar;lib/jcommon-1.0.18.jar"/>
 
 
 	<property name="file.src" location="${dir.dist}/src.zip"/>
@@ -626,18 +626,13 @@ some changes need to be made to the ${sdk.dir}/tools/ant/build.xml file
 
     <target name="android" description="build and run on android" depends="setup.android">
 
-        <loadproperties srcFile="local.properties" />
+        <property file="local.properties" />
         <property file="ant.properties" />
+        <property environment="env" />
+        <condition property="sdk.dir" value="${env.ANDROID_HOME}">
+            <isset property="env.ANDROID_HOME" />
+        </condition>
         <loadproperties srcFile="project.properties" />
-
-        <path id="src">
-          <pathelement location="src"/>
-          <pathelement location="src_android"/>
-          <pathelement location="src_mapstore"/>
-          <pathelement location="res_android"/>
-        </path>
-        <pathconvert property="source.absolute.dir" refid="src"/>
-
         <fail
             message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
             unless="sdk.dir"
