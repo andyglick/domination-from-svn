@@ -36,11 +36,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.rim.ajde.BlackBerryAndroidNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src_lobby_core</name>
-			<type>2</type>
-			<location>I:/6_Yura/linuxhome/Lobby/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>
