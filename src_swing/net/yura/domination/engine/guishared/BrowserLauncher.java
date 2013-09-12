@@ -148,6 +148,8 @@ public class BrowserLauncher {
 
 	/** JVM constant for any other platform */
 	private static final int OTHER = -1;
+        
+        private static final int JAVA_AWT_DESKTOP = 7;
 
 	/**
 	 * The file type of the Finder on a Macintosh.  Hardcoding "Finder" would keep non-U.S. English
@@ -200,7 +202,11 @@ public class BrowserLauncher {
 	static {
 		loadedWithoutErrors = true;
 		String osName = System.getProperty("os.name");
-		if (osName.startsWith("Mac OS")) {
+                
+                if (isJavaAwtDesktopSupported()) {
+                    jvm = JAVA_AWT_DESKTOP;
+                }
+		else if (osName.startsWith("Mac OS")) {
 			String mrjVersion = System.getProperty("mrj.version");
 			String majorMRJVersion = mrjVersion.substring(0, 3);
 			try {
@@ -239,6 +245,15 @@ public class BrowserLauncher {
 			loadedWithoutErrors = loadClasses();
 		}
 	}
+
+        private static boolean isJavaAwtDesktopSupported() {
+            try {
+                return java.awt.Desktop.isDesktopSupported() && java.awt.Desktop.getDesktop().isSupported( java.awt.Desktop.Action.BROWSE );
+            }
+            catch(Throwable th) {
+                return false;
+            }
+        }
 
 	/**
 	 * This class should be never be instantiated; this just ensures so.
@@ -449,6 +464,7 @@ public class BrowserLauncher {
 				break;
 			case MRJ_3_0:
 			case MRJ_3_1:
+                        case JAVA_AWT_DESKTOP:
 				browser = "";	// Return something non-null
 				break;
 			case WINDOWS_NT:
@@ -480,6 +496,14 @@ public class BrowserLauncher {
 		}
 
 		switch (jvm) {
+                        case JAVA_AWT_DESKTOP:
+                            try {
+                                java.awt.Desktop.getDesktop().browse( new java.net.URI(url) );
+                            }
+                            catch (Exception ex) {
+                                throw new IOException("Unable to launch URL: " + url, ex);
+                            }
+                            break;
 			case MRJ_2_0:
 				Object aeDesc = null;
 				try {
