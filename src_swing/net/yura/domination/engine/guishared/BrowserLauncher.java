@@ -202,8 +202,16 @@ public class BrowserLauncher {
 	static {
 		loadedWithoutErrors = true;
 		String osName = System.getProperty("os.name");
-                
-                if (isJavaAwtDesktopSupported()) {
+                if (osName.startsWith("Windows")) {
+			if (osName.indexOf("9") != -1) {
+				jvm = WINDOWS_9x;
+			} else {
+				jvm = WINDOWS_NT;
+			}
+		}
+                // we would use this on all OSs, but on windows this sometimes fails
+                // when opening local files in the browser with a strange "move items" dialog
+                else if (isJavaAwtDesktopSupported()) {
                     jvm = JAVA_AWT_DESKTOP;
                 }
 		else if (osName.startsWith("Mac OS")) {
@@ -231,13 +239,8 @@ public class BrowserLauncher {
 				loadedWithoutErrors = false;
 				errorMessage = "Invalid MRJ version: " + mrjVersion;
 			}
-		} else if (osName.startsWith("Windows")) {
-			if (osName.indexOf("9") != -1) {
-				jvm = WINDOWS_9x;
-			} else {
-				jvm = WINDOWS_NT;
-			}
-		} else {
+		}
+                else {
 			jvm = OTHER;
 		}
 		
