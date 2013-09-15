@@ -19,7 +19,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -28,7 +27,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,10 +34,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -304,46 +304,38 @@ public class RiskUIUtil {
 
 			if (checkForNoSandbox()) {
 
-				File mapsdir1 = new File("maps");
+				final AtomicReference<File> mapsdir1 = new AtomicReference(new File("maps"));
 
 				// riskconfig.getProperty("default.map")
 
-				String dmname = RiskGame.getDefaultMap();
+				final String dmname = RiskGame.getDefaultMap();
 
-				while ( !(new File(mapsdir1, dmname ).exists()) ) {
+				while ( !(new File(mapsdir1.get(), dmname ).exists()) ) {
+
+                                    // on Apple OS X java 1.7 this deadlocks if not on the UI Thread
+                                    SwingUtilities.invokeAndWait(new Runnable() { public void run() {
 
 					JOptionPane.showMessageDialog(null,"Can not find map: "+dmname );
 
 					JFileChooser fc = new JFileChooser( new File(".") );
-
-					//RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_SAVE_FILES);
-					//fc.setFileFilter(filter);
-
 					fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 					fc.setDialogTitle("Select maps directory");
 
 					int returnVal = fc.showOpenDialog(null);
 					if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
-
-						mapsdir1 = fc.getSelectedFile();
-
+						mapsdir1.set(fc.getSelectedFile());
 					}
 					else {
-
 						System.exit(0);
-
 					}
 
-
+                                    }});
 				}
 
-
-				mapsdir = mapsdir1.toURI().toURL();
+				mapsdir = mapsdir1.get().toURI().toURL();
 			}
 			else {
-
 				mapsdir = getRiskFileURL( "maps/");
-
 			}
 
 		    }

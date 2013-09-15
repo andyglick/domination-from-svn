@@ -13,6 +13,11 @@ CURRENT VERSION:
 	Increment1GUI:	1.1.1.1
 	CommandLine:	1.0.4.1
 
+1.1.1.6
+
+	OS X java 1.7 maps dir missing deadlock fix
+	OS X java 1.7 open html help in browser fix
+
 1.1.1.5
 
 	annihilate button added to FlashGUI attack screen
