@@ -135,6 +135,10 @@ public class DominationMain extends Midlet {
 
         if (appPreferences!=null) {
             AIManager.setWait( appPreferences.getInt("ai_wait", AIManager.getWait()) );
+            String lang = appPreferences.get("lang", null);
+            if (lang!=null) {
+                TranslationBundle.setLanguage(lang);
+            }
         }
     }
 

@@ -66,7 +66,7 @@ public class TranslationBundle {
 	 * should be called from a main method after parsing the
 	 * command line
 	 */
-	static private void setLanguage(String strL) {
+	public static void setLanguage(String strL) {
 
 		strLanguage = strL;
 
@@ -82,7 +82,7 @@ public class TranslationBundle {
 	 * "--lang=en" or "--lang=de" to set the english or german
 	 * language
 	 */
-	static public void parseArgs(String[] args) {
+	public static void parseArgs(String[] args) {
 
 		for (int nA = 0; nA < args.length; nA++ ) {
 			if (args[nA].length() > 7 && args[nA].substring(0,7).equals( "--lang=")) {
