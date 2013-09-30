@@ -1,8 +1,7 @@
 package net.yura.domination.android;
 
-import java.util.Arrays;
+import java.util.Locale;
 import java.util.ResourceBundle;
-
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.translation.TranslationBundle;
 import android.content.Context;
@@ -38,7 +37,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         }
     }
 
-    private static PreferenceScreen makePreferenceScreen(PreferenceManager man,Context context) {
+    private static PreferenceScreen makePreferenceScreen(PreferenceManager man, Context context) {
         PreferenceScreen root = man.createPreferenceScreen(context);
 
         PreferenceCategory inlinePrefCat = new PreferenceCategory(context);
@@ -75,6 +74,28 @@ public class GamePreferenceActivity extends PreferenceActivity {
             }
         });
         inlinePrefCat.addPreference(ai);
+
+        ListPreference lang = new ListPreference(context);
+        lang.setTitle( resb.getString("game.menu.language") );
+        lang.setKey("lang");
+        Locale[] locales = Locale.getAvailableLocales();
+        String[] languageNames = new String[locales.length];
+        String[] languages = new String[locales.length];
+        for (int c=0;c<locales.length;c++) {
+            languages[c] = locales[c].toString();
+            languageNames[c] = locales[c].getDisplayName();
+        }
+        lang.setEntries(languageNames);
+        lang.setEntryValues(languages);
+        lang.setDefaultValue( Locale.getDefault().toString() );
+        lang.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // TODO restart app
+                return true;
+            }
+        });
+        inlinePrefCat.addPreference(lang);
 
         return root;
     }
