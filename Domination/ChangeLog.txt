@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		49
+	Android		50
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -17,6 +17,8 @@ CURRENT VERSION:
 
 	OS X java 1.7 maps dir missing deadlock fix
 	OS X java 1.7 open html help in browser fix
+
+	Android 50 Send feedback option added
 
 1.1.1.5
 

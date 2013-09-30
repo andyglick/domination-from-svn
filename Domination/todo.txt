@@ -56,6 +56,7 @@ Desktop P2P:
 Android:
 
     crash when About or Stat Activity is open and 'Dont Keep Activities' and 'No Backgtound processes' are selected, and we go from Domination to another activity and back
+    add option to change the language of the game
     new icon?
     fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar)
     load big maps without OutOfMemErrors - http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
@@ -70,7 +71,6 @@ Android Donate to Feature:
 
     add pay for feature screen to domination
     [Donate] button on main menu needs to say something else [vote/donate for next feature]
-    add feedback button to Domination game
 
 BlackBerry:
 

@@ -133,7 +133,7 @@ public class MainMenu extends Frame implements ActionListener {
                         "?subject=" + Url.encode(
                                 RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION+" "+
                                 DominationMain.product+" "+DominationMain.version+" "+
-                                Locale.getDefault()+" Feedback");
+                                Locale.getDefault()+" Feedback").replace("+", "%20"); // platforms do not seem to support + char here
                         //+"&body=" + Url.encode("some text here");
                 Midlet.openURL(url);
             }
