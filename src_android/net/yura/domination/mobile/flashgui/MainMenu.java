@@ -1,6 +1,8 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.util.List;
+import java.util.Locale;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
@@ -13,6 +15,7 @@ import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Properties;
+import net.yura.mobile.util.Url;
 
 /**
  * @author Yura Mamyrin
@@ -124,6 +127,15 @@ public class MainMenu extends Frame implements ActionListener {
             }
             else if ("start server".equals(actionCommand)) {
                 OptionPane.showMessageDialog(null,"not done yet","Error", OptionPane.ERROR_MESSAGE);
+            }
+            else if ("feedback".equals(actionCommand)) {
+                String url = "mailto:yura@yura.net" +
+                        "?subject=" + Url.encode(
+                                RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION+" "+
+                                DominationMain.product+" "+DominationMain.version+" "+
+                                Locale.getDefault()+" Feedback");
+                        //+"&body=" + Url.encode("some text here");
+                Midlet.openURL(url);
             }
             else {
                 System.err.println("Unknown command: "+actionCommand);
