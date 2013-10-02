@@ -6,6 +6,7 @@ import java.util.Locale;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
+import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.FileChooser;
@@ -133,8 +134,10 @@ public class MainMenu extends Frame implements ActionListener {
                         "?subject=" + Url.encode(
                                 RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION+" "+
                                 DominationMain.product+" "+DominationMain.version+" "+
-                                Locale.getDefault()+" Feedback").replace("+", "%20"); // platforms do not seem to support + char here
-                        //+"&body=" + Url.encode("some text here");
+                                Locale.getDefault()+" Feedback").replace("+", "%20") // platforms do not seem to support + char here
+                        +"&body=" + Url.encode(
+                                "\n\n\nDevice: "+System.getProperty("http.agent")+
+                                "\nID: "+MiniLobbyClient.getMyUUID()).replace("+", "%20");
                 Midlet.openURL(url);
             }
             else {
