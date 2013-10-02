@@ -25,6 +25,7 @@ import net.yura.grasshopper.ApplicationInfoProvider;
 import net.yura.grasshopper.BugSubmitter;
 import net.yura.grasshopper.LogList;
 import net.yura.grasshopper.SimpleBug;
+import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.Icon;
@@ -71,6 +72,7 @@ public class DominationMain extends Midlet {
                     if (game!=null) {
                         map.put("gameLog", new LogList( game.getCommands() ));
                     }
+                    map.put("lobbyID", MiniLobbyClient.getMyUUID() );
                 }
                 @Override
                 public boolean ignoreError(LogRecord record) {
