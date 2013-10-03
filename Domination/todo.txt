@@ -60,7 +60,7 @@ Android:
     new icon?
     fullscreen mode (including hiding the top action bar, the status bar and for nexus phones the navbar)
     load big maps without OutOfMemErrors - http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
-    ability to select number of armies to place on android (1 or 5 or 10 or 25 ...)
+    ability to select number of armies to place on android (1 or 5 or 10 or 25 ...) or long press gives slider for number of troops to place
     When bulding with ant, to extra jars for grasshopper are not included
     on ldpi "Start Game" button still not visable
     add "custom player" button and dialog to GameSetup screen

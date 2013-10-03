@@ -2,9 +2,15 @@ package net.yura.domination.android;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import net.yura.android.AndroidMeActivity;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.translation.TranslationBundle;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -91,7 +97,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         lang.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                // TODO restart app
+                scheduleRestart();
                 return true;
             }
         });
@@ -100,6 +106,32 @@ public class GamePreferenceActivity extends PreferenceActivity {
         return root;
     }
 
+    private static void scheduleRestart() {
+
+        Timer mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                Activity activity = AndroidMeActivity.DEFAULT_ACTIVITY;
+                Intent i = activity.getBaseContext().getPackageManager()
+                        .getLaunchIntentForPackage( activity.getBaseContext().getPackageName() );
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                activity.startActivity(i);
+                android.os.Process.killProcess(android.os.Process.myPid());
+
+                /*
+                // another way of restarting the app, not sure what is better.
+                Activity activity = AndroidMeActivity.DEFAULT_ACTIVITY;
+                android.app.PendingIntent intent = android.app.PendingIntent.getActivity(activity.getBaseContext(), 0, new Intent(activity.getIntent()), activity.getIntent().getFlags());
+                android.app.AlarmManager manager = (android.app.AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+                manager.set(AlarmManager.RTC, System.currentTimeMillis() + 500, intent);
+                System.exit(2);
+                */
+            }
+        }, 500);
+
+    }
     /*
     // Called only on Honeycomb and later
     @Override
