@@ -60,7 +60,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         color_blind.setKey("color_blind");
         inlinePrefCat.addPreference(color_blind);
 
-        ListPreference ai = new IntListPreference(context);
+        final ListPreference ai = new IntListPreference(context);
         ai.setTitle( resb.getString("game.menu.aiSpeed") );
         ai.setKey("ai_wait");
         final String[] aiSpeeds = new String[] {
@@ -75,18 +75,21 @@ public class GamePreferenceActivity extends PreferenceActivity {
         ai.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                AIManager.setWait(Integer.parseInt(String.valueOf(newValue)));
+                String value = String.valueOf(newValue);
+                AIManager.setWait(Integer.parseInt(value));
+                setSummary(ai,value,aiSpeeds);
                 return true;
             }
         });
         inlinePrefCat.addPreference(ai);
+        setSummary(ai,ai.getValue(),aiSpeeds);
 
-        ListPreference lang = new ListPreference(context);
+        final ListPreference lang = new ListPreference(context);
         lang.setTitle( resb.getString("game.menu.language") );
         lang.setKey("lang");
         Locale[] locales = Locale.getAvailableLocales();
-        String[] languageNames = new String[locales.length];
-        String[] languages = new String[locales.length];
+        final String[] languageNames = new String[locales.length];
+        final String[] languages = new String[locales.length];
         for (int c=0;c<locales.length;c++) {
             languages[c] = locales[c].toString();
             languageNames[c] = locales[c].getDisplayName();
@@ -97,13 +100,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         lang.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                setSummary(lang,String.valueOf(newValue),languageNames);
                 scheduleRestart();
                 return true;
             }
         });
         inlinePrefCat.addPreference(lang);
+        setSummary(lang,lang.getValue(),languageNames);
 
         return root;
+    }
+
+    private static void setSummary(ListPreference prefs,String value,String[] texts) {
+        prefs.setSummary( texts[prefs.findIndexOfValue(value)] );
     }
 
     private static void scheduleRestart() {
