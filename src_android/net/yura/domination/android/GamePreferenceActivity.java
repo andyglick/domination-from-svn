@@ -77,12 +77,12 @@ public class GamePreferenceActivity extends PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 String value = String.valueOf(newValue);
                 AIManager.setWait(Integer.parseInt(value));
-                setSummary(ai,value,aiSpeeds);
+                setSummary(ai,value);
                 return true;
             }
         });
         inlinePrefCat.addPreference(ai);
-        setSummary(ai,ai.getValue(),aiSpeeds);
+        setSummary(ai,ai.getValue());
 
         final ListPreference lang = new ListPreference(context);
         lang.setTitle( resb.getString("game.menu.language") );
@@ -100,19 +100,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         lang.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                setSummary(lang,String.valueOf(newValue),languageNames);
+                setSummary(lang,String.valueOf(newValue));
                 scheduleRestart();
                 return true;
             }
         });
         inlinePrefCat.addPreference(lang);
-        setSummary(lang,lang.getValue(),languageNames);
+        setSummary(lang,lang.getValue());
 
         return root;
     }
 
-    private static void setSummary(ListPreference prefs,String value,String[] texts) {
-        prefs.setSummary( texts[prefs.findIndexOfValue(value)] );
+    private static void setSummary(ListPreference prefs,String value) {
+        prefs.setSummary( prefs.getEntries()[prefs.findIndexOfValue(value)] );
     }
 
     private static void scheduleRestart() {
