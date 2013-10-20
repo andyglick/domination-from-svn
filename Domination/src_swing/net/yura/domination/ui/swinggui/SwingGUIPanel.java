@@ -31,11 +31,14 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.logging.LogRecord;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -84,6 +87,7 @@ import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
+import net.yura.grasshopper.ApplicationInfoProvider;
 
 /**
  * <p> Swing GUI Main Frame </p>
@@ -249,9 +253,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
                     RiskUtil.printStackTrace(th); // TranslationTool.jar could be missing
                 }
 
-                if (RiskUIUtil.checkForNoSandbox()) {
-                    addTab(new BugsPanel());
-                }
+                addTab(new BugsPanel(this));
 
 		add(tabbedpane, java.awt.BorderLayout.CENTER );
 
@@ -1461,33 +1463,53 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 }
 
-    public static void submitBug(Component parent, String text,String from,String subjectIn,String cause) {
+    public void submitBug(String messageFromUser,String from,String subjectIn,String cause) {
 
             String subject = RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
 
             try {
-                    net.yura.grasshopper.BugSubmitter.submitBug(text, from, subject, cause,
-                            RiskUtil.GAME_NAME,
-                                Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
-                                , TranslationBundle.getBundle().getLocale().toString()
+                if (RiskUIUtil.checkForNoSandbox()) {
+                    Map map = new HashMap();
+                    RiskGame game = myrisk.getGame();
+                    if (game != null) {
+                        map.put("gameLog", new net.yura.grasshopper.LogList(game.getCommands()));
+                    }
+                    if (messageFromUser != null) {
+                        map.put("messageFromUser" , messageFromUser);
+                    }
+                    map.put("lobbyID", net.yura.lobby.mini.MiniLobbyClient.getMyUUID());
+                    map.put("debugText", debugTab.getDebugText());
+                    map.put("errText", debugTab.getErrText());
 
-                            );
-                    JOptionPane.showMessageDialog(parent, "SENT!");
-            }
-            catch(Throwable ex) {
-                try {
-                    // for some reason + does not get decoded, so we set it back to a space
-                    URL url = new URL("mailto:yura@yura.net"+
-                            "?subject="+URLEncoder.encode(subject, "UTF-8").replace('+', ' ')+
-                            "&body="+URLEncoder.encode(text, "UTF-8").replace('+', ' '));
-
-                    RiskUtil.openURL(url);
+                    net.yura.grasshopper.BugSubmitter.submitBug(map, from, subject, cause, RiskUtil.GAME_NAME,
+                            Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")",
+                            TranslationBundle.getBundle().getLocale().toString()
+                        );
+                    JOptionPane.showMessageDialog(this, "SENT!");
+                    // everything went well sending through grasshopper, we return
+                    return;
                 }
-                catch (Throwable th) {
-                    JOptionPane.showMessageDialog(parent, "ERROR: "+ex+" "+th );
-                }
             }
+            catch (Throwable th) { } // maybe Grasshopper.jar is missing
 
+            // if for some reason we can not send with grasshopper, we fall back to client email
+            try {
+                String text = (messageFromUser != null ? messageFromUser : "") + "\n\n\n" +
+                        debugTab.getDebugText() + "\n" +
+                        debugTab.getErrText() + "\n\n" +
+                        "OS: " + RiskUIUtil.getOSString() + "\n" +
+                        "ID: " + net.yura.lobby.mini.MiniLobbyClient.getMyUUID();
+
+                // for some reason + does not get decoded, so we set it back to a space
+                URL url = new URL("mailto:yura@yura.net"+
+                        "?subject="+URLEncoder.encode(subject, "UTF-8").replace('+', ' ')+
+                        "&body="+URLEncoder.encode(text, "UTF-8").replace('+', ' '));
+
+                RiskUtil.openURL(url);
+            }
+            catch (Throwable th) {
+                JOptionPane.showMessageDialog(this, "Error opening native email: "+th);
+            }
     }
 
 class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
@@ -1758,7 +1780,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                         if (email == null) { email ="none"; }
 
-                        submitBug( this, debugText.getText() + errText.getText(), email, "Bug",cause );
+                        submitBug(null, email, "Bug", cause);
 
 		}
                 else if (a.getActionCommand().equals("clear error")) {
@@ -1778,7 +1800,15 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 		}
 	}
-}
+
+        private String getDebugText() {
+            return debugText.getText();
+        }
+
+        private String getErrText() {
+            return errText.getText();
+        }
+    }
 
 
 class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
