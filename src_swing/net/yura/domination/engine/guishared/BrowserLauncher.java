@@ -501,7 +501,14 @@ public class BrowserLauncher {
 		switch (jvm) {
                         case JAVA_AWT_DESKTOP:
                             try {
-                                java.awt.Desktop.getDesktop().browse( new java.net.URI(url) );
+                                java.net.URI uri = new java.net.URI(url);
+                                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+                                if (url.startsWith("mailto:")) {
+                                    desktop.mail(uri);
+                                }
+                                else {
+                                    desktop.browse(uri);
+                                }
                             }
                             catch (Exception ex) {
                                 throw new IOException("Unable to launch URL: " + url, ex);

@@ -18,6 +18,7 @@ CURRENT VERSION:
 	OS X java 1.7 maps dir missing deadlock fix
 	OS X java 1.7 open html help in browser fix
 	pt_PT update by Pipanni
+	SwingGUI sends more info on crash and feedback
 
 	Android 50 Send feedback option added
 		   can change default app language
