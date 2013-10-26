@@ -1,7 +1,7 @@
 package net.yura.domination.android;
 
-import static net.yura.domination.android.GCMActivity.SENDER_ID;
 import static net.yura.domination.android.GCMActivity.displayMessage;
+import net.yura.android.AndroidMeApp;
 import net.yura.domination.R;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,7 +17,7 @@ import com.google.android.gcm.GCMRegistrar;
 public class GCMIntentService extends GCMBaseIntentService {
 
     public GCMIntentService() {
-        super(SENDER_ID);
+        super(AndroidMeApp.getContext().getString(R.string.app_id));
     }
 
     @Override

@@ -681,12 +681,12 @@ public class GameActivity extends Frame implements ActionListener {
             }
     }
 
-    public static final String EASY_INCREASING_DOMINATION    = "CgkImZejm-gFEAIQBA";
-    public static final String AVERAGE_INCREASING_DOMINATION = "CgkImZejm-gFEAIQAw";
-    public static final String HARD_INCREASING_DOMINATION    = "CgkImZejm-gFEAIQAg";
-    public static final String EASY_FIXED_DOMINATION         = "CgkImZejm-gFEAIQBw";
-    public static final String AVERAGE_FIXED_DOMINATION      = "CgkImZejm-gFEAIQBg";
-    public static final String HARD_FIXED_DOMINATION         = "CgkImZejm-gFEAIQBQ";
+    public static final String EASY_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAQ";
+    public static final String AVERAGE_INCREASING_DOMINATION = "CgkIpcXiv-UWEAIQAg";
+    public static final String HARD_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAw";
+    public static final String EASY_FIXED_DOMINATION         = "CgkIpcXiv-UWEAIQBA";
+    public static final String AVERAGE_FIXED_DOMINATION      = "CgkIpcXiv-UWEAIQBQ";
+    public static final String HARD_FIXED_DOMINATION         = "CgkIpcXiv-UWEAIQBg";
 
     void checkIfPlayerUnlockedAchievement() {
 	GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();

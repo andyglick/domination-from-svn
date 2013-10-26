@@ -2,6 +2,7 @@ package net.yura.domination.android;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.yura.domination.R;
 import com.google.android.gcm.GCMRegistrar;
 import android.app.Activity;
 import android.content.Context;
@@ -10,8 +11,6 @@ import android.os.Bundle;
 
 public class GCMActivity extends Activity {
 
-    public static final String SENDER_ID = "783159960229";
-    
     static final Logger logger = Logger.getLogger(GCMActivity.class.getName());
     
     @Override
@@ -44,7 +43,7 @@ public class GCMActivity extends Activity {
         GCMRegistrar.checkManifest(context);
         final String regId = GCMRegistrar.getRegistrationId(context);
         if (regId.equals("")) {
-          GCMRegistrar.register(context, SENDER_ID);
+          GCMRegistrar.register(context, context.getString(R.string.app_id));
         }
         else {
             if (GCMRegistrar.isRegisteredOnServer(context)) {
