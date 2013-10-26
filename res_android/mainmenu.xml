@@ -9,6 +9,10 @@
     <button action="about" i18n="true" mnemonic="65" text="mainmenu.about" property="plafname=MainButton"/>
     <button action="feedback" i18n="true" mnemonic="70" text="mainmenu.feedback" property="plafname=MainButton"/>
     <button action="quit" i18n="true" mnemonic="27" text="mainmenu.quit" property="plafname=MainButton"/>
+
+    <button action="signIn" i18n="true" text="mainmenu.signIn" property="plafname=MainButton" name="signIn" visible="false"/>
+    <button action="signOut" i18n="true" text="mainmenu.signOut" property="plafname=MainButton" name="signOut" visible="false"/>
+    
     <button action="donate" icon="/donate.png" property="plafname=DonateButton"/>
     <!--
     <button action="join game" i18n="true" mnemonic="74" text="mainmenu.joingame"/>

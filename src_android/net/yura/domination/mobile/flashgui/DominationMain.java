@@ -52,6 +52,13 @@ public class DominationMain extends Midlet {
     public Risk risk;
     public MiniFlashRiskAdapter adapter;
 
+    public interface GooglePlayGameServices {
+	void beginUserInitiatedSignIn();
+	void signOut();
+	void unlockAchievement(String id);
+	boolean isSignedIn();
+    }
+    
     public DominationMain() {
 
         Service.SERVICES_LOCATION = "assets/services/";
@@ -272,4 +279,12 @@ public class DominationMain extends Midlet {
         return appPreferences.getBoolean(key, deflt);
     }
 
+    public GooglePlayGameServices googlePlayGameServices;
+    public void setGooglePlayGameServices(GooglePlayGameServices listener) {
+	googlePlayGameServices = listener;
+    }
+    public static GooglePlayGameServices getGooglePlayGameServices() {
+	DominationMain main = (DominationMain)Midlet.getMidlet();
+	return main.googlePlayGameServices;
+    }
 }

@@ -2,13 +2,13 @@ package net.yura.domination.mobile.flashgui;
 
 import java.util.List;
 import java.util.Locale;
-
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Midlet;
+import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.FileChooser;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.OptionPane;
@@ -45,20 +45,32 @@ public class MainMenu extends Frame implements ActionListener {
         
     }
 
+    XULLoader mainMenu;
     public void openMainMenu() {
 
-        XULLoader loader = GameActivity.getPanel("/mainmenu.xml",this);
+	mainMenu = GameActivity.getPanel("/mainmenu.xml",this);
 
         //Component onlineButton = loader.find("OnlineButton");
         //if (onlineButton!=null) {
         //    onlineButton.setVisible( Locale.getDefault().equals(new Locale("en","GB")) );
         //}
 
-        setContentPane( new ScrollPane( loader.getRoot() ) );
+        setContentPane( new ScrollPane( mainMenu.getRoot() ) );
         revalidate();
 
         setVisible(true);
         moveToBack();
+    }
+    
+    public void setPlayGamesSingedIn(boolean in) {
+	if (mainMenu!=null) {
+	    Button signIn = (Button)mainMenu.find("signIn");
+	    Button signOut = (Button)mainMenu.find("signOut");
+	    signIn.setVisible(!in);
+	    signOut.setVisible(in);
+	    mainMenu.getRoot().revalidate();
+	    mainMenu.getRoot().repaint();
+	}
     }
 
     private void moveToBack() {
@@ -139,6 +151,13 @@ public class MainMenu extends Frame implements ActionListener {
                                 "\n\n\nDevice: "+System.getProperty("http.agent")+
                                 "\nID: "+MiniLobbyClient.getMyUUID()).replace("+", "%20");
                 Midlet.openURL(url);
+            }
+            else if ("signIn".equals(actionCommand)) {
+        	DominationMain.getGooglePlayGameServices().beginUserInitiatedSignIn();
+            }
+            else if ("signOut".equals(actionCommand)) {
+        	DominationMain.getGooglePlayGameServices().signOut();
+        	setPlayGamesSingedIn(false);
             }
             else {
                 System.err.println("Unknown command: "+actionCommand);
