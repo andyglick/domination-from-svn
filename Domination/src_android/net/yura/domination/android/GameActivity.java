@@ -1,6 +1,10 @@
 package net.yura.domination.android;
 
 import java.io.File;
+
+import com.google.example.games.basegameutils.GameHelper;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,10 +14,13 @@ import net.yura.android.AndroidPreferences;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.flashgui.DominationMain;
+import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.mobile.logging.Logger;
 
-public class GameActivity extends AndroidMeActivity {
+public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
 
+    protected GameHelper mHelper;
+    
     @Override
     protected void onSingleCreate() {
 
@@ -21,6 +28,70 @@ public class GameActivity extends AndroidMeActivity {
         DominationMain.appPreferences = new AndroidPreferences(preferences);
 
         super.onSingleCreate();
+        
+        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+        
+        dmain.setGooglePlayGameServices(this);
+        
+        mHelper = new GameHelper(this);
+        mHelper.enableDebugLog(true, "DominationPlay");
+        mHelper.setup(this, GameHelper.CLIENT_GAMES);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mHelper.onStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHelper.onStop();
+    }
+
+    @Override
+    public void onActivityResult(int request, int response, Intent data) {
+        super.onActivityResult(request, response, data);
+        mHelper.onActivityResult(request, response, data);
+    }
+
+    @Override
+    public void beginUserInitiatedSignIn() {
+        mHelper.beginUserInitiatedSignIn();
+    }
+
+    @Override
+    public void signOut() {
+        mHelper.signOut();
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+	MiniFlashRiskAdapter ui = getUi();
+	if (ui!=null) {
+	    ui.playGamesStateChanged();
+	}
+    }
+
+    @Override
+    public void onSignInFailed() {
+	MiniFlashRiskAdapter ui = getUi();
+	if (ui!=null) {
+	    ui.playGamesStateChanged();
+	}
+    }
+    
+    @Override
+    public boolean isSignedIn() {
+        return mHelper.isSignedIn();
+    }
+
+    @Override
+    public void unlockAchievement(String id) {
+        if (mHelper.getGamesClient().isConnected()) {
+            mHelper.getGamesClient().unlockAchievement(id);
+        }
     }
 
     @Override
@@ -70,5 +141,10 @@ public class GameActivity extends AndroidMeActivity {
     private Risk getRisk() {
         DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
         return dmain==null?null:dmain.risk;
+    }
+
+    private MiniFlashRiskAdapter getUi() {
+        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+        return dmain==null?null:dmain.adapter;
     }
 }

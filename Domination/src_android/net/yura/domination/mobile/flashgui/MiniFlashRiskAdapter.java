@@ -7,6 +7,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
+import net.yura.domination.mobile.flashgui.DominationMain.GooglePlayGameServices;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Icon;
 import net.yura.mobile.gui.components.Button;
@@ -118,6 +119,14 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openMainMenu() {
         show("menu");
         mainmenu.openMainMenu();
+        playGamesStateChanged();
+    }
+    
+    public void playGamesStateChanged() {
+	GooglePlayGameServices nlc = DominationMain.getGooglePlayGameServices();
+	if (mainmenu != null && nlc != null) {
+	    mainmenu.setPlayGamesSingedIn(nlc.isSignedIn());
+	}
     }
 
     @Override
@@ -298,5 +307,4 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void showMessageDialog(String a) {
         OptionPane.showMessageDialog(null, a, null, OptionPane.INFORMATION_MESSAGE);
     }
-
 }

@@ -2,7 +2,11 @@ package net.yura.domination.mobile.flashgui;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.microedition.lcdui.Display;
@@ -10,12 +14,14 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.MouseListener;
 import net.yura.domination.mobile.PicturePanel;
+import net.yura.domination.mobile.flashgui.DominationMain.GooglePlayGameServices;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
@@ -618,6 +624,9 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_GAME_OVER: {
+                	
+                	    checkIfPlayerUnlockedAchievement();
+                	
                             if (myrisk.getGame().canContinue()) {
                                 goButtonText = resb.getProperty("game.button.go.continue");
                             }
@@ -670,6 +679,64 @@ public class GameActivity extends Frame implements ActionListener {
             if (isFocused() && DominationMain.getBoolean("show_toasts", false) ) {
                 toast(status);
             }
+    }
+
+    public static final String EASY_INCREASING_DOMINATION    = "CgkImZejm-gFEAIQBA";
+    public static final String AVERAGE_INCREASING_DOMINATION = "CgkImZejm-gFEAIQAw";
+    public static final String HARD_INCREASING_DOMINATION    = "CgkImZejm-gFEAIQAg";
+    public static final String EASY_FIXED_DOMINATION         = "CgkImZejm-gFEAIQBw";
+    public static final String AVERAGE_FIXED_DOMINATION      = "CgkImZejm-gFEAIQBg";
+    public static final String HARD_FIXED_DOMINATION         = "CgkImZejm-gFEAIQBQ";
+
+    void checkIfPlayerUnlockedAchievement() {
+	GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
+	if (myrisk.getLocalGame() && ncl != null) {
+            RiskGame game = myrisk.getGame();
+            if (game.getGameMode() == RiskGame.MODE_DOMINATION) {
+                List<Player> players = game.getPlayers();
+                Map<Integer,List<Player>> map = new HashMap();
+                for (Player player: players) {
+                    int type = player.getType();
+                    List<Player> pl = map.get(type);
+                    if (pl == null) {
+                	pl = new ArrayList();
+                	map.put(type, pl);
+                    }
+                    pl.add(player);
+                }
+                List<Player> humans = map.get(Player.PLAYER_HUMAN);
+                if (humans != null && humans.size() == 1 && humans.get(0).isAlive()) {
+                    List<Player> easy = map.get(Player.PLAYER_AI_EASY);
+                    if (easy != null && easy.size() == 5) {
+                        if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
+                            ncl.unlockAchievement(EASY_INCREASING_DOMINATION);
+                        }
+                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
+                            ncl.unlockAchievement(EASY_FIXED_DOMINATION);
+                        }
+                    }
+                    List<Player> average = map.get(Player.PLAYER_AI_AVERAGE);
+                    if (average != null && average.size() == 5) {
+                	if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
+                	    ncl.unlockAchievement(AVERAGE_INCREASING_DOMINATION);
+                        }
+                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
+                            ncl.unlockAchievement(AVERAGE_FIXED_DOMINATION);
+                        }
+                    }
+                    List<Player> hard = map.get(Player.PLAYER_AI_HARD);
+                    if (hard != null && hard.size() == 5) {
+                	if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
+                	    ncl.unlockAchievement(HARD_INCREASING_DOMINATION);
+                        }
+                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
+                            ncl.unlockAchievement(HARD_FIXED_DOMINATION);
+                        }
+                    }
+                }
+            }
+	}
+	
     }
 
     private void setGoButtonText(String goButtonText) {
