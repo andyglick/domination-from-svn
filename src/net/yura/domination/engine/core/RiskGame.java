@@ -2817,7 +2817,10 @@ System.out.print(str+"]\n");
                     loadMap(false, null);
             }
             catch (Exception e1) {
-                    throw new IOException(e1);
+        	// stupid fix for android 1.6
+        	IOException ex = new IOException();
+        	ex.initCause(e1);
+                throw ex;
             }
     	}
     }
