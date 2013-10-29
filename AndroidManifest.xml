@@ -4,16 +4,11 @@
       android:versionCode="51"
       android:versionName="51"
       android:installLocation="auto">
-      
+
     <!-- android:targetSdkVersion 11 to hide the legacy menu button on tablets -->
     <!-- android:targetSdkVersion 14 to hide the legacy menu button on phones  -->
     <!-- this also has a side effect of hiding the legacy resize button -->
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14" />
-
-        <!-- identify device -->
-    	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-        <uses-feature android:name="android.hardware.wifi" android:required="false"/>
 
 	<!-- App receives GCM messages. -->
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -34,7 +29,7 @@
     	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-    
+
     <!-- this means i dont need different assets for different resolutions -->
     <!-- supports-screens android:anyDensity="false"/ -->
     <!-- THIS DOES NOT WORK IF hardwareAccelerated=true!!!! -->
@@ -81,7 +76,7 @@
         <activity android:name="net.yura.domination.android.GamePreferenceActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Dialog" />
         <activity android:name="net.yura.domination.android.AboutActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />
         <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
-        
+
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
     </application>
 
