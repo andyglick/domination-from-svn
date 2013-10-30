@@ -1714,17 +1714,12 @@ RiskUtil.printStackTrace(e);
                                             else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "placearmies country number")); }
                                     }
                                     else if (input.equals("autoplace")) {
-                                            if (StringT.hasMoreTokens()==false) {
-                                                    if ( game.NoEmptyCountries() == false ) {
+                                            if (!StringT.hasMoreTokens()) {
                                                         if (shouldGameCommand(Addr)) {
-                                                            gameCommand(Addr, "PLACE", String.valueOf( game.getEmptyCountry() ) );
+                                                            gameCommand(Addr, "PLACE", String.valueOf( game.getRandomCountry() ) );
                                                         }
                                                         needInput=false;
                                                         output = null;
-                                                    }
-                                                    else {
-                                                            throw new IllegalArgumentException(resb.getString( "core.autoplace.error.unable"));
-                                                    }
                                             }
                                             else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autoplace")); }
                                     }

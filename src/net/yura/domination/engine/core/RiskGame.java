@@ -863,37 +863,32 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Automatically places an army on an unoccupied country
 	 * @return int Returns the country id which an army was added to
 	 */
-	public int getEmptyCountry() {
-
-		// find a empty country
-		int nEmpty = -1;
-
-		if (gameState==STATE_PLACE_ARMIES) {
-
-			int a = r.nextInt(Countries.length);
+	public int getRandomCountry() {
+                if (gameState==STATE_PLACE_ARMIES) {
+                    if ( NoEmptyCountries() ) {
+                        List countries = currentPlayer.getTerritoriesOwned();
+                        return ((Country)countries.get( r.nextInt(countries.size()) )).getColor();
+                    }
+                    else {
+                        // find a empty country
+                        int a = r.nextInt(Countries.length);
 			boolean done = false;
-
 			for (int c=a; c < Countries.length ; c++) {
-
 				if ( Countries[c].getOwner() == null ) {
-					nEmpty = Countries[c].getColor();
-					break;
+					return Countries[c].getColor();
 				}
-				else if ( c == Countries.length-1 && done == false ) {
+				else if ( c == Countries.length-1 && !done ) {
 					c = -1;
 					done = true;
 				}
-				else if ( c == Countries.length-1 && done == true ) {
+				else if ( c == Countries.length-1 && done ) {
 					break;
 				}
-
 			}
-
-		}
-
-		return nEmpty;
-
-	}//public int getEmptyCountry()
+                    }
+                }
+                throw new IllegalStateException();
+	}
 
 	/**
 	 * Attacks one country and another
