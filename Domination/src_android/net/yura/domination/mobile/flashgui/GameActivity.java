@@ -601,9 +601,7 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_PLACE_ARMIES: {
-                            if ( !myrisk.getGame().NoEmptyCountries() ) {
-                                    goButtonText = resb.getProperty("game.button.go.autoplace");
-                            }
+                            goButtonText = resb.getProperty("game.button.go.autoplace");
                             noteText = getArmiesLeftText();
                             break;
                     }
@@ -624,9 +622,9 @@ public class GameActivity extends Frame implements ActionListener {
                             break;
                     }
                     case RiskGame.STATE_GAME_OVER: {
-                	
+
                 	    checkIfPlayerUnlockedAchievement();
-                	
+
                             if (myrisk.getGame().canContinue()) {
                                 goButtonText = resb.getProperty("game.button.go.continue");
                             }
