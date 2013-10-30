@@ -19,6 +19,7 @@
 	        android:id="@+id/adView"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
 	        ads:adSize="BANNER"
 	        ads:adUnitId="ca-app-pub-4647495416237114/9986796868"
 	        ads:loadAdOnCreate="true"
