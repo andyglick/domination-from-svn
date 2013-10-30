@@ -2280,13 +2280,6 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 		private void armiesLeft(int l, boolean s) {
 			armies.setText( resbundle.getString("core.input.armiesleft").replaceAll("\\{0\\}", "" + l));
-
-			if (s) {
-				autoplace.setVisible(false);
-			}
-			else {
-				autoplace.setVisible(true);
-			}
 		}
 
 		private void showDice(int n, boolean w) {
