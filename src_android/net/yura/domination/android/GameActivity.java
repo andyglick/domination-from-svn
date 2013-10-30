@@ -20,7 +20,7 @@ import net.yura.mobile.logging.Logger;
 public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
 
     protected GameHelper mHelper;
-    
+
     @Override
     protected void onSingleCreate() {
 
@@ -28,14 +28,16 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         DominationMain.appPreferences = new AndroidPreferences(preferences);
 
         super.onSingleCreate();
-        
-        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
-        
-        dmain.setGooglePlayGameServices(this);
-        
+
         mHelper = new GameHelper(this);
         mHelper.enableDebugLog(true, "DominationPlay");
         mHelper.setup(this, GameHelper.CLIENT_GAMES);
+    }
+
+    @Override
+    public void onMidletStarted() {
+        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+        dmain.setGooglePlayGameServices(GameActivity.this);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 	    ui.playGamesStateChanged();
 	}
     }
-    
+
     @Override
     public boolean isSignedIn() {
         return mHelper.isSignedIn();

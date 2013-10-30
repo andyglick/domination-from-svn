@@ -2397,7 +2397,6 @@ transient - A keyword in the Java programming language that indicates that a fie
             }
         }
 
-
 	/**
 	 * Gets the ImageMap
 	 * @return URL ImageMap
@@ -2407,12 +2406,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 	}
 
 	public String getCardsFile() {
-
 		return cardsfile; //.getFile().substring( cardsfile.getFile().lastIndexOf("/")+1 );
 	}
 
 	public String getMapFile() {
-
 		return mapfile; //.getFile().substring( mapfile.getFile().lastIndexOf("/")+1 );
 	}
 

@@ -20,7 +20,8 @@ CURRENT VERSION:
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 
-    Android 51 added google play games services achievements
+	Android 51 added google play games services achievements
+		   autoplace works even with no empty countries
 	Android 50 Send feedback option added
 		   can change default app language
 
