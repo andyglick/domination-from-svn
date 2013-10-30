@@ -690,7 +690,7 @@ public class GameActivity extends Frame implements ActionListener {
 	GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
 	if (myrisk.getLocalGame() && ncl != null) {
             RiskGame game = myrisk.getGame();
-            if (game.getGameMode() == RiskGame.MODE_DOMINATION) {
+            if (game.getGameMode() == RiskGame.MODE_DOMINATION && "luca.map".equals(game.getMapFile())) {
                 List<Player> players = game.getPlayers();
                 Map<Integer,List<Player>> map = new HashMap();
                 for (Player player: players) {
