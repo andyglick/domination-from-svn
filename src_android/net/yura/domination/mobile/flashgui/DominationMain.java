@@ -57,6 +57,7 @@ public class DominationMain extends Midlet {
 	void signOut();
 	void unlockAchievement(String id);
 	boolean isSignedIn();
+	void showAchievements();
     }
     
     public DominationMain() {

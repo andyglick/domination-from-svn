@@ -159,6 +159,9 @@ public class MainMenu extends Frame implements ActionListener {
         	DominationMain.getGooglePlayGameServices().signOut();
         	setPlayGamesSingedIn(false);
             }
+            else if ("showAchievements".equals(actionCommand)) {
+        	DominationMain.getGooglePlayGameServices().showAchievements();
+            }
             else {
                 System.err.println("Unknown command: "+actionCommand);
             }

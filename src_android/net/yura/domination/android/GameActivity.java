@@ -97,6 +97,12 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     @Override
+    public void showAchievements() {
+	int REQUEST_ACHIEVEMENTS = 1; // TODO why is this needed, we don't need any result here.
+	startActivityForResult(mHelper.getGamesClient().getAchievementsIntent(), REQUEST_ACHIEVEMENTS);
+    }
+    
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Logger.info("[GameActivity] onSaveInstanceState");
