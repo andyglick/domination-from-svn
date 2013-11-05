@@ -12,7 +12,8 @@
 
     <button action="signIn" i18n="true" text="mainmenu.signIn" property="plafname=MainButton" name="signIn" visible="false"/>
     <button action="signOut" i18n="true" text="mainmenu.signOut" property="plafname=MainButton" name="signOut" visible="false"/>
-    
+    <button action="showAchievements" i18n="true" text="mainmenu.showAchievements" property="plafname=MainButton" name="showAchievements" />
+
     <button action="donate" icon="/donate.png" property="plafname=DonateButton"/>
     <!--
     <button action="join game" i18n="true" mnemonic="74" text="mainmenu.joingame"/>
