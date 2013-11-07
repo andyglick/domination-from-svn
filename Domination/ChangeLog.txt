@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		50
+	Android		52
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,8 @@ CURRENT VERSION:
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 
+	Android 52 italian achievements added
+		   can view all possible achievements from main menu 
 	Android 51 added google play games services achievements
 		   autoplace works even with no empty countries
 	Android 50 Send feedback option added

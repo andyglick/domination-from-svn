@@ -680,11 +680,16 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     public static final String EASY_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAQ";
-    public static final String AVERAGE_INCREASING_DOMINATION = "CgkIpcXiv-UWEAIQAg";
-    public static final String HARD_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAw";
     public static final String EASY_FIXED_DOMINATION         = "CgkIpcXiv-UWEAIQBA";
+    public static final String EASY_ITALIAN_DOMINATION       = "CgkIpcXiv-UWEAIQCA";
+
+    public static final String AVERAGE_INCREASING_DOMINATION = "CgkIpcXiv-UWEAIQAg";
     public static final String AVERAGE_FIXED_DOMINATION      = "CgkIpcXiv-UWEAIQBQ";
+    public static final String AVERAGE_ITALIAN_DOMINATION    = "CgkIpcXiv-UWEAIQCQ";
+
+    public static final String HARD_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAw";
     public static final String HARD_FIXED_DOMINATION         = "CgkIpcXiv-UWEAIQBg";
+    public static final String HARD_ITALIAN_DOMINATION       = "CgkIpcXiv-UWEAIQCg";
 
     void checkIfPlayerUnlockedAchievement() {
 	GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
@@ -712,6 +717,9 @@ public class GameActivity extends Frame implements ActionListener {
                         else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
                             ncl.unlockAchievement(EASY_FIXED_DOMINATION);
                         }
+                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+                            ncl.unlockAchievement(EASY_ITALIAN_DOMINATION);
+                        }
                     }
                     List<Player> average = map.get(Player.PLAYER_AI_AVERAGE);
                     if (average != null && average.size() == 5) {
@@ -721,6 +729,9 @@ public class GameActivity extends Frame implements ActionListener {
                         else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
                             ncl.unlockAchievement(AVERAGE_FIXED_DOMINATION);
                         }
+                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+                            ncl.unlockAchievement(AVERAGE_ITALIAN_DOMINATION);
+                        }
                     }
                     List<Player> hard = map.get(Player.PLAYER_AI_HARD);
                     if (hard != null && hard.size() == 5) {
@@ -729,6 +740,9 @@ public class GameActivity extends Frame implements ActionListener {
                         }
                         else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
                             ncl.unlockAchievement(HARD_FIXED_DOMINATION);
+                        }
+                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+                            ncl.unlockAchievement(HARD_ITALIAN_DOMINATION);
                         }
                     }
                 }
