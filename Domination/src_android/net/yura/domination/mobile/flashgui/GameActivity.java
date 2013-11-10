@@ -3,6 +3,7 @@ package net.yura.domination.mobile.flashgui;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -679,6 +680,18 @@ public class GameActivity extends Frame implements ActionListener {
             }
     }
 
+    public static final String EASY_INCREASING_CAPITAL       = "CgkIpcXiv-UWEAIQGA";
+    public static final String EASY_FIXED_CAPITAL            = "CgkIpcXiv-UWEAIQGQ";
+    public static final String EASY_ITALIAN_CAPITAL          = "CgkIpcXiv-UWEAIQGg";
+
+    public static final String AVERAGE_INCREASING_CAPITAL    = "CgkIpcXiv-UWEAIQGw";
+    public static final String AVERAGE_FIXED_CAPITAL         = "CgkIpcXiv-UWEAIQHA";
+    public static final String AVERAGE_ITALIAN_CAPITAL       = "CgkIpcXiv-UWEAIQHQ";
+
+    public static final String HARD_INCREASING_CAPITAL       = "CgkIpcXiv-UWEAIQHg";
+    public static final String HARD_FIXED_CAPITAL            = "CgkIpcXiv-UWEAIQHw";
+    public static final String HARD_ITALIAN_CAPITAL          = "CgkIpcXiv-UWEAIQIA";
+
     public static final String EASY_INCREASING_DOMINATION    = "CgkIpcXiv-UWEAIQAQ";
     public static final String EASY_FIXED_DOMINATION         = "CgkIpcXiv-UWEAIQBA";
     public static final String EASY_ITALIAN_DOMINATION       = "CgkIpcXiv-UWEAIQCA";
@@ -692,63 +705,127 @@ public class GameActivity extends Frame implements ActionListener {
     public static final String HARD_ITALIAN_DOMINATION       = "CgkIpcXiv-UWEAIQCg";
 
     void checkIfPlayerUnlockedAchievement() {
-	GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
-	if (myrisk.getLocalGame() && ncl != null) {
+	if (myrisk.getLocalGame()) {
             RiskGame game = myrisk.getGame();
-            if (game.getGameMode() == RiskGame.MODE_DOMINATION && "luca.map".equals(game.getMapFile())) {
+            if ("luca.map".equals(game.getMapFile())) {
                 List<Player> players = game.getPlayers();
-                Map<Integer,List<Player>> map = new HashMap();
-                for (Player player: players) {
-                    int type = player.getType();
-                    List<Player> pl = map.get(type);
-                    if (pl == null) {
-                	pl = new ArrayList();
-                	map.put(type, pl);
+                if (players.size() == 6) {
+                    Map<Integer,List<Player>> map = new HashMap();
+                    for (Player player: players) {
+                        int type = player.getType();
+                        List<Player> pl = map.get(type);
+                        if (pl == null) {
+                            pl = new ArrayList();
+                            map.put(type, pl);
+                        }
+                        pl.add(player);
                     }
-                    pl.add(player);
-                }
-                List<Player> humans = map.get(Player.PLAYER_HUMAN);
-                if (humans != null && humans.size() == 1 && humans.get(0).isAlive()) {
-                    List<Player> easy = map.get(Player.PLAYER_AI_EASY);
-                    if (easy != null && easy.size() == 5) {
-                        if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
-                            ncl.unlockAchievement(EASY_INCREASING_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
-                            ncl.unlockAchievement(EASY_FIXED_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-                            ncl.unlockAchievement(EASY_ITALIAN_DOMINATION);
-                        }
-                    }
-                    List<Player> average = map.get(Player.PLAYER_AI_AVERAGE);
-                    if (average != null && average.size() == 5) {
-                	if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
-                	    ncl.unlockAchievement(AVERAGE_INCREASING_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
-                            ncl.unlockAchievement(AVERAGE_FIXED_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-                            ncl.unlockAchievement(AVERAGE_ITALIAN_DOMINATION);
-                        }
-                    }
-                    List<Player> hard = map.get(Player.PLAYER_AI_HARD);
-                    if (hard != null && hard.size() == 5) {
-                	if (game.getCardMode()==RiskGame.CARD_INCREASING_SET) {
-                	    ncl.unlockAchievement(HARD_INCREASING_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_FIXED_SET) {
-                            ncl.unlockAchievement(HARD_FIXED_DOMINATION);
-                        }
-                        else if (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
-                            ncl.unlockAchievement(HARD_ITALIAN_DOMINATION);
+                    List<Player> humans = getPlayerList(map,Player.PLAYER_HUMAN);
+                    if (humans.size() == 1 && humans.get(0).isAlive()) {
+                        int easy = getPlayerList(map,Player.PLAYER_AI_EASY).size();
+                        int average = getPlayerList(map,Player.PLAYER_AI_AVERAGE).size();
+                        int hard = getPlayerList(map,Player.PLAYER_AI_HARD).size();
+                        if (easy + average + hard == 5) {
+                            int difficulty;
+                            if (easy > 0) {
+                                difficulty = Player.PLAYER_AI_EASY;
+                            }
+                            else if (average > 0) {
+                                difficulty = Player.PLAYER_AI_AVERAGE;
+                            }
+                            else if (hard > 0) {
+                                difficulty = Player.PLAYER_AI_HARD;
+                            }
+                            else {
+                                throw new IllegalStateException();
+                            }
+                            unlockAchievement(game.getGameMode(),game.getCardMode(),difficulty);
                         }
                     }
                 }
             }
 	}
-	
+    }
+
+    private static List<Player> getPlayerList(Map<Integer,List<Player>> map, int type) {
+        List<Player> players = map.get(type);
+        return players == null ? Collections.EMPTY_LIST : players;
+    }
+
+    private static void unlockAchievement(int gameMode,int cardMode,int difficulty) {
+        GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
+        if (ncl != null) {
+            if (gameMode == RiskGame.MODE_CAPITAL) {
+                if (difficulty == Player.PLAYER_AI_EASY) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(EASY_INCREASING_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(EASY_FIXED_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(EASY_ITALIAN_CAPITAL);
+                    }
+                }
+                else if (difficulty == Player.PLAYER_AI_AVERAGE) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(AVERAGE_INCREASING_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(AVERAGE_FIXED_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(AVERAGE_ITALIAN_CAPITAL);
+                    }
+                }
+                else if (difficulty == Player.PLAYER_AI_HARD) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(HARD_INCREASING_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(HARD_FIXED_CAPITAL);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(HARD_ITALIAN_CAPITAL);
+                    }
+                }
+            }
+            else if (gameMode == RiskGame.MODE_DOMINATION) {
+                if (difficulty == Player.PLAYER_AI_EASY) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(EASY_INCREASING_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(EASY_FIXED_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(EASY_ITALIAN_DOMINATION);
+                    }
+                }
+                else if (difficulty == Player.PLAYER_AI_AVERAGE) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(AVERAGE_INCREASING_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(AVERAGE_FIXED_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(AVERAGE_ITALIAN_DOMINATION);
+                    }
+                }
+                else if (difficulty == Player.PLAYER_AI_HARD) {
+                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                        ncl.unlockAchievement(HARD_INCREASING_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                        ncl.unlockAchievement(HARD_FIXED_DOMINATION);
+                    }
+                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                        ncl.unlockAchievement(HARD_ITALIAN_DOMINATION);
+                    }
+                }
+            }
+        }
     }
 
     private void setGoButtonText(String goButtonText) {

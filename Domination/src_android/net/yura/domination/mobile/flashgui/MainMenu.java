@@ -34,15 +34,14 @@ public class MainMenu extends Frame implements ActionListener {
     public MainMenu(Risk risk,MiniFlashRiskAdapter controller) {
         myrisk = risk;
         this.controller = controller;
-        
+
         //setTitle( resb.getProperty("mainmenu.title") );
         setUndecorated(true);
-        
+
         setMaximum(true);
-        
+
         setBorder(GameActivity.marble);
         setBackground( 0x00FFFFFF );
-        
     }
 
     XULLoader mainMenu;
@@ -61,13 +60,15 @@ public class MainMenu extends Frame implements ActionListener {
         setVisible(true);
         moveToBack();
     }
-    
+
     public void setPlayGamesSingedIn(boolean in) {
 	if (mainMenu!=null) {
+            Button showAchievements = (Button)mainMenu.find("showAchievements");
 	    Button signIn = (Button)mainMenu.find("signIn");
 	    Button signOut = (Button)mainMenu.find("signOut");
-	    signIn.setVisible(!in);
-	    signOut.setVisible(in);
+            if (showAchievements != null) { showAchievements.setVisible(true); }
+            if (signIn != null) { signIn.setVisible(!in); }
+	    if (signOut != null) { signOut.setVisible(in); }
 	    mainMenu.getRoot().revalidate();
 	    mainMenu.getRoot().repaint();
 	}
@@ -81,7 +82,7 @@ public class MainMenu extends Frame implements ActionListener {
             getDesktopPane().setSelectedFrame((Window)windows.get(0));
         }
     }
-    
+
     @Override
     public void actionPerformed(String actionCommand) {
             if ("new game".equals(actionCommand)) {
@@ -97,7 +98,7 @@ public class MainMenu extends Frame implements ActionListener {
 
                 String file = chooser.getSelectedFile();
                 chooser = null;
-                
+
                 if (file.endsWith( GameActivity.SAVE_EXTENSION )) {
                     myrisk.parser("loadgame " + file );
                 }
