@@ -59,7 +59,7 @@ public class DominationMain extends Midlet {
 	boolean isSignedIn();
 	void showAchievements();
     }
-    
+
     public DominationMain() {
 
         Service.SERVICES_LOCATION = "assets/services/";

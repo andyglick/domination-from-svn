@@ -20,6 +20,8 @@ import net.yura.mobile.logging.Logger;
 public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
 
     protected GameHelper mHelper;
+    private String pendingAchievement;
+    private boolean pendingAchievements;
 
     @Override
     protected void onSingleCreate() {
@@ -74,6 +76,14 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 	if (ui!=null) {
 	    ui.playGamesStateChanged();
 	}
+        if (pendingAchievement!=null) {
+            unlockAchievement(pendingAchievement);
+            pendingAchievement=null;
+        }
+        if (pendingAchievements) {
+            pendingAchievements = false;
+            showAchievements();
+        }
     }
 
     @Override
@@ -82,6 +92,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 	if (ui!=null) {
 	    ui.playGamesStateChanged();
 	}
+        // user must have cancelled signing in, so they must not want to see achievements.
+	pendingAchievements = false;
     }
 
     @Override
@@ -91,17 +103,27 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     @Override
     public void unlockAchievement(String id) {
-        if (mHelper.getGamesClient().isConnected()) {
+        if (isSignedIn()) {
             mHelper.getGamesClient().unlockAchievement(id);
+        }
+        else {
+            pendingAchievement = id;
+            beginUserInitiatedSignIn();
         }
     }
 
     @Override
     public void showAchievements() {
-	int REQUEST_ACHIEVEMENTS = 1; // TODO why is this needed, we don't need any result here.
-	startActivityForResult(mHelper.getGamesClient().getAchievementsIntent(), REQUEST_ACHIEVEMENTS);
+        if (isSignedIn()) {
+            int REQUEST_ACHIEVEMENTS = 1; // TODO why is this needed, we don't need any result here.
+            startActivityForResult(mHelper.getGamesClient().getAchievementsIntent(), REQUEST_ACHIEVEMENTS);
+        }
+        else {
+            pendingAchievements=true;
+            beginUserInitiatedSignIn();
+        }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

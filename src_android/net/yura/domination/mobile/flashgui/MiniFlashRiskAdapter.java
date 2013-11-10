@@ -121,7 +121,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
         mainmenu.openMainMenu();
         playGamesStateChanged();
     }
-    
+
     public void playGamesStateChanged() {
 	GooglePlayGameServices nlc = DominationMain.getGooglePlayGameServices();
 	if (mainmenu != null && nlc != null) {
