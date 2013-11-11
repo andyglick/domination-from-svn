@@ -1,9 +1,12 @@
 package net.yura.domination.android;
 
 import java.io.File;
+import java.util.ResourceBundle;
 
 import com.google.example.games.basegameutils.GameHelper;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import net.yura.android.AndroidMeApp;
 import net.yura.android.AndroidPreferences;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.mobile.logging.Logger;
@@ -108,7 +112,26 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         }
         else {
             pendingAchievement = id;
-            beginUserInitiatedSignIn();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ResourceBundle resb = TranslationBundle.getBundle();
+                    new AlertDialog.Builder(GameActivity.this)
+                    .setTitle(resb.getString("achievement.achievementUnlocked"))
+                    .setMessage(resb.getString("achievement.signInToSave"))
+                    .setPositiveButton(resb.getString("achievement.signInToSave.ok"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            beginUserInitiatedSignIn();
+                        }
+                     })
+                    .setNegativeButton(resb.getString("achievement.signInToSave.cancel"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                     })
+                     .show();
+                }
+            });
         }
     }
 
