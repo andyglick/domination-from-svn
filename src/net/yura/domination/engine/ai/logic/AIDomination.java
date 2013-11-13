@@ -415,8 +415,7 @@ public class AIDomination extends AISubmissive {
 		GameState gameState = getGameState(player, false);
 
 		//kill switch
-		if (attack && ((game.getCurrentPlayer().getStatistics().size() > MAX_AI_TURNS && gameState.me.playerValue < gameState.orderedPlayers.get(gameState.orderedPlayers.size() - 1).playerValue)
-				|| (game.getCurrentPlayer().getStatistics().size() > 2*MAX_AI_TURNS && gameState.me.playerValue < gameState.orderedPlayers.get(0).playerValue))) {
+		if (attack && (game.getCurrentPlayer().getStatistics().size() > MAX_AI_TURNS && (gameState.me.playerValue < gameState.orderedPlayers.get(gameState.orderedPlayers.size() - 1).playerValue || r.nextBoolean()))) {
 			boolean keepPlaying = false;
 			for (int i = 0; i < game.getPlayers().size(); i++) {
 				Player p = (Player)game.getPlayers().get(i);
@@ -426,10 +425,10 @@ public class AIDomination extends AISubmissive {
 				}
 			}
 			if (!keepPlaying) {
-				Country attackFrom = attackable.get(0);
+				Country attackFrom = attackable.get(r.nextInt(attackable.size()));
 				for (Country c : (List<Country>)attackFrom.getNeighbours()) {
 					if (c.getOwner() != player) {
-						return "attack " + attackable.get(0).getColor() + " " + c.getColor();
+						return "attack " + attackFrom.getColor() + " " + c.getColor();
 					}
 				}
 			}
@@ -1783,7 +1782,7 @@ public class AIDomination extends AISubmissive {
 				cumulativeForces.depth = current.depth+1;
 				int available = attackForce;
 				int toAttack = c.getArmies();
-				if (game.getMaxDefendDice() == 2) {
+				if (game.getMaxDefendDice() == 2 || gameState.me.playerValue>gameState.orderedPlayers.get(0).playerValue || gameState.me.p.getType() == PLAYER_AI_EASY) {
 					if (attack) {
 						while (toAttack >= 10 || (available >= 10 && toAttack >= 5)) {
 							toAttack -= 4;
@@ -1801,7 +1800,7 @@ public class AIDomination extends AISubmissive {
 					    int rounds = (toAttack - 3)/3;
 					    if (rounds > 0) {
 					       toAttack -= 3*rounds;
-					       available -= (gameState.me.playerValue>gameState.orderedPlayers.get(0).playerValue?4:5)*rounds;
+					       available -= 3*rounds;
 					    }
 					}
 				}
@@ -2211,7 +2210,7 @@ public class AIDomination extends AISubmissive {
 			} else {
 				g.orderedPlayers.add(ps);
 			}
-			ps.playerValue += ps.attackValue + ((game.getMaxDefendDice() == 2 && !isIncreasingSet())?1:2)*ps.defenseValue;
+			ps.playerValue += ps.attackValue + ((game.getMaxDefendDice() == 2 && !isIncreasingSet())?1:game.getMaxDefendDice()>2?3:2)*ps.defenseValue;
 			attackOrder++;
     	}
     	//put the players in order of strongest to weakest
