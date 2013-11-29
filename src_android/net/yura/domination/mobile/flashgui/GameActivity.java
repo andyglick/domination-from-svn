@@ -720,11 +720,11 @@ public class GameActivity extends Frame implements ActionListener {
                         }
                         pl.add(player);
                     }
-                    List<Player> humans = getPlayerList(map,Player.PLAYER_HUMAN);
-                    if (humans.size() == 1 && humans.get(0).isAlive()) {
-                        int easy = getPlayerList(map,Player.PLAYER_AI_EASY).size();
-                        int average = getPlayerList(map,Player.PLAYER_AI_AVERAGE).size();
-                        int hard = getPlayerList(map,Player.PLAYER_AI_HARD).size();
+
+                    if (getPlayerCount(map,Player.PLAYER_HUMAN) == 1 && myrisk.getWinner().getType() == Player.PLAYER_HUMAN) {
+                        int easy = getPlayerCount(map,Player.PLAYER_AI_EASY);
+                        int average = getPlayerCount(map,Player.PLAYER_AI_AVERAGE);
+                        int hard = getPlayerCount(map,Player.PLAYER_AI_HARD);
                         if (easy + average + hard == 5) {
                             int difficulty;
                             if (easy > 0) {
@@ -747,9 +747,9 @@ public class GameActivity extends Frame implements ActionListener {
 	}
     }
 
-    private static List<Player> getPlayerList(Map<Integer,List<Player>> map, int type) {
+    private static int getPlayerCount(Map<Integer,List<Player>> map, int type) {
         List<Player> players = map.get(type);
-        return players == null ? Collections.EMPTY_LIST : players;
+        return players == null ? 0 : players.size();
     }
 
     private static void unlockAchievement(int gameMode,int cardMode,int difficulty) {

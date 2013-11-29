@@ -1,11 +1,14 @@
 package net.yura.domination.mapstore;
 
+import java.util.List;
+
 /**
  * @author Yura Mamyrin
  */
 public interface MapServerListener {
 
-    public void gotResultXML(String url, String method, Object param);
+    public void gotResultCategories(String url, List categories);
+    public void gotResultMaps(String url, List maps);
     public void onXMLError(String string);
 
     public void downloadFinished(String mapUID);

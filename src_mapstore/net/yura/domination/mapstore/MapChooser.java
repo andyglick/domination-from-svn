@@ -198,7 +198,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                 }
                 else {
                     // can be null when shut down
-                    if (c!=null) c.makeRequest( url,null,key );
+                    if (c!=null) c.getImage(url, key);
                 }
             }
             // if this is a locale file
@@ -608,28 +608,12 @@ public class MapChooser implements ActionListener,MapServerListener {
         return selectedMap;
     }
 
-    public void gotResultXML(String url,String method,Object param) {
+    public void gotResultCategories(String url,java.util.List items) {
+        setListData(url, items);
+    }
 
-        if ("categories".equals(method)) {
-            if (param instanceof java.util.List) {
-                setListData( url, (java.util.List)param );
-            }
-        }
-        else if ("maps".equals(method)) {
-            if (param instanceof java.util.Map) {
-                java.util.Map map = (java.util.Map)param;
-
-                map.get("search");
-                map.get("author");
-                map.get("category");
-
-                map.get("offset");
-                map.get("total");
-
-                setListData( url, (java.util.List)map.get("maps") );
-            }
-        }
-
+    public void gotResultMaps(String url, java.util.List maps) {
+	setListData(url, maps);
     }
 
     public void onXMLError(String error) {
