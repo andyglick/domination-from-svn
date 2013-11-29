@@ -96,7 +96,7 @@ public class MapServerClient extends HTTPClient {
         // show error dialog to the user
         if (ch!=null) {
             String error = "error:"+(responseCode!=0?" "+responseCode:"")+(ex!=null?" "+ex:"");
-            if (request.type == XML_REQUEST_ID) {
+            if (request.type == XML_REQUEST_ID || request.type == PULS_REQUEST_ID) {
                 ch.onXMLError(error);
             }
             else if (request.type == MAP_REQUEST_ID) {
