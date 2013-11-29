@@ -17,21 +17,35 @@ import net.yura.mobile.io.json.JSONWriter;
  */
 public class GooglePlusOne {
 
+    public static final String URL = "https://clients6.google.com/rpc?key=AIzaSyCKSbrvQasunBoV16zDH9R33D88CeLr9gQ";
+
+    private static JSONUtil util = new JSONUtil() {
+	protected void saveObject(JSONWriter serializer, Object object) throws IOException {
+	    if (object instanceof Map && !(object instanceof Hashtable)) {
+		super.saveObject(serializer, new Hashtable((Map) object));
+	    }
+	    else if (object instanceof List && !(object instanceof Vector)) {
+		super.saveObject(serializer, new Vector((List) object));
+	    }
+	    else {
+		super.saveObject(serializer, object);
+	    }
+	}
+    };
+    
     /**
      * [{"method":"pos.plusones.get","id":"p","params":{"nolog":true,"id":"http://www.test.com","source":"widget","userId":"@viewer","groupId":"@self"},"jsonrpc":"2.0","key":"p","apiVersion":"v1"}]
      */
     public static byte[] getRequest(String url) {
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            Map params = new HashMap();
+            Map<String, Object> params = new HashMap();
             params.put("nolog",true);
             params.put("id",url);
             params.put("source","widget");
             params.put("userId","@viewer");
             params.put("groupId","@self");
 
-            Map request = new HashMap();
+            Map<String, Object> request = new HashMap();
             request.put("method","pos.plusones.get");
             request.put("id","p");
             request.put("params", params);
@@ -39,24 +53,8 @@ public class GooglePlusOne {
             request.put("key","p");
             request.put("apiVersion","v1");
 
-            JSONUtil util = new JSONUtil() {
-        	protected void saveObject(JSONWriter serializer, Object object) throws IOException {
-        	    if (object instanceof Map && !(object instanceof Hashtable)) {
-        		super.saveObject(serializer, new Hashtable( (Map)object ));
-        	    }
-        	    else if (object instanceof List && !(object instanceof Vector)) {
-        		super.saveObject(serializer, new Vector( (List)object ));
-        	    }
-        	    else {
-        		super.saveObject(serializer, object);
-        	    }
-        	}
-            };
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             util.save(out, new Object[] { request } );
-            
-            System.out.write(out.toByteArray());
-            System.out.println();
-            
             return out.toByteArray();
         }
         catch (IOException ex) {
@@ -68,15 +66,12 @@ public class GooglePlusOne {
      * [{"result": { "kind": "pos#plusones", "id": "http://www.google.com/", "isSetByViewer": false, "metadata": {"type": "URL", "globalCounts": {"count": 3097.0} } } "id": "p"}]
      */
     public static int getCount(InputStream is) throws IOException {
-	JSONUtil util = new JSONUtil();
-	
 	Object[] object = (Object[])util.load(is);
-	Map responce = (Map)object[0];
-	Map result = (Map)responce.get("result");
-	Map metadata = (Map)result.get("metadata");
-	Map globalCounts = (Map)metadata.get("globalCounts");
+	Map<String, Object> responce = (Map)object[0];
+	Map<String, Object> result = (Map)responce.get("result");
+	Map<String, Object> metadata = (Map)result.get("metadata");
+	Map<String, Object> globalCounts = (Map)metadata.get("globalCounts");
 	double count = (Double)globalCounts.get("count");
-
 	return (int)count;
     }
 }

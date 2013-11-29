@@ -29,16 +29,13 @@ public class GetMap implements MapServerListener {
         client.kill();
     }
 
-    public void gotResultXML(String url, String method, Object param) {
-        java.util.Map map = (java.util.Map)param;
-        List maps = (List)map.get("maps");
+    public void gotResultMaps(String url, List maps) {
         if (maps.size()==1) {
             Map themap = (Map)maps.get(0);
             client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
         }
         else {
             System.err.println( "wrong number of maps on server: "+maps.size()+" for map: "+filename );
-
             RiskUtil.printStackTrace(problem);
             onError(problem.toString());
         }
@@ -63,6 +60,7 @@ public class GetMap implements MapServerListener {
         onError(string);
     }
 
+    public void gotResultCategories(String url, List categories) { }
     public void publishImg(Object param) { }
 
 }

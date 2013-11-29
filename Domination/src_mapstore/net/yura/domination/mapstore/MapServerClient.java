@@ -10,7 +10,10 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +25,7 @@ import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.util.SystemUtil;
+import net.yura.social.GooglePlusOne;
 
 /**
  * @author Yura Mamyrin
@@ -30,12 +34,31 @@ public class MapServerClient extends HTTPClient {
 
     public static final Logger logger = Logger.getLogger(MapServerClient.class.getName());
 
-    public static final Object XML_REQUEST_ID = "XML_REQUEST";
-    public static final Object MAP_REQUEST_ID = "MAP_REQUEST";
-    //public static final Object IMG_REQUEST_ID = new Object();
+    public static final int XML_REQUEST_ID = 1;
+    public static final int MAP_REQUEST_ID = 2;
+    public static final int IMG_REQUEST_ID = 3;
+    public static final int PULS_REQUEST_ID = 4;
+
+    // this stop imagees being fucked by operators
+    // http://benvallack.com/notebook/how-to-fix-poor-image-quality-compression-when-using-tmobile-web-n-walk-on-a-mac/
+    static final Hashtable headers = new Hashtable();
+    static {
+        headers.put("Cache-Control", "no-cache");
+        headers.put("Pragma", "no-cache");
+    }
 
     MapServerListener chooser;
+    List downloads = new Vector();
 
+    // we use google +1 to sort our list
+    String ratedlistUrl;
+    List<Map> ratedList;
+    java.util.Map<String, Integer> ratings = new Hashtable();
+
+    class ServerRequest extends Request {
+	public int type;
+    }
+    
     public MapServerClient(MapServerListener aThis) {
         super(4);
         chooser = aThis;
@@ -48,11 +71,11 @@ public class MapServerClient extends HTTPClient {
         }
     }
 
-    protected void onError(Request request, int responseCode, Hashtable headers, Exception ex) {
-
+    protected void onError(Request r, int responseCode, Hashtable headers, Exception ex) {
+	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.id == MAP_REQUEST_ID && getMapDownload(request.url).ignoreErrorInDownload(request.url)) {
+        if (request.type == MAP_REQUEST_ID && ((MapDownload)request.id).ignoreErrorInDownload(request.url)) {
             return;
         }
 
@@ -73,21 +96,21 @@ public class MapServerClient extends HTTPClient {
         // show error dialog to the user
         if (ch!=null) {
             String error = "error:"+(responseCode!=0?" "+responseCode:"")+(ex!=null?" "+ex:"");
-            if (request.id == XML_REQUEST_ID) {
+            if (request.type == XML_REQUEST_ID) {
                 ch.onXMLError(error);
             }
-            else if (request.id == MAP_REQUEST_ID) {
+            else if (request.type == MAP_REQUEST_ID) {
                 ch.onDownloadError(error);
             }
             // for images do not pop-up error
         }
     }
 
-    protected void onResult(Request request, int responseCode, Hashtable headers, InputStream is, long length) throws Exception {
-
+    protected void onResult(Request r, int responseCode, Hashtable headers, InputStream is, long length) throws Exception {
+	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.id == XML_REQUEST_ID) {
+        if (request.type == XML_REQUEST_ID) {
             XMLMapAccess access = new XMLMapAccess();
 
             // on android BufferedInputStream makes it much fast, on desktop java does not really make a difference
@@ -103,94 +126,128 @@ public class MapServerClient extends HTTPClient {
 //System.out.println("Got XML "+task);
 
             if (ch!=null) {
-                ch.gotResultXML(request.url,task.getMethod(),task.getObject());
+        	String method = task.getMethod();
+        	Object param = task.getObject();
+        	if ("categories".equals(method)) {
+                    if (param instanceof java.util.List) {
+                	ch.gotResultCategories( request.url, (java.util.List)param );
+                    }
+                }
+                else if ("maps".equals(method)) {
+                    if (param instanceof java.util.Map) {
+                        java.util.Map info = (java.util.Map)param;
+                        List<Map> list = (List)info.get("maps");
+                        if (request.params != null && "TOP_RATINGS".equals(request.params.get("sort"))) {
+                            ratedlistUrl = request.url;
+                            ratedList = list;
+                            gotNewRatingData();
+                            for (Map map : list) {
+                                final String fileUID = MapChooser.getFileUID( map.getMapUrl() );
+                                Integer rating = ratings.get(fileUID);
+                                if (rating == null) {
+                                    ServerRequest request1 = new ServerRequest();
+                                    request1.id = fileUID;
+                                    request1.url = GooglePlusOne.URL;
+                                    request1.type = PULS_REQUEST_ID;
+                                    request1.post = true;
+                                    request1.postData = GooglePlusOne.getRequest("http://maps.yura.net/maps?mapfile="+fileUID);
+                                    request1.headers = new Hashtable();
+                                    request1.headers.put("Content-Type:", "application/json");
+                                    makeRequest(request1);
+                                }
+                            }
+                        }
+                        else {
+                            //info.get("search");
+                            //info.get("author");
+                            //info.get("category");
+                            //info.get("offset");
+                            //info.get("total");
+                            ch.gotResultMaps(request.url, list);
+                        }
+                    }
+                }
             }
         }
-        else if (request.id == MAP_REQUEST_ID) {
-
-            getMapDownload(request.url).gotRes(request.url, is );
-
+        else if (request.type == MAP_REQUEST_ID) {
+            ((MapDownload)request.id).gotRes(request.url, is );
         }
-        else { // if (request.id == IMG_REQUEST_ID) {
-
+        else if (request.type == IMG_REQUEST_ID) {
             MapChooser.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length), ch );
         }
-        //else {
-        //    System.err.println("[MapServerClient] unknown id "+request.id);
-        //}
-    }
-
-    void makeRequestXML(String string,String a,String b) {
-        Hashtable params = null;
-        if (a!=null&&b!=null) {
-            params = new Hashtable();
-            params.put(a, b);
+        else if (request.type == PULS_REQUEST_ID) {
+            String fileUID = (String)request.id;
+            ratings.put(fileUID, GooglePlusOne.getCount(is));
+            logger.info("rating " + ratings.get(fileUID)+'\t'+fileUID);
+            gotNewRatingData();
         }
-        makeRequest( string , params, XML_REQUEST_ID);
+        else {
+            logger.warning("[MapServerClient] unknown type "+request.type);
+        }
     }
 
-    // this stop imagees being fucked by operators
-    // http://benvallack.com/notebook/how-to-fix-poor-image-quality-compression-when-using-tmobile-web-n-walk-on-a-mac/
-    static final Hashtable headers = new Hashtable();
-    static {
-        headers.put("Cache-Control", "no-cache");
-        headers.put("Pragma", "no-cache");
+    private void gotNewRatingData() {
+        // TODO this check assumes that maps are never removed from the list.
+	if (ratings.size() == ratedList.size()) {
+            Collections.sort(ratedList, new Comparator<Map>() {
+                @Override
+                public int compare(Map map0, Map map1) {
+                    String fileUID0 = MapChooser.getFileUID(map0.getMapUrl());
+                    String fileUID1 = MapChooser.getFileUID(map1.getMapUrl());
+                    int rating0 = ratings.get(fileUID0);
+                    int rating1 = ratings.get(fileUID1);
+                    if (rating0 != rating1) {
+                        return rating1 - rating0;
+                    }
+                    return Integer.parseInt(map0.getId()) - Integer.parseInt(map1.getId());
+                }
+            });
+            MapServerListener ch = this.chooser;
+            if (ch!=null) {
+                ch.gotResultMaps(ratedlistUrl, ratedList);
+            }
+        }
     }
-
-    void makeRequest(String url,Hashtable params,Object type) {
-
-            Request request = new Request();
+    
+    private void makeRequest(String url,Hashtable params,int type, Object key) {
+	    ServerRequest request = new ServerRequest();
+	    request.type = type;
             request.url = url;
             request.params = params;
-            request.id = type;
+            request.id = key;
             request.headers = headers;
-
-logger.info("Make Request: "+request);
-
+            logger.info("Make Request: "+request);
             // TODO, should be using RiskIO to do this get
             // as otherwise it will not work with lobby
             makeRequest(request);
-
     }
 
-    Vector downloads = new Vector();
+    public void makeRequestXML(String string, String key, String value) {
+        Hashtable params = null;
+        if (key != null && value != null) {
+            params = new Hashtable();
+            params.put(key, value);
+        }
+        makeRequest(string, params, XML_REQUEST_ID, null);
+    }
+
+    public void getImage(String url, Object key) {
+	makeRequest(url, null, IMG_REQUEST_ID, key);
+    }
 
     public void downloadMap(String fullMapUrl) {
-
         MapDownload download = new MapDownload(fullMapUrl);
-
-        downloads.addElement(download); // TODO thread safe??
+        downloads.add(download); // TODO thread safe??
     }
 
     public boolean isDownloading(String mapUID) {
         for (int c=0;c<downloads.size();c++) {
-            MapDownload download = (MapDownload)downloads.elementAt(c);
+            MapDownload download = (MapDownload)downloads.get(c);
             if ( download.mapUID.equals(mapUID) ) {
                 return true;
             }
         }
         return false;
-    }
-
-    MapDownload getMapDownload(final String url) {
-        for (int c=0;c<downloads.size();c++) {
-            MapDownload download = (MapDownload)downloads.elementAt(c);
-            if ( download.hasUrl(url) ) {
-                return download;
-            }
-        }
-        throw new IllegalArgumentException("no download for url "+url);
-    }
-
-    private static void saveFile(InputStream is,OutputStream out) throws IOException {
-
-        int COPY_BLOCK_SIZE=1024;
-
-        byte[] data = new byte[COPY_BLOCK_SIZE];
-        int i = 0;
-        while( ( i = is.read(data,0,COPY_BLOCK_SIZE ) ) != -1  ) {
-            out.write(data,0,i);
-        }
     }
 
 
@@ -225,7 +282,7 @@ logger.info("Make Request: "+request);
 
             urls.addElement(url);
 
-            makeRequest( url, null, MapServerClient.MAP_REQUEST_ID );
+            makeRequest(url, null, MapServerClient.MAP_REQUEST_ID, this);
         }
 
         boolean hasUrl(String url) {
@@ -241,7 +298,7 @@ logger.info("Make Request: "+request);
             }
 
             if (empty) {
-                downloads.removeElement(this);
+                downloads.remove(this);
 
                 try {
                     if (!error) {
@@ -339,7 +396,14 @@ logger.info("Make Request: "+request);
     }
 
 
-
+    private static void saveFile(InputStream is, OutputStream out) throws IOException {
+        int COPY_BLOCK_SIZE=1024;
+        byte[] data = new byte[COPY_BLOCK_SIZE];
+        int i = 0;
+        while( ( i = is.read(data,0,COPY_BLOCK_SIZE ) ) != -1  ) {
+            out.write(data,0,i);
+        }
+    }
 
     public static String getURL(String context, String path) {
         // as we downloading a file, we need to have the correct encoding! (Hello World -> Hello%20World)
@@ -360,5 +424,4 @@ logger.info("Make Request: "+request);
             throw new RuntimeException(ex);
         }
     }
-
 }

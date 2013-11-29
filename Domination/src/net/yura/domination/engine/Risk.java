@@ -2285,24 +2285,24 @@ RiskUtil.printStackTrace(e);
             return ai.getCommandFromType(type);
         }
 
-	//public void getHumanInput() { }
-
 	public String whoWon() {
-
-		String winner = System.getProperty("line.separator") +
-					RiskUtil.replaceAll(resb.getString("core.whowon.hehaswon"), "{0}", ((Player)game.getCurrentPlayer()).getName());
-
+		Player winner = getWinner();
+		String text = System.getProperty("line.separator") +
+			RiskUtil.replaceAll(resb.getString("core.whowon.hehaswon"), "{0}", winner.getName());
 		if ( game.getGameMode() == RiskGame.MODE_SECRET_MISSION ) {
 			//There mission was: {0}
-			winner=winner + System.getProperty("line.separator") +
-					RiskUtil.replaceAll(resb.getString( "core.whowon.mission"), "{0}", ((Mission)((Player)game.getCurrentPlayer()).getMission()).getDiscription());
+			text=text + System.getProperty("line.separator") +
+				RiskUtil.replaceAll(resb.getString( "core.whowon.mission"), "{0}", winner.getMission().getDiscription());
 		}
-
-		return winner;
-
+		return text;
 	}
 
-
+	public Player getWinner() {
+	    if (game.getState() == RiskGame.STATE_GAME_OVER) {
+		return game.getCurrentPlayer();
+	    }
+	    return null;
+	}
 
 	/** Shows helpful tips in each game state */
 	public void setHelp() {
