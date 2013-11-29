@@ -10,8 +10,10 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -25,6 +27,7 @@ import net.yura.mobile.io.HTTPClient;
 import net.yura.mobile.io.ServiceLink.Task;
 import net.yura.mobile.io.UTF8InputStreamReader;
 import net.yura.mobile.util.SystemUtil;
+import net.yura.mobile.util.Url;
 import net.yura.social.GooglePlusOne;
 
 /**
@@ -39,6 +42,8 @@ public class MapServerClient extends HTTPClient {
     public static final int IMG_REQUEST_ID = 3;
     public static final int PULS_REQUEST_ID = 4;
 
+    private static final String RATE_URL = "http://maps.yura.net/maps?mapfile=";
+
     // this stop imagees being fucked by operators
     // http://benvallack.com/notebook/how-to-fix-poor-image-quality-compression-when-using-tmobile-web-n-walk-on-a-mac/
     static final Hashtable headers = new Hashtable();
@@ -49,11 +54,6 @@ public class MapServerClient extends HTTPClient {
 
     MapServerListener chooser;
     List downloads = new Vector();
-
-    // we use google +1 to sort our list
-    String ratedlistUrl;
-    List<Map> ratedList;
-    java.util.Map<String, Integer> ratings = new Hashtable();
 
     class ServerRequest extends Request {
 	public int type;
@@ -137,25 +137,22 @@ public class MapServerClient extends HTTPClient {
                     if (param instanceof java.util.Map) {
                         java.util.Map info = (java.util.Map)param;
                         List<Map> list = (List)info.get("maps");
-                        if (request.params != null && "TOP_RATINGS".equals(request.params.get("sort"))) {
-                            ratedlistUrl = request.url;
-                            ratedList = list;
-                            gotNewRatingData();
+                        // check if needs to be sorted by rating.
+                        if (request.params != null && "TOP_RATINGS".equals(request.params.get("sort")) && list.size() > 0) {
+                            List<String> urls = new ArrayList(list.size());
                             for (Map map : list) {
-                                final String fileUID = MapChooser.getFileUID( map.getMapUrl() );
-                                Integer rating = ratings.get(fileUID);
-                                if (rating == null) {
-                                    ServerRequest request1 = new ServerRequest();
-                                    request1.id = fileUID;
-                                    request1.url = GooglePlusOne.URL;
-                                    request1.type = PULS_REQUEST_ID;
-                                    request1.post = true;
-                                    request1.postData = GooglePlusOne.getRequest("http://maps.yura.net/maps?mapfile="+fileUID);
-                                    request1.headers = new Hashtable();
-                                    request1.headers.put("Content-Type:", "application/json");
-                                    makeRequest(request1);
-                                }
+                                String fileUID = MapChooser.getFileUID( map.getMapUrl() );
+                                urls.add(RATE_URL+Url.encode(fileUID));
                             }
+                            ServerRequest request1 = new ServerRequest();
+                            request1.id = new Object[] {request.url, list};
+                            request1.url = GooglePlusOne.URL;
+                            request1.type = PULS_REQUEST_ID;
+                            request1.post = true;
+                            request1.postData = GooglePlusOne.getRequest(urls);
+                            request1.headers = new Hashtable();
+                            request1.headers.put("Content-Type:", "application/json");
+                            makeRequest(request1);
                         }
                         else {
                             //info.get("search");
@@ -176,36 +173,32 @@ public class MapServerClient extends HTTPClient {
             MapChooser.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length), ch );
         }
         else if (request.type == PULS_REQUEST_ID) {
-            String fileUID = (String)request.id;
-            ratings.put(fileUID, GooglePlusOne.getCount(is));
-            logger.info("rating " + ratings.get(fileUID)+'\t'+fileUID);
-            gotNewRatingData();
-        }
-        else {
-            logger.warning("[MapServerClient] unknown type "+request.type);
-        }
-    }
-
-    private void gotNewRatingData() {
-        // TODO this check assumes that maps are never removed from the list.
-	if (ratings.size() == ratedList.size()) {
+            Object[] tmp = (Object[])request.id;
+            String ratedlistUrl = (String)tmp[0];
+            List<Map> ratedList = (List<Map>)tmp[1];
+            java.util.Map<String,Integer> urlRatings = GooglePlusOne.getCount(is);
+            final java.util.Map<String,Integer> ratings = new HashMap();
+            for (java.util.Map.Entry<String,Integer> entry: urlRatings.entrySet()) {
+                String fileUID = Url.decode(entry.getKey().substring(RATE_URL.length()));
+                ratings.put(fileUID, entry.getValue());
+            }
             Collections.sort(ratedList, new Comparator<Map>() {
                 @Override
                 public int compare(Map map0, Map map1) {
-                    String fileUID0 = MapChooser.getFileUID(map0.getMapUrl());
-                    String fileUID1 = MapChooser.getFileUID(map1.getMapUrl());
-                    int rating0 = ratings.get(fileUID0);
-                    int rating1 = ratings.get(fileUID1);
+                    int rating0 = ratings.get(MapChooser.getFileUID(map0.getMapUrl()));
+                    int rating1 = ratings.get(MapChooser.getFileUID(map1.getMapUrl()));
                     if (rating0 != rating1) {
                         return rating1 - rating0;
                     }
                     return Integer.parseInt(map0.getId()) - Integer.parseInt(map1.getId());
                 }
             });
-            MapServerListener ch = this.chooser;
             if (ch!=null) {
                 ch.gotResultMaps(ratedlistUrl, ratedList);
             }
+        }
+        else {
+            logger.warning("[MapServerClient] unknown type "+request.type);
         }
     }
     
