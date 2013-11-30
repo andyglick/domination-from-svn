@@ -1,5 +1,6 @@
 package net.yura.domination.android;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -112,7 +113,13 @@ public class GamePreferenceActivity extends PreferenceActivity {
     }
 
     private static void setSummary(ListPreference prefs,String value) {
-        prefs.setSummary( prefs.getEntries()[prefs.findIndexOfValue(value)] );
+	int index = prefs.findIndexOfValue(value);
+	if (index >= 0) {
+	    prefs.setSummary( prefs.getEntries()[index] );
+	}
+	else {
+	    System.err.println("value "+value+" not found in "+Arrays.asList(prefs.getEntryValues()));
+	}
     }
 
     private static void scheduleRestart() {
