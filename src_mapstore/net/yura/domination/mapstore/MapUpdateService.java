@@ -73,7 +73,10 @@ public class MapUpdateService extends Observable {
                     //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
                 }
             }
-            // else if 0 then we did not find it, or if more then 1 then some error has happened 
+            else if (theMaps.size() > 1) {
+                System.err.println("found more then 1 results for "+uid);
+            }
+            // else if 0 then we did not find it.
         }
     }
     
