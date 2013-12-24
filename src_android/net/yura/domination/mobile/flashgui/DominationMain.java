@@ -58,6 +58,8 @@ public class DominationMain extends Midlet {
 	void unlockAchievement(String id);
 	boolean isSignedIn();
 	void showAchievements();
+	void startGameGooglePlay(net.yura.lobby.model.Game game);
+	void setLobbyUsername(String username);
     }
 
     public DominationMain() {

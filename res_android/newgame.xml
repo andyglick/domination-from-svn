@@ -30,7 +30,8 @@
         <checkbox action="italianlike" group="CardType" i18n="true" text="newgame.cardmode.italianlike" width="10"/>
     </panel>
     <panel colspan="2" name="Timeout" visible="false">
-        <label i18n="true" text="newgame.label.timeout" weightx="1"/>
+        <checkbox text="newgame.private" i18n="true" name="private" selected="false" visible="false"/>
+        <label i18n="true" text="newgame.label.timeout" weightx="1" alignment="right"/>
         <combobox selected="3" editable="false" name="TimeoutValue">
             <choice i18n="true" text="newgame.timeout.10sec" name="10"/>
             <choice i18n="true" text="newgame.timeout.20sec" name="20"/>

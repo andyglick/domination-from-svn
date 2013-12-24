@@ -75,7 +75,7 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
         return null;
     }
     public String getName() {
-        return resb.getString("mainmenu.online");
+        return resb.getString("swing.tab.online");
     }
 
 

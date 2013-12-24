@@ -31,7 +31,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
 
-    void openLobby() {
+    public void openLobby() {
     	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
                 show("setup");
@@ -43,6 +43,13 @@ public class MiniFlashRiskAdapter implements RiskListener {
             public String getAppVersion() {
                 return DominationMain.version;
             }
+            @Override
+            public void connected(String username) {
+                GooglePlayGameServices play = DominationMain.getGooglePlayGameServices();
+                if (play != null) {
+                    play.setLobbyUsername(username);
+                }
+            }
         } );
 
         Frame mapFrame = new Frame( lobby.getTitle() );
@@ -51,8 +58,15 @@ public class MiniFlashRiskAdapter implements RiskListener {
         mapFrame.setVisible(true);
     }
 
-    void createLobbyGame(String name,String options,int numPlayers,int timeout) {
-	lobby.createNewGame( new net.yura.lobby.model.Game(name, options, numPlayers,timeout) );
+    void createLobbyGame(String name,String options,int numPlayers,int timeout, boolean privateGame) {
+        net.yura.lobby.model.Game game = new net.yura.lobby.model.Game(name, options, numPlayers,timeout);
+        if (privateGame) {
+            game.getPlayers().add(new net.yura.lobby.model.Player(lobby.whoAmI(),0));
+            DominationMain.getGooglePlayGameServices().startGameGooglePlay(game);
+        }
+        else {
+            lobby.createNewGame(game);
+        }
     }
     boolean shouldShowClosePrompt() {
         return myRisk.getLocalGame() || amOnlinePlayer();
