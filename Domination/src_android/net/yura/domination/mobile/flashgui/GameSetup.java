@@ -53,7 +53,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         myrisk = risk;
         this.controller = controller;
         setMaximum(true);
-        
+
         setBorder(GameActivity.marble);
         setBackground( 0x00FFFFFF );
 
@@ -87,12 +87,12 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                 Button recycle = (Button)newgame.find("recycle");
 
                 int numOfPlayers = getNoOfPlayers();
-                
+
                 if (numOfPlayers >= 2 && numOfPlayers <= RiskGame.MAX_PLAYERS ) {
-                
+
                     if (localgame) {
                         RiskUtil.savePlayers(myrisk, getClass());
-                        
+
                         myrisk.parser("startgame "+
                                 GameType.getSelection().getActionCommand()+" "+
                                 CardType.getSelection().getActionCommand()+
@@ -113,11 +113,12 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                                     	    recycle.isSelected(),
                                     	    lobbyMapName),
                         	    getNoPlayers(Player.PLAYER_HUMAN),
-                                    Integer.parseInt( ((Option)((ComboBox)newgame.find("TimeoutValue")).getSelectedItem()).getKey() )
+                                    Integer.parseInt( ((Option)((ComboBox)newgame.find("TimeoutValue")).getSelectedItem()).getKey() ),
+                                    ((Button)newgame.find("private")).isSelected()
                             );
 
                         controller.openMainMenu(); // close the game setup screen
-                    }   
+                    }
                 }
                 else {
                         OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.numberofplayers") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
@@ -234,7 +235,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
     // ================================================ GAME SETUP
     public void openNewGame(boolean islocalgame,String[] allowedMaps,String gameName) {
-        
+
         localgame = islocalgame;
         this.allowedMaps = allowedMaps;
 
@@ -245,12 +246,13 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             tc.setText( gameName );
             tc.setVisible(true);
             newgame.find("Timeout").setVisible(true);
+            newgame.find("private").setVisible(DominationMain.getGooglePlayGameServices() != null);
         }
-        
+
         MapUpdateService.getInstance().addObserver( (BadgeButton)newgame.find("MapImg") );
-        
+
         autoplaceall = (Button)newgame.find("autoplaceall");
-        
+
         // kind of a hack
         Component startButton = newgame.find("startButton");
         Component cancelButton = newgame.find("cancelButton");
@@ -277,8 +279,8 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         }
 
 
-        
-        
+
+
 
         setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
         //resetplayers.setVisible(localgame?true:false);
@@ -292,12 +294,12 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        
+
         if (!b && newgame!=null) {
             MapUpdateService.getInstance().deleteObserver( (BadgeButton)newgame.find("MapImg") );
         }
     }
-    
+
     private void addChangeListener(String name) {
         Component comp = newgame.find(name);
         if (comp!=null && comp instanceof Spinner) {

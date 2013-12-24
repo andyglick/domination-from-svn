@@ -26,6 +26,7 @@ public interface MiniLobbyGame {
     public void objectForGame(Object object);
     public void stringForGame(String message);
 
+    void connected(String username);
     void disconnected();
 
     public String getAppName();

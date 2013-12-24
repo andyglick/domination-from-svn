@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.yura.domination"
-      android:versionCode="53"
-      android:versionName="53"
+      android:versionCode="54"
+      android:versionName="54"
       android:installLocation="auto">
 
     <!-- android:targetSdkVersion 11 to hide the legacy menu button on tablets -->
@@ -39,7 +39,6 @@
 		         android:label="@string/app_name"
 		         android:theme="@style/AndroidME.Light.DarkDialog"
 		         android:hardwareAccelerated="true"
-		         android:debuggable="true"
         >
 
 		<meta-data android:name="com.google.android.gms.games.APP_ID"

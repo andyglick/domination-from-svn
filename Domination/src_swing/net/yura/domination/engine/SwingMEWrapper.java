@@ -87,6 +87,9 @@ public class SwingMEWrapper {
             public String getAppVersion() {
                 return Risk.RISK_VERSION;
             }
+            public void connected(String username) {
+                // nothing to do here really
+            }
         } );
     }
 
