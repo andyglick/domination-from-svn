@@ -53,7 +53,6 @@ public class ServerRisk extends Risk {
 	public synchronized void setKillFlag() {
 		killflag = true;
                 paused = false;
-		inbox.add(myAddress+" closegame");
 		notify();
 	}
 
@@ -77,15 +76,16 @@ public class ServerRisk extends Risk {
 	public void run() {
 		String message;
 
-		while (!killflag) {
+                loop: while (!killflag) {
 
 			synchronized(this) {
 
 				// dont go on if this is in catch all and dont run mode!!!!!
 				while ( inbox.isEmpty() || (paused && game.getState()!=RiskGame.STATE_NEW_GAME ) ) {
 
-					waiting=true;
+                                        if (killflag) break loop;
 
+                                        waiting=true;
 					try { this.wait(); }
 					catch(InterruptedException e){}
 				}
