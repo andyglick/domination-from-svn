@@ -126,6 +126,10 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                     @Override
                     public void onRoomCreated(int statusCode, Room room) {
                         super.onRoomCreated(statusCode, room);
+                        if (statusCode != GamesClient.STATUS_OK) {
+                            logger.warning("onRoomCreated failed. "+statusCode);
+                            return;
+                        }
                         gameRoom = room;
                         logger.info("Starting waiting room activity.");
                         startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_CREATOR_WAITING_ROOM);
@@ -307,8 +311,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
                     @Override
                     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-                        String message = new String(realTimeMessage.getMessageData());
-                        logger.info("onRealTimeMessageReceived: " + message);
+                        // this is the message from the owner of the game to the person joining.
+                        // it is mandatory to listen for this, but this will never actually happen.
+                        logger.info("onRealTimeMessageReceived: " + realTimeMessage);
                     }
                 })
                 .build());
