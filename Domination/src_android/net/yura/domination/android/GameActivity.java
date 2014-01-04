@@ -36,7 +36,6 @@ import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.lobby.client.ProtoAccess;
-import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.model.Message;
 import net.yura.lobby.model.Player;
 
@@ -117,7 +116,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     private void handlePlayersSelected(int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
-            logger.info("Player selection failed.");
+            logger.info("Player selection failed. "+resultCode);
             return;
         }
         ArrayList<String> invitees = data.getStringArrayListExtra(GamesClient.EXTRA_PLAYERS);
@@ -161,6 +160,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 // TODO can the user start with less then the max number?
                 // TODO can we be not inside lobby???
                 // TODO can we be not logged in?
+                // in case we decided to start with less then the max number of human players
+                // we need to update the max number to the current number, so no one else can join
+                lobbyGame.setMaxPlayers(lobbyGame.getNumOfPlayers());
                 getUi().lobby.createNewGame(lobbyGame);
             }
         }
@@ -291,6 +293,10 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                     @Override
                     public void onJoinedRoom(int statusCode, Room room) {
                         super.onJoinedRoom(statusCode, room);
+                        if (statusCode != GamesClient.STATUS_OK) {
+                            logger.warning("onJoinedRoom failed. "+statusCode);
+                            return;
+                        }
                         gameRoom = room;
                         logger.info("Starting waiting room activity as joiner.");
                         startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_JOINER_WAITING_ROOM);
@@ -376,7 +382,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             }
 
             startActivityForResult(mHelper.getGamesClient().getSelectPlayersIntent(
-                    GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers()),
+                    GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1),
                     RC_SELECT_PLAYERS);
         }
         else {

@@ -262,10 +262,6 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
 
-// temp hack while we do not have a average AI on the server
-((Spinner)newgame.find("averageAI")).setValue( 0 );
-((Component)newgame.find("averageAI")).setVisible(localgame);
-((Component)newgame.find("averageAIlabel")).setVisible(localgame);
 
         for (int c=0;c<compsNames.length;c++) {
             addChangeListener(compsNames[c]);

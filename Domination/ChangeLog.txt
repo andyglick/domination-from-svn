@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		53
+	Android		54
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 
+	Android 54 Private games through Google Play Game Services added.
 	Android 53 Capital achievements only given when game actually won - Amanda Lunn
 		   sort by rating actually uses g+ +1 count now
 	Android 52 italian achievements added
