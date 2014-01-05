@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeReliableMessageSentListener;
@@ -135,7 +136,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                         startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_CREATOR_WAITING_ROOM);
                     }
                 })
-                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener())
+                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener(){
+                    @Override
+                    public void onRoomUpdated(Room room) {
+                        super.onRoomUpdated(room);
+                        gameRoom = room;
+                    }
+                })
                 .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
                     @Override
                     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
@@ -159,8 +166,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             String name = (String)message.getParam();
             lobbyGame.getPlayers().add(new Player(name, 0));
 
-            logger.info("new player joined: "+name+" "+lobbyGame.getPlayers().size()+"/"+gameRoom.getParticipantIds().size());
-            if (lobbyGame.getPlayers().size() == gameRoom.getParticipantIds().size()) {
+            int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
+            logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
+            if (lobbyGame.getNumOfPlayers() == joined) {
                 // TODO can the user start with less then the max number?
                 // TODO can we be not inside lobby???
                 // TODO can we be not logged in?
@@ -170,6 +178,16 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 getUi().lobby.createNewGame(lobbyGame);
             }
         }
+    }
+
+    private int getParticipantStatusCount(int status) {
+        int count=0;
+        for (String id: gameRoom.getParticipantIds()) {
+            if (gameRoom.getParticipantStatus(id) == status) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void handleReturnFromWaitingRoom(int resultCode, boolean isCreator) {
