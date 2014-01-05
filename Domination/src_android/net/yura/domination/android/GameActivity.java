@@ -287,7 +287,11 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                         acceptInvitation(invitation.getInvitationId());
                     }
                 })
-                .setNegativeButton(reject, null)
+                .setNegativeButton(reject, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mHelper.getGamesClient().declineRoomInvitation(invitation.getInvitationId());
+                    }
+                })
                 .create();
     }
 
