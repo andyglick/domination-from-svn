@@ -7,6 +7,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mobile.MiniUtil;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.FileChooser;
@@ -61,17 +62,24 @@ public class MainMenu extends Frame implements ActionListener {
         moveToBack();
     }
 
-    public void setPlayGamesSingedIn(boolean in) {
-	if (mainMenu!=null) {
-            Button showAchievements = (Button)mainMenu.find("showAchievements");
-	    Button signIn = (Button)mainMenu.find("signIn");
-	    Button signOut = (Button)mainMenu.find("signOut");
-            if (showAchievements != null) { showAchievements.setVisible(true); }
-            if (signIn != null) { signIn.setVisible(!in); }
-	    if (signOut != null) { signOut.setVisible(in); }
-	    mainMenu.getRoot().revalidate();
-	    mainMenu.getRoot().repaint();
-	}
+    public void setPlayGamesSingedIn(final boolean in) {
+        DesktopPane.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // as this can make changes to the currently visible UI, we need to run it on the UI thread
+                XULLoader mm = mainMenu;
+                if (mm!=null) {
+                    Button showAchievements = (Button)mm.find("showAchievements");
+                    Button signIn = (Button)mm.find("signIn");
+                    Button signOut = (Button)mm.find("signOut");
+                    if (showAchievements != null) { showAchievements.setVisible(true); }
+                    if (signIn != null) { signIn.setVisible(!in); }
+                    if (signOut != null) { signOut.setVisible(in); }
+                    mm.getRoot().revalidate();
+                    mm.getRoot().repaint();
+        	}
+            }
+        });
     }
 
     private void moveToBack() {
