@@ -12,7 +12,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,6 +40,9 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
+import net.yura.domination.mapstore.Map;
+import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.ui.flashgui.MainMenu;
 import net.yura.mobile.util.Url;
 
@@ -97,6 +102,13 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		changeaiwait.setActionCommand("aiwait");
 		changeaiwait.addActionListener(this);
 		toolbar.add(changeaiwait);
+
+                toolbar.addSeparator();
+
+		JButton mapServerNameChack = new JButton("Check MapServer");
+		mapServerNameChack.setActionCommand("checkMapServer");
+		mapServerNameChack.addActionListener(this);
+		toolbar.add(mapServerNameChack);
 
 		countriesModel = new AbstractTableModel() {
 
@@ -487,7 +499,9 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 	public void actionPerformed(ActionEvent a) {
 
-		if (a.getActionCommand().equals("refresh")) {
+                String command = a.getActionCommand();
+
+		if ("refresh".equals(command)) {
 
 			countriesModel.fireTableDataChanged();
 			continentsModel.fireTableDataChanged();
@@ -499,13 +513,10 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			repaint();
 		}
-		else if (a.getActionCommand().equals("flash")) {
-
+		else if ("flash".equals(command)) {
 			MainMenu.newMainMenuFrame( myrisk, JFrame.DISPOSE_ON_CLOSE );
-
 		}
-
-		else if (a.getActionCommand().equals("aiwait")) {
+		else if ("aiwait".equals(command)) {
 
 			Object[] message = new Object[2];
 			message[0] = new JLabel("AI wait time (in milliseconds):");
@@ -528,12 +539,10 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			);
 
 			if (result == JOptionPane.OK_OPTION ) {
-
 				AIManager.setWait( ((Integer)((JSpinner)message[1]).getValue()).intValue() );
 			}
-
 		}
-		else if (a.getActionCommand().equals("allcards")) {
+		else if ("allcards".equals(command)) {
 
 			if (myrisk.getGame()!=null && myrisk.getGame().getState()!=RiskGame.STATE_NEW_GAME && myrisk.getGame().getCards()!=null) {
 
@@ -553,12 +562,31 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 				cardsDialog.setVisible(true);
 			}
 		}
+                else if ("checkMapServer".equals(command)) {
+                    // get all maps
+                    List<Map> maps = MapUpdateService.getMaps(MapChooser.MAP_PAGE,Collections.EMPTY_LIST);
+                    Set<String> ids = new HashSet();
+                    Set<String> errors = new HashSet();
+                    for (Map map: maps) {
+                        String fileUID = RiskUtil.replaceAll(MapChooser.getFileUID( map.getMapUrl() )," ","").toLowerCase();
+                        if (ids.contains(fileUID)) {
+                            errors.add(fileUID);
+                        }
+                        else {
+                            ids.add(fileUID);
+                        }
+                    }
+
+                    if (errors.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "No errors found.");
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(this, "Error found with map: "+errors);
+                    }
+                }
 		else {
-
-			throw new RuntimeException("TestTab: unknown command found: "+a.getActionCommand());
-
+			throw new RuntimeException("TestTab: unknown command found: "+command);
 		}
-
 	}
 
 	public JToolBar getToolBar() {
