@@ -107,7 +107,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
             }
         });
         inlinePrefCat.addPreference(lang);
-        setSummary(lang,lang.getValue());
+        setSummary(lang, TranslationBundle.getBundle().getLocale().toString());
 
         return root;
     }
@@ -118,6 +118,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
 	    prefs.setSummary( prefs.getEntries()[index] );
 	}
 	else {
+	    prefs.setSummary(value);
 	    System.err.println("value "+value+" not found in "+Arrays.asList(prefs.getEntryValues()));
 	}
     }
