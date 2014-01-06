@@ -15,16 +15,16 @@ public class Cache {
 
     // as this class is only used on j2se and android, we should use proper logging
     static final Logger logger = Logger.getLogger(Cache.class.getName());
-    
+
     public static final boolean DEBUG = false;
     File cacheDir;
-    
+
     public Cache(String appName) {
 
         String tmpDir = System.getProperty("java.io.tmpdir");
-        
+
         cacheDir = new File(new File(tmpDir),appName+".cache");
-        
+
         if (!cacheDir.isDirectory() && !cacheDir.mkdirs()) {
             throw new RuntimeException("can not make cache dir: "+cacheDir);
         }
@@ -32,9 +32,9 @@ public class Cache {
         if (DEBUG) {
             logger.log(Level.INFO, "[yura.net Cache] starting {0}", cacheDir);
         }
-        
+
     }
-    
+
     private File getFileName(String uid) {
         try {
             String fileName = URLEncoder.encode(uid, "UTF-8");
@@ -43,9 +43,8 @@ public class Cache {
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        
     }
-    
+
     public void put(String key, byte[] value) {
         File file = getFileName(key);
         if (file.exists()) {
@@ -68,11 +67,18 @@ public class Cache {
                 if (exists) {
                     deleted = file.delete();
                 }
-                logger.log(Level.WARNING, "failed to save data to file: "+file+" exists="+exists+" deleted="+deleted+" key: "+key+" in dir "+cacheDir+" exists="+cacheDir.exists(), ex);
+                logger.log(Level.WARNING, 
+                        "failed to save data to file: "+file+
+                        " exists="+exists+
+                        " deleted="+deleted+
+                        " key: "+key+
+                        " in dir "+cacheDir+
+                        " exists="+cacheDir.exists()+
+                        " is dir"+cacheDir.isDirectory(), ex);
             }
         }
     }
-    
+
     public InputStream get(String key) {
         File file = getFileName(key);
         if (file.exists()) {
@@ -80,7 +86,7 @@ public class Cache {
                 if (DEBUG) {
                     logger.log(Level.INFO, "[yura.net Cache] getting from cache: {0}", key);
                 }
-                
+
                 file.setLastModified(System.currentTimeMillis());
                 return new FileInputStream(file);
             }
