@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
@@ -19,7 +18,6 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeReliableMessage
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.example.games.basegameutils.GameHelper;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -27,7 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
+import android.widget.Toast;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
 import net.yura.android.AndroidPreferences;
@@ -128,7 +126,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                     public void onRoomCreated(int statusCode, Room room) {
                         super.onRoomCreated(statusCode, room);
                         if (statusCode != GamesClient.STATUS_OK) {
-                            logger.warning("onRoomCreated failed. "+statusCode);
+                            String error = "onRoomCreated failed. "+statusCode+" "+getErrorString(statusCode);
+                            logger.warning(error);
+                            toast(error);
                             return;
                         }
                         gameRoom = room;
@@ -320,7 +320,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                     public void onJoinedRoom(int statusCode, Room room) {
                         super.onJoinedRoom(statusCode, room);
                         if (statusCode != GamesClient.STATUS_OK) {
-                            logger.warning("onJoinedRoom failed. "+statusCode);
+                            String error = "onJoinedRoom failed. "+statusCode+" "+getErrorString(statusCode);
+                            logger.warning(error);
+                            toast(error);
                             return;
                         }
                         gameRoom = room;
@@ -339,6 +341,38 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                     }
                 })
                 .build());
+    }
+
+    static String getErrorString(int statusCode) {
+        switch(statusCode) {
+            case GamesClient.STATUS_OK: return "STATUS_OK"; // 0
+            case GamesClient.STATUS_INTERNAL_ERROR: return "STATUS_INTERNAL_ERROR"; // 1;
+            case GamesClient.STATUS_CLIENT_RECONNECT_REQUIRED: return "STATUS_CLIENT_RECONNECT_REQUIRED"; // 2;
+            case GamesClient.STATUS_NETWORK_ERROR_STALE_DATA: return "STATUS_NETWORK_ERROR_STALE_DATA"; // 3;
+            case GamesClient.STATUS_NETWORK_ERROR_NO_DATA: return "STATUS_NETWORK_ERROR_NO_DATA"; // 4;
+            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_DEFERRED: return "STATUS_NETWORK_ERROR_OPERATION_DEFERRED"; // 5;
+            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_FAILED: return "STATUS_NETWORK_ERROR_OPERATION_FAILED"; // 6;
+            case GamesClient.STATUS_LICENSE_CHECK_FAILED: return "STATUS_LICENSE_CHECK_FAILED"; // 7;
+            case 8: return "STATUS_APP_MISCONFIGURED";
+            case GamesClient.STATUS_ACHIEVEMENT_UNLOCK_FAILURE: return "STATUS_ACHIEVEMENT_UNLOCK_FAILURE"; // 3000;
+            case GamesClient.STATUS_ACHIEVEMENT_UNKNOWN: return "STATUS_ACHIEVEMENT_UNKNOWN"; // 3001;
+            case GamesClient.STATUS_ACHIEVEMENT_NOT_INCREMENTAL: return "STATUS_ACHIEVEMENT_NOT_INCREMENTAL"; // 3002;
+            case GamesClient.STATUS_ACHIEVEMENT_UNLOCKED: return "STATUS_ACHIEVEMENT_UNLOCKED"; // 3003;
+            case GamesClient.STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED: return "STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED"; // 6000;
+            case GamesClient.STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER: return "STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER"; // 6001;
+            case GamesClient.STATUS_REAL_TIME_CONNECTION_FAILED: return "STATUS_REAL_TIME_CONNECTION_FAILED"; // 7000;
+            case GamesClient.STATUS_REAL_TIME_MESSAGE_SEND_FAILED: return "STATUS_REAL_TIME_MESSAGE_SEND_FAILED"; // 7001;
+            case GamesClient.STATUS_INVALID_REAL_TIME_ROOM_ID: return "STATUS_INVALID_REAL_TIME_ROOM_ID"; // 7002;
+            case GamesClient.STATUS_PARTICIPANT_NOT_CONNECTED: return "STATUS_PARTICIPANT_NOT_CONNECTED"; // 7003;
+            case GamesClient.STATUS_REAL_TIME_ROOM_NOT_JOINED: return "STATUS_REAL_TIME_ROOM_NOT_JOINED"; // 7004;
+            case GamesClient.STATUS_REAL_TIME_INACTIVE_ROOM: return "STATUS_REAL_TIME_INACTIVE_ROOM"; // 7005;
+            case GamesClient.STATUS_REAL_TIME_MESSAGE_FAILED: return "STATUS_REAL_TIME_MESSAGE_FAILED"; // -1;
+            default: return "unknown statusCode "+statusCode;
+        }
+    }
+
+    void toast(String text) {
+    	Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
     @Override
