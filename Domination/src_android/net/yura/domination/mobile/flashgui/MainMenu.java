@@ -75,8 +75,9 @@ public class MainMenu extends Frame implements ActionListener {
                     if (showAchievements != null) { showAchievements.setVisible(true); }
                     if (signIn != null) { signIn.setVisible(!in); }
                     if (signOut != null) { signOut.setVisible(in); }
-                    mm.getRoot().revalidate();
-                    mm.getRoot().repaint();
+                    Window window = mm.getRoot().getWindow();
+                    window.revalidate();
+                    window.repaint();
         	}
             }
         });
