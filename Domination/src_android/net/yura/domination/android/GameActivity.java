@@ -5,12 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.InvitationBuffer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.multiplayer.OnInvitationsLoadedListener;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
@@ -36,7 +40,6 @@ import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.lobby.client.ProtoAccess;
 import net.yura.lobby.model.Message;
-import net.yura.lobby.model.Player;
 
 public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
 
@@ -164,7 +167,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         logger.info("Room message received: " + message);
         if (ProtoAccess.REQUEST_JOIN_GAME.equals(message.getCommand())) {
             String name = (String)message.getParam();
-            lobbyGame.getPlayers().add(new Player(name, 0));
+            lobbyGame.getPlayers().add(new net.yura.lobby.model.Player(name, 0));
 
             int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
             logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
@@ -281,6 +284,21 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         if (mHelper.getInvitationId() != null) {
             acceptInvitation(mHelper.getInvitationId());
         }
+        else {
+            // there is a bug in GooglePlayGameServicesFroyo that mHelper.getInvitationId() returns null
+            // even when there is a invitation, so we use this method instead to get it.
+            mHelper.getGamesClient().loadInvitations(new OnInvitationsLoadedListener() {
+                @Override
+                public void onInvitationsLoaded(int statusCode, InvitationBuffer buffer) {
+                    logger.info("onInvitationsLoaded: "+statusCode+" "+buffer.getCount()+" "+buffer);
+                    for (Invitation invitation : buffer) {
+                        logger.info("onInvitationsLoaded invitation: "+getCurrentPlayerState(invitation)+" "+invitation);
+                        // TODO this is not good enough, as maybe we have already accepted the invitation.
+                        createAcceptDialog(invitation).show();
+                    }
+                }
+            });
+        }
         mHelper.getGamesClient().registerInvitationListener(new OnInvitationReceivedListener() {
             @Override
             public void onInvitationReceived(final Invitation invitation) {
@@ -288,6 +306,17 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 createAcceptDialog(invitation).show();
             }
         });
+    }
+
+    private int getCurrentPlayerState(Invitation invitation) {
+        List<Participant> participants = invitation.getParticipants();
+        for (Participant participant : participants) {
+            Player player = participant.getPlayer();
+            if (player.getPlayerId().equals(mHelper.getGamesClient().getCurrentPlayerId())) {
+                return participant.getStatus();
+            }
+        }
+        throw new RuntimeException("me not found");
     }
 
     private AlertDialog createAcceptDialog(final Invitation invitation) {
