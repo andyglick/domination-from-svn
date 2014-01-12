@@ -28,6 +28,7 @@ public interface MiniLobbyGame {
 
     void connected(String username);
     void disconnected();
+    void joinPrivateGame();
 
     public String getAppName();
     public String getAppVersion();

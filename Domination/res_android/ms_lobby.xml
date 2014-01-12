@@ -9,9 +9,10 @@
             <choice name="running" text="Running Games"/>
         </combobox>
     </panel>
-    <panel scrollable="true" weighty="1">
+    <panel scrollable="true" weighty="1" columns="1">
         <label alignment="center" i18n="true" name="Loading" property="valign=center" text="mapchooser.loading" visible="false" weightx="1" weighty="1"/>
         <label alignment="center" i18n="true" name="NoMatches" property="valign=center" text="mapchooser.no-matches" visible="false" weightx="1" weighty="1"/>
+        <button name="joinPrivate" action="joinPrivate" text="lobby.joinPrivateGame" i18n="true" weightx="1" visible="false"/>
         <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
         <panel columns="1" left="5" name="Error" right="5" visible="false" weightx="1" weighty="1">
             <label weighty="1"/>

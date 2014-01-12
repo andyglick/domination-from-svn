@@ -33,13 +33,16 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     public void openLobby() {
     	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
+            @Override
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
                 show("setup");
                 gameSetup.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
             }
+            @Override
             public String getAppName() {
                 return "AndroidDomination";
             }
+            @Override
             public String getAppVersion() {
                 return DominationMain.version;
             }
@@ -50,7 +53,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
                     play.setLobbyUsername(username);
                 }
             }
+            @Override
+            public void joinPrivateGame() {
+                DominationMain.getGooglePlayGameServices().beginUserInitiatedSignIn();
+            };
         } );
+        playGamesStateChanged();
 
         Frame mapFrame = new Frame( lobby.getTitle() );
         mapFrame.setContentPane( lobby.getRoot() );
@@ -138,8 +146,13 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
     public void playGamesStateChanged() {
 	GooglePlayGameServices nlc = DominationMain.getGooglePlayGameServices();
-	if (mainmenu != null && nlc != null) {
-	    mainmenu.setPlayGamesSingedIn(nlc.isSignedIn());
+	if (nlc != null) {
+            if (mainmenu != null) {
+                mainmenu.setPlayGamesSingedIn(nlc.isSignedIn());
+            }
+            if (lobby != null) {
+                lobby.setPlayGamesSingedIn(nlc.isSignedIn());
+            }
 	}
     }
 

@@ -93,6 +93,8 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         myrisk.disconnected();
     }
 
+    public void joinPrivateGame() {
+    }
 
 
 
