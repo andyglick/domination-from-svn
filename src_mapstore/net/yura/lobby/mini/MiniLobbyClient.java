@@ -92,6 +92,16 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         mycom.connect(LOBBY_SERVER, 1964);
     }
 
+    public void setPlayGamesSingedIn(boolean signedIn) {
+        Button joinPrivate = (Button)loader.find("joinPrivate");
+        if (joinPrivate != null) {
+            joinPrivate.setVisible(!signedIn);
+            Panel root = getRoot();
+            root.revalidate();
+            root.repaint();
+        }
+    }
+
     public void removeBackButton() {
         Button button = (Button)loader.find("BackButton");
         button.setMnemonic(0);
@@ -221,6 +231,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         else if ("register".equals(actionCommand)) {
             // TODO
         }
+        else if ("joinPrivate".equals(actionCommand)) {
+            game.joinPrivateGame();
+        }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
@@ -229,7 +242,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void sendGameMessage(String messagefromgui) {
         mycom.sendGameMessage(openGameId,messagefromgui);
     }
-
 
     public void closeGame() {
         mycom.closeGame(openGameId);
