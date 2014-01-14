@@ -172,7 +172,6 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
             logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
             if (lobbyGame.getNumOfPlayers() == joined) {
-                // TODO can the user start with less then the max number?
                 // TODO can we be not inside lobby???
                 // TODO can we be not logged in?
                 // in case we decided to start with less then the max number of human players
@@ -194,7 +193,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     private void handleReturnFromWaitingRoom(int resultCode, boolean isCreator) {
-        logger.info("Returning from waiting room.");
+        logger.info("Returning from waiting room. isCreator="+isCreator);
         if (resultCode != Activity.RESULT_OK) {
             logger.info("Room was cancelled, result code = " + resultCode);
             return;
@@ -374,28 +373,28 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     static String getErrorString(int statusCode) {
         switch(statusCode) {
-            case GamesClient.STATUS_OK: return "STATUS_OK"; // 0
-            case GamesClient.STATUS_INTERNAL_ERROR: return "STATUS_INTERNAL_ERROR"; // 1;
-            case GamesClient.STATUS_CLIENT_RECONNECT_REQUIRED: return "STATUS_CLIENT_RECONNECT_REQUIRED"; // 2;
-            case GamesClient.STATUS_NETWORK_ERROR_STALE_DATA: return "STATUS_NETWORK_ERROR_STALE_DATA"; // 3;
-            case GamesClient.STATUS_NETWORK_ERROR_NO_DATA: return "STATUS_NETWORK_ERROR_NO_DATA"; // 4;
-            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_DEFERRED: return "STATUS_NETWORK_ERROR_OPERATION_DEFERRED"; // 5;
-            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_FAILED: return "STATUS_NETWORK_ERROR_OPERATION_FAILED"; // 6;
-            case GamesClient.STATUS_LICENSE_CHECK_FAILED: return "STATUS_LICENSE_CHECK_FAILED"; // 7;
-            case 8: return "STATUS_APP_MISCONFIGURED";
-            case GamesClient.STATUS_ACHIEVEMENT_UNLOCK_FAILURE: return "STATUS_ACHIEVEMENT_UNLOCK_FAILURE"; // 3000;
-            case GamesClient.STATUS_ACHIEVEMENT_UNKNOWN: return "STATUS_ACHIEVEMENT_UNKNOWN"; // 3001;
-            case GamesClient.STATUS_ACHIEVEMENT_NOT_INCREMENTAL: return "STATUS_ACHIEVEMENT_NOT_INCREMENTAL"; // 3002;
-            case GamesClient.STATUS_ACHIEVEMENT_UNLOCKED: return "STATUS_ACHIEVEMENT_UNLOCKED"; // 3003;
-            case GamesClient.STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED: return "STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED"; // 6000;
-            case GamesClient.STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER: return "STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER"; // 6001;
-            case GamesClient.STATUS_REAL_TIME_CONNECTION_FAILED: return "STATUS_REAL_TIME_CONNECTION_FAILED"; // 7000;
-            case GamesClient.STATUS_REAL_TIME_MESSAGE_SEND_FAILED: return "STATUS_REAL_TIME_MESSAGE_SEND_FAILED"; // 7001;
-            case GamesClient.STATUS_INVALID_REAL_TIME_ROOM_ID: return "STATUS_INVALID_REAL_TIME_ROOM_ID"; // 7002;
-            case GamesClient.STATUS_PARTICIPANT_NOT_CONNECTED: return "STATUS_PARTICIPANT_NOT_CONNECTED"; // 7003;
-            case GamesClient.STATUS_REAL_TIME_ROOM_NOT_JOINED: return "STATUS_REAL_TIME_ROOM_NOT_JOINED"; // 7004;
-            case GamesClient.STATUS_REAL_TIME_INACTIVE_ROOM: return "STATUS_REAL_TIME_INACTIVE_ROOM"; // 7005;
-            case GamesClient.STATUS_REAL_TIME_MESSAGE_FAILED: return "STATUS_REAL_TIME_MESSAGE_FAILED"; // -1;
+            case GamesClient.STATUS_OK: return "OK"; // 0
+            case GamesClient.STATUS_INTERNAL_ERROR: return "INTERNAL_ERROR"; // 1
+            case GamesClient.STATUS_CLIENT_RECONNECT_REQUIRED: return "CLIENT_RECONNECT_REQUIRED"; // 2
+            case GamesClient.STATUS_NETWORK_ERROR_STALE_DATA: return "NETWORK_ERROR_STALE_DATA"; // 3
+            case GamesClient.STATUS_NETWORK_ERROR_NO_DATA: return "NETWORK_ERROR_NO_DATA"; // 4
+            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_DEFERRED: return "NETWORK_ERROR_OPERATION_DEFERRED"; // 5
+            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_FAILED: return "NETWORK_ERROR_OPERATION_FAILED"; // 6
+            case GamesClient.STATUS_LICENSE_CHECK_FAILED: return "LICENSE_CHECK_FAILED"; // 7
+            case 8: return "APP_MISCONFIGURED";
+            case GamesClient.STATUS_ACHIEVEMENT_UNLOCK_FAILURE: return "ACHIEVEMENT_UNLOCK_FAILURE"; // 3000
+            case GamesClient.STATUS_ACHIEVEMENT_UNKNOWN: return "ACHIEVEMENT_UNKNOWN"; // 3001
+            case GamesClient.STATUS_ACHIEVEMENT_NOT_INCREMENTAL: return "ACHIEVEMENT_NOT_INCREMENTAL"; // 3002
+            case GamesClient.STATUS_ACHIEVEMENT_UNLOCKED: return "ACHIEVEMENT_UNLOCKED"; // 3003
+            case GamesClient.STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED: return "MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED"; // 6000
+            case GamesClient.STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER: return "MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER"; // 6001
+            case GamesClient.STATUS_REAL_TIME_CONNECTION_FAILED: return "REAL_TIME_CONNECTION_FAILED"; // 7000
+            case GamesClient.STATUS_REAL_TIME_MESSAGE_SEND_FAILED: return "REAL_TIME_MESSAGE_SEND_FAILED"; // 7001
+            case GamesClient.STATUS_INVALID_REAL_TIME_ROOM_ID: return "INVALID_REAL_TIME_ROOM_ID"; // 7002
+            case GamesClient.STATUS_PARTICIPANT_NOT_CONNECTED: return "PARTICIPANT_NOT_CONNECTED"; // 7003
+            case GamesClient.STATUS_REAL_TIME_ROOM_NOT_JOINED: return "REAL_TIME_ROOM_NOT_JOINED"; // 7004
+            case GamesClient.STATUS_REAL_TIME_INACTIVE_ROOM: return "REAL_TIME_INACTIVE_ROOM"; // 7005
+            case GamesClient.STATUS_REAL_TIME_MESSAGE_FAILED: return "REAL_TIME_MESSAGE_FAILED"; // -1
             default: return "unknown statusCode "+statusCode;
         }
     }
