@@ -373,24 +373,25 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         throw new RuntimeException("me not found");
     }
 
-    private AlertDialog createAcceptDialog(final Invitation invitation) {
+    private AlertDialog createAcceptDialog(Invitation invitation) {
         ResourceBundle resb = TranslationBundle.getBundle();
         String title = resb.getString("mainmenu.googlePlayGame.acceptGame");
         String message = resb.getString("mainmenu.googlePlayGame.invited")
                 .replaceAll("\\{0\\}", invitation.getInviter().getDisplayName());
         String accept = resb.getString("mainmenu.googlePlayGame.accept");
         String reject = resb.getString("mainmenu.googlePlayGame.reject");
+        final String invitationId = invitation.getInvitationId();
         return new AlertDialog.Builder(GameActivity.this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(accept, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        acceptInvitation(invitation.getInvitationId());
+                        acceptInvitation(invitationId);
                     }
                 })
                 .setNegativeButton(reject, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mHelper.getGamesClient().declineRoomInvitation(invitation.getInvitationId());
+                        mHelper.getGamesClient().declineRoomInvitation(invitationId);
                     }
                 })
                 .create();
