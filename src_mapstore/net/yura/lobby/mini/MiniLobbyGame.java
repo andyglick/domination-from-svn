@@ -28,7 +28,15 @@ public interface MiniLobbyGame {
 
     void connected(String username);
     void disconnected();
+
+    /**
+     * button inside lobby was clicked that the user wants to join a private game
+     */
     void joinPrivateGame();
+    /**
+     * a private game was started on the server
+     */
+    public void gameStarted(int id);
 
     public String getAppName();
     public String getAppVersion();

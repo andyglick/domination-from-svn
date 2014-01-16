@@ -439,6 +439,9 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    public void gameStarted(int id) {
+        game.gameStarted(id);
+    }
 
     public void messageForGame(int gameid, Object message) {
         if (gameid==openGameId) {
