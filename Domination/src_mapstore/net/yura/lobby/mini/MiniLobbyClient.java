@@ -176,15 +176,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                         break;
                     case Game.STATE_CAN_PLAY:
                     case Game.STATE_CAN_WATCH:
-                        if (openGameId==game.getId()) return; // we have already tried to open this game, do nothing
-                        if (openGameId!=-1) {
-                            // we should NOT try and close the game in the UI at this point
-                        	// as it may not have even opened yet, instead we will close it
-                        	// when we get the 2nd game object with "if (existing game!=null) {controller.closeGame();}"
-                            closeGame();
-                        }
-                        openGameId = game.getId();
-                        mycom.playGame(game);
+                        playGame(game.getId());
                         break;
                 }
             }
@@ -237,6 +229,18 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    public void playGame(int id) {
+        if (openGameId==id) return; // we have already tried to open this game, do nothing
+        if (openGameId!=-1) {
+            // we should NOT try and close the game in the UI at this point
+                // as it may not have even opened yet, instead we will close it
+                // when we get the 2nd game object with "if (existing game!=null) {controller.closeGame();}"
+            closeGame();
+        }
+        openGameId = id;
+        mycom.playGame(id);
     }
 
     public void sendGameMessage(String messagefromgui) {
