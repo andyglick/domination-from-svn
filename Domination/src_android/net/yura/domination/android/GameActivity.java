@@ -33,6 +33,7 @@ import android.widget.Toast;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
 import net.yura.android.AndroidPreferences;
+import net.yura.android.LoadingDialog;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -116,6 +117,19 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         mHelper.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void closeLoadingDialog() {
+        Intent intent = new Intent(this, LoadingDialog.class);
+        intent.putExtra(LoadingDialog.PARAM_COMMAND, "hide");
+        startActivity(intent);
+    }
+
+    private void openLoadingDialog(String messageName) {
+        Intent intent = new Intent(this, LoadingDialog.class);
+        intent.putExtra(LoadingDialog.PARAM_MESSAGE, TranslationBundle.getBundle().getString(messageName));
+        intent.putExtra(LoadingDialog.PARAM_CANCELLABLE, true);
+        startActivity(intent);
+    }
+
     private void handlePlayersSelected(int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             logger.info("Player selection failed. "+resultCode);
@@ -123,11 +137,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         }
         ArrayList<String> invitees = data.getStringArrayListExtra(GamesClient.EXTRA_PLAYERS);
         logger.info("Players selected. Creating room.");
+        openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
         mHelper.getGamesClient().createRoom(RoomConfig.builder(
                 new BaseRoomUpdateListener() {
                     @Override
                     public void onRoomCreated(int statusCode, Room room) {
                         super.onRoomCreated(statusCode, room);
+                        closeLoadingDialog();
                         if (statusCode != GamesClient.STATUS_OK) {
                             String error = "onRoomCreated failed. "+statusCode+" "+getErrorString(statusCode);
                             logger.warning(error);
@@ -210,6 +226,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             return;
         }
         logger.info("Room ready.");
+        openLoadingDialog("mainmenu.googlePlayGame.waitGame");
         if (!isCreator) {
             MiniFlashRiskAdapter ui = getUi();
             if (ui.lobby != null) {
@@ -331,6 +348,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                         // TODO this is not good enough, as maybe we have already accepted the invitation.
                         createAcceptDialog(invitation).show();
                     }
+                    // LOL who closes a buffer!
+                    buffer.close();
                 }
             });
         }
@@ -378,11 +397,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     private void acceptInvitation(String invitationId) {
+        openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
         mHelper.getGamesClient().joinRoom(RoomConfig.builder(
                 new BaseRoomUpdateListener() {
                     @Override
                     public void onJoinedRoom(int statusCode, Room room) {
                         super.onJoinedRoom(statusCode, room);
+                        closeLoadingDialog();
                         if (statusCode != GamesClient.STATUS_OK) {
                             String error = "onJoinedRoom failed. "+statusCode+" "+getErrorString(statusCode);
                             logger.warning(error);
