@@ -57,6 +57,10 @@ public class MiniFlashRiskAdapter implements RiskListener {
             public void joinPrivateGame() {
                 DominationMain.getGooglePlayGameServices().beginUserInitiatedSignIn();
             };
+            @Override
+            public void gameStarted(int id) {
+                DominationMain.getGooglePlayGameServices().gameStarted(id);
+            }
         } );
         playGamesStateChanged();
 

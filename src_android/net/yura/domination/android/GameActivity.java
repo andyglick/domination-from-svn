@@ -149,18 +149,22 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
                     @Override
                     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-                        byte[] data = realTimeMessage.getMessageData();
-                        try {
-                            Message message = (Message)encodeDecoder.load(new ByteArrayInputStream(data), data.length);
-                            onMessageReceived(message);
-                        }
-                        catch (IOException ex) {
-                            logger.log(Level.WARNING, "can not decode", ex);
-                        }
+                        onMessageReceived(realTimeMessage);
                     }
                 })
                 .addPlayersToInvite(invitees).build());
         logger.info("Room created, waiting for it to be ready");
+    }
+
+    private void onMessageReceived(RealTimeMessage realTimeMessage) {
+        byte[] data = realTimeMessage.getMessageData();
+        try {
+            Message message = (Message)encodeDecoder.load(new ByteArrayInputStream(data), data.length);
+            onMessageReceived(message);
+        }
+        catch (IOException ex) {
+            logger.log(Level.WARNING, "can not decode", ex);
+        }
     }
 
     private void onMessageReceived(Message message) {
@@ -179,6 +183,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 lobbyGame.setMaxPlayers(lobbyGame.getNumOfPlayers());
                 getUi().lobby.createNewGame(lobbyGame);
             }
+        }
+        else if (ProtoAccess.COMMAND_GAME_STARTED.equals(message.getCommand())) {
+            int gameId = (Integer)message.getParam();
+            getUi().lobby.playGame(gameId);
+        }
+        else {
+            logger.warning("unknown command "+message);
         }
     }
 
@@ -231,6 +242,31 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         message.setCommand(ProtoAccess.REQUEST_JOIN_GAME);
         message.setParam(username);
 
+        sendMessage(message, gameRoom.getCreatorId());
+    }
+
+    @Override
+    public void gameStarted(int id) {
+        logger.info("lobby gameStarted "+id);
+
+        Message message = new Message();
+        message.setCommand(ProtoAccess.COMMAND_GAME_STARTED);
+        message.setParam(id);
+
+        String me = gameRoom.getCreatorId();
+        List<String> participants = gameRoom.getParticipantIds();
+        for (String participant : participants) {
+            // Play Games throws a error if i tell it to send a message to myself
+            if (participant.equals(me)) {
+                onMessageReceived(message);
+            }
+            else {
+                sendMessage(message, participant);
+            }
+        }
+    }
+
+    void sendMessage(Message message, String recipientParticipantId) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream( encodeDecoder.computeAnonymousObjectSize(message) );
         try {
             encodeDecoder.save(bytes, message);
@@ -245,7 +281,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             public void onRealTimeMessageSent(int statusCode, int tokenId, String recipientId) {
                 logger.info(String.format("Message %d sent (%d) to %s", tokenId, statusCode, recipientId));
             }
-        }, data, gameRoom.getRoomId(), gameRoom.getCreatorId());
+        }, data, gameRoom.getRoomId(), recipientParticipantId);
     }
 
     @Override
@@ -363,9 +399,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
                     @Override
                     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-                        // this is the message from the owner of the game to the person joining.
-                        // it is mandatory to listen for this, but this will never actually happen.
-                        logger.info("onRealTimeMessageReceived: " + realTimeMessage);
+                        onMessageReceived(realTimeMessage);
                     }
                 })
                 .build());
@@ -395,6 +429,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             case GamesClient.STATUS_REAL_TIME_ROOM_NOT_JOINED: return "REAL_TIME_ROOM_NOT_JOINED"; // 7004
             case GamesClient.STATUS_REAL_TIME_INACTIVE_ROOM: return "REAL_TIME_INACTIVE_ROOM"; // 7005
             case GamesClient.STATUS_REAL_TIME_MESSAGE_FAILED: return "REAL_TIME_MESSAGE_FAILED"; // -1
+            case 7007: return "OPERATION_IN_FLIGHT";
             default: return "unknown statusCode "+statusCode;
         }
     }

@@ -60,6 +60,7 @@ public class DominationMain extends Midlet {
 	void showAchievements();
 	void startGameGooglePlay(net.yura.lobby.model.Game game);
 	void setLobbyUsername(String username);
+	void gameStarted(int id);
     }
 
     public DominationMain() {
