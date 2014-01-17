@@ -264,21 +264,22 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     @Override
     public void gameStarted(int id) {
-        logger.info("lobby gameStarted "+id);
+        logger.info("lobby gameStarted "+id+" "+gameRoom);
+        if (gameRoom != null) {
+            Message message = new Message();
+            message.setCommand(ProtoAccess.COMMAND_GAME_STARTED);
+            message.setParam(id);
 
-        Message message = new Message();
-        message.setCommand(ProtoAccess.COMMAND_GAME_STARTED);
-        message.setParam(id);
-
-        String me = gameRoom.getCreatorId();
-        List<String> participants = gameRoom.getParticipantIds();
-        for (String participant : participants) {
-            // Play Games throws a error if i tell it to send a message to myself
-            if (participant.equals(me)) {
-                onMessageReceived(message);
-            }
-            else {
-                sendMessage(message, participant);
+            String me = gameRoom.getCreatorId();
+            List<String> participants = gameRoom.getParticipantIds();
+            for (String participant : participants) {
+                // Play Games throws a error if i tell it to send a message to myself
+                if (participant.equals(me)) {
+                    onMessageReceived(message);
+                }
+                else {
+                    sendMessage(message, participant);
+                }
             }
         }
     }
