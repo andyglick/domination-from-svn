@@ -66,7 +66,12 @@ public class Cache {
                 if (!cacheDir.isDirectory()) {
                     if (DEBUG) logger.info("Going to make dir "+cacheDir);
                     if (!cacheDir.mkdirs()) {
-                        throw new RuntimeException("can not make cache dir: "+cacheDir);
+                        if (!cacheDir.isDirectory()) {
+                            throw new RuntimeException("can not make cache dir: "+cacheDir);
+                        }
+                        else {
+                            System.err.println("mkdirs returned false, but the command worked?!?");
+                        }
                     }
                 }
 
@@ -84,10 +89,10 @@ public class Cache {
                         "failed to save data to file: "+file+
                         " exists="+exists+
                         " deleted="+deleted+
-                        " key: "+key+
-                        " in dir "+cacheDir+
+                        " key="+key+
+                        " inDir="+cacheDir+
                         " exists="+cacheDir.exists()+
-                        " is dir"+cacheDir.isDirectory(), ex);
+                        " isDir="+cacheDir.isDirectory(), ex);
             }
         }
     }
