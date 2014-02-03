@@ -86,8 +86,9 @@ public class MapServerClient extends HTTPClient {
                (ex instanceof EOFException && responseCode==0) || // end of stream during getResponseCode
                (ex instanceof SocketException &&
                    ("Connection timed out".equals(ex.getMessage()) ||
+                    "Connection reset by peer".equals(ex.getMessage()) ||
                     "recvfrom failed: ETIMEDOUT (Connection timed out)".equals(ex.getMessage()) ||
-                    "Connection reset by peer".equals(ex.getMessage())) ) ) {
+                    "recvfrom failed: ECONNRESET (Connection reset by peer)".equals(ex.getMessage())) ) ) {
             level = Level.INFO;
         }
         // print error to console
