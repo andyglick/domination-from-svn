@@ -90,12 +90,19 @@ public class GooglePlusOne {
         Map<String,Integer> urlToValue = new HashMap();
         for (int c=0;c<object.length;c++) {
             Map<String, Object> responce = (Map)object[c];
-            Map<String, Object> result = (Map)responce.get("result");
-            String url = (String)result.get("id");
-            Map<String, Object> metadata = (Map)result.get("metadata");
-            Map<String, Object> globalCounts = (Map)metadata.get("globalCounts");
-            double count = (Double)globalCounts.get("count");
-            urlToValue.put(url, (int)count);
+            try {
+                Map<String, Object> result = (Map)responce.get("result");
+                String url = (String)result.get("id");
+                Map<String, Object> metadata = (Map)result.get("metadata");
+                Map<String, Object> globalCounts = (Map)metadata.get("globalCounts");
+                double count = (Double)globalCounts.get("count");
+                urlToValue.put(url, (int)count);
+            }
+            catch (Exception ex) {
+                IOException ex2 = new IOException("error in "+responce);
+                ex2.initCause(ex); // Android 1.6
+                throw ex2;
+            }
         }
 	return urlToValue;
     }
