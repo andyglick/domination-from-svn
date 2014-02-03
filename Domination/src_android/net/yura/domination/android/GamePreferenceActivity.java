@@ -119,7 +119,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
 	}
 	else {
 	    prefs.setSummary(value);
-	    // many wrong values come here (e.g. "_ES" "_EN" "_FR")
+	    // many wrong values come here (e.g. "_ES" "_EN" "_FR" "_IT" "_PT")
 	    System.out.println("value "+value+" not found in "+Arrays.asList(prefs.getEntryValues()));
 	}
     }
