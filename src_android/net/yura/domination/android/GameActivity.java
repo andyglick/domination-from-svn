@@ -439,12 +439,27 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             case GamesClient.STATUS_NETWORK_ERROR_OPERATION_FAILED: return "NETWORK_ERROR_OPERATION_FAILED"; // 6
             case GamesClient.STATUS_LICENSE_CHECK_FAILED: return "LICENSE_CHECK_FAILED"; // 7
             case 8: return "APP_MISCONFIGURED";
+
             case GamesClient.STATUS_ACHIEVEMENT_UNLOCK_FAILURE: return "ACHIEVEMENT_UNLOCK_FAILURE"; // 3000
             case GamesClient.STATUS_ACHIEVEMENT_UNKNOWN: return "ACHIEVEMENT_UNKNOWN"; // 3001
             case GamesClient.STATUS_ACHIEVEMENT_NOT_INCREMENTAL: return "ACHIEVEMENT_NOT_INCREMENTAL"; // 3002
             case GamesClient.STATUS_ACHIEVEMENT_UNLOCKED: return "ACHIEVEMENT_UNLOCKED"; // 3003
+
             case GamesClient.STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED: return "MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED"; // 6000
             case GamesClient.STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER: return "MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER"; // 6001
+            case 6002: return "MULTIPLAYER_ERROR_INVALID_MULTIPLAYER_TYPE";
+            case 6003: return "MULTIPLAYER_DISABLED";
+            case 6004: return "MULTIPLAYER_ERROR_INVALID_OPERATION";
+
+            case 6500: return "MATCH_ERROR_INVALID_PARTICIPANT_STATE";
+            case 6501: return "MATCH_ERROR_INACTIVE_MATCH";
+            case 6502: return "MATCH_ERROR_INVALID_MATCH_STATE";
+            case 6503: return "MATCH_ERROR_OUT_OF_DATE_VERSION";
+            case 6504: return "MATCH_ERROR_INVALID_MATCH_RESULTS";
+            case 6505: return "MATCH_ERROR_ALREADY_REMATCHED";
+            case 6506: return "MATCH_NOT_FOUND";
+            case 6507: return "MATCH_ERROR_LOCALLY_MODIFIED";
+
             case GamesClient.STATUS_REAL_TIME_CONNECTION_FAILED: return "REAL_TIME_CONNECTION_FAILED"; // 7000
             case GamesClient.STATUS_REAL_TIME_MESSAGE_SEND_FAILED: return "REAL_TIME_MESSAGE_SEND_FAILED"; // 7001
             case GamesClient.STATUS_INVALID_REAL_TIME_ROOM_ID: return "INVALID_REAL_TIME_ROOM_ID"; // 7002
