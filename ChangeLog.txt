@@ -2,11 +2,11 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.5
+	Risk Game:	1.1.1.6
 	 * Save:	8
 	 * Network:	11
 
-	Android		54
+	Android		55
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,8 @@ CURRENT VERSION:
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 
+	Android 55 updated to Turkish translation - Ekin Topuz
+		   better error messages
 	Android 54 Private games through Google Play Game Services added.
 	Android 53 Capital achievements only given when game actually won - Amanda Lunn
 		   sort by rating actually uses g+ +1 count now
