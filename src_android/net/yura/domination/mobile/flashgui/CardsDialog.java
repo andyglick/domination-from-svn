@@ -11,7 +11,6 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Font;
@@ -33,7 +32,7 @@ public class CardsDialog extends Frame implements ActionListener {
 	private Risk myrisk;
 	private PicturePanel pp;
 
-	private Panel myCardsPanel;
+        private Button tradeButton;
 	private CardPanel extraArmiesCard;
         private Component NumArmies;
 
@@ -42,8 +41,9 @@ public class CardsDialog extends Frame implements ActionListener {
 	private Image Artillery;
 	private Image Wildcard;
 
-	private Button tradeButton;
+        private Player player;
 	private boolean canTrade;
+        private Panel myCardsPanel;
 
 	private Properties resb = GameActivity.resb;
 
@@ -59,20 +59,20 @@ public class CardsDialog extends Frame implements ActionListener {
 		pp=p;
 
                 Image cards = Midlet.createImage("/cards.png");
-                        
+
                 int w = cards.getWidth()/4;
                 int h = cards.getHeight();
 
-		
+
 		Cavalry = Image.createImage(cards, 0, 0, w, h, 0);
 		Infantry = Image.createImage(cards, w, 0, w, h, 0);
 		Artillery = Image.createImage(cards, w*2, 0, w, h, 0);
                 Wildcard = Image.createImage(cards, w*3, 0, w, h, 0);
 
                 XULLoader loader = GameActivity.getPanel("/cards.xml", this);
-                
+
                 setContentPane( (Panel)loader.getRoot() );
-                
+
 		setTitle(resb.getProperty("cards.title"));
 		setMaximum(true);
 
@@ -85,22 +85,22 @@ public class CardsDialog extends Frame implements ActionListener {
 		tradeButton = (Button)loader.find("tradeButton");
 
 	}
-        
+
         public void setupNumArmies() {
-            
+
             String text;
             int cardsMode = myrisk.getGame().getCardMode();
-            
+
             // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
             if(cardsMode==RiskGame.CARD_FIXED_SET || cardsMode==RiskGame.CARD_ITALIANLIKE_SET) {
-                
+
                 List<CardPanel> cards = getSelectedCards();
 
                 int trade = 0;
                 if (cards.size() == 3) {
                     trade = myrisk.getGame().getTradeAbsValue(cards.get(0).card.getName(), cards.get(1).card.getName(), cards.get(2).card.getName(), cardsMode);
                 }
-                
+
                 if (trade > 0) {
                     text= RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf( trade ) );
                 }
@@ -114,10 +114,10 @@ public class CardsDialog extends Frame implements ActionListener {
             else {
 		 text= RiskUtil.replaceAll(resb.getString("cards.nexttrade"), "{0}", String.valueOf( myrisk.getNewCardState() ) );
             }
-            
+
             NumArmies.setValue( text );
 	}
-        
+
         List<CardPanel> getSelectedCards() {
             List<CardPanel> selected = new ArrayList();
             List<CardPanel> all = myCardsPanel.getComponents();
@@ -126,14 +126,14 @@ public class CardsDialog extends Frame implements ActionListener {
                     selected.add(cp);
                 }
             }
-            
+
             // if we have a extra armies card, put it at the start
             if (extraArmiesCard!=null) {
                 assert selected.contains(extraArmiesCard);
                 selected.remove(extraArmiesCard);
                 selected.add(0, extraArmiesCard);
             }
-            
+
             return selected;
         }
 
@@ -142,7 +142,7 @@ public class CardsDialog extends Frame implements ActionListener {
             setVisible(false);
         }
         else if ("trade".equals(actionCommand)) {
-            
+
             List<CardPanel> cards2 = getSelectedCards();
 
             if (cards2.size()==3) {
@@ -157,43 +157,40 @@ public class CardsDialog extends Frame implements ActionListener {
                 tradeButton.setFocusable(false);
 
                 setupNumArmies();
-                
+
                 revalidate();
                 repaint();
-
             }
-            
         }
         else {
             throw new RuntimeException("unknown command "+actionCommand);
         }
     }
-        
-        
 
-	public void setup(boolean ct) {
+
+	public void setup(Player player, boolean ct) {
+                this.player = player;
 		canTrade=ct;
 
 		myCardsPanel.removeAll();
 
 		extraArmiesCard = null;
 
-		List<Card> cards = myrisk.getCurrentCards();
+                List<Card> cards = player.getCards();
 		for (int c=0; c < cards.size(); c++) {
 			Component cp = new CardPanel( (Card)cards.get(c) );
 			myCardsPanel.add(cp);
 		}
 
                 tradeButton.setFocusable(false);
-                
-                setupNumArmies();
 
+                setupNumArmies();
 	}
 
-        boolean isOwnedCurrentPlayer(CardPanel cp) {
-            return cp.card.getCountry()!=null && myrisk.isOwnedCurrentPlayerInt( cp.card.getCountry().getColor() );
+        boolean isOwnedPlayer(CardPanel cp) {
+            return cp.card.getCountry() != null && player == cp.card.getCountry().getOwner();
         }
-        
+
 	class CardPanel extends Button {
 
 		private Card card;
@@ -210,7 +207,7 @@ public class CardsDialog extends Frame implements ActionListener {
 
                         // height will be set by the scrollarea height in the XML file
 			setPreferredSize( cardWidth, -1 );
-			
+
 			setName("Card");
 		}
 
@@ -225,9 +222,9 @@ public class CardsDialog extends Frame implements ActionListener {
 			//g2.fillRoundRect(0, 0, getWidth(), getHeight() ,5,5);
                         //g2.setColor( 0xFF000000 );
                         //g2.drawRoundRect(5, 5, getWidth()-10, getHeight()-10 ,5,5);
-                    
+
                         int imgSize = XULLoader.adjustSizeToDensity(50);
-                        
+
 			if (!(card.getName().equals(Card.WILDCARD))) {
 
 				//String text = card.getCountry().getName(); // Display
@@ -238,7 +235,7 @@ public class CardsDialog extends Frame implements ActionListener {
 
                                 ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
                                 m.preConcat(PicturePanel.gray);
-                                if ( isOwnedCurrentPlayer( this ) ) {
+                                if ( isOwnedPlayer( this ) ) {
                                     ownerColor = card.getCountry().getOwner().getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
@@ -250,9 +247,9 @@ public class CardsDialog extends Frame implements ActionListener {
                                 }
 
                                 if (this == extraArmiesCard) {
-                                    
+
                                     g.setColor(ownerColor);
-                                    
+
                                     Font f = g.getFont();
                                     int w = f.getHeight();
                                     int x = (getWidth()-w)/2;
@@ -261,7 +258,6 @@ public class CardsDialog extends Frame implements ActionListener {
                                     g.setColor( ColorUtil.getTextColorFor(ownerColor) );
                                     g.drawString("+"+Player.noaFORcard, x, y);
                                 }
-                                
 			}
 
                         Image img = getCardImage();
@@ -283,7 +279,7 @@ public class CardsDialog extends Frame implements ActionListener {
                         }
                         return Wildcard;
                 }
-                
+
 		/**
 		 * Gets the card name
 		 * @return String The card name
@@ -309,7 +305,7 @@ public class CardsDialog extends Frame implements ActionListener {
                     if (!isSelected() && extraArmiesCard==this) {
                         CardPanel newSelected=null;
                         for (CardPanel cp: (List<CardPanel>)myCardsPanel.getComponents() ) {
-                            if ( cp.isSelected() && isOwnedCurrentPlayer(cp) ) {
+                            if ( cp.isSelected() && isOwnedPlayer(cp) ) {
                                 newSelected = cp;
                                 break;
                             }
@@ -319,7 +315,7 @@ public class CardsDialog extends Frame implements ActionListener {
                             extraArmiesCard.repaint();
                         }
                     }
-                    else if (isSelected() && extraArmiesCard==null && isOwnedCurrentPlayer(this) ) {
+                    else if (isSelected() && extraArmiesCard==null && isOwnedPlayer(this) ) {
                         extraArmiesCard = this;
                     }
 
@@ -328,7 +324,7 @@ public class CardsDialog extends Frame implements ActionListener {
                     tradeButton.repaint();
                     setupNumArmies();
                 }
-                
+
                 @Override
                 public String toString() {
                     return card.toString();

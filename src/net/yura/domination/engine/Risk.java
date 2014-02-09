@@ -2733,7 +2733,9 @@ RiskUtil.printStackTrace(e);
 
 	}
 
-
+        public String getMyAddress() {
+            return myAddress;
+        }
 
 
 
