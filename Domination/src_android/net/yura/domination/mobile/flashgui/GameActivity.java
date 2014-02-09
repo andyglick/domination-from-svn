@@ -533,8 +533,47 @@ public class GameActivity extends Frame implements ActionListener {
                 }
             }
         };
-        cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
+
+        Player human = getSingleLocalHumanPlayer();
+        Player currentPlayer = myrisk.getGame().getCurrentPlayer();
+        if (human == null) {
+            human = currentPlayer;
+        }
+
+        cardsDialog.setup(human, human == currentPlayer && gameState == RiskGame.STATE_TRADE_CARDS);
         cardsDialog.setVisible(true);
+    }
+
+    private Player getSingleLocalHumanPlayer() {
+        List<Player> players = myrisk.getGame().getPlayers();
+        String myAddress = myrisk.getMyAddress();
+        Player human1 = null, human2 = null;
+        boolean tooMany1 = false, tooMany2 = false;
+        for (Player player : players) {
+            if (player.getType() == Player.PLAYER_HUMAN) {
+                if (human1 == null) {
+                    human1 = player;
+                }
+                else {
+                    tooMany1 = true;
+                }
+            }
+            if (myAddress.equals(player.getAddress())) {
+                if (human2 == null) {
+                    human2 = player;
+                }
+                else {
+                    tooMany2 = true;
+                }
+            }
+        }
+        if (human1 != null && !tooMany1) {
+            return human1;
+        }
+        if (human2 != null && !tooMany2) {
+            return human2;
+        }
+        return null;
     }
 
     static String toString(Element element) {
@@ -903,7 +942,7 @@ public class GameActivity extends Frame implements ActionListener {
                 tacMove.setVisible(false);
             }
 
-            cardsbutton.setFocusable(false);
+            cardsbutton.setFocusable( getSingleLocalHumanPlayer() != null );
             undobutton.setFocusable(false);
             savebutton.setFocusable(false);
             AutoEndGo.setFocusable(false);

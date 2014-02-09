@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		55
+	Android		56
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -20,6 +20,7 @@ CURRENT VERSION:
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 
+	Android 56 Can view own cards at any point in the game.
 	Android 55 updated to Turkish translation - Ekin Topuz
 		   better error messages
 	Android 54 Private games through Google Play Game Services added.
