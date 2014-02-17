@@ -55,9 +55,11 @@ public class DominationMain extends Midlet {
     public interface GooglePlayGameServices {
 	void beginUserInitiatedSignIn();
 	void signOut();
-	void unlockAchievement(String id);
 	boolean isSignedIn();
+
 	void showAchievements();
+        void unlockAchievement(String id);
+
 	void startGameGooglePlay(net.yura.lobby.model.Game game);
 	void setLobbyUsername(String username);
 	void gameStarted(int id);
