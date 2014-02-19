@@ -1,8 +1,6 @@
 package net.yura.domination.android;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import com.google.example.games.basegameutils.GameHelper;
@@ -46,13 +44,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         DominationMain.appPreferences = new AndroidPreferences(preferences);
         super.onSingleCreate();
-    }
-
-    @Override
-    public void onMidletStarted() {
-        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
-        dmain.setGooglePlayGameServices(GameActivity.this);
-
+        
         mHelper = new GameHelper(this);
         mHelper.enableDebugLog(true, "DominationPlay");
 
@@ -84,30 +76,27 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             }
         });
 
-        GameHelperListener gameHelperListener = new GameHelperListener();
-        gameHelperListener.addListener(this);
-        gameHelperListener.addListener(realTimeMultiplayer);
-
-        mHelper.setup(gameHelperListener, GameHelper.CLIENT_GAMES);
+        final GameHelper.GameHelperListener[] listeners = {this, realTimeMultiplayer};
+        mHelper.setup(new GameHelper.GameHelperListener() {
+	    @Override
+	    public void onSignInSucceeded() {
+		for (GameHelper.GameHelperListener listener : listeners) {
+	            listener.onSignInSucceeded();
+	        }
+	    }
+	    @Override
+	    public void onSignInFailed() {
+		for (GameHelper.GameHelperListener listener : listeners) {
+	            listener.onSignInFailed();
+	        }
+	    }
+	}, GameHelper.CLIENT_GAMES);
     }
 
-    class GameHelperListener implements GameHelper.GameHelperListener {
-        List<GameHelper.GameHelperListener> listeners = new ArrayList();
-        public void addListener(GameHelper.GameHelperListener listener) {
-            listeners.add(listener);
-        }
-        @Override
-        public void onSignInFailed() {
-            for (GameHelper.GameHelperListener listener : listeners) {
-                listener.onSignInFailed();
-            }
-        }
-        @Override
-        public void onSignInSucceeded() {
-            for (GameHelper.GameHelperListener listener : listeners) {
-                listener.onSignInSucceeded();
-            }
-        }
+    @Override
+    public void onMidletStarted() {
+        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+        dmain.setGooglePlayGameServices(GameActivity.this);
     }
 
     @Override

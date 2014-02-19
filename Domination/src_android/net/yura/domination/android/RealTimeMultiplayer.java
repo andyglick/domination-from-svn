@@ -58,6 +58,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     public RealTimeMultiplayer(GameHelper helper, Activity activity, Lobby lobby) {
         mHelper = helper;
+        this.activity = activity;
         this.lobby = lobby;
     }
 
