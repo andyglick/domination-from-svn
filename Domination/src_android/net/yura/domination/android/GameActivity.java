@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.WindowManager;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
 import net.yura.android.AndroidPreferences;
@@ -39,6 +40,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     private net.yura.lobby.model.Game pendingStartGameGooglePlay;
     private boolean pendingSendLobbyUsername;
 
+    /**
+     * need to create everything owned by the activity, but the game/static objects may already exist
+     */
     @Override
     protected void onSingleCreate() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -91,6 +95,10 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 	        }
 	    }
 	}, GameHelper.CLIENT_GAMES);
+
+        if (preferences.getBoolean("fullscreen", false)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
     }
 
     @Override
