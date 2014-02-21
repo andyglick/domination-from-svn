@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.WindowManager;
 
 public class GamePreferenceActivity extends PreferenceActivity {
 
@@ -61,6 +62,23 @@ public class GamePreferenceActivity extends PreferenceActivity {
         color_blind.setKey("color_blind");
         inlinePrefCat.addPreference(color_blind);
 
+        CheckBoxPreference fullscreen = new CheckBoxPreference(context); // TwoStatePreference = new SwitchPreference(this);
+        fullscreen.setTitle( resb.getString("game.menu.fullscreen") );
+        fullscreen.setKey("fullscreen");
+        inlinePrefCat.addPreference(fullscreen);
+        fullscreen.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if ((Boolean)newValue) {
+                    AndroidMeActivity.DEFAULT_ACTIVITY.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+                else {
+                    AndroidMeActivity.DEFAULT_ACTIVITY.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+                return true;
+            }
+        });
+        
         final ListPreference ai = new IntListPreference(context);
         ai.setTitle( resb.getString("game.menu.aiSpeed") );
         ai.setKey("ai_wait");

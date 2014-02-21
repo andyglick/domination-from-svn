@@ -21,6 +21,7 @@ CURRENT VERSION:
 	SwingGUI sends more info on crash and feedback
 
 	Android 56 Can view own cards at any point in the game.
+		   fullscreen option added
 	Android 55 updated to Turkish translation - Ekin Topuz
 		   better error messages
 	Android 54 Private games through Google Play Game Services added.
