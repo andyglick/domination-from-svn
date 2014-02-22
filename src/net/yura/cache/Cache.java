@@ -69,9 +69,7 @@ public class Cache {
                         if (!cacheDir.isDirectory()) {
                             throw new RuntimeException("can not make cache dir: "+cacheDir);
                         }
-                        else {
-                            System.err.println("mkdirs returned false, but the command worked?!?");
-                        }
+                        //else: the dir must have been made from another thread, so everything is ok anyway.
                     }
                 }
 

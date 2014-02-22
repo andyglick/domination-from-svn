@@ -291,6 +291,7 @@ public class DominationMain extends Midlet {
     }
     public static GooglePlayGameServices getGooglePlayGameServices() {
 	DominationMain main = (DominationMain)Midlet.getMidlet();
-	return main.googlePlayGameServices;
+        // main is only null if the app is in the process of shutting down.
+	return main == null ? null : main.googlePlayGameServices;
     }
 }

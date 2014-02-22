@@ -186,8 +186,8 @@ public class MapServerClient extends HTTPClient {
             Collections.sort(ratedList, new Comparator<Map>() {
                 @Override
                 public int compare(Map map0, Map map1) {
-                    int rating0 = ratings.get(MapChooser.getFileUID(map0.getMapUrl()));
-                    int rating1 = ratings.get(MapChooser.getFileUID(map1.getMapUrl()));
+                    int rating0 = getRating(map0, ratings);
+                    int rating1 = getRating(map1, ratings);
                     if (rating0 != rating1) {
                         return rating1 - rating0;
                     }
@@ -202,7 +202,12 @@ public class MapServerClient extends HTTPClient {
             logger.warning("[MapServerClient] unknown type "+request.type);
         }
     }
-    
+
+    private static int getRating(Map map, java.util.Map<String,Integer> ratings) {
+        Integer rating = ratings.get(MapChooser.getFileUID(map.getMapUrl()));
+        return rating == null ? 0 : rating;
+    }
+
     private void makeRequest(String url,Hashtable params,int type, Object key) {
 	    ServerRequest request = new ServerRequest();
 	    request.type = type;
