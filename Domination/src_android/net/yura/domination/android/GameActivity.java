@@ -280,6 +280,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         logger.info("[GameActivity] onPause");
         // if everything is shut down and there is no current game
         // make sure we clean up so no game is loaded on next start
+
+        // TODO we may have been paused WHILE the game is starting,
+        // and then we may end up deleting the file we are trying to load.
         if ( !shouldSaveGame() ) {
             File file = DominationMain.getAutoSaveFile();
             if (file.exists()) {
