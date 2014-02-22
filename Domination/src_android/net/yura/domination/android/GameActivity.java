@@ -262,7 +262,11 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 final File tempSaveFile = new File(autoSaveFile.getParent(),autoSaveFile.getName()+".part");
 
                 risk.parserAndWait("savegame "+DominationMain.getAutoSaveFileURL()+".part");
-                RiskUtil.rename(tempSaveFile, autoSaveFile);
+                // if we may have closed the game while also closing the activity
+                // the save probably failed, and the rename will fail for sure.
+                if ( shouldSaveGame() ) {
+                    RiskUtil.rename(tempSaveFile, autoSaveFile);
+                }
             }
             catch (Exception ex) {
                 ex.printStackTrace();

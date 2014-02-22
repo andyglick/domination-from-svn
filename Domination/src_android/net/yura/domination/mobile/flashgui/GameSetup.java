@@ -93,6 +93,9 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                     if (localgame) {
                         RiskUtil.savePlayers(myrisk, getClass());
 
+                        // do not allow the user to accidently tap the start button twice.
+                        newgame.find("startButton").setFocusable(false);
+
                         myrisk.parser("startgame "+
                                 GameType.getSelection().getActionCommand()+" "+
                                 CardType.getSelection().getActionCommand()+
