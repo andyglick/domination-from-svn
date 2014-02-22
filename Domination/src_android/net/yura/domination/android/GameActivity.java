@@ -48,7 +48,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         DominationMain.appPreferences = new AndroidPreferences(preferences);
         super.onSingleCreate();
-        
+
         mHelper = new GameHelper(this);
         mHelper.enableDebugLog(true, "DominationPlay");
 
@@ -101,9 +101,14 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         }
     }
 
+    /**
+     * This method is called only once ever for the entire app.
+     */
     @Override
     public void onMidletStarted() {
         DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+        // TODO WE ARE LEAKING THE ACTIVITY HERE!!!
+        // an Activity can be created and destroyed by the system when it feels like it
         dmain.setGooglePlayGameServices(GameActivity.this);
     }
 
