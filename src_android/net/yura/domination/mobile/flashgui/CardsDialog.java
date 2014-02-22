@@ -42,7 +42,6 @@ public class CardsDialog extends Frame implements ActionListener {
 	private Image Wildcard;
 
         private Player player;
-	private boolean canTrade;
         private Panel myCardsPanel;
 
 	private Properties resb = GameActivity.resb;
@@ -170,7 +169,7 @@ public class CardsDialog extends Frame implements ActionListener {
 
 	public void setup(Player player, boolean ct) {
                 this.player = player;
-		canTrade=ct;
+                tradeButton.setVisible(ct);
 
 		myCardsPanel.removeAll();
 
@@ -320,7 +319,7 @@ public class CardsDialog extends Frame implements ActionListener {
                     }
 
                     List<CardPanel> trades = getSelectedCards();
-                    tradeButton.setFocusable( canTrade && trades.size() == 3 && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) );
+                    tradeButton.setFocusable( tradeButton.isVisible() && trades.size() == 3 && myrisk.canTrade( trades.get(0).getCardName() , trades.get(1).getCardName(), trades.get(2).getCardName() ) );
                     tradeButton.repaint();
                     setupNumArmies();
                 }
