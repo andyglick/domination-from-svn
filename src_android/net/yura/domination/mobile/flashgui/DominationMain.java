@@ -81,9 +81,12 @@ public class DominationMain extends Midlet {
             BugSubmitter.setApplicationInfoProvider( new ApplicationInfoProvider() {
                 @Override
                 public void addInfoForSubmit(Map map) {
-                    RiskGame game = risk.getGame();
-                    if (game!=null) {
-                        map.put("gameLog", new LogList( game.getCommands() ));
+                    Risk r = risk;
+                    if (r != null) {
+                        RiskGame game = r.getGame();
+                        if (game != null) {
+                            map.put("gameLog", new LogList( game.getCommands() ));
+                        }
                     }
                     map.put("lobbyID", MiniLobbyClient.getMyUUID() );
                 }
