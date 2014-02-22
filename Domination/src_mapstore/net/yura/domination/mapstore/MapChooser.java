@@ -367,27 +367,31 @@ public class MapChooser implements ActionListener,MapServerListener {
         if ("local".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            java.util.List riskmaps = new java.util.Vector( mapfiles.size() );
-            for (int c=0;c<mapfiles.size();c++) {
-                String file = (String)mapfiles.get(c);
+            new Thread() {
+                @Override
+                public void run() {
+                    java.util.List riskmaps = new java.util.Vector( mapfiles.size() );
+                    for (int c=0;c<mapfiles.size();c++) {
+                        String file = (String)mapfiles.get(c);
 
-                // we create a Map object for every localy stored map
-                Map map = createMap(file);
+                        // we create a Map object for every localy stored map
+                        Map map = createMap(file);
 
-                riskmaps.add( map );
-            }
+                        riskmaps.add( map );
+                    }
 
-            // we want to sort by name for the local map list
-            Collections.sort(riskmaps, new Comparator() {
-                public int compare(Object t1, Object t2) {
-                    Map m1 = (Map)t1;
-                    Map m2 = (Map)t2;
-                    return String.CASE_INSENSITIVE_ORDER.compare(m1.getName(), m2.getName());
+                    // we want to sort by name for the local map list
+                    Collections.sort(riskmaps, new Comparator() {
+                        public int compare(Object t1, Object t2) {
+                            Map m1 = (Map)t1;
+                            Map m2 = (Map)t2;
+                            return String.CASE_INSENSITIVE_ORDER.compare(m1.getName(), m2.getName());
+                        }
+                    });
+
+                    setListData( null, riskmaps );
                 }
-            });
-
-            setListData( null, riskmaps );
-
+            }.start();
         }
         else if ("catagories".equals(actionCommand)) {
             mainCatList(actionCommand);

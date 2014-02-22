@@ -89,9 +89,9 @@ public class GooglePlusOne {
 	Object[] object = (Object[])util.load(is);
         Map<String,Integer> urlToValue = new HashMap();
         for (int c=0;c<object.length;c++) {
-            Map<String, Object> responce = (Map)object[c];
+            Map<String, Object> response = (Map)object[c];
             try {
-                Map<String, Object> result = (Map)responce.get("result");
+                Map<String, Object> result = (Map)response.get("result");
                 String url = (String)result.get("id");
                 Map<String, Object> metadata = (Map)result.get("metadata");
                 Map<String, Object> globalCounts = (Map)metadata.get("globalCounts");
@@ -99,9 +99,14 @@ public class GooglePlusOne {
                 urlToValue.put(url, (int)count);
             }
             catch (Exception ex) {
-                IOException ex2 = new IOException("error in "+responce);
-                ex2.initCause(ex); // Android 1.6
-                throw ex2;
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                util.save(out, response);
+                System.err.println("error getting count from: "+out.toString("UTF-8"));
+                ex.printStackTrace();
+                // do not throw here as other responses may be fine
+                //IOException ex2 = new IOException("error in "+responce);
+                //ex2.initCause(ex); // Android 1.6
+                //throw ex2;
             }
         }
 	return urlToValue;
