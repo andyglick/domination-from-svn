@@ -2631,6 +2631,10 @@ RiskUtil.printStackTrace(e);
 
 			Card[] cards = game.getCards(c1,c2,c3);
 
+                        if (cards[0] == null || cards[1] == null || cards[2] == null) {
+                            return false;
+                        }
+
 			return game.checkTrade(cards[0], cards[1], cards[2]);
 		}
 		return false;
