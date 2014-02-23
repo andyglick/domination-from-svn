@@ -5,9 +5,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import com.google.example.games.basegameutils.GameHelper;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.WindowManager;
@@ -96,9 +98,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 	    }
 	}, GameHelper.CLIENT_GAMES);
 
-        if (preferences.getBoolean("fullscreen", false)) {
+        if (preferences.getBoolean("fullscreen", getDefaultFullScreen(this))) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+    }
+
+    public static boolean getDefaultFullScreen(Context context) {
+        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_SMALL;
     }
 
     /**
