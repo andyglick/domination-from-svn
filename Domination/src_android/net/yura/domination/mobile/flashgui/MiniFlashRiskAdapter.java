@@ -64,7 +64,14 @@ public class MiniFlashRiskAdapter implements RiskListener {
         } );
         playGamesStateChanged();
 
-        Frame mapFrame = new Frame( lobby.getTitle() );
+        Frame mapFrame = new Frame( lobby.getTitle() ) {
+            public void setVisible(boolean b) {
+        	super.setVisible(b);
+        	if (!b) {
+        	    lobby = null;
+        	}
+            };
+        };
         mapFrame.setContentPane( lobby.getRoot() );
         mapFrame.setMaximum(true);
         mapFrame.setVisible(true);
