@@ -65,6 +65,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         CheckBoxPreference fullscreen = new CheckBoxPreference(context); // TwoStatePreference = new SwitchPreference(this);
         fullscreen.setTitle( resb.getString("game.menu.fullscreen") );
         fullscreen.setKey("fullscreen");
+        fullscreen.setDefaultValue(GameActivity.getDefaultFullScreen(AndroidMeActivity.DEFAULT_ACTIVITY));
         inlinePrefCat.addPreference(fullscreen);
         fullscreen.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -78,7 +79,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
                 return true;
             }
         });
-        
+
         final ListPreference ai = new IntListPreference(context);
         ai.setTitle( resb.getString("game.menu.aiSpeed") );
         ai.setKey("ai_wait");
