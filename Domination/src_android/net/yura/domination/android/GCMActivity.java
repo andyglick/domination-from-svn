@@ -12,7 +12,7 @@ import android.os.Bundle;
 public class GCMActivity extends Activity {
 
     static final Logger logger = Logger.getLogger(GCMActivity.class.getName());
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -31,14 +31,14 @@ public class GCMActivity extends Activity {
 	}
         finish();
     }
-    
+
     public static void displayMessage(Context context,String text) {
         logger.info(text);
     }
-    
+
     public static void setup() {
         Context context = net.yura.android.AndroidMeApp.getContext();
-        
+
         GCMRegistrar.checkDevice(context);
         GCMRegistrar.checkManifest(context);
         final String regId = GCMRegistrar.getRegistrationId(context);
@@ -51,17 +51,17 @@ public class GCMActivity extends Activity {
             }
             else {
                 GCMServerUtilities.register(context, regId);
-                
+
                 // TODO if we FAIL at registering on our server then call
                 // GCMRegistrar.unregister(context);
                 // currently can not tell
             }
         }
     }
-    
+
     public static void unregister() {
         Context context = net.yura.android.AndroidMeApp.getContext();
         GCMRegistrar.unregister(context);
     }
-    
+
 }

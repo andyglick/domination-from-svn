@@ -41,10 +41,11 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
 	String msg = intent.getExtras().getString("message");
+        String gameId = intent.getExtras().getString("gameId");
         String message = msg==null?"Received message":msg;
         displayMessage(context, message);
         // notifies user
-        generateNotification(context, message);
+        generateNotification(context, message, gameId == null ? null : Integer.valueOf(gameId));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         String message = "Received deleted messages notification "+total;
         displayMessage(context, message);
         // notifies user
-        generateNotification(context, message);
+        generateNotification(context, message, null);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    private static void generateNotification(Context context, String message) {
+    private static void generateNotification(Context context, String message, Integer gameId) {
         int icon = R.drawable.icon;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager)
@@ -78,6 +79,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         Notification notification = new Notification(icon, message, when);
         String title = context.getString(R.string.app_name);
         Intent notificationIntent = new Intent(context, GameActivity.class);
+        if (gameId != null) {
+            notificationIntent.putExtra("gameId", gameId);
+        }
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -85,12 +89,12 @@ public class GCMIntentService extends GCMBaseIntentService {
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, title, message, intent);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        
+
         //notification.defaults|= Notification.DEFAULT_SOUND;
         //notification.defaults|= Notification.DEFAULT_LIGHTS;
         //notification.defaults|= Notification.DEFAULT_VIBRATE;
         notification.defaults = Notification.DEFAULT_ALL;
-        
+
         notificationManager.notify(0, notification);
     }
 

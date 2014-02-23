@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import com.google.example.games.basegameutils.GameHelper;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +42,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     private boolean pendingShowAchievements;
     private net.yura.lobby.model.Game pendingStartGameGooglePlay;
     private boolean pendingSendLobbyUsername;
+    private int pendingOpenGame = -1;
 
     /**
      * need to create everything owned by the activity, but the game/static objects may already exist
@@ -131,6 +133,38 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        int gameId = intent.getIntExtra("gameId", -1);
+        if (gameId > -1) {
+            MiniFlashRiskAdapter ui = getUi();
+            if (ui.lobby != null) {
+                if (ui.lobby.whoAmI() != null) {
+                    ui.lobby.playGame(gameId);
+                }
+                else {
+                    pendingOpenGame = gameId;
+                    logger.warning("lobby open but we are not logged in yet");
+                }
+            }
+            else {
+                pendingOpenGame = gameId;
+                ui.openLobby();
+            }
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         realTimeMultiplayer.onActivityResult(requestCode, resultCode, data);
@@ -206,6 +240,10 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         if (pendingSendLobbyUsername) {
             pendingSendLobbyUsername = false;
             realTimeMultiplayer.sendLobbyUsername(username);
+        }
+        if (pendingOpenGame > -1) {
+            getUi().lobby.playGame(pendingOpenGame);
+            pendingOpenGame = -1;
         }
     }
 
