@@ -103,6 +103,36 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         if (preferences.getBoolean("fullscreen", getDefaultFullScreen(this))) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
+        int gameId = intent.getIntExtra(GCMIntentService.EXTRA_GAME_ID, -1);
+        if (gameId > -1) {
+            MiniFlashRiskAdapter ui = getUi();
+            if (ui != null) {
+                if (ui.lobby != null) {
+                    if (ui.lobby.whoAmI() != null) {
+                        ui.lobby.playGame(gameId);
+                    }
+                    else {
+                        pendingOpenGame = gameId;
+                        logger.warning("lobby open but we are not logged in yet");
+                    }
+                }
+                else {
+                    pendingOpenGame = gameId;
+                    ui.openLobby();
+                }
+            }
+            else {
+        	// the game has not initialized yet
+        	pendingOpenGame = gameId;
+            }
+        }
+        // as we have handled this open game request, clear it
+        intent.removeExtra(GCMIntentService.EXTRA_GAME_ID);
     }
 
     public static boolean getDefaultFullScreen(Context context) {
@@ -136,32 +166,14 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     protected void onResume() {
         super.onResume();
 
-        NotificationManager notificationManager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        int gameId = intent.getIntExtra("gameId", -1);
-        if (gameId > -1) {
-            MiniFlashRiskAdapter ui = getUi();
-            if (ui.lobby != null) {
-                if (ui.lobby.whoAmI() != null) {
-                    ui.lobby.playGame(gameId);
-                }
-                else {
-                    pendingOpenGame = gameId;
-                    logger.warning("lobby open but we are not logged in yet");
-                }
-            }
-            else {
-                pendingOpenGame = gameId;
-                ui.openLobby();
-            }
-        }
+        handleIntent(intent);
     }
 
     @Override

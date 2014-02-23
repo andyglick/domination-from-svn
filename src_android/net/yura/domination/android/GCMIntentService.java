@@ -68,6 +68,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         return super.onRecoverableError(context, errorId);
     }
 
+    public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
+    
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
@@ -80,13 +82,13 @@ public class GCMIntentService extends GCMBaseIntentService {
         String title = context.getString(R.string.app_name);
         Intent notificationIntent = new Intent(context, GameActivity.class);
         if (gameId != null) {
-            notificationIntent.putExtra("gameId", gameId);
+            notificationIntent.putExtra(EXTRA_GAME_ID, (int)gameId);
         }
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent =
-                PendingIntent.getActivity(context, 0, notificationIntent, 0);
+                PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setLatestEventInfo(context, title, message, intent);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
