@@ -1,11 +1,14 @@
 package net.yura.domination.android;
 
 import static net.yura.domination.android.GCMActivity.displayMessage;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import javax.microedition.midlet.MIDlet;
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.R;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import net.yura.lobby.mini.MiniLobbyClient;
 import android.content.Context;
 import android.content.Intent;
 import com.google.android.gcm.GCMBaseIntentService;
@@ -45,7 +48,11 @@ public class GCMIntentService extends GCMBaseIntentService {
         String message = msg==null?"Received message":msg;
         displayMessage(context, message);
         // notifies user
-        generateNotification(context, message, gameId == null ? null : Integer.valueOf(gameId));
+        Map<String, Object> extras = new HashMap();
+        if (gameId != null) {
+            extras.put(MiniLobbyClient.EXTRA_GAME_ID, gameId);
+        }
+        MIDlet.showNotification(context.getString(R.string.app_name), message, R.drawable.icon, -1, extras);
     }
 
     @Override
@@ -53,7 +60,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         String message = "Received deleted messages notification "+total;
         displayMessage(context, message);
         // notifies user
-        generateNotification(context, message, null);
+        MIDlet.showNotification(context.getString(R.string.app_name), message, R.drawable.icon, -1, Collections.EMPTY_MAP);
     }
 
     @Override
@@ -66,38 +73,6 @@ public class GCMIntentService extends GCMBaseIntentService {
         // log message
         displayMessage(context, "Received recoverable error: "+errorId);
         return super.onRecoverableError(context, errorId);
-    }
-
-    public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
-    
-    /**
-     * Issues a notification to inform the user that server has sent a message.
-     */
-    private static void generateNotification(Context context, String message, Integer gameId) {
-        int icon = R.drawable.icon;
-        long when = System.currentTimeMillis();
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(icon, message, when);
-        String title = context.getString(R.string.app_name);
-        Intent notificationIntent = new Intent(context, GameActivity.class);
-        if (gameId != null) {
-            notificationIntent.putExtra(EXTRA_GAME_ID, (int)gameId);
-        }
-        // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent =
-                PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.setLatestEventInfo(context, title, message, intent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        //notification.defaults|= Notification.DEFAULT_SOUND;
-        //notification.defaults|= Notification.DEFAULT_LIGHTS;
-        //notification.defaults|= Notification.DEFAULT_VIBRATE;
-        notification.defaults = Notification.DEFAULT_ALL;
-
-        notificationManager.notify(0, notification);
     }
 
 }

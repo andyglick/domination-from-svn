@@ -22,6 +22,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
+import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.model.Game;
 
 public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
@@ -108,33 +109,34 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     private void handleIntent(Intent intent) {
-        int gameId = intent.getIntExtra(GCMIntentService.EXTRA_GAME_ID, -1);
-        if (gameId > -1) {
+        String gameId = intent.getStringExtra(MiniLobbyClient.EXTRA_GAME_ID);
+        if (gameId != null) {
+            int id = Integer.parseInt(gameId);
             MiniFlashRiskAdapter ui = getUi();
             if (ui != null) {
                 if (ui.lobby != null) {
                     if (ui.lobby.whoAmI() != null) {
-                        ui.lobby.playGame(gameId);
+                        ui.lobby.playGame(id);
                     }
                     else {
-                        pendingOpenGame = gameId;
+                        pendingOpenGame = id;
                         logger.warning("lobby open but we are not logged in yet");
                     }
                 }
                 else {
-                    pendingOpenGame = gameId;
+                    pendingOpenGame = id;
                     ui.openLobby();
                 }
             }
             else {
         	// the game has not initialized yet
-        	pendingOpenGame = gameId;
+        	pendingOpenGame = id;
             }
         }
         // as we have handled this open game request, clear it
-        intent.removeExtra(GCMIntentService.EXTRA_GAME_ID);
+        intent.removeExtra(MiniLobbyClient.EXTRA_GAME_ID);
     }
-    
+
     @Override
     public boolean hasPendingOpenLobby() {
         return pendingOpenGame > -1;
