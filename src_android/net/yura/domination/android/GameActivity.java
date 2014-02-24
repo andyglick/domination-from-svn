@@ -134,6 +134,11 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         // as we have handled this open game request, clear it
         intent.removeExtra(GCMIntentService.EXTRA_GAME_ID);
     }
+    
+    @Override
+    public boolean hasPendingOpenLobby() {
+        return pendingOpenGame > -1;
+    }
 
     public static boolean getDefaultFullScreen(Context context) {
         return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_SMALL;
