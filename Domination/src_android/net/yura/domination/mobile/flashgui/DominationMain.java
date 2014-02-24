@@ -63,6 +63,8 @@ public class DominationMain extends Midlet {
 	void startGameGooglePlay(net.yura.lobby.model.Game game);
 	void setLobbyUsername(String username);
 	void gameStarted(int id);
+	
+	boolean hasPendingOpenLobby();
     }
 
     public DominationMain() {
@@ -231,6 +233,11 @@ public class DominationMain extends Midlet {
                 }
                 else {
                     adapter.openMainMenu();
+                    
+                    GooglePlayGameServices gpgs = getGooglePlayGameServices();
+                    if (gpgs != null && gpgs.hasPendingOpenLobby()) {
+                        adapter.openLobby();
+                    }
                 }
             }
         });
