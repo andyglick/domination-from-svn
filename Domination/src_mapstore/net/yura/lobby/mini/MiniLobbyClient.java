@@ -42,6 +42,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     private static final String LOBBY_SERVER = "lobby.yura.net";
     //private static final String LOBBY_SERVER = "192.168.0.2";
 
+    public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
+
     XULLoader loader;
     List list;
 
@@ -329,11 +331,11 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void addOrUpdateGame(Game game) {
         int index = Collections.binarySearch(games, game);
         if (index>=0) {
-            games.set(index,game);
+            games.set(index, game);
 
             // if this game is not open and its our turn
             if (whoAmI().equals(game.getWhosTurn())) {
-                notify( game.getType().getName(), "It is your go: "+game.getName(), openGameId==game.getId() ); // TODO copy/paste same code as on server
+                notify(game.getType().getName(), "It is your go: "+game.getName(), game.getId(), openGameId==game.getId() ); // TODO copy/paste same code as on server
             }
         }
         else {
@@ -513,10 +515,14 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    static void notify(String title,String message,boolean onlyBackground) {
-        String icon = "icon";
-        Midlet.openURL("notify://dummyServer?title="+Url.encode(title)+"&message="+Url.encode(message)+"&icon="+Url.encode(icon)+"&onlyBackground="+onlyBackground);
-        // not used &num=4
+    static void notify(String title, String message, int gameId, boolean onlyBackground) {
+        String icon = "icon"; // maps to R.drawable.icon
+        Midlet.openURL("notify://dummyServer?title="+Url.encode(title)+
+                "&message="+Url.encode(message)+
+                "&icon="+Url.encode(icon)+
+                "&onlyBackground="+onlyBackground+
+                "&"+Url.encode(EXTRA_GAME_ID)+"="+Url.encode(String.valueOf(gameId)));
+                // not used &num=4
     }
 
     /**
