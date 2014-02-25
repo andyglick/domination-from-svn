@@ -973,7 +973,7 @@ public class CollisionPhysics {
     * @param theta : rotational angle in radians, counter-clockwise.
     * @return An double array of 2 elements x and y, in the rotated coordinates.
     */
-   private static double[] rotateResult = new double[2];
+   private static final double[] rotateResult = new double[2];
    private static double[] rotate(double x, double y, double theta) {
       double sinTheta = Math.sin(theta);
       double cosTheta = Math.cos(theta);
