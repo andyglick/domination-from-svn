@@ -4,6 +4,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.mobile.flashgui.DominationMain;
+import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.lobby.client.AndroidLobbyClient;
 import net.yura.lobby.client.Connection;
 import net.yura.lobby.mini.MiniLobbyClient;
@@ -13,20 +14,30 @@ public class GCMServerUtilities implements AndroidLobbyClient {
 
     public static void register(Context context, String registrationId) {
         Connection con = getLobbyConnection();
-        con.addAndroidEventListener(new GCMServerUtilities(context));
-        con.androidRegister(registrationId);
+        if (con != null) {
+            con.addAndroidEventListener(new GCMServerUtilities(context));
+            con.androidRegister(registrationId);
+        }
     }
 
     public static void unregister(Context context, String registrationId) {
         Connection con = getLobbyConnection();
-        con.addAndroidEventListener(new GCMServerUtilities(context));
-        con.androidUnregister(registrationId);
+        if (con != null) {
+            con.addAndroidEventListener(new GCMServerUtilities(context));
+            con.androidUnregister(registrationId);
+        }
     }
 
     static Connection getLobbyConnection() {
-        MiniLobbyClient lobby = ((DominationMain)AndroidMeApp.getMIDlet()).adapter.lobby;
-        if (lobby!=null) {
-            return lobby.mycom;
+        DominationMain main = (DominationMain)AndroidMeApp.getMIDlet();
+        if (main != null) {
+            MiniFlashRiskAdapter gui = main.adapter;
+            if (gui != null) {
+                MiniLobbyClient lobby = gui.lobby;
+                if (lobby != null) {
+                    return lobby.mycom;
+                }
+            }
         }
         return null;
     }
@@ -35,7 +46,7 @@ public class GCMServerUtilities implements AndroidLobbyClient {
     public GCMServerUtilities(Context context) {
         this.context = context;
     }
-    
+
     @Override
     public void registerDone() {
         GCMRegistrar.setRegisteredOnServer(context, true);
