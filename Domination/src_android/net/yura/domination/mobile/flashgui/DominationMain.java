@@ -111,6 +111,9 @@ public class DominationMain extends Midlet {
                     if ("/data/system/carrierinfo.prop: open failed: ENOENT (No such file or directory)".equals(record.getMessage())) {
                         return true;
                     }
+                    if ("isDataSchedulerEnabled():false".equals(record.getMessage())) {
+                        return true;
+                    }
 
                     return false;
                 }
