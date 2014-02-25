@@ -377,8 +377,13 @@ public class GameActivity extends Frame implements ActionListener {
     public void setVisible(boolean b) {
     	super.setVisible(b);
     	Midlet.openURL("wakelock://"+b);
-        if (!b && cardsDialog!=null) {
-            cardsDialog.setVisible(false);
+        if (!b) {
+            if (cardsDialog != null) {
+                cardsDialog.setVisible(false);
+            }
+            if (tacMove != null) {
+                tacMove.setVisible(false);
+            }
         }
     }
 
@@ -938,7 +943,7 @@ public class GameActivity extends Frame implements ActionListener {
     public void noInput() {
 
             // if we timeout on our turn, we need to close this dialog
-            if (tacMove!=null && tacMove.isVisible()) {
+            if (tacMove != null) {
                 tacMove.setVisible(false);
             }
 
