@@ -230,12 +230,11 @@ public class CardsDialog extends Frame implements ActionListener {
 
 				Image i = pp.getCountryImage( card.getCountry().getColor() );
 
-                                int ownerColor=0;
+                                int ownerColor = player.getColor();
 
                                 ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
                                 m.preConcat(PicturePanel.gray);
                                 if ( isOwnedPlayer( this ) ) {
-                                    ownerColor = card.getCountry().getOwner().getColor();
                                     m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(ownerColor, 100) ) );
                                 }
 
