@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.Toast;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.Player;
@@ -142,40 +143,54 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             logger.info("Player selection failed. "+resultCode);
             return;
         }
-        ArrayList<String> invitees = data.getStringArrayListExtra(GamesClient.EXTRA_PLAYERS);
-        logger.info("Players selected. Creating room.");
+
         openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
-        mHelper.getGamesClient().createRoom(RoomConfig.builder(
-                new BaseRoomUpdateListener() {
-                    @Override
-                    public void onRoomCreated(int statusCode, Room room) {
-                        super.onRoomCreated(statusCode, room);
-                        closeLoadingDialog();
-                        if (statusCode != GamesClient.STATUS_OK) {
-                            String error = "onRoomCreated failed. "+statusCode+" "+getErrorString(statusCode);
-                            logger.warning(error);
-                            toast(error);
-                            return;
-                        }
-                        gameRoom = room;
-                        logger.info("Starting waiting room activity.");
-                        activity.startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_CREATOR_WAITING_ROOM);
+
+        ArrayList<String> invitees = data.getStringArrayListExtra(GamesClient.EXTRA_PLAYERS);
+        // get auto-match criteria
+        int minAutoMatchPlayers = data.getIntExtra(GamesClient.EXTRA_MIN_AUTOMATCH_PLAYERS, 0);
+        int maxAutoMatchPlayers = data.getIntExtra(GamesClient.EXTRA_MAX_AUTOMATCH_PLAYERS, 0);
+
+        logger.info("Players selected. Creating room. "+invitees+" "+minAutoMatchPlayers+" "+maxAutoMatchPlayers);
+
+        RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(
+            new BaseRoomUpdateListener() {
+                @Override
+                public void onRoomCreated(int statusCode, Room room) {
+                    super.onRoomCreated(statusCode, room);
+                    closeLoadingDialog();
+                    if (statusCode != GamesClient.STATUS_OK) {
+                        String error = "onRoomCreated failed. "+statusCode+" "+getErrorString(statusCode);
+                        logger.warning(error);
+                        toast(error);
+                        return;
                     }
-                })
-                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener(){
-                    @Override
-                    public void onRoomUpdated(Room room) {
-                        super.onRoomUpdated(room);
-                        gameRoom = room;
-                    }
-                })
-                .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
-                    @Override
-                    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-                        onMessageReceived(realTimeMessage);
-                    }
-                })
-                .addPlayersToInvite(invitees).build());
+                    gameRoom = room;
+                    logger.info("Starting waiting room activity.");
+                    activity.startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_CREATOR_WAITING_ROOM);
+                }
+            })
+            .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener(){
+                @Override
+                public void onRoomUpdated(Room room) {
+                    super.onRoomUpdated(room);
+                    gameRoom = room;
+                }
+            })
+            .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
+                @Override
+                public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+                    onMessageReceived(realTimeMessage);
+                }
+            })
+            .addPlayersToInvite(invitees);
+
+        if (minAutoMatchPlayers > 0) {
+            Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(minAutoMatchPlayers, maxAutoMatchPlayers, 0);
+            roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        }
+
+        mHelper.getGamesClient().createRoom(roomConfigBuilder.build());
         logger.info("Room created, waiting for it to be ready");
     }
 
