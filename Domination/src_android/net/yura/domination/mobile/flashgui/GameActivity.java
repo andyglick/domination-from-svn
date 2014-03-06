@@ -510,7 +510,7 @@ public class GameActivity extends Frame implements ActionListener {
                     0,
                     OptionPane.INFORMATION_MESSAGE,
                     null,
-                    new Button[] {ok,help},
+                    new Button[] {help, ok}, // the second button is going to map to the back action
                     ok);
         }
         else if ("dismissInfo".equals(actionCommand)) {
