@@ -189,6 +189,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(minAutoMatchPlayers, maxAutoMatchPlayers, 0);
             roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
+        
+        roomConfigBuilder.setVariant(lobbyGame.getOptions().hashCode());
 
         mHelper.getGamesClient().createRoom(roomConfigBuilder.build());
         logger.info("Room created, waiting for it to be ready");

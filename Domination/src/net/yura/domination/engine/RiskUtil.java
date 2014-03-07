@@ -98,12 +98,9 @@ public class RiskUtil {
          *   choosemap luca.map
          *   startgame domination increasing
          */
-        public static String createGameString(/** @Deprecated */ int crapAI,int normalAI,int goodAI,int gameMode,int cardsMode,boolean AutoPlaceAll,boolean recycle,String mapFile) {
-            String players = 
-            //human +"\n" +
-            crapAI+"\n" + // deprecated
-            normalAI +"\n" +
-            goodAI +"\n";
+        public static String createGameString(int averageAI,int easyAI,int hardAI,int gameMode,int cardsMode,boolean AutoPlaceAll,boolean recycle,String mapFile) {
+
+            String players = averageAI + "\n" + easyAI + "\n" + hardAI + "\n";
 
             String type="";
 
