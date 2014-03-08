@@ -5,7 +5,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import java.util.List;
 import java.util.logging.Logger;
 
-public class BaseRoomStatusUpdateListener implements RoomStatusUpdateListener {
+public abstract class BaseRoomStatusUpdateListener implements RoomStatusUpdateListener {
 
     private static final Logger logger = Logger.getLogger(BaseRoomStatusUpdateListener.class.getName());
 
@@ -79,6 +79,5 @@ public class BaseRoomStatusUpdateListener implements RoomStatusUpdateListener {
         logger.info("onP2PDisconnected(" + s + ")");
     }
 
-    public void onRoomUpdated(Room room) {
-    }
+    public abstract void onRoomUpdated(Room room);
 }

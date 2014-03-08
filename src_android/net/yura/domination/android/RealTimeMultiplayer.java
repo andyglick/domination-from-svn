@@ -173,7 +173,6 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener(){
                 @Override
                 public void onRoomUpdated(Room room) {
-                    super.onRoomUpdated(room);
                     gameRoom = room;
                 }
             })
@@ -190,7 +189,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
         
-        roomConfigBuilder.setVariant(lobbyGame.getOptions().hashCode());
+        // The variant has to be positive, or else it will throw an Exception.
+        roomConfigBuilder.setVariant(lobbyGame.getOptions().hashCode() & 0x7FFFFFFF);
 
         mHelper.getGamesClient().createRoom(roomConfigBuilder.build());
         logger.info("Room created, waiting for it to be ready");
@@ -348,14 +348,19 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                         activity.startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_JOINER_WAITING_ROOM);
                     }
                 })
-                .setInvitationIdToAccept(invitationId)
-                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener())
+                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener() {
+                    @Override
+                    public void onRoomUpdated(Room room) {
+                        gameRoom = room;
+                    }
+                })
                 .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
                     @Override
                     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
                         onMessageReceived(realTimeMessage);
                     }
                 })
+                .setInvitationIdToAccept(invitationId)
                 .build());
     }
 
