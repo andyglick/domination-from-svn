@@ -298,7 +298,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
 
 
-    public void setUsername(String name, boolean guest) {
+    public void setUsername(String name, int type) {
         myusername = name;
         toast("You are logged in as: "+name);
         game.connected(name);
