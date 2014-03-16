@@ -71,7 +71,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 MiniFlashRiskAdapter ui = getUi();
                 if (ui.lobby != null) {
                     if (ui.lobby.whoAmI() != null) {
-                        realTimeMultiplayer.sendLobbyUsername(ui.lobby.whoAmI());
+                        realTimeMultiplayer.setLobbyUsername(ui.lobby.whoAmI());
                     }
                     else {
                         pendingSendLobbyUsername = true;
@@ -258,7 +258,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     public void setLobbyUsername(String username) {
         if (pendingSendLobbyUsername) {
             pendingSendLobbyUsername = false;
-            realTimeMultiplayer.sendLobbyUsername(username);
+            realTimeMultiplayer.setLobbyUsername(username);
         }
         if (pendingOpenGame > -1) {
             getUi().lobby.playGame(pendingOpenGame);
