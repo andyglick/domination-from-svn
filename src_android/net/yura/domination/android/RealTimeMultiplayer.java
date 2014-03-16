@@ -115,11 +115,15 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     }
 
     private int getCurrentPlayerState(Invitation invitation) {
-        List<Participant> participants = invitation.getParticipants();
+        return getMe(invitation.getParticipants()).getStatus();
+    }
+
+    private Participant getMe(List<Participant> participants) {
+        String myId = mHelper.getGamesClient().getCurrentPlayerId();
         for (Participant participant : participants) {
             Player player = participant.getPlayer();
-            if (player.getPlayerId().equals(mHelper.getGamesClient().getCurrentPlayerId())) {
-                return participant.getStatus();
+            if (player != null && myId.equals(player.getPlayerId())) {
+                return participant;
             }
         }
         throw new RuntimeException("me not found");
