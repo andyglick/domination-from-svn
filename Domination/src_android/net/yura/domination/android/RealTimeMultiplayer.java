@@ -58,6 +58,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     private static final int GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS = 1;
 
+    public static final String EXTRA_SHOW_AUTOMATCH = "com.google.android.gms.games.SHOW_AUTOMATCH";
+
     private static final Logger logger = Logger.getLogger(RealTimeMultiplayer.class.getName());
 
     private ProtoAccess encodeDecoder = new ProtoAccess(null);
@@ -155,9 +157,9 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             throw new RuntimeException("should only have creator "+game.getPlayers());
         }
 
-        activity.startActivityForResult(mHelper.getGamesClient().getSelectPlayersIntent(
-                GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1),
-                RC_SELECT_PLAYERS);
+        Intent intent = mHelper.getGamesClient().getSelectPlayersIntent(GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1);
+        intent.putExtra(EXTRA_SHOW_AUTOMATCH, false);
+        activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
     private void handlePlayersSelected(int resultCode, Intent data) {
@@ -222,14 +224,14 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         byte[] data = realTimeMessage.getMessageData();
         try {
             Message message = (Message)encodeDecoder.load(new ByteArrayInputStream(data), data.length);
-            onMessageReceived(message);
+            onMessageReceived(message, realTimeMessage.getSenderParticipantId());
         }
         catch (IOException ex) {
             logger.log(Level.WARNING, "can not decode", ex);
         }
     }
 
-    private void onMessageReceived(Message message) {
+    private void onMessageReceived(Message message, String from) {
         logger.info("Room message received: " + message);
         String command = message.getCommand();
         if (ProtoAccess.REQUEST_JOIN_GAME.equals(command)) {
@@ -357,7 +359,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 	
 	// Play Games throws a error if i tell it to send a message to myself
 	if (recipientParticipantId.equals(getMe(gameRoom.getParticipants()).getParticipantId())) {
-	    onMessageReceived(message);
+	    onMessageReceived(message, recipientParticipantId);
 	}
 	else {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream( encodeDecoder.computeAnonymousObjectSize(message) );
