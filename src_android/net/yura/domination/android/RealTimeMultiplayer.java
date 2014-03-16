@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -33,6 +34,22 @@ import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.example.games.basegameutils.GameHelper;
 
+/**
+ * if 2 people (B and Q) create games with 1 friend each (C and G) and 2 auto-match players each:
+ * 
+ * B players=[Q, C, G, B] creator=B GameX
+ * Q players=[Q, C, B, G] creator=Q GameY
+ * C players=[Q, C, G, B] creator=B
+ * G players=[Q, C, B, G] creator=Q
+ * 
+ * C sends name to B
+ * G sends name to Q
+ * B sends to everyone he is the creator
+ * Q sends to everyone he is the creator
+ * as B is less then Q, Q sends its name and the name it received from G to B
+ * if Q only got the name of G after it found out B is a creator it will now send G's name to B
+ * now B has everyones name and starts the game.
+ */
 public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     private static final int RC_SELECT_PLAYERS = 2;
@@ -48,6 +65,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     private GameHelper mHelper;
     private Lobby lobby;
 
+    private String gameCreator;
     private Room gameRoom;
     private Game lobbyGame;
 
@@ -213,24 +231,57 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     private void onMessageReceived(Message message) {
         logger.info("Room message received: " + message);
-        if (ProtoAccess.REQUEST_JOIN_GAME.equals(message.getCommand())) {
+        String command = message.getCommand();
+        if (ProtoAccess.REQUEST_JOIN_GAME.equals(command)) {
             String name = (String)message.getParam();
-            lobbyGame.getPlayers().add(new net.yura.lobby.model.Player(name, 0));
-
-            int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
-            logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
-            if (lobbyGame.getNumOfPlayers() == joined) {
-                // TODO can we be not inside lobby???
-                // TODO can we be not logged in?
-                // in case we decided to start with less then the max number of human players
-                // we need to update the max number to the current number, so no one else can join
-                lobbyGame.setMaxPlayers(lobbyGame.getNumOfPlayers());
-                lobby.createNewGame(lobbyGame);
+            
+            if (lobbyGame != null) {
+                lobbyGame.getPlayers().add(new net.yura.lobby.model.Player(name, 0));
+    
+                int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
+                logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
+                if (lobbyGame.getNumOfPlayers() == joined) {
+                    // TODO can we be not inside lobby???
+                    // TODO can we be not logged in?
+                    // in case we decided to start with less then the max number of human players
+                    // we need to update the max number to the current number, so no one else can join
+                    lobbyGame.setMaxPlayers(lobbyGame.getNumOfPlayers());
+                    lobby.createNewGame(lobbyGame);
+                    lobbyGame = null;
+                }
+            }
+            else {
+        	if (gameCreator == null) {
+        	    throw new RuntimeException("someone sent me a lobby username, but i dont know what to do");
+        	}
+        	// we got a username but someone else is the real creator, forward the username to them.
+        	sendLobbyUsername(name, gameCreator);
             }
         }
-        else if (ProtoAccess.COMMAND_GAME_STARTED.equals(message.getCommand())) {
+        else if (ProtoAccess.COMMAND_GAME_STARTED.equals(command)) {
+            gameCreator = null;
             int gameId = (Integer)message.getParam();
             lobby.playGame(gameId);
+        }
+        else if (ProtoAccess.REQUEST_HELLO.equals(command)) {
+            String creator = (String) message.getParam();
+            if (lobbyGame != null) {
+        	String myPID = getMe(gameRoom.getParticipants()).getParticipantId();
+        	if (creator.compareTo(myPID) == 0) {
+        	    throw new RuntimeException("did we just say hello to ourselves?");
+        	}
+        	else if (creator.compareTo(myPID) < 0) {
+        	    gameCreator = creator;
+        	    Collection<net.yura.lobby.model.Player> players = lobbyGame.getPlayers();
+        	    for (net.yura.lobby.model.Player player : players) {
+        		sendLobbyUsername(player.getName(), gameCreator);
+        	    }
+        	    lobbyGame = null;
+        	}
+        	// we are the main creator, dont need to do anything
+            }
+            // we are not a creator, so dont care who is, as long as we send our name to one of the
+            // creators it should be ok.
         }
         else {
             logger.warning("unknown command "+message);
@@ -253,21 +304,39 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             logger.info("Room was cancelled, result code = " + resultCode);
             return;
         }
-        logger.info("Room ready.");
+        String myPID = getMe(gameRoom.getParticipants()).getParticipantId();
+        logger.info("Room ready. me="+myPID+" "+gameRoom.getParticipantIds()+" creator="+gameRoom.getCreatorId()+" "+lobbyGame);
         openLoadingDialog("mainmenu.googlePlayGame.waitGame");
-        if (!isCreator) {
+        if (isCreator) {
+            // send a message to everyone that i think i am the creator.
+            List<String> participants = gameRoom.getParticipantIds();
+            Message message = new Message();
+            message.setCommand(ProtoAccess.REQUEST_HELLO);
+            message.setParam(myPID);
+            for (String participant : participants) {
+        	if (!participant.equals(myPID)) {
+        	    sendMessage(message, participant);
+        	}
+            }
+        }
+        else {
+            // send username to any of the game creator, they will know what to do with it.
             lobby.getUsername();
         }
     }
 
-    public void sendLobbyUsername(String username) {
-        logger.info("Sending ID to creator.");
+    public void setLobbyUsername(String username) {
+        sendLobbyUsername(username, gameRoom.getCreatorId());
+    }
+    
+    private void sendLobbyUsername(String username, String creator) {
+        logger.info("Sending ID to creator. "+username+" "+creator);
 
         Message message = new Message();
         message.setCommand(ProtoAccess.REQUEST_JOIN_GAME);
         message.setParam(username);
 
-        sendMessage(message, gameRoom.getCreatorId());
+        sendMessage(message, creator);
     }
 
     public void gameStarted(int id) {
@@ -277,36 +346,36 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             message.setCommand(ProtoAccess.COMMAND_GAME_STARTED);
             message.setParam(id);
 
-            String me = gameRoom.getCreatorId();
             List<String> participants = gameRoom.getParticipantIds();
             for (String participant : participants) {
-                // Play Games throws a error if i tell it to send a message to myself
-                if (participant.equals(me)) {
-                    onMessageReceived(message);
-                }
-                else {
-                    sendMessage(message, participant);
-                }
+                sendMessage(message, participant);
             }
         }
     }
 
     void sendMessage(Message message, String recipientParticipantId) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream( encodeDecoder.computeAnonymousObjectSize(message) );
-        try {
-            encodeDecoder.save(bytes, message);
-        }
-        catch (IOException ex) {
-            throw new RuntimeException("can not encode", ex);
-        }
-        byte[] data = bytes.toByteArray();
-
-        mHelper.getGamesClient().sendReliableRealTimeMessage(new RealTimeReliableMessageSentListener() {
-            @Override
-            public void onRealTimeMessageSent(int statusCode, int tokenId, String recipientId) {
-                logger.info(String.format("Message %d sent (%d) to %s", tokenId, statusCode, recipientId));
+	
+	// Play Games throws a error if i tell it to send a message to myself
+	if (recipientParticipantId.equals(getMe(gameRoom.getParticipants()).getParticipantId())) {
+	    onMessageReceived(message);
+	}
+	else {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream( encodeDecoder.computeAnonymousObjectSize(message) );
+            try {
+                encodeDecoder.save(bytes, message);
             }
-        }, data, gameRoom.getRoomId(), recipientParticipantId);
+            catch (IOException ex) {
+                throw new RuntimeException("can not encode", ex);
+            }
+            byte[] data = bytes.toByteArray();
+    
+            mHelper.getGamesClient().sendReliableRealTimeMessage(new RealTimeReliableMessageSentListener() {
+                @Override
+                public void onRealTimeMessageSent(int statusCode, int tokenId, String recipientId) {
+                    logger.info(String.format("Message %d sent (%d) to %s", tokenId, statusCode, recipientId));
+                }
+            }, data, gameRoom.getRoomId(), recipientParticipantId);
+	}
     }
 
     private AlertDialog createAcceptDialog(Invitation invitation) {
@@ -335,6 +404,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     private void acceptInvitation(String invitationId) {
         openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
+        lobbyGame = null;
+        
         mHelper.getGamesClient().joinRoom(RoomConfig.builder(
                 new BaseRoomUpdateListener() {
                     @Override
