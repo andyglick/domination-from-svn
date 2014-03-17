@@ -36,12 +36,12 @@ import com.google.example.games.basegameutils.GameHelper;
 
 /**
  * if 2 people (B and Q) create games with 1 friend each (C and G) and 2 auto-match players each:
- * 
+ *
  * B players=[Q, C, G, B] creator=B GameX
  * Q players=[Q, C, B, G] creator=Q GameY
  * C players=[Q, C, G, B] creator=B
  * G players=[Q, C, B, G] creator=Q
- * 
+ *
  * C sends name to B
  * G sends name to Q
  * B sends to everyone he is the creator
@@ -151,8 +151,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     public void startGameGooglePlay(Game game) {
         logger.info("starting player selection");
-
         lobbyGame = game;
+        gameCreator = null;
         if (lobbyGame.getNumOfPlayers() != 1) {
             throw new RuntimeException("should only have creator "+game.getPlayers());
         }
@@ -212,7 +212,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(minAutoMatchPlayers, maxAutoMatchPlayers, 0);
             roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
-        
+
         // The variant has to be positive, or else it will throw an Exception.
         roomConfigBuilder.setVariant(lobbyGame.getOptions().hashCode() & 0x7FFFFFFF);
 
@@ -236,10 +236,10 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         String command = message.getCommand();
         if (ProtoAccess.REQUEST_JOIN_GAME.equals(command)) {
             String name = (String)message.getParam();
-            
+
             if (lobbyGame != null) {
                 lobbyGame.getPlayers().add(new net.yura.lobby.model.Player(name, 0));
-    
+
                 int joined = getParticipantStatusCount(Participant.STATUS_JOINED);
                 logger.info("new player joined: "+name+" "+lobbyGame.getNumOfPlayers()+"/"+joined+"/"+gameRoom.getParticipantIds().size());
                 if (lobbyGame.getNumOfPlayers() == joined) {
@@ -249,7 +249,6 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                     // we need to update the max number to the current number, so no one else can join
                     lobbyGame.setMaxPlayers(lobbyGame.getNumOfPlayers());
                     lobby.createNewGame(lobbyGame);
-                    lobbyGame = null;
                 }
             }
             else {
@@ -261,7 +260,6 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             }
         }
         else if (ProtoAccess.COMMAND_GAME_STARTED.equals(command)) {
-            gameCreator = null;
             int gameId = (Integer)message.getParam();
             lobby.playGame(gameId);
         }
@@ -307,7 +305,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             return;
         }
         String myPID = getMe(gameRoom.getParticipants()).getParticipantId();
-        logger.info("Room ready. me="+myPID+" "+gameRoom.getParticipantIds()+" creator="+gameRoom.getCreatorId()+" "+lobbyGame);
+        logger.info("Room ready. me="+myPID+" "+gameRoom.getParticipantIds()+" creator="+gameRoom.getCreatorId()+" "+lobbyGame+" "+isCreator);
         openLoadingDialog("mainmenu.googlePlayGame.waitGame");
         if (isCreator) {
             // send a message to everyone that i think i am the creator.
@@ -330,7 +328,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     public void setLobbyUsername(String username) {
         sendLobbyUsername(username, gameRoom.getCreatorId());
     }
-    
+
     private void sendLobbyUsername(String username, String creator) {
         logger.info("Sending ID to creator. "+username+" "+creator);
 
@@ -370,7 +368,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                 throw new RuntimeException("can not encode", ex);
             }
             byte[] data = bytes.toByteArray();
-    
+
             mHelper.getGamesClient().sendReliableRealTimeMessage(new RealTimeReliableMessageSentListener() {
                 @Override
                 public void onRealTimeMessageSent(int statusCode, int tokenId, String recipientId) {
@@ -407,7 +405,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     private void acceptInvitation(String invitationId) {
         openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
         lobbyGame = null;
-        
+        gameCreator = null;
+
         mHelper.getGamesClient().joinRoom(RoomConfig.builder(
                 new BaseRoomUpdateListener() {
                     @Override
