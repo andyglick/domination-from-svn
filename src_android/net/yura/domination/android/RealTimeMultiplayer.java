@@ -308,15 +308,17 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         logger.info("Room ready. me="+myPID+" "+gameRoom.getParticipantIds()+" creator="+gameRoom.getCreatorId()+" "+lobbyGame+" "+isCreator);
         openLoadingDialog("mainmenu.googlePlayGame.waitGame");
         if (isCreator) {
-            // send a message to everyone that i think i am the creator.
-            List<String> participants = gameRoom.getParticipantIds();
-            Message message = new Message();
-            message.setCommand(ProtoAccess.REQUEST_HELLO);
-            message.setParam(myPID);
-            for (String participant : participants) {
-        	if (!participant.equals(myPID)) {
-        	    sendMessage(message, participant);
-        	}
+            if (gameRoom.getAutoMatchCriteria() != null) {
+                // send a message to everyone that i think i am the creator.
+                List<String> participants = gameRoom.getParticipantIds();
+                Message message = new Message();
+                message.setCommand(ProtoAccess.REQUEST_HELLO);
+                message.setParam(myPID);
+                for (String participant : participants) {
+                    if (!participant.equals(myPID)) {
+                        sendMessage(message, participant);
+                    }
+                }
             }
         }
         else {
