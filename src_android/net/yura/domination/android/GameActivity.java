@@ -3,6 +3,8 @@ package net.yura.domination.android;
 import java.io.File;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.example.games.basegameutils.GameHelper;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -151,10 +153,12 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
      */
     @Override
     public void onMidletStarted() {
-        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
-        // TODO WE ARE LEAKING THE ACTIVITY HERE!!!
-        // an Activity can be created and destroyed by the system when it feels like it
-        dmain.setGooglePlayGameServices(GameActivity.this);
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+            // TODO WE ARE LEAKING THE ACTIVITY HERE!!!
+            // an Activity can be created and destroyed by the system when it feels like it
+            dmain.setGooglePlayGameServices(this);
+        }
     }
 
     @Override
