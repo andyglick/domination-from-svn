@@ -562,13 +562,13 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <javac debug="on" srcdir="src:src_android:src_mapstore" destdir="${dir.build}/swingme" source="1.5" target="1.5" classpath="${dir.libs}" excludes="net/yura/domination/android/**"/>
 
         <copy todir="${dir.build}/swingme">
-                <fileset dir="res_android" includes="**/*.*"/>
+                <fileset dir="res_android" includes="**/*.*" excludes="**/*.ini"/>
                 <fileset dir="res/drawable-mdpi" includes="**/*.*"/>
         </copy>
 
         <copy todir="${dir.build}/swingme" filtering="true">
+                <fileset dir="res_android" includes="**/*.ini"/>
                 <fileset dir="${dir.properties}" includes="**/*.properties"/>
-                <fileset dir="src_android" includes="**/*.ini"/>
         </copy>
 
         <!-- copy assets into jar -->
