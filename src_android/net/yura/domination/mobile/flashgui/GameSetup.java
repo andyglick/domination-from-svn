@@ -256,13 +256,6 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         autoplaceall = (Button)newgame.find("autoplaceall");
 
-        // kind of a hack
-        Component startButton = newgame.find("startButton");
-        Component cancelButton = newgame.find("cancelButton");
-        if (startButton!=null && cancelButton!=null && !cancelButton.isVisible()) {
-            ((GridBagConstraints)((Panel)startButton.getParent()).getConstraints().get(startButton)).colSpan = 2;
-        }
-
         ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
 
 
@@ -284,7 +277,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         setTitle(resb.getProperty(localgame?"newgame.title.local":"newgame.title.network"));
         //resetplayers.setVisible(localgame?true:false);
 
-        setContentPane( new ScrollPane( newgame.getRoot() ) );
+        setContentPane((Panel) newgame.getRoot());
         revalidate();
 
         setVisible(true);
