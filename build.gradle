@@ -42,3 +42,19 @@ android {
     }
 
 }
+
+// same as ant tasks "setup.android"
+task copyAssets(type: Copy) {
+    from('game/Domination') {
+        include 'maps/**'
+        include 'help/**'
+    }
+    from('src/META-INF') {
+        include 'services/**'
+    }
+    from 'gpl.txt'
+    from 'ChangeLog.txt'
+    into 'assets'
+}
+assembleDebug.dependsOn(copyAssets)
+assembleRelease.dependsOn(copyAssets)
