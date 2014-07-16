@@ -49,6 +49,7 @@
                 <choice i18n="true" text="newgame.timeout.24hours" name="86400"/>
             </combobox>
         </panel>
+        <list colspan="2" name="playerList" property="class=net.yura.domination.mobile.flashgui.PlayerList"/>
     </panel>
     <panel bottom="5" gap="5" left="5" right="5" top="5">
         <button action="closegame" i18n="true" name="cancelButton" text="newgame.cancel" type="cancel" width="1" weightx="1"/>
