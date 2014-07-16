@@ -263,11 +263,15 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             addChangeListener(compsNames[c]);
         }
 
+        PlayerList playerList = (PlayerList) newgame.find("playerList");
+
         if (localgame) {
             RiskUtil.loadPlayers( myrisk ,getClass());
+            playerList.setGame(myrisk.getGame());
         }
         else {
             setLobbyMap( allowedMaps[0] );
+            playerList.setVisible(false);
         }
 
 
@@ -332,6 +336,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             }
         }
 
+        newgame.find("playerList").repaint();
     }
 
     public void changeEvent(Component source, int num) {
