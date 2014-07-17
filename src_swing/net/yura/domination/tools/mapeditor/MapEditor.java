@@ -631,6 +631,14 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         net.yura.domination.mapstore.Map map = MapsTools.getOnlineMap(fileName);
                         
                         if (map!=null) {
+
+                            String mapUID = net.yura.domination.mapstore.MapChooser.getFileUID(map.getMapUrl());
+                            if (!fileName.equals(mapUID)) {
+                                JOptionPane.showMessageDialog(this, "Name clashes with existing map: \""+fileName+"\" and \""+mapUID+"\"\nplease pick a new name for your map.");
+                                save.doClick();
+                                return;
+                            }
+
                             int result = JOptionPane.showConfirmDialog(this, "There is already a map with the filename "+fileName+" in the MapStore,\n"
                                     + "is this a new version of that map?",null,JOptionPane.YES_NO_OPTION);
 
