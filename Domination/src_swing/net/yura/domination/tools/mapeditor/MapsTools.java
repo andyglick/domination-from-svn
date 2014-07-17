@@ -273,7 +273,15 @@ public class MapsTools {
     }
 
     public static Map getOnlineMap(String uid) {
-        List maps = MapUpdateService.getMaps(MapChooser.MAP_PAGE,Arrays.asList( new String[] {uid} ));
+        String[] names;
+        if (uid.indexOf(' ') >= 0) {
+            names = new String[] {uid, RiskUtil.replaceAll(uid, " ", "")};
+        }
+        else {
+            names = new String[] {uid};
+        }
+        // TODO: This still does not catch the case when the map on the server has a space in it.
+        List maps = MapUpdateService.getMaps(MapChooser.MAP_PAGE,Arrays.asList(names));
         return maps.size()>0 ? (Map)maps.get(0) : null;
     }
         
