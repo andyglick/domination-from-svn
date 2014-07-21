@@ -4,10 +4,12 @@ import java.util.ResourceBundle;
 import net.yura.domination.R;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TabHost;
 import android.app.Activity;
 
@@ -39,12 +41,32 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
         WebView webView = new WebView(this);
         String prefix = "file:///android_asset/";
         if ("about".equals(tag)) {
-            WebSettings settings = webView.getSettings();
-            settings.setDefaultTextEncodingName("utf-8"); // UTF-8 here works on only v2 android
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    if (url.startsWith("file://")) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(url));
+                            startActivity(intent);
+                        }
+                        catch (Exception ex) {
+                            // ignore
+                        }
+                        return true;
+                    }
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
+            });
             String aboutHtml = MiniUtil.getAboutHtml();
+            webView.loadDataWithBaseURL(prefix, aboutHtml, "text/html", "UTF-8", null);
+
+            // OLD way of displaying html, does not support catching file:// links
+            //WebSettings settings = webView.getSettings();
+            //settings.setDefaultTextEncodingName("utf-8"); // UTF-8 here works on only v2 android
             // hack to fix bug on android
-            aboutHtml = aboutHtml.replace("%", "%25").replace("#", "%23").replace("'", "%27").replace("?", "%3f");
-            webView.loadData(aboutHtml, "text/html; charset=utf-8", null); // UTF-8 here works on only v4 android
+            //aboutHtml = aboutHtml.replace("%", "%25").replace("#", "%23").replace("'", "%27").replace("?", "%3f");
+            //webView.loadData(aboutHtml, "text/html; charset=utf-8", null); // UTF-8 here works on only v4 android
         }
         else if ("credits".equals(tag)){
             webView.loadUrl(prefix+"help/game_credits.htm");
