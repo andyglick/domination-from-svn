@@ -1,6 +1,9 @@
 package net.yura.domination.mobile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
@@ -69,6 +72,8 @@ public class MiniUtil {
         String author = resb.getString("about.author") + " Yura Mamyrin (yura@yura.net)";
         String c1="#DA4437",c2="#F6971D",c3="#F5EA3B",c4="#65AF45",c5="#4284F3",c6="#7E3793";
 
+        File externalMapDir = getExternalMapDir();
+
         return "<html>" +
                 "<div style=\"" +
 // start CSS
@@ -92,16 +97,31 @@ public class MiniUtil {
                 "<p>DPI: "+System.getProperty("display.dpi")+" Density: "+System.getProperty("display.density")+" Size: "+System.getProperty("display.size")+"</p>"+
                 "<p>Locale: "+Locale.getDefault()+" use: "+resb.getLocale()+"</p>"+
                 "<p>"+BugUIInfo.getLookAndFeel()+"</p>"+
+                "<p>ExternalMapDir="+(externalMapDir == null ? "none" : "<a href=\""+externalMapDir.toURI()+"\">"+externalMapDir+"</a>")+"</p>"+
+                // e.g. file:///storage/emulated/0/Domination%20Maps/
                 "</html>";
     }
+
+    public static String mapsdir = "file:///android_asset/maps/";
 
     public static List getFileList(String string) {
         List result = new java.util.Vector();
 
-        Enumeration en = FileUtil.getDirectoryFiles(RiskMiniIO.mapsdir);
+        File externalMapDir = getExternalMapDir();
+        if (externalMapDir != null) {
+            String[] list = externalMapDir.list();
+            for (int c = 0; c < list.length; c++) {
+                String file = list[c];
+                if (file.endsWith("." + string)) {
+                    result.add(file);
+                }
+            }
+        }
+
+        Enumeration en = FileUtil.getDirectoryFiles(mapsdir);
         while (en.hasMoreElements()) {
             String file = (String)en.nextElement();
-            if (file.endsWith("."+string)) {
+            if (file.endsWith("."+string) && !result.contains(file)) {
                 result.add( file );
             }
         }
@@ -118,6 +138,54 @@ public class MiniUtil {
         return result;
     }
 
+    public static InputStream openMapStream(String name) throws IOException {
+        try {
+            File externalMapDir = getExternalMapDir();
+            if (externalMapDir != null) {
+                File newFile = new File(externalMapDir, name);
+                if (newFile.exists()) {
+                    return new FileInputStream(newFile);
+                }
+            }
+        }
+        catch (Exception ex1) {
+            ex1.printStackTrace();
+            // ignore if we cant find map in external dir.
+        }
+
+        try {
+            File userMaps = MiniUtil.getSaveMapDir();
+            File newFile = new File(userMaps, name);
+            return new FileInputStream(newFile);
+        } catch (Exception ex) {
+            try {
+                return FileUtil.getInputStreamFromFileConnector(mapsdir + name);
+            } catch (Exception ex2) {
+                IOException exception = new IOException(ex2.toString());
+                exception.initCause(ex); // in android 1.6
+                throw exception;
+            }
+        }
+    }
+
+    private static File externalMapsDir;
+    static File getExternalMapDir() {
+        if (externalMapsDir!=null) {
+            return externalMapsDir;
+        }
+
+        String ExternalStorageDirectory = System.getProperty("ExternalStorageDirectory");
+        if (ExternalStorageDirectory != null) {
+            File userMaps = new File(new File(ExternalStorageDirectory), RiskUtil.GAME_NAME + " Maps");
+            //if (!userMaps.isDirectory() && !userMaps.mkdirs()) { // if it does not exist and i cant make it
+            //    return null; // if we can not make it,
+            //}
+
+            externalMapsDir = userMaps;
+            return userMaps;
+        }
+        return null;
+    }
 
     private static File mapsDir;
     public static File getSaveMapDir() {

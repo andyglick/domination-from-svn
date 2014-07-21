@@ -22,28 +22,12 @@ import net.yura.mobile.io.FileUtil;
  */
 public class RiskMiniIO implements RiskIO {
 
-    public static String mapsdir = "file:///android_asset/maps/";
-
     public InputStream openStream(String name) throws IOException {
         return Connector.openInputStream("file:///android_asset/"+name);
     }
 
     public InputStream openMapStream(String name) throws IOException {
-        try {
-            File userMaps = MiniUtil.getSaveMapDir();
-            File newFile = new File(userMaps, name);
-            return new FileInputStream(newFile);
-        }
-        catch (Exception ex) {
-            try {
-                return FileUtil.getInputStreamFromFileConnector(mapsdir+name);
-            }
-            catch (Exception ex2) {
-                IOException exception = new IOException( ex2.toString() );
-                exception.initCause(ex); // in android 1.6
-                throw exception;
-            }
-        }
+        return MiniUtil.openMapStream(name);
     }
 
     public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
