@@ -110,10 +110,12 @@ public class MiniUtil {
         File externalMapDir = getExternalMapDir();
         if (externalMapDir != null) {
             String[] list = externalMapDir.list();
-            for (int c = 0; c < list.length; c++) {
-                String file = list[c];
-                if (file.endsWith("." + string)) {
-                    result.add(file);
+            if (list != null) {
+                for (int c = 0; c < list.length; c++) {
+                    String file = list[c];
+                    if (file.endsWith("." + string)) {
+                        result.add(file);
+                    }
                 }
             }
         }

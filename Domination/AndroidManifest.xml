@@ -28,6 +28,8 @@
 	<!--  this is for AdMob -->
     	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <!-- to be able to read maps from sd card -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
 
     <!-- this means i dont need different assets for different resolutions -->

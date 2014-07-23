@@ -1,6 +1,8 @@
 package net.yura.domination.android;
 
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.yura.domination.R;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
@@ -51,7 +53,7 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
                             startActivity(intent);
                         }
                         catch (Exception ex) {
-                            // ignore
+                            Logger.getLogger("").log(Level.INFO,"cant open " + url, ex);
                         }
                         return true;
                     }
