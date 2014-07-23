@@ -39,12 +39,12 @@ public class AboutActivity extends Activity implements TabHost.TabContentFactory
     @Override
     public View createTabContent(String tag) {
         WebView webView = new WebView(this);
-        String prefix = "file:///android_asset/";
+        final String prefix = "file:///android_asset/";
         if ("about".equals(tag)) {
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    if (url.startsWith("file://")) {
+                    if (url.startsWith("file://") && !url.startsWith(prefix)) {
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setData(Uri.parse(url));
