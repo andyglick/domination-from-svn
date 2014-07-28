@@ -2790,20 +2790,18 @@ public void setNODDefender(int n) {}
 			playerOptions.setBorder(javax.swing.BorderFactory.createTitledBorder( resbundle.getString("newgame.label.players") ));
 
 			namedColors = new NamedColor[] {
-
-				new NamedColor(Color.black,	"black"     , resbundle.getString("color.black")),
-				new NamedColor(Color.blue,	"blue"      , resbundle.getString("color.blue")),
-				new NamedColor(Color.cyan,	"cyan"      , resbundle.getString("color.cyan")),
-				new NamedColor(Color.darkGray,  "darkgray"  , resbundle.getString("color.darkgray")),
-				new NamedColor(Color.green,	"green"     , resbundle.getString("color.green")),
-				new NamedColor(Color.lightGray, "lightgray" , resbundle.getString("color.lightgray")),
-				new NamedColor(Color.magenta,	"magenta"   , resbundle.getString("color.magenta")),
-				new NamedColor(Color.orange,	"orange"    , resbundle.getString("color.orange")),
-				new NamedColor(Color.pink,	"pink"      , resbundle.getString("color.pink")),
-				new NamedColor(Color.red, 	"red"       , resbundle.getString("color.red")),
-				new NamedColor(Color.white,	"white"     , resbundle.getString("color.white")),
-				new NamedColor(Color.yellow,	"yellow"    , resbundle.getString("color.yellow"))
-
+				new NamedColor(Color.PINK,       "pink",      resbundle.getString("color.pink")),
+				new NamedColor(Color.RED,        "red",       resbundle.getString("color.red")),
+				new NamedColor(Color.ORANGE,     "orange",    resbundle.getString("color.orange")),
+				new NamedColor(Color.YELLOW,     "yellow",    resbundle.getString("color.yellow")),
+				new NamedColor(Color.GREEN,      "green",     resbundle.getString("color.green")),
+				new NamedColor(Color.CYAN,       "cyan",      resbundle.getString("color.cyan")),
+				new NamedColor(Color.BLUE,       "blue",      resbundle.getString("color.blue")),
+				new NamedColor(Color.MAGENTA,    "magenta",   resbundle.getString("color.magenta")),
+				new NamedColor(Color.WHITE,      "white",     resbundle.getString("color.white")),
+				new NamedColor(Color.LIGHT_GRAY, "lightgray", resbundle.getString("color.lightgray")),
+				new NamedColor(Color.DARK_GRAY,  "darkgray",  resbundle.getString("color.darkgray")),
+				new NamedColor(Color.BLACK,      "black",     resbundle.getString("color.black"))
 			};
 
                         final String[] ais = myrisk.getAICommands();

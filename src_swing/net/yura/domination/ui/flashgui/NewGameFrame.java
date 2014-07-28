@@ -146,19 +146,18 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		Colors = new MyColor[12];
 
-		Colors[0] = new MyColor(Color.black	, "black"	, 385, 410, 25, 25, KeyEvent.VK_K);
-		Colors[1] = new MyColor(Color.blue	, "blue"	, 385, 435, 25, 25, KeyEvent.VK_B);
-		Colors[2] = new MyColor(Color.cyan	, "cyan"	, 385, 460, 25, 25, KeyEvent.VK_C);
-		Colors[3] = new MyColor(Color.darkGray	, "darkgray"	, 410, 410, 25, 25, KeyEvent.VK_D);
-		Colors[4] = new MyColor(Color.green	, "green"	, 410, 435, 25, 25, KeyEvent.VK_G);
-		Colors[5] = new MyColor(Color.lightGray	, "lightgray"	, 410, 460, 25, 25, KeyEvent.VK_L);
-		Colors[6] = new MyColor(Color.magenta	, "magenta"	, 435, 410, 25, 25, KeyEvent.VK_M);
-		Colors[7] = new MyColor(Color.orange	, "orange"	, 435, 435, 25, 25, KeyEvent.VK_O);
-		Colors[8] = new MyColor(Color.pink	, "pink"	, 435, 460, 25, 25, KeyEvent.VK_P);
-		Colors[9] = new MyColor(Color.red	, "red"		, 460, 410, 25, 25, KeyEvent.VK_R);
-		Colors[10] = new MyColor(Color.white	, "white"	, 460, 435, 25, 25, KeyEvent.VK_W);
-		Colors[11] = new MyColor(Color.yellow	, "yellow"	, 460, 460, 25, 25, KeyEvent.VK_Y);
-
+		Colors[0] = new MyColor(Color.PINK,       "pink",      385, 410, 25, 25, KeyEvent.VK_P);
+		Colors[1] = new MyColor(Color.RED,        "red",       410, 410, 25, 25, KeyEvent.VK_R);
+		Colors[2] = new MyColor(Color.ORANGE,     "orange",    435, 410, 25, 25, KeyEvent.VK_O);
+		Colors[3] = new MyColor(Color.YELLOW,     "yellow",    460, 410, 25, 25, KeyEvent.VK_Y);
+		Colors[4] = new MyColor(Color.GREEN,      "green",     385, 435, 25, 25, KeyEvent.VK_G);
+		Colors[5] = new MyColor(Color.CYAN,       "cyan",      410, 435, 25, 25, KeyEvent.VK_C);
+		Colors[6] = new MyColor(Color.BLUE,       "blue",      435, 435, 25, 25, KeyEvent.VK_B);
+		Colors[7] = new MyColor(Color.MAGENTA,    "magenta",   460, 435, 25, 25, KeyEvent.VK_M);
+		Colors[8] = new MyColor(Color.WHITE,      "white",     385, 460, 25, 25, KeyEvent.VK_W);
+		Colors[9] = new MyColor(Color.LIGHT_GRAY, "lightgray", 410, 460, 25, 25, KeyEvent.VK_L);
+		Colors[10] = new MyColor(Color.DARK_GRAY, "darkgray",  435, 460, 25, 25, KeyEvent.VK_D);
+		Colors[11] = new MyColor(Color.BLACK,     "black",     460, 460, 25, 25, KeyEvent.VK_K);
 
 		Dimension d = new Dimension(700, 600);
 
