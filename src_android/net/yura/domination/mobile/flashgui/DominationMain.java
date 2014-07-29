@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -309,5 +310,35 @@ public class DominationMain extends Midlet {
 	DominationMain main = (DominationMain)Midlet.getMidlet();
         // main is only null if the app is in the process of shutting down.
 	return main == null ? null : main.googlePlayGameServices;
+    }
+
+    private static Map<Integer,ActivityResultListener> nativeCalls = new HashMap();
+    private static int nativeCallsCount = 100000; // auto Ids need to start higher then all hard coded ids.
+
+    public interface ActivityResultListener {
+        void onActivityResult(Object data);
+        void onCanceled();
+    }
+
+    public static void openURL(String url, ActivityResultListener listener) {
+        nativeCallsCount++;
+        url = url + (url.indexOf('?') >= 0 ? "&" : "?") + "requestCode=" + nativeCallsCount;
+        nativeCalls.put(nativeCallsCount,listener);
+        Midlet.openURL(url);
+    }
+
+    public void onResult(int requestCode, int resultCode, Object obj) {
+        ActivityResultListener listener = nativeCalls.remove(requestCode);
+        if (listener != null) {
+            if (resultCode == -1) { // Activity.RESULT_OK
+                listener.onActivityResult(obj);
+            }
+            else if (resultCode == 0) { // Activity.RESULT_CANCELED
+                listener.onCanceled();
+            }
+            else {
+                Logger.getLogger("").warning("unknown resultCode "+resultCode);
+            }
+        }
     }
 }
