@@ -77,6 +77,7 @@
         <activity android:name="net.yura.domination.android.GamePreferenceActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Dialog" />
         <activity android:name="net.yura.domination.android.AboutActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme" />
         <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <activity android:name="net.yura.domination.android.ColorPickerActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Dialog" />
 
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />

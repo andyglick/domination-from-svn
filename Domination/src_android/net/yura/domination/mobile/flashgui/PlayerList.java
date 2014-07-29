@@ -1,5 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
+import net.yura.mobile.gui.ActionListener;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
@@ -21,6 +23,20 @@ public class PlayerList extends List {
                 Player player = (Player) value;
                 setBackground(player.getColor());
                 return component;
+            }
+        });
+        addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(String actionCommand) {
+                DominationMain.openURL("native://net.yura.domination.android.ColorPickerActivity", new DominationMain.ActivityResultListener() {
+                    public void onActivityResult(Object data) {
+                        GameActivity.toast("color="+data);
+                    }
+                    @Override
+                    public void onCanceled() {
+                        GameActivity.toast("canceled");
+                    }
+                });
             }
         });
     }
