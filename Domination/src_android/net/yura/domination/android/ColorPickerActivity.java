@@ -3,7 +3,10 @@ package net.yura.domination.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +14,9 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.layout.XULLoader;
+import javax.microedition.lcdui.Image;
 
 public class ColorPickerActivity extends Activity {
 
@@ -56,6 +61,8 @@ public class ColorPickerActivity extends Activity {
             }
         });
 
+        final int size = XULLoader.adjustSizeToDensity(75);
+
         grid.setAdapter(new BaseAdapter() {
             @Override
             public PlayerColor getItem(int position) {
@@ -76,10 +83,24 @@ public class ColorPickerActivity extends Activity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     convertView = new View(ColorPickerActivity.this);
-                    convertView.setMinimumHeight(XULLoader.adjustSizeToDensity(75));
-                    convertView.setMinimumWidth(XULLoader.adjustSizeToDensity(75));
+                    // TODO Find a better way to work out what type of LayoutParams is needed here.
+                    convertView.setLayoutParams(new GridView.LayoutParams(size, size));
                 }
-                convertView.setBackgroundDrawable(new ColorDrawable(getItem(position).rgb));
+
+                int color = getItem(position).rgb;
+                ColorDrawable colorDrawable = new ColorDrawable(color);
+                Image image = PicturePanel.getIconForColor(color);
+
+                if (image == null) {
+                    convertView.setBackgroundDrawable(colorDrawable);
+                }
+                else {
+                    LayerDrawable layers = new LayerDrawable(new Drawable[] {colorDrawable, new BitmapDrawable(image.getBitmap())});
+                    int xPad = (size - image.getWidth())/2;
+                    int yPad = (size - image.getHeight())/2;
+                    layers.setLayerInset(1, xPad, yPad, xPad, yPad);
+                    convertView.setBackgroundDrawable(layers);
+                }
                 return convertView;
             }
         });
