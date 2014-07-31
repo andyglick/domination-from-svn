@@ -13,7 +13,11 @@
         <label alignment="center" i18n="true" name="Loading" property="valign=center" text="mapchooser.loading" visible="false" weightx="1" weighty="1"/>
         <label alignment="center" i18n="true" name="NoMatches" property="valign=center" text="mapchooser.no-matches" visible="false" weightx="1" weighty="1"/>
         <button name="joinPrivate" action="joinPrivate" text="lobby.joinPrivateGame" i18n="true" weightx="1" visible="false"/>
-        <list action="listSelect" name="ResultList" weightx="1" weighty="1"/>
+        <list action="listSelect" name="ResultList" weightx="1" weighty="1">
+            <popupmenu>
+                <menuitem name="renameGame" text="Rename Game" action="renameGame"/>
+            </popupmenu>
+        </list>
         <panel columns="1" left="5" name="Error" right="5" visible="false" weightx="1" weighty="1">
             <label weighty="1"/>
             <textarea editable="false" font="Dialog bold" i18n="true" property="halign=center" text="mapchooser.error.title" weightx="1" wrap="true"/>

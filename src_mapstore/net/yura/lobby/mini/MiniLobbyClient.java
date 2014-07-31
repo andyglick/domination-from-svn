@@ -29,6 +29,7 @@ import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.Panel;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.TextField;
+import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.util.Option;
 import net.yura.mobile.util.Properties;
@@ -46,11 +47,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     XULLoader loader;
     List list;
+    Window adminPopup;
 
     public Connection mycom;
     MiniLobbyGame game;
 
     String myusername;
+    int playerType;
     GameType theGameType;
     int openGameId = -1;
 
@@ -83,11 +86,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         viewChooser.setStretchCombo(true);
         viewChooser.setName(null);
 
+        adminPopup = list.getPopupMenu();
+        list.setPopupMenu(null);
+
         String uuid = getMyUUID();
-
-
-
-
 
         mycom = new LobbyCom(uuid,lobbyGame.getAppName(),lobbyGame.getAppVersion());
         mycom.addEventListener(this);
@@ -228,6 +230,27 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         else if ("joinPrivate".equals(actionCommand)) {
             game.joinPrivateGame();
         }
+        else if ("renameGame".equals(actionCommand)) {
+            if (playerType >= Player.PLAYER_MODERATOR) {
+                final Game game = (Game) list.getSelectedValue();
+                final TextField saveText = new TextField();
+                saveText.setText( game.getName() );
+                OptionPane.showOptionDialog(new ActionListener() {
+                    public void actionPerformed(String actionCommand) {
+                        if ("ok".equals(actionCommand)) {
+                            String newName = saveText.getText();
+                            if (!game.getName().equals(newName)) {
+                                game.setName(newName);
+                                mycom.createNewGame(game);
+                            }
+                        }
+                    }
+                }, saveText, "Rename Game" , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+            }
+            else {
+                logger.warning(actionCommand+"called when we are "+playerType+" "+myusername);
+            }
+        }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
@@ -300,6 +323,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void setUsername(String name, int type) {
         myusername = name;
+        playerType = type;
+        list.setPopupMenu(playerType >= Player.PLAYER_MODERATOR ? adminPopup : null);
         toast("You are logged in as: "+name);
         game.connected(name);
     }
