@@ -267,7 +267,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         if (localgame) {
             RiskUtil.loadPlayers( myrisk ,getClass());
-            playerList.setGame(myrisk.getGame());
+            playerList.setGame(myrisk);
         }
         else {
             setLobbyMap( allowedMaps[0] );
