@@ -522,13 +522,17 @@ public class PicturePanel extends ImageView implements MapPanel {
             icons.put(ColorUtil.GREEN,Midlet.createImage("/color_green.png"));
             icons.put(ColorUtil.MAGENTA,Midlet.createImage("/color_magenta.png"));
         }
+        public static Image getIconForColor(int color) {
+            return DominationMain.getBoolean("color_blind",false)?icons.get(color):null;
+        }
+
         // cache font for reuse
         static int fontBallSize;
         static Font font = DesktopPane.getDefaultTheme("").getFont( Style.ALL ); // default font in case making fonts fails
         public static void drawArmy(Graphics2D g, int countryOwnerColor, int armies, int x,int y,int ballSize,Player capital) {
             int r = ballSize/2;
 
-            Image icon = DominationMain.getBoolean("color_blind",false)?icons.get( countryOwnerColor ):null;
+            Image icon = getIconForColor(countryOwnerColor);
             if (icon!=null) {
                 int w = (int)(ballSize*1.1);
                 int h = (int)(icon.getHeight()*(w/(double)icon.getWidth()));
@@ -625,7 +629,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          * @param y1i y point of the attacker's co-ordinates.
          * @param x2i x point of the defender's co-ordinates.
          * @param y2i y point of the defender's co-ordinates.
-         * @param ri the radius of the circle
+         * @param d diameter of the circle
          */
         public Polygon makeArrow(int x1i, int y1i, int x2i, int y2i, int d) {
 

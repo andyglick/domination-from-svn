@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		56
+	Android		57
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -19,7 +19,11 @@ CURRENT VERSION:
 	OS X java 1.7 open html help in browser fix
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
+	Greek added
 
+	Android 57 Can select colors for all players
+		   Can load maps from external storage dir shown in About screen
+		   Admins can rename games
 	Android 56 Can view own cards at any point in the game.
 		   fullscreen option added
 	Android 55 updated to Turkish translation - Ekin Topuz
@@ -525,7 +529,7 @@ Risk 1.0.8.2 (10.10.2005)
 	fixed - GAME BUG - only mozilla browser works on Linux, no browser at all on a mac
 	old help updated about map names and extra maps
 	done - make string in cards dialog of Flash GUI not touch button
-	done - make credits add credit for chris and "Hervé KINDER"
+	done - make credits add credit for chris and "HervÃ© KINDER"
 	done - make installer have right version
 	french added
 	cards dialog in SwingGUI works in non-english
