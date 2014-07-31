@@ -1,19 +1,20 @@
 package net.yura.domination.mobile.flashgui;
 
+import net.yura.domination.engine.Risk;
 import net.yura.mobile.gui.ActionListener;
-import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.List;
 import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.Player;
+
+import java.util.Collection;
 
 /**
  * @author Yura
  */
 public class PlayerList extends List {
 
-    private RiskGame game;
+    private Risk risk;
 
     public PlayerList() {
         setLayoutOrientation(HORIZONTAL);
@@ -30,27 +31,50 @@ public class PlayerList extends List {
             public void actionPerformed(String actionCommand) {
                 DominationMain.openURL("native://net.yura.domination.android.ColorPickerActivity", new DominationMain.ActivityResultListener() {
                     public void onActivityResult(Object data) {
-                        GameActivity.toast("color="+data);
+                        Player player = (Player)getSelectedValue();
+                        int color = (Integer)data;
+                        if (player.getColor() != color) {
+                            Player playerWithColor = getPlayerByColor(color);
+                            if (playerWithColor == null) {
+                                risk.parser("delplayer "+player);
+                                risk.parser("newplayer "+risk.getType(player.getType())+" "+color+" "+player.getName());
+                            }
+                            else {
+                                risk.parser("delplayer "+player);
+                                risk.parser("delplayer "+playerWithColor);
+                                risk.parser("newplayer "+risk.getType(playerWithColor.getType())+" "+player.getColor()+" "+playerWithColor.getName());
+                                risk.parser("newplayer "+risk.getType(player.getType())+" "+color+" "+player.getName());
+                            }
+                        }
                     }
                     @Override
                     public void onCanceled() {
-                        GameActivity.toast("canceled");
+                        // dont care
                     }
                 });
             }
         });
     }
 
-    public void setGame(RiskGame game) {
-        this.game = game;
+    private Player getPlayerByColor(int color) {
+        for (Player player : (Collection<Player>)risk.getGame().getPlayers()) {
+            if (player.getColor() == color) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public void setGame(Risk risk) {
+        this.risk = risk;
     }
 
     public int getSize() {
-        return game.getPlayers().size();
+        return risk.getGame().getNoPlayers();
     }
 
     public Object getElementAt(int index) {
-        return game.getPlayers().get(index);
+        return risk.getGame().getPlayers().get(index);
     }
 
 }
