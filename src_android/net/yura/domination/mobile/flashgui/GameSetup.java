@@ -336,7 +336,9 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             }
         }
 
-        newgame.find("playerList").repaint();
+        // need to revalidate and repaint the playerList
+        revalidate();
+        repaint();
     }
 
     public void changeEvent(Component source, int num) {
