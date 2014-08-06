@@ -72,9 +72,11 @@ public class Player implements Serializable {
     }
 
     public void rename(String na) {
-
 	name = na;
+    }
 
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public String toString() {
