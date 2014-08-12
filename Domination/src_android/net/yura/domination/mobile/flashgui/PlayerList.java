@@ -1,12 +1,14 @@
 package net.yura.domination.mobile.flashgui;
 
+import android.graphics.ColorMatrix;
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.mobile.PicturePanel;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.DesktopPane;
 import net.yura.mobile.gui.Graphics2D;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.List;
-import net.yura.mobile.gui.components.Component;
 import net.yura.mobile.gui.cellrenderer.DefaultListCellRenderer;
 import net.yura.domination.engine.core.Player;
 import net.yura.mobile.gui.layout.XULLoader;
@@ -18,21 +20,27 @@ import javax.microedition.lcdui.Image;
  */
 public class PlayerList extends List {
 
+    final ColorMatrix invert = new ColorMatrix(new float[] {
+            -1.0f, 0, 0, 0, 255, //red
+            0, -1.0f, 0, 0, 255, //green
+            0, 0, -1.0f, 0, 255, //blue
+            0, 0, 0, 1.0f, 0 //alpha
+    });
+
     private Risk risk;
 
     public PlayerList() {
         setLayoutOrientation(HORIZONTAL);
-        int size = XULLoader.adjustSizeToDensity(75);
-        DesktopPane dp = DesktopPane.getDesktopPane();
-        // (10 is padding of 5 from the xml layout * 2)
-        int screen = ((dp.getWidth() > dp.getHeight() ? dp.getHeight() : dp.getWidth()) - XULLoader.adjustSizeToDensity(10)) / 6;
-        size = size > screen ? screen : size;
-        final int iconSize = size - XULLoader.adjustSizeToDensity(4);
-        setFixedCellWidth(size);
-        setFixedCellHeight(size);
         setCellRenderer(new DefaultListCellRenderer() {
+            int playerType;
+            Image human,ai_easy,ai_average,ai_hard;
             {
                 setName("ListRendererCollapsed");
+                padding = XULLoader.adjustSizeToDensity(4);
+                human = Midlet.createImage("/type_human.png");
+                ai_easy = Midlet.createImage("/type_ai_easy.png");
+                ai_average = Midlet.createImage("/type_ai_average.png");
+                ai_hard = Midlet.createImage("/type_ai_hard.png");
             }
             @Override
             public void setValue(Object obj) {
@@ -48,9 +56,42 @@ public class PlayerList extends List {
                 Image img = PicturePanel.getIconForColor(color);
 
                 if (img != null) {
+                    int iconSize = getWidth() - padding;
                     int h = iconSize;
                     int w = (int)(img.getWidth()*(h/(double)img.getHeight()));
                     g.drawScaledImage(img, (getWidth()-w)/2, (getHeight()-h)/2, w, h);
+                }
+
+                Image typeIcon;
+                switch (playerType) {
+                    case Player.PLAYER_HUMAN:
+                    case Player.PLAYER_AI_CRAP:
+                        typeIcon = human;
+                        break;
+                    case Player.PLAYER_AI_EASY:
+                        typeIcon = ai_easy;
+                        break;
+                    case Player.PLAYER_AI_AVERAGE:
+                        typeIcon = ai_average;
+                        break;
+                    case Player.PLAYER_AI_HARD:
+                        typeIcon = ai_hard;
+                        break;
+                    default:
+                        typeIcon = null;
+                        break;
+                }
+                if (typeIcon != null) {
+                    boolean doInvert = ColorUtil.getTextColorFor(color) == ColorUtil.WHITE;
+                    if (doInvert) {
+                        g.getGraphics().setColorMarix(invert);
+                    }
+                    int iconSize = getWidth() - padding * 2;
+                    g.drawScaledImage(typeIcon, (getWidth()-iconSize)/2, (getHeight()-iconSize)/2, iconSize, iconSize);
+                    if (doInvert) {
+                        g.getGraphics().setColorMarix(null);
+                    }
+
                 }
             }
         });
@@ -98,14 +139,29 @@ public class PlayerList extends List {
         return null;
     }
 
+    @Override
+    protected void workoutMinimumSize() {
+
+        int size = XULLoader.adjustSizeToDensity(75);
+        // (10 is padding of 5 from the xml layout * 2)
+        int screen = (DesktopPane.getDesktopPane().getWidth() - XULLoader.adjustSizeToDensity(10)) / 6;
+        size = size > screen ? screen : size;
+        setFixedCellWidth(size);
+        setFixedCellHeight(size);
+
+        super.workoutMinimumSize();
+    }
+
     public void setGame(Risk risk) {
         this.risk = risk;
     }
 
+    @Override
     public int getSize() {
         return risk.getGame().getNoPlayers();
     }
 
+    @Override
     public Object getElementAt(int index) {
         return risk.getGame().getPlayers().get(index);
     }

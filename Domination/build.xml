@@ -564,6 +564,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
         <copy todir="${dir.build}/swingme">
                 <fileset dir="res_android" includes="**/*.*" excludes="**/*.ini"/>
                 <fileset dir="res/drawable-mdpi" includes="**/*.*"/>
+                <fileset dir="res" includes="drawable-xhdpi/**/*.*"/>
         </copy>
 
         <copy todir="${dir.build}/swingme" filtering="true">

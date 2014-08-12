@@ -967,13 +967,12 @@ public class PicturePanel extends ImageView implements MapPanel {
         }
 
         public static ColorMatrix RescaleOp(float a,float b) {
-            ColorMatrix cm = new ColorMatrix();
-            cm.set(new float[] {
+            ColorMatrix cm = new ColorMatrix(new float[] {
                     a,0,0,0,b,
                     0,a,0,0,b,
                     0,0,a,0,b,
                     0,0,0,1,0,
-                });
+            });
             return cm;
         }
 
@@ -986,13 +985,12 @@ public class PicturePanel extends ImageView implements MapPanel {
             float alpha = ((float)ColorUtil.getAlpha(color))/255f;
             float alpha2 = 1 - alpha;
 
-            ColorMatrix cm = new ColorMatrix();
-            cm.set(new float[] {
+            ColorMatrix cm = new ColorMatrix(new float[] {
                     alpha2,0,0,0,r*alpha,
                     0,alpha2,0,0,g*alpha,
                     0,0,alpha2,0,b*alpha,
                     0,0,0,1,0,
-                });
+            });
             return cm;
         }
 
