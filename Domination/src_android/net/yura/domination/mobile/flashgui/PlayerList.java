@@ -46,6 +46,7 @@ public class PlayerList extends List {
             public void setValue(Object obj) {
                 Player player = (Player) obj;
                 setBackground(player.getColor());
+                playerType = player.getType();
             }
 
             @Override
@@ -86,7 +87,7 @@ public class PlayerList extends List {
                     if (doInvert) {
                         g.getGraphics().setColorMarix(invert);
                     }
-                    int iconSize = getWidth() - padding * 2;
+                    int iconSize = getWidth() / 2;
                     g.drawScaledImage(typeIcon, (getWidth()-iconSize)/2, (getHeight()-iconSize)/2, iconSize, iconSize);
                     if (doInvert) {
                         g.getGraphics().setColorMarix(null);
