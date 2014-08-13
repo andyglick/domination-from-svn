@@ -107,5 +107,8 @@ public class ColorPickerActivity extends Activity {
 
         setTitle(TranslationBundle.getBundle().getString("newgame.label.color"));
         setContentView(grid);
+
+        // HACK: no idea why this is needed, but on tablets the width is too big is this is not here.
+        grid.getLayoutParams().width = size * 4;
     }
 }
