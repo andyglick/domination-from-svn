@@ -147,6 +147,13 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 //System.out.print("loading: "+(game.getImagePic()).getAbsolutePath()+" "+(game.getImageMap()).getAbsolutePath() +" "+((Vector)game.getCountries()).size()+"\n");
 
+                if (game.getImageMap() == null) {
+                    throw new IllegalStateException("ImageMap can not be null");
+                }
+                if (game.getImagePic() == null) {
+                    throw new IllegalStateException("ImagePic can not be null");
+                }
+
                 memoryLoad(
                         MapChooser.createImage(RiskUtil.openMapStream(game.getImageMap()) ),
                         MapChooser.createImage(RiskUtil.openMapStream(game.getImagePic()) )
