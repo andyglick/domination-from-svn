@@ -119,6 +119,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void destroy() {
         mycom.disconnect();
+        game.lobbyShutdown();
     }
 
     public static String getMyUUID() {

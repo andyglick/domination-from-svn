@@ -11,6 +11,8 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
+import net.yura.domination.mapstore.MapServerClient;
+import net.yura.domination.mapstore.MapServerListener;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.mini.MiniLobbyGame;
 import net.yura.lobby.model.Game;
@@ -105,14 +107,57 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     WeakHashMap mapping = new WeakHashMap();
 
     public Icon getIconForGame(Game game) {
+        String mapUID = RiskUtil.getMapNameFromLobbyStartGameOption(game.getOptions());
+        mapping.put(game, mapUID); // keep a strong ref to the mapUID as long as we have a strong ref to the game
+
+        // there are 3 layers of WeakHashMap
+        // for locale maps:
+        //      Game -> MapUID {@link MiniLobbyRisk#mapping} (added here)
+        //      MapUID -> Map {@link MapChooser#mapCache} (added in MapChooder.getLocalIconForMap -> MapChooser.getIconForMapOrCategory)
+        //      Map -> LazyIcon {@link MapChooser#iconCache} (added in MapChooder.getLocalIconForMap -> MapChooser.getIconForMapOrCategory -> MapChooser.gotImg)
+        // for remote maps
+        //      Game -> MapUID {@link MiniLobbyRisk#mapping} (added here)
+        //      MapUID -> LazyIcon  {@link MapChooser#iconCache} (MiniLobbyRisk.mapServerClient.gotResultMaps -> MapChooser.getRemoteImage -> MapChooser.gotImg)
 
         // if local map
-        Map map = MapChooser.createMap( RiskUtil.getMapNameFromLobbyStartGameOption(game.getOptions()) );
-        // TODO what if this is not a local map??
+        if (MapChooser.haveLocalMap(mapUID)) {
+            return MapChooser.getLocalIconForMap(MapChooser.createMap(mapUID));
+        }
 
-        mapping.put(game, map); // keep a strong ref to the map as long as we have a strong ref to the game
+        if (mapServerClient == null) {
+            mapServerClient = new MapServerClient(new MapServerListener() {
+                public void gotResultCategories(String url, List categories) { }
+                public void gotResultMaps(String url, List maps) {
+                    if (maps.size() != 1) {
+                        logger.warning("no map found on MapServer for "+url);
+                        return;
+                    }
+                    Map map = (Map) maps.get(0);
+                    MapChooser.getRemoteImage(MapChooser.getFileUID(map.getMapUrl()), MapChooser.getURL(url, map.getPreviewUrl()), mapServerClient);
+                }
+                public void onXMLError(String string) {
+                    logger.info("ERROR "+string);
+                }
+                public void downloadFinished(String mapUID) { }
+                public void onDownloadError(String string) { }
+                public void publishImg(Object key) {
+                    // TODO repaint game list
+                }
 
-        return MapChooser.getLocalIconForMap(map);
+            });
+            mapServerClient.start();
+        }
+
+        return MapChooser.getRemoteIconForMap(mapUID, mapServerClient);
+    }
+
+    MapServerClient mapServerClient;
+
+    public void lobbyShutdown() {
+        if (mapServerClient != null) {
+            mapServerClient.kill();
+            mapServerClient = null;
+        }
     }
 
     public String getGameDescription(Game game) {
