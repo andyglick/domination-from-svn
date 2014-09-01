@@ -124,7 +124,7 @@ public class RiskUtil {
         public static String getMapNameFromLobbyStartGameOption(String options) {
             String[] lines = options.split( RiskUtil.quote("\n") );
             String choosemap = lines[3];
-            return choosemap.substring( "choosemap ".length() );
+            return choosemap.substring( "choosemap ".length() ).intern();
         }
         public static String getGameDescriptionFromLobbyStartGameOption(String options) {
             String[] lines = options.split( RiskUtil.quote("\n") );

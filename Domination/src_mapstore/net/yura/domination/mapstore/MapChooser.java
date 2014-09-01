@@ -180,6 +180,26 @@ public class MapChooser implements ActionListener,MapServerListener {
         return getIconForMapOrCategory(map, null, map.getPreviewUrl(), null);
     }
 
+    public static Icon getRemoteIconForMap(String mapUID, MapServerClient mapServerClient) {
+        Icon aicon = iconCache.get(mapUID);
+        if (aicon == null) {
+            aicon = iconCache.newIcon(mapUID);
+            mapServerClient.makeRequestXML(MapChooser.MAP_PAGE, "mapfile", mapUID);
+        }
+        return aicon;
+    }
+
+    public static void getRemoteImage(Object key, String url, MapServerClient c) {
+        InputStream in = repo != null ? repo.get(url) : null;
+        if (in != null) {
+            gotImg(key, in);
+        }
+        else {
+            // can be null when shut down
+            if (c != null) c.getImage(url, key);
+        }
+    }
+
     /**
      * @param key can be a Map or a Category
      */
@@ -192,14 +212,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
             // if this is a remote file
             if ( url.indexOf(':')>0 ) {
-                InputStream in = repo!=null?repo.get(url):null;
-                if (in!=null) {
-                    gotImg(key, in);
-                }
-                else {
-                    // can be null when shut down
-                    if (c!=null) c.getImage(url, key);
-                }
+                getRemoteImage(key, url, c);
             }
             // if this is a locale file
             else {
@@ -303,6 +316,21 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (repo!=null && !repo.containsKey( url ) ) {
             repo.put( url , data );
         }
+    }
+
+    public static boolean haveLocalMap(String mapUID) {
+        if (mapCache.containsKey(mapUID)) {
+            return true;
+        }
+        try {
+            InputStream is = RiskUtil.openMapStream(mapUID);
+            if (is != null) {
+                is.close();
+                return true;
+            }
+        }
+        catch (IOException ex) { }
+        return false;
     }
 
     public static Map createMap(String file) {

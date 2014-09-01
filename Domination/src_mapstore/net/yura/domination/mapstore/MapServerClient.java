@@ -230,7 +230,11 @@ public class MapServerClient extends HTTPClient {
         makeRequest(string, params, XML_REQUEST_ID, null);
     }
 
-    public void getImage(String url, Object key) {
+    /**
+     * you should use {@link MapChooser#getRemoteImage(java.lang.Object, java.lang.String, net.yura.domination.mapstore.MapServerClient)}
+     * to make sure we check the disk cache, as the image may have already been downloaded.
+     */
+    void getImage(String url, Object key) {
 	makeRequest(url, null, IMG_REQUEST_ID, key);
     }
 

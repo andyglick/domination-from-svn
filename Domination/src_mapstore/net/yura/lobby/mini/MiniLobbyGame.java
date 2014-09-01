@@ -12,19 +12,19 @@ public interface MiniLobbyGame {
 
     void addLobbyGameMoveListener(MiniLobbyClient lgl);
 
-    public Properties getProperties();
+    Properties getProperties();
 
-    public boolean isMyGameType(GameType gametype);
-    public Icon getIconForGame(Game game);
-    public String getGameDescription(Game game);
+    boolean isMyGameType(GameType gametype);
+    Icon getIconForGame(Game game);
+    String getGameDescription(Game game);
 
     /**
      * callback mlc.createNewGame(Game)
      */
-    public void openGameSetup(GameType gameType);
+    void openGameSetup(GameType gameType);
 
-    public void objectForGame(Object object);
-    public void stringForGame(String message);
+    void objectForGame(Object object);
+    void stringForGame(String message);
 
     void connected(String username);
     void disconnected();
@@ -36,9 +36,10 @@ public interface MiniLobbyGame {
     /**
      * a private game was started on the server
      */
-    public void gameStarted(int id);
+    void gameStarted(int id);
 
-    public String getAppName();
-    public String getAppVersion();
+    String getAppName();
+    String getAppVersion();
 
+    void lobbyShutdown();
 }
