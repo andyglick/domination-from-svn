@@ -45,6 +45,8 @@
 		<langpack iso3="ukr"/>
 		<langpack iso3="cze"/>
 		<langpack iso3="svk"/>
+		<langpack iso3="ell"/>
+		<langpack iso3="dan"/>
 		<!-- <langpack iso3="lav"/> Latvian not supported -->
 	</locale>
 
