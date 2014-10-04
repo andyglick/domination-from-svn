@@ -271,7 +271,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		draw = newJRadioButton("draw",false,modes,modesPanel);
 
 		bamButton = new JButton("Auto Draw");
-		bamButton.setActionCommand("bam");
+		bamButton.setActionCommand("autodraw");
 		bamButton.addActionListener(this);
 		modesPanel.add(bamButton);
 		bamButton.setEnabled(false);
@@ -816,15 +816,17 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		else if (a.getActionCommand().equals("fix")) {
 			removeBadMapColors();
 		}
-                else if (a.getActionCommand().equals("bam")) {
-                    
-                        int result = JOptionPane.showConfirmDialog(this, new Object[] {
+                else if (a.getActionCommand().equals("autodraw")) {
+
+                        String[] options = {"Dots", "Flood Fill", "Cancel"};
+                        int result = JOptionPane.showOptionDialog(this, new Object[] {
                                 new javax.swing.ImageIcon(this.getClass().getResource("bam.png")),
                                 "Are you sure you want to add country regions wherever the country badge is?\n"+
-                                "This action is not reversible so please save a copy of your map first." },"Auto Draw?",JOptionPane.OK_CANCEL_OPTION);
+                                "This action is not reversible so please save a copy of your map first." },"Auto Draw?",
+                                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-                        if (result==JOptionPane.OK_OPTION) {
-                            bam();
+                        if (result == JOptionPane.YES_OPTION || result == JOptionPane.NO_OPTION) {
+                            autodraw(result == JOptionPane.YES_OPTION);
                         }
 		}
 		else if (a.getActionCommand().equals("islands")) {
@@ -974,17 +976,47 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		editPanel.repaint();
 	}
 
-        private void bam() {
+        private void autodraw(boolean dots) {
             BufferedImage imgMap = editPanel.getImageMap();
             Graphics g = imgMap.getGraphics();
             int size = myMap.getCircleSize();
             Country[] countries = myMap.getCountries();
             for (Country country:countries) {
-                g.setColor( new Color(country.getColor(), country.getColor(), country.getColor()) );
-                g.fillOval(country.getX()-(size/2),country.getY()-(size/2),size,size);
+                Color color = new Color(country.getColor(), country.getColor(), country.getColor());
+                if (dots) {
+                    g.setColor(color);
+                    g.fillOval(country.getX()-(size/2),country.getY()-(size/2),size,size);
+                }
+                else {
+                    floodFill(imgMap, country.getX(), country.getY(), color.getRGB());
+                }
             }
             g.dispose();
             editPanel.repaintSelected();
+        }
+
+        /**
+         * http://java.macteki.com/2011/03/how-to-do-flood-fill-operation-in-java.html
+         */
+        public static void floodFill(BufferedImage image, int x, int y, int fillColor) {
+            java.util.ArrayList<Point> examList = new java.util.ArrayList<Point>();
+
+            int initialColor = image.getRGB(x, y);
+            examList.add(new Point(x, y));
+
+            while (examList.size() > 0) {
+                Point p = examList.remove(0);  // get and remove the first point in the list
+                if (image.getRGB(p.x, p.y) == initialColor) {
+                    x = p.x;
+                    y = p.y;
+                    image.setRGB(x, y, fillColor);  // fill current pixel
+
+                    examList.add(new Point(x - 1, y));        // check west neighbor
+                    examList.add(new Point(x + 1, y));        // check east neighbor
+                    examList.add(new Point(x, y - 1));        // check north neighbor
+                    examList.add(new Point(x, y + 1));        // check south neighbor
+                }
+            }
         }
 
         private void delIslands() {
