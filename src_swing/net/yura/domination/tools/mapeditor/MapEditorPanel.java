@@ -213,30 +213,32 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	public void setCountry(Country a) {
 	    if (selected != a) {
-
 		selected = a;
-
-		int width = map.getWidth();
-		int height =  map.getHeight();
-
-		int[] pixels1 = map.getRGB(0,0,width,height,null,0,width);
-		int[] pixels2 = drawImage.getRGB(0,0,width,height,null,0,width);
-
-                int redColor = Color.RED.getRGB();
-                
-		for (int c=0;c<pixels1.length;c++) {
-			if (selected!=null && selected.getColor() == (pixels1[c]&0xff) ) {
-				pixels2[c] = redColor;
-			}
-			else {
-				pixels2[c] = 0;
-			}
-		}
-
-		drawImage.setRGB(0,0,width,height,pixels2,0,width);
-		repaint();
+                repaintSelected();
 	    }
 	}
+
+        public void repaintSelected() {
+            int width = map.getWidth();
+            int height =  map.getHeight();
+
+            int[] pixels1 = map.getRGB(0,0,width,height,null,0,width);
+            int[] pixels2 = drawImage.getRGB(0,0,width,height,null,0,width);
+
+            int redColor = Color.RED.getRGB();
+
+            for (int c=0;c<pixels1.length;c++) {
+                    if (selected!=null && selected.getColor() == (pixels1[c]&0xff) ) {
+                            pixels2[c] = redColor;
+                    }
+                    else {
+                            pixels2[c] = 0;
+                    }
+            }
+
+            drawImage.setRGB(0,0,width,height,pixels2,0,width);
+            repaint();
+        }
 
 	public void setAlpha(int a) {
 		alpha = a/100F;

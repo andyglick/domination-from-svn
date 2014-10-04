@@ -984,7 +984,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 g.fillOval(country.getX()-(size/2),country.getY()-(size/2),size,size);
             }
             g.dispose();
-            editPanel.repaint();
+            editPanel.repaintSelected();
         }
 
         private void delIslands() {
