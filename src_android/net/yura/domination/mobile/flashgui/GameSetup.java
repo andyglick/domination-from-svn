@@ -104,23 +104,29 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                                 );
                     }
                     else {
-                        controller.createLobbyGame(
-                        	    ((TextComponent)newgame.find("GameName")).getText(),
-                        	    RiskUtil.createGameString(
-                                    	    getNoPlayers(Player.PLAYER_AI_AVERAGE),
-                                    	    getNoPlayers(Player.PLAYER_AI_EASY),
-                                    	    getNoPlayers(Player.PLAYER_AI_HARD),
-                                    	    getStartGameOption( GameType.getSelection().getActionCommand() ),
-                                    	    getStartGameOption( CardType.getSelection().getActionCommand() ),
-                                    	    autoplaceall.isSelected(),
-                                    	    recycle.isSelected(),
-                                    	    lobbyMapName),
-                        	    getNoPlayers(Player.PLAYER_HUMAN),
-                                    Integer.parseInt( ((Option)((ComboBox)newgame.find("TimeoutValue")).getSelectedItem()).getKey() ),
-                                    ((Button)newgame.find("private")).isSelected()
+                        String name = ((TextComponent)newgame.find("GameName")).getText().trim();
+                        if ("".equals(name)) {
+                            OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.nogamename") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
+                        }
+                        else {
+                            controller.createLobbyGame(
+                                    name,
+                                    RiskUtil.createGameString(
+                                            getNoPlayers(Player.PLAYER_AI_AVERAGE),
+                                            getNoPlayers(Player.PLAYER_AI_EASY),
+                                            getNoPlayers(Player.PLAYER_AI_HARD),
+                                            getStartGameOption(GameType.getSelection().getActionCommand()),
+                                            getStartGameOption(CardType.getSelection().getActionCommand()),
+                                            autoplaceall.isSelected(),
+                                            recycle.isSelected(),
+                                            lobbyMapName),
+                                    getNoPlayers(Player.PLAYER_HUMAN),
+                                    Integer.parseInt(((Option) ((ComboBox) newgame.find("TimeoutValue")).getSelectedItem()).getKey()),
+                                    ((Button) newgame.find("private")).isSelected()
                             );
 
-                        controller.openMainMenu(); // close the game setup screen
+                            controller.openMainMenu(); // close the game setup screen
+                        }
                     }
                 }
                 else {
