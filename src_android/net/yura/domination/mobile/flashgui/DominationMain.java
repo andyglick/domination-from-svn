@@ -95,6 +95,12 @@ public class DominationMain extends Midlet {
                 }
                 @Override
                 public boolean ignoreError(LogRecord record) {
+                    String loggerName = record.getLoggerName();
+                    if ("DataScheduler".equals(loggerName)) { // "libcore.io.IoBridge".equals(className) && "isDataSchedulerEnabled".equals(methodName)
+                        // isDataSchedulerEnabled(): DataScheduler is disabled, exeption=java.io.FileNotFoundException: /system/etc/datascheduling_policy_conf.xml: open failed: ENOENT (No such file or directory)
+                        return true;
+                    }
+
                     String className = record.getSourceClassName();
                     String methodName = record.getSourceMethodName();
                     if ("java.net.InetAddress".equals(className) && "lookupHostByName".equals(methodName)) {
@@ -106,13 +112,15 @@ public class DominationMain extends Midlet {
                     if ("java.net.AddressCache".equals(className) && "customTtl".equals(methodName)) {
                         return true;
                     }
-                    if ("rto value is too small:0".equals(record.getMessage())) {
+
+                    String message = record.getMessage();
+                    if ("rto value is too small:0".equals(message)) {
                         return true;
                     }
-                    if ("/data/system/carrierinfo.prop: open failed: ENOENT (No such file or directory)".equals(record.getMessage())) {
+                    if ("/data/system/carrierinfo.prop: open failed: ENOENT (No such file or directory)".equals(message)) {
                         return true;
                     }
-                    if ("isDataSchedulerEnabled():false".equals(record.getMessage())) {
+                    if ("isDataSchedulerEnabled():false".equals(message)) {
                         return true;
                     }
 
