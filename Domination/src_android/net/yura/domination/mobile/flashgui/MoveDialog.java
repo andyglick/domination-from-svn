@@ -169,13 +169,13 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
         int xC1 = xMiddle-distanceFromCenter;
         int xC2 = xMiddle+distanceFromCenter;
 
-        g.getGraphics().setColorMarix( getMarix(color1) );
+        g.getGraphics().setColorMatrix( getMatrix(color1) );
         drawCountry(g,c1img, xC1, yMiddle);
         
-        if (color1!=color2) g.getGraphics().setColorMarix( getMarix(color2) );
+        if (color1 != color2) g.getGraphics().setColorMatrix( getMatrix(color2) );
         drawCountry(g,c2img, xC2, yMiddle);
 
-        g.getGraphics().setColorMarix(null);
+        g.getGraphics().setColorMatrix(null);
 
         //g.setColor( 0xFF000000 );
         //tl = new TextLayout( country1.getName() , font, frc); // Display
@@ -226,7 +226,7 @@ public class MoveDialog extends Frame implements ActionListener,ChangeListener {
 
     }
 
-    static ColorMatrix getMarix(int color) {
+    static ColorMatrix getMatrix(int color) {
         ColorMatrix m = PicturePanel.RescaleOp( 0.5f, -1.0f);
         m.preConcat(PicturePanel.gray);
         m.postConcat( PicturePanel.getMatrix( PicturePanel.colorWithAlpha(color, 100) ) );
