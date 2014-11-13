@@ -85,12 +85,12 @@ public class PlayerList extends List {
                 if (typeIcon != null) {
                     boolean doInvert = ColorUtil.getTextColorFor(color) == ColorUtil.WHITE;
                     if (doInvert) {
-                        g.getGraphics().setColorMarix(invert);
+                        g.getGraphics().setColorMatrix(invert);
                     }
                     int iconSize = getWidth() / 2;
                     g.drawScaledImage(typeIcon, (getWidth()-iconSize)/2, (getHeight()-iconSize)/2, iconSize, iconSize);
                     if (doInvert) {
-                        g.getGraphics().setColorMarix(null);
+                        g.getGraphics().setColorMatrix(null);
                     }
 
                 }

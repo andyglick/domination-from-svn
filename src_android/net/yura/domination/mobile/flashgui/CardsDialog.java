@@ -239,9 +239,9 @@ public class CardsDialog extends Frame implements ActionListener {
                                 }
 
                                 if (i!=null) { // i can be null if we had a outofmem in the picturepanel
-                                    g.getGraphics().setColorMarix(m);
+                                    g.getGraphics().setColorMatrix(m);
                                     g.drawScaledImage(i, (getWidth()-imgSize)/2, getHeight()/2 - imgSize, imgSize, imgSize);
-                                    g.getGraphics().setColorMarix(null);
+                                    g.getGraphics().setColorMatrix(null);
                                 }
 
                                 if (this == extraArmiesCard) {
