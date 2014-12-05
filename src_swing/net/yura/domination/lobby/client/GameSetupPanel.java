@@ -606,11 +606,11 @@ aialabel.setVisible(false);
 		if (e.getSource()==start) {
 
 			int a = ((Integer)human.getValue()).intValue();
-			int b = ((Integer)aiaverage.getValue()).intValue();
-			int c = ((Integer)aieasy.getValue()).intValue();
+			int b = ((Integer)aieasy.getValue()).intValue();
+			int c = ((Integer)aiaverage.getValue()).intValue();
 			int d = ((Integer)aihard.getValue()).intValue();
 
-			int sum = a+c+d;
+			int sum = a + b + c + d;
 
 			if (sum >=2 && sum <= RiskGame.MAX_PLAYERS) {
 
@@ -625,7 +625,7 @@ aialabel.setVisible(false);
                                 else if (fixed.isSelected()) cardsMode = RiskGame.CARD_FIXED_SET;
                                 else cardsMode = RiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
 
-				options = RiskUtil.createGameString(b,c,d,gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
+				options = RiskUtil.createGameString(b, c, d, gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
 
 				dialog.setVisible(false);
 

@@ -109,20 +109,24 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                             OptionPane.showMessageDialog(null, resb.getProperty("newgame.error.nogamename") , resb.getProperty("newgame.error.title"), OptionPane.ERROR_MESSAGE );
                         }
                         else {
+                            boolean privateGame = ((Button) newgame.find("private")).isSelected();
+                            int easyAI = getNoPlayers(Player.PLAYER_AI_EASY);
+                            int averageAI = getNoPlayers(Player.PLAYER_AI_AVERAGE);
+                            int hardAI = getNoPlayers(Player.PLAYER_AI_HARD);
                             controller.createLobbyGame(
                                     name,
                                     RiskUtil.createGameString(
-                                            getNoPlayers(Player.PLAYER_AI_AVERAGE),
-                                            getNoPlayers(Player.PLAYER_AI_EASY),
-                                            getNoPlayers(Player.PLAYER_AI_HARD),
+                                            easyAI,
+                                            averageAI,
+                                            hardAI,
                                             getStartGameOption(GameType.getSelection().getActionCommand()),
                                             getStartGameOption(CardType.getSelection().getActionCommand()),
                                             autoplaceall.isSelected(),
                                             recycle.isSelected(),
                                             lobbyMapName),
-                                    getNoPlayers(Player.PLAYER_HUMAN),
+                                    privateGame ? RiskGame.MAX_PLAYERS - easyAI - averageAI - hardAI : getNoPlayers(Player.PLAYER_HUMAN),
                                     Integer.parseInt(((Option) ((ComboBox) newgame.find("TimeoutValue")).getSelectedItem()).getKey()),
-                                    ((Button) newgame.find("private")).isSelected()
+                                    privateGame
                             );
 
                             controller.openMainMenu(); // close the game setup screen
