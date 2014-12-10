@@ -2821,6 +2821,7 @@ RiskUtil.printStackTrace(e);
 
         public void setGame(RiskGame b) {
                 if (game!=null) {
+                    closeBattle();
                     controller.closeGame();
                 }
 		inbox.clear();

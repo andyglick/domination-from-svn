@@ -92,11 +92,14 @@ public class GooglePlusOne {
             Map<String, Object> response = (Map)object[c];
             try {
                 Map<String, Object> result = (Map)response.get("result");
-                String url = (String)result.get("id");
-                Map<String, Object> metadata = (Map)result.get("metadata");
-                Map<String, Object> globalCounts = (Map)metadata.get("globalCounts");
-                double count = (Double)globalCounts.get("count");
-                urlToValue.put(url, (int)count);
+                if (result != null) {
+                    String url = (String) result.get("id");
+                    Map<String, Object> metadata = (Map) result.get("metadata");
+                    Map<String, Object> globalCounts = (Map) metadata.get("globalCounts");
+                    double count = (Double) globalCounts.get("count");
+                    urlToValue.put(url, (int) count);
+                }
+                // {"error":{"message":"Backend Error","code":-32099,"data":[{"message":"Backend Error","domain":"global","reason":"backendError"}]},"id":"p"}
             }
             catch (Exception ex) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -99,9 +99,9 @@ public class PlayerList extends List {
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(String actionCommand) {
+                final Player player = (Player) getSelectedValue();
                 DominationMain.openURL("native://net.yura.domination.android.ColorPickerActivity", new DominationMain.ActivityResultListener() {
                     public void onActivityResult(Object data) {
-                        Player player = (Player)getSelectedValue();
                         int color = (Integer)data;
                         if (player.getColor() != color) {
                             Player playerWithColor = getPlayerByColor(color);
