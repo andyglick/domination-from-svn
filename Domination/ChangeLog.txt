@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		57
+	Android		59
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -21,6 +21,11 @@ CURRENT VERSION:
 	SwingGUI sends more info on crash and feedback
 	Greek added
 
+	Android 59 fix for notifications not showing when game has & in name
+		   fix for not being able to close the lobby when its in a disconnected state
+	Android 58 allow any number of players to be selected for private games (minus AI)
+		   fix for Dialog theme in lollipop
+		   fix to show error when creating game with empty name
 	Android 57 Can select colors for all players
 		   Can load maps from external storage dir shown in About screen
 		   Admins can rename games
