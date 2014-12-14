@@ -222,18 +222,38 @@ public class Risk extends Thread {
 		controller.deleteListener(o);
 	}
 
-        private static class GameCommand {
+        private class GameCommand implements Runnable {
             public static final int UI_COMMAND = 1;
             public static final int NETWORK_COMMAND = 2;
             final int type;
             final String command;
             Object notifier;
+
             public GameCommand(int t,String c) {
                 type = t;
                 command = c;
             }
+
+            public void run() {
+                if (type == GameCommand.UI_COMMAND) {
+                    processFromUI(command);
+                }
+                else if (type == GameCommand.NETWORK_COMMAND) {
+                    inGameParser(command);
+                }
+                else {
+                    throw new RuntimeException();
+                }
+
+                if (notifier != null) {
+                    synchronized (notifier) {
+                        notifier.notifyAll();
+                    }
+                }
+            }
+
             public String toString() {
-                return (type==UI_COMMAND?"UI":"NETWORK")+" "+command;
+                return (type == UI_COMMAND ? "UI" : "NETWORK") + " " + command;
             }
         }
 
@@ -259,7 +279,7 @@ public class Risk extends Thread {
             }
         }
 
-        private void addToInbox(GameCommand m) {
+        private void addToInbox(Runnable m) {
 		synchronized(inbox) {
 			inbox.add(m);
 			inbox.notify();
@@ -275,7 +295,7 @@ public class Risk extends Thread {
 
         boolean running = true;
 	public void run() {
-            GameCommand message=null;
+            Runnable message=null;
             while (running) {
 		try {
 			synchronized(inbox) {
@@ -290,24 +310,10 @@ public class Risk extends Thread {
 					}
 				}
 
-				message = (GameCommand)inbox.remove(0);
+				message = (Runnable) inbox.remove(0);
 			}
 
-                        if (message.type==GameCommand.UI_COMMAND) {
-                            processFromUI(message.command);
-                        }
-                        else if (message.type==GameCommand.NETWORK_COMMAND) {
-                            inGameParser(message.command);
-                        }
-                        else {
-                            throw new RuntimeException();
-                        }
-
-                        if (message.notifier != null) {
-                            synchronized (message.notifier) {
-                                message.notifier.notifyAll();
-                            }
-                        }
+                        message.run();
                 }
                 catch (Exception ex) {
 			logger.log(Level.WARNING,"ERROR processing "+ message,ex);
