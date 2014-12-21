@@ -1,20 +1,21 @@
 package net.yura.domination.engine;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.PushbackInputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -421,6 +422,18 @@ public class RiskUtil {
             return info;
 
 	}
+
+        public static void saveGameLog(File logFile, RiskGame game) throws IOException {
+            FileWriter fileout = new FileWriter(logFile);
+            BufferedWriter buffer = new BufferedWriter(fileout);
+            PrintWriter printer = new PrintWriter(buffer);
+            List commands = game.getCommands();
+            int size = commands.size();
+            for (int line = 0; line < size; line++) {
+                printer.println(commands.get(line));
+            }
+            printer.close();
+        }
 
         public static OutputStream getOutputStream(File dir,String fileName) throws Exception {
             File outFile = new File(dir,fileName);
