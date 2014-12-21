@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.RiskGame;
 
@@ -23,25 +24,34 @@ public class GameSettings implements GameSettingsMXBean {
         return AIManager.getWait();
     }
 
-    @Override
-    public void saveGame(int id) throws Exception {
-
+    ServerRisk getServerGame(int id) {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-
         for (Thread thread: threadArray) {
             if (thread instanceof ServerRisk) {
-                ServerRisk risk =(ServerRisk)thread;
-                if (risk.sgr.getId()==id) {
-                    File file = new File("game"+id+".save");
-                    FileOutputStream fout = new FileOutputStream(file);
-                    risk.getGame().saveGame(fout);
-                    fout.close();
-                    return;
+                ServerRisk risk = (ServerRisk) thread;
+                if (risk.sgr.getId() == id) {
+                    return risk;
                 }
             }
         }
         throw new IllegalArgumentException("game "+id+" not found");
+    }
+
+    @Override
+    public void saveGame(int id) throws Exception {
+        ServerRisk risk = getServerGame(id);
+        File file = new File("game"+id+".save");
+        FileOutputStream fout = new FileOutputStream(file);
+        risk.getGame().saveGame(fout);
+        fout.close();
+    }
+
+    @Override
+    public void saveGameLog(int id) throws Exception {
+        ServerRisk risk = getServerGame(id);
+        File file = new File("game"+id+".log");
+        RiskUtil.saveGameLog(file, risk.getGame());
     }
 
     @Override

@@ -11,5 +11,6 @@ public interface GameSettingsMXBean {
     int getAIWait();
 
     void saveGame(int id) throws Exception;
+    void saveGameLog(int id) throws Exception;
     List<Integer> markFinished() throws Exception;
 }

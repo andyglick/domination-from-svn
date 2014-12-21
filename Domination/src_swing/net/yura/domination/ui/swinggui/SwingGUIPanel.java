@@ -1763,15 +1763,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                             File logFile = getNewLogFile();
                             if (logFile != null) {
                                 try {
-                                    FileWriter fileout = new FileWriter(logFile);
-                                    BufferedWriter buffer = new BufferedWriter(fileout);
-                                    PrintWriter printer = new PrintWriter(buffer);
-                                    List commands = game.getCommands();
-                                    int size = commands.size();
-                                    for (int line = 0; line < size; line++) {
-                                        printer.println(commands.get(line));
-                                    }
-                                    printer.close();
+                                    RiskUtil.saveGameLog(logFile, game);
                                 }
                                 catch(Exception error) {
                                     showError( error.getMessage() );
@@ -1934,12 +1926,9 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
                                 FileWriter fileout = new FileWriter(logFile);
                                 BufferedWriter buffer = new BufferedWriter(fileout);
                                 PrintWriter printer = new PrintWriter(buffer);
-
                                 printer.write(textArea.getText());
-
                                 printer.close();
                         }
-
                         catch(Exception error) {
                                 showError( error.getMessage() );
                         }
