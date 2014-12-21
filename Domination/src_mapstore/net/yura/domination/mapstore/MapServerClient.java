@@ -258,8 +258,8 @@ public class MapServerClient extends HTTPClient {
 
         String mapUID;
         String mapContext;
-        final Vector urls = new Vector();
-        final Vector fileNames = new Vector();
+        final List urls = new Vector();
+        final List fileNames = new Vector();
         boolean error = false;
 
         MapDownload(String url) {
@@ -283,7 +283,7 @@ public class MapServerClient extends HTTPClient {
 
             String url = getURL(mapContext, fileName);
 
-            urls.addElement(url);
+            urls.add(url);
 
             makeRequest(url, null, MapServerClient.MAP_REQUEST_ID, this);
         }
@@ -296,7 +296,7 @@ public class MapServerClient extends HTTPClient {
             boolean empty;
 
             synchronized(urls) {
-                urls.removeElement(url);
+                urls.remove(url);
                 empty = urls.isEmpty();
             }
 
@@ -321,7 +321,7 @@ public class MapServerClient extends HTTPClient {
                     }
                 }
                 catch (Exception ex) {
-                    ex.printStackTrace();
+                    logger.log(Level.WARNING, "rename error! map=" + mapUID + " context=" + mapContext + " url=" + url + " files=" + fileNames, ex);
                 }
 
                 if (chooser==null) {
