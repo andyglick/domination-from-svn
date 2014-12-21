@@ -303,7 +303,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void disconnected() {
-        if (openGameId!=-1) {
+        logger.info("disconnected openGame=" + openGameId);
+        if (openGameId != -1) {
             game.disconnected();
             openGameId = -1;
         }
