@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.yura.mobile.io.JSONUtil;
 import net.yura.mobile.io.json.JSONWriter;
 
@@ -15,6 +17,8 @@ import net.yura.mobile.io.json.JSONWriter;
  * http://www.tomanthony.co.uk/blog/google_plus_one_button_seo_count_api/
  */
 public class GooglePlusOne {
+
+    public static final Logger logger = Logger.getLogger(GooglePlusOne.class.getName());
 
     public static final String URL = "https://clients6.google.com/rpc?key=AIzaSyCKSbrvQasunBoV16zDH9R33D88CeLr9gQ";
 
@@ -99,13 +103,13 @@ public class GooglePlusOne {
                     double count = (Double) globalCounts.get("count");
                     urlToValue.put(url, (int) count);
                 }
-                // {"error":{"message":"Backend Error","code":-32099,"data":[{"message":"Backend Error","domain":"global","reason":"backendError"}]},"id":"p"}
+                else {
+                    // {"error":{"message":"Backend Error","code":-32099,"data":[{"message":"Backend Error","domain":"global","reason":"backendError"}]},"id":"p"}
+                    logger.info("error getting count from: " + toJSON(response));
+                }
             }
             catch (Exception ex) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                util.save(out, response);
-                System.err.println("error getting count from: "+out.toString("UTF-8"));
-                ex.printStackTrace();
+                logger.log(Level.WARNING, "error getting count from: " + toJSON(response), ex);
                 // do not throw here as other responses may be fine
                 //IOException ex2 = new IOException("error in "+responce);
                 //ex2.initCause(ex); // Android 1.6
@@ -113,5 +117,16 @@ public class GooglePlusOne {
             }
         }
 	return urlToValue;
+    }
+
+    static String toJSON(Object obj) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            util.save(out, obj);
+            return out.toString("UTF-8");
+        }
+        catch (Exception ex) {
+            return ex.toString();
+        }
     }
 }
