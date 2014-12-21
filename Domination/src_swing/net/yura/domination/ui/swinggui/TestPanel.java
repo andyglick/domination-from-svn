@@ -398,7 +398,11 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                 views.add( "Spent Cards" , new JScrollPane(new JTable(cardsModel2)) );
 		views.add( "Players" , new JScrollPane(new JTable(playersModel)) );
                 views.add( "Game" , new JScrollPane(new JTable(gameInfo)) );
-                views.add( "Commands" , new JScrollPane(new JTable(commands)) );
+
+                JTable commandsTable = new JTable(commands);
+                commandsTable.setCellSelectionEnabled(true);
+
+                views.add( "Commands" , new JScrollPane(commandsTable) );
 
 		setLayout( new BorderLayout() );
 		add( views );
