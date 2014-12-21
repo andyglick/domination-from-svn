@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1746,21 +1747,37 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 			int returnVal = fc.showOpenDialog( RiskUIUtil.findParentFrame(this) );
 			if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
 				java.io.File file = fc.getSelectedFile();
-				// Write your code here what to do with selected file
-
 				String fileName = file.getAbsolutePath();
 
 				go("newgame");
-				go("play " + fileName );
-
-			} else {
-				// Write your code here what to do if user has canceled Open dialog
+				go("play " + fileName);
 			}
-
 		}
 		else if (a.getActionCommand().equals("save debug")) {
 
-			saveLog(debugText);
+                        RiskGame game = myrisk.getGame();
+                        if (game == null) {
+                            saveLog(debugText);
+                        }
+                        else {
+                            File logFile = getNewLogFile();
+                            if (logFile != null) {
+                                try {
+                                    FileWriter fileout = new FileWriter(logFile);
+                                    BufferedWriter buffer = new BufferedWriter(fileout);
+                                    PrintWriter printer = new PrintWriter(buffer);
+                                    List commands = game.getCommands();
+                                    int size = commands.size();
+                                    for (int line = 0; line < size; line++) {
+                                        printer.println(commands.get(line));
+                                    }
+                                    printer.close();
+                                }
+                                catch(Exception error) {
+                                    showError( error.getMessage() );
+                                }
+                            }
+                        }
 
 		}
 		else if (a.getActionCommand().equals("clear debug")) {
@@ -1892,48 +1909,41 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 }
 
+        File getNewLogFile() {
+                JFileChooser fc = new JFileChooser();
+                RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_LOG_FILES);
+                fc.setFileFilter(filter);
 
+                int returnVal = fc.showSaveDialog(RiskUIUtil.findParentFrame(this));
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File file = fc.getSelectedFile();
+                        String fileName = file.getName();
+                        if (!(fileName.endsWith("." + RiskFileFilter.RISK_LOG_FILES))) {
+                                file = new File(file.getParentFile(), fileName + "." + RiskFileFilter.RISK_LOG_FILES);
+                        }
+                        return file;
+                }
+                return null;
+        }
 
-	public void saveLog(JTextArea textArea) {
+	void saveLog(JTextArea textArea) {
 
+                File logFile = getNewLogFile();
+                if (logFile != null) {
+                        try {
+                                FileWriter fileout = new FileWriter(logFile);
+                                BufferedWriter buffer = new BufferedWriter(fileout);
+                                PrintWriter printer = new PrintWriter(buffer);
 
+                                printer.write(textArea.getText());
 
-			JFileChooser fc = new JFileChooser();
-			RiskFileFilter filter = new RiskFileFilter(RiskFileFilter.RISK_LOG_FILES);
-			fc.setFileFilter(filter);
+                                printer.close();
+                        }
 
-			int returnVal = fc.showSaveDialog( RiskUIUtil.findParentFrame(this) );
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				java.io.File file = fc.getSelectedFile();
-				// Write your code here what to do with selected file
-
-				String fileName = file.getAbsolutePath();
-
-				if (!(fileName.endsWith( "." + RiskFileFilter.RISK_LOG_FILES ))) {
-					fileName = fileName + "." + RiskFileFilter.RISK_LOG_FILES;
-				}
-
-				try {
-
-					FileWriter fileout = new FileWriter(fileName);
-					BufferedWriter buffer = new BufferedWriter(fileout);
-					PrintWriter printer = new PrintWriter(buffer);
-
-					printer.write(textArea.getText());
-
-					printer.close();
-
-				}
-
-				catch(Exception error) {
-					showError( error.getMessage() );
-				}
-
-			} else {
-				// Write your code here what to do if user has canceled Save dialog
-			}
-
-
+                        catch(Exception error) {
+                                showError( error.getMessage() );
+                        }
+                }
 	}
 
 	/**
