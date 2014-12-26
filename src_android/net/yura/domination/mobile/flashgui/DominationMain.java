@@ -41,11 +41,11 @@ import net.yura.util.Service;
 
 public class DominationMain extends Midlet {
 
-    public static final String product = "MiniFlashGUI";
+    public static final String product = "AndroidGUI";
     public static final String version;
     static {
         String versionCode = System.getProperty("versionCode");
-        version = versionCode!=null ? versionCode : "?me4se?";
+        version = versionCode != null ? versionCode : Risk.RISK_VERSION;
     }
 
     public static Preferences appPreferences;
@@ -80,7 +80,7 @@ public class DominationMain extends Midlet {
         //Risk.RISK_VERSION = versionName!=null ? versionName : "?me4se?";
 
         try {
-            SimpleBug.initLogFile( RiskUtil.GAME_NAME , Risk.RISK_VERSION+" "+product+" "+version , TranslationBundle.getBundle().getLocale().toString() );
+            SimpleBug.initLogFile(RiskUtil.GAME_NAME + " " + product, version, TranslationBundle.getBundle().getLocale().toString());
             BugSubmitter.setApplicationInfoProvider( new ApplicationInfoProvider() {
                 @Override
                 public void addInfoForSubmit(Map map) {
@@ -209,7 +209,7 @@ public class DominationMain extends Midlet {
         }
         catch (Exception ex) {
             if (Midlet.getPlatform()==Midlet.PLATFORM_ANDROID) {
-                net.yura.mobile.logging.Logger.warn(ex);
+                net.yura.mobile.logging.Logger.warn(null, ex);
             }
 
             synth = new NimbusLookAndFeel();
