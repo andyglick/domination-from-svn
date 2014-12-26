@@ -11,11 +11,11 @@ public class J2SELogger extends net.yura.mobile.logging.Logger {
     static final Logger logger = Logger.getLogger(J2SELogger.class.getName());
     
     protected synchronized void log(String message, int level) {
-        logger.log( getLevel(level), message);
+        logger.log(getLevel(level), message);
     }
 
-    protected synchronized void log(Throwable throwable, int level) {
-        logger.log( getLevel(level), null, throwable);
+    protected synchronized void log(String error, Throwable throwable, int level) {
+        logger.log(getLevel(level), error, throwable);
     }
     
     private static Level getLevel(int level) {

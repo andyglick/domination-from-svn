@@ -229,7 +229,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                         in = RiskUtil.openMapStream( url ); // "preview/"+prv
                     }
                     catch (Exception ex) {
-                        Logger.warn(ex);
+                        Logger.warn("cant open " + url, ex);
                     }
                 }
                 //if (in==null) {
@@ -255,10 +255,10 @@ public class MapChooser implements ActionListener,MapServerListener {
                             in = new ByteArrayInputStream(bytes);
                         }
                         catch (OutOfMemoryError err) { // what can we do?
-                            Logger.info(err);
+                            Logger.info("cant resize " + url, err);
                         }
                         catch (Exception ex) {
-                            Logger.warn(ex);
+                            Logger.warn("cant resize " + url, ex);
                         }
                     }
                 }
@@ -278,7 +278,7 @@ public class MapChooser implements ActionListener,MapServerListener {
             iconCache.gotImg(obj, img);
         }
         catch (OutOfMemoryError err) {
-            Logger.info(err); // nothing we can do here
+            Logger.info("cant load " + obj, err); // nothing we can do here
         }
         catch (Exception ex) {
             throw new RuntimeException("failed to decode img "+obj, ex);
