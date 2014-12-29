@@ -48,11 +48,8 @@ public class CardsDialog extends Frame implements ActionListener {
 
 	/**
 	 * Creates a new CardsDialog
-	 * @param parent decides the parent of the frame
-	 * @param modal
 	 * @param r the risk main program
 	 */
-
 	public CardsDialog(Risk r, PicturePanel p) {
 		myrisk = r;
 		pp=p;
@@ -87,11 +84,31 @@ public class CardsDialog extends Frame implements ActionListener {
 
         public void setupNumArmies() {
 
-            String text;
-            int cardsMode = myrisk.getGame().getCardMode();
+            if (myrisk.getGame().isRecycleCards() && myrisk.getGame().getCards().isEmpty() && !myrisk.getGame().getUsedCards().isEmpty()) {
+                throw new IllegalStateException();
+            }
 
-            // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
-            if(cardsMode==RiskGame.CARD_FIXED_SET || cardsMode==RiskGame.CARD_ITALIANLIKE_SET) {
+            final String text;
+            int cardsMode = myrisk.getGame().getCardMode();
+            int cardsWithPlayers = 0;
+            for (Player player: (List<Player>) myrisk.getGame().getPlayers()) {
+                cardsWithPlayers += player.getCards().size();
+            }
+
+            if (myrisk.getGame().getCards().isEmpty() && myrisk.getGame().getUsedCards().isEmpty() && cardsWithPlayers == 0) {
+                // cards file has no cards in it.
+                text = resb.getString("cards.no-cards-in-game");
+            }
+            else if (myrisk.getGame().getCards().isEmpty() && !myrisk.getGame().isRecycleCards()) {
+                // we have run out of cards, and recycle cards is off.
+                text = resb.getString("cards.no-cards-left");
+            }
+            else if (myrisk.getGame().getCards().isEmpty() && myrisk.getGame().isRecycleCards()) {
+                // in Italian mode players can keep any number of cards, including all the cards
+                text = resb.getString("cards.all-cards-with-players");
+            }
+            else if (cardsMode == RiskGame.CARD_FIXED_SET || cardsMode == RiskGame.CARD_ITALIANLIKE_SET) {
+                // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
 
                 List<CardPanel> cards = getSelectedCards();
 
