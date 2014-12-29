@@ -1,6 +1,7 @@
 package net.yura.swingme.core;
 
 import java.util.ResourceBundle;
+import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Properties;
 
 /**
@@ -20,7 +21,7 @@ public class CoreUtil {
                 catch (Exception ex) {
                     // sometimes this method is used by the XULLoader, but sometimes it is used directly
                     // from code, thats why for those cases we should not ever return null, as a sring is expected
-                    ex.printStackTrace();
+                    Logger.warn("String not found " + key, ex);
                     return "???"+key+"???";
                 }
             }
@@ -28,7 +29,7 @@ public class CoreUtil {
     }
 
     public static void setupLogging() {
-        net.yura.mobile.logging.Logger.setLogger( new net.yura.swingme.core.J2SELogger() );
+        Logger.setLogger(new net.yura.swingme.core.J2SELogger());
     }
 
 }

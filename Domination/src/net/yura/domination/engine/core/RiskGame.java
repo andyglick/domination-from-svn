@@ -546,6 +546,8 @@ transient - A keyword in the Java programming language that indicates that a fie
         used.add(card2);
         used.add(card3);
 
+        recycleUsedCards();
+
         currentPlayer.addArmies(armies);
 
         // if tradeCap you must trade to redude your cards to 4 or fewer cards
@@ -2618,16 +2620,27 @@ System.out.print(str+"]\n");
                 Card theCard = (Card)Cards.remove(cardIndex);
                 Cards.trimToSize(); // not sure if this is needed
 
-                // if we have removed the last card, and we want to reuse our cards, then we add all the used ones into the current cards vector
-                if (Cards.isEmpty() && recycleCards) {
-                    Vector used = getUsedCards();
-                    Cards.addAll(used);
-                    used.clear();
-                }
+                recycleUsedCards();
 
 		return theCard;
 
 	}
+
+        /**
+         * This method should be called after:
+         * <ul>
+         * <li>a card was removed from normal cards
+         * <li>a card was added to the used cards
+         * </ul>
+         */
+        private void recycleUsedCards() {
+            // if we have removed the last card, and we want to reuse our cards, then we add all the used ones into the current cards vector
+            Vector used = getUsedCards();
+            if (Cards.isEmpty() && recycleCards && !used.isEmpty()) {
+                Cards.addAll(used);
+                used.clear();
+            }
+        }
 
 	/**
 	 * Gets a cards
