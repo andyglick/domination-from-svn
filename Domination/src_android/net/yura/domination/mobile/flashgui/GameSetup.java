@@ -266,7 +266,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         autoplaceall = (Button)newgame.find("autoplaceall");
 
-        ((Spinner)newgame.find("human")).setMinimum( localgame?1:2 );
+        ((Spinner)newgame.find("human")).setMinimum( localgame ? ("true".equals( System.getProperty("debug") ) ? 0 : 1) : 2 );
 
 
         for (int c=0;c<compsNames.length;c++) {
