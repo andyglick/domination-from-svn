@@ -1557,6 +1557,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                     Continents = new Vector(Arrays.asList(this.Continents));
 		}
 
+                int mapVer = 1;
 		//System.out.print("Starting Load Map...\n");
 		int countryCount = 0;
 		if (bufferin == null) {
@@ -1683,38 +1684,35 @@ transient - A keyword in the Java programming language that indicates that a fie
 					}
 
 				}
-//				else {
+                                // we are not in any section
+                                else if (input.startsWith("ver ")) {
+                                        mapVer = Integer.parseInt(input.substring(4, input.length()));
+                                }
+//				else if (input.equals("test")) {
 //
-//					if (input.equals("test")) {
-//
-//					}
-//					else if (input.startsWith("name ")) {
-//
-//					}
-//                                      else if (input.startsWith("ver ")) {
-//
-//					}
-//					else {
-//
-//						throw new Exception("unknown item found in map file: "+input);
-//
-//					}
 //				}
-
-
+//				else if (input.startsWith("name ")) {
+//
+//				}
+				// we should NOT throw errors on unknown items, as new items may be added to new versions of the map format
+				//else {
+				//	throw new Exception("unknown item found in map file: "+input);
+				//}
 			}
 
-
 			input = bufferin.readLine(); // get next line
-
 		}
 		bufferin.close();
+
+                int gameVer = getVersion();
+                if (gameVer > mapVer) {
+                    throw new Exception(mapfile + " too old, ver " + mapVer + ". game saved with ver " + gameVer);
+                }
 
 		if (cleanLoad) {
 			this.Countries = (Country[])Countries.toArray( new Country[Countries.size()] );
 			this.Continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
 		}
-
 		//System.out.print("Map Loaded\n");
 	}
 
@@ -1731,8 +1729,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 
 		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(f) );
-
-
 /*
 		File file;
 
@@ -1811,14 +1807,10 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             properties.put(key, value);
                                         }
                                         // else unknown section
-
 				}
-
 			}
 
-
 			input = bufferin.readLine(); // get next line
-
 		}
 
 		if ( yesmap==false ) { throw new Exception("error with map file"); }
@@ -1828,7 +1820,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 		bufferin.close();
 
 		return returnvalue;
-
 	}
 
         /**
@@ -2823,7 +2814,7 @@ System.out.print(str+"]\n");
             }
             catch (Exception e1) {
         	// stupid fix for android 1.6
-        	IOException ex = new IOException();
+        	IOException ex = new IOException(e1.toString());
         	ex.initCause(e1);
                 throw ex;
             }
