@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
 import net.yura.android.AndroidPreferences;
+import net.yura.domination.BuildConfig;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -54,6 +55,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     protected void onSingleCreate() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         DominationMain.appPreferences = new AndroidPreferences(preferences);
+        System.setProperty("debug", String.valueOf(BuildConfig.DEBUG)); // Temp hack to get around http://b.android.com/52962
         super.onSingleCreate();
 
         mHelper = new GameHelper(this);
