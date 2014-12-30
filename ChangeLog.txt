@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	11
 
-	Android		59
+	Android		60
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	1.1.1.1
@@ -21,6 +21,8 @@ CURRENT VERSION:
 	SwingGUI sends more info on crash and feedback
 	Greek added
 
+	Android 60 Cards dialog shows when the game has no cards to give
+		   error reports now have an error Signature
 	Android 59 fix for notifications not showing when game has & in name
 		   fix for not being able to close the lobby when its in a disconnected state
 	Android 58 allow any number of players to be selected for private games (minus AI)

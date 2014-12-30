@@ -99,11 +99,11 @@ public class CardsDialog extends Frame implements ActionListener {
                 // cards file has no cards in it.
                 text = resb.getString("cards.no-cards-in-game");
             }
-            else if (myrisk.getGame().getCards().isEmpty() && !myrisk.getGame().isRecycleCards()) {
+            else if (myrisk.getGame().getCards().isEmpty() && !myrisk.getGame().isRecycleCards() && !myrisk.getGame().canTrade()) {
                 // we have run out of cards, and recycle cards is off.
                 text = resb.getString("cards.no-cards-left");
             }
-            else if (myrisk.getGame().getCards().isEmpty() && myrisk.getGame().isRecycleCards()) {
+            else if (myrisk.getGame().getCards().isEmpty() && myrisk.getGame().isRecycleCards() && !myrisk.getGame().canTrade()) {
                 // in Italian mode players can keep any number of cards, including all the cards
                 text = resb.getString("cards.all-cards-with-players");
             }
