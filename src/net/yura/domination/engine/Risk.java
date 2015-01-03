@@ -41,6 +41,9 @@ import net.yura.mobile.util.Url;
  */
 public class Risk extends Thread {
 
+        private final int SHOW_DICE_SLEEP = 1000;
+        private final int ROLL_DICE_SLEEP = 500;
+
         private static final Logger logger = Logger.getLogger(Risk.class.getName());
 
 	public static String RISK_VERSION;
@@ -893,7 +896,7 @@ RiskUtil.printStackTrace(e);
 
 					controller.showDiceResults( att, def );
 
-					try{ Thread.sleep(1000); }
+					try{ Thread.sleep(SHOW_DICE_SLEEP); }
 					catch(InterruptedException e){}
 
 				}
@@ -2009,7 +2012,7 @@ RiskUtil.printStackTrace(e);
 
                                                                     controller.setNODDefender(dice);
 
-                                                                    try{ Thread.sleep(500); }
+                                                                    try{ Thread.sleep(ROLL_DICE_SLEEP); }
                                                                     catch(InterruptedException e){}
 
                                                             }

@@ -2624,13 +2624,15 @@ System.out.print(str+"]\n");
          * <li>a card was added to the used cards
          * </ul>
          */
-        private void recycleUsedCards() {
+        private boolean recycleUsedCards() {
             // if we have removed the last card, and we want to reuse our cards, then we add all the used ones into the current cards vector
             Vector used = getUsedCards();
             if (Cards.isEmpty() && recycleCards && !used.isEmpty()) {
                 Cards.addAll(used);
                 used.clear();
+                return true;
             }
+            return false;
         }
 
 	/**
