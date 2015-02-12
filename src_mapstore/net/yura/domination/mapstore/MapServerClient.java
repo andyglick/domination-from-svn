@@ -244,6 +244,8 @@ public class MapServerClient extends HTTPClient {
     }
 
     public boolean isDownloading(String mapUID) {
+        // TODO this is NOT thread safe and does throw ArrayIndexOutOfBoundsException
+        // TODO as items are removed in HttpClient thread, but this method is called from ui (paint) thread.
         for (int c=0;c<downloads.size();c++) {
             MapDownload download = (MapDownload)downloads.get(c);
             if ( download.mapUID.equals(mapUID) ) {
