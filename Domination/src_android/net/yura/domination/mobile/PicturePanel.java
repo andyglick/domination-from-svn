@@ -736,9 +736,9 @@ public class PicturePanel extends ImageView implements MapPanel {
          */
         public synchronized void repaintCountries(int view) { // synchronized
 
-                RiskGame game = myrisk.getGame();
+                if (tempimg == null) return;
 
-                if (tempimg==null) return;
+                RiskGame game = myrisk.getGame();
 
                 Graphics zg = tempimg.getGraphics();
                 zg.drawImage(img ,0 ,0, 0 );

@@ -611,6 +611,9 @@ public class PicturePanel extends JPanel implements MapPanel {
 	 */
 	public synchronized void repaintCountries(int view) { // synchronized
 
+                // if something went wrong with setting up (e.g. OutOfMemoryError), dont draw anything
+                if (tempimg == null) return;
+
 		RiskGame game = myrisk.getGame();
 
 		{ Graphics zg = tempimg.getGraphics(); zg.drawImage(original ,0 ,0 ,this); zg.dispose(); }

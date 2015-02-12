@@ -2255,6 +2255,9 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 				catch(IOException e) {
                                         RiskUtil.printStackTrace(e);
 				}
+                                catch(OutOfMemoryError e) {
+                                        RiskUtil.printStackTrace(e);
+                                }
 			}
 
                         blockInput();
