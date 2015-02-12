@@ -133,19 +133,10 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 	countriesList.addListSelectionListener(this);
 
-        continentsList.setCellRenderer(new DefaultListCellRenderer() {
-            
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                
-                Continent con = (Continent)value;
-                
-                final Color color = new Color(con.getColor());
-                //setBackground( color );
-                //setForeground( RiskUIUtil.getTextColorFor(color) );
-                
-                setIcon( new Icon() {
-
+        class ColorDotCellRenderer extends DefaultListCellRenderer {
+            Color color;
+            ColorDotCellRenderer() {
+                super.setIcon(new Icon() {
                     public void paintIcon(Component c, Graphics g, int x, int y) {
                         g.setColor(color);
                         g.fillOval(x, y, getIconWidth(), getIconHeight());
@@ -159,7 +150,25 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
                         return 10;
                     }
                 } );
-                
+            }
+
+            @Override
+            public void setIcon(Icon icon) {
+                // cant change icon
+            }
+        }
+
+        continentsList.setCellRenderer(new ColorDotCellRenderer() {
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                color = new Color(((Continent) value).getColor());
+                return c;
+            }
+        });
+        countriesList.setCellRenderer(new ColorDotCellRenderer() {
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                color = new Color(((Country) value).getContinent().getColor());
                 return c;
             }
         });
