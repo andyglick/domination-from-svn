@@ -27,7 +27,7 @@ public class MapUpdateService extends Observable {
     
     static MapUpdateService updateService;
     
-    List mapsToUpdate = new java.util.Vector();
+    public final List mapsToUpdate = new java.util.Vector();
 
     private MapUpdateService() { }
     public static MapUpdateService getInstance() {
@@ -66,15 +66,14 @@ public class MapUpdateService extends Observable {
             
             if (theMaps.size()==1) {
                 Map remoteMap = (Map)theMaps.get(0);
-                String ver = remoteMap.getVersion();
-                if (ver!=null && !"".equals(ver) && !"1".equals(ver) && !ver.equals( MapChooser.createMap(uid).getVersion() ) ) { // versions do not match, and update is needed
+                if (remoteMap.needsUpdate(MapChooser.createMap(uid).getVersion())) { // versions do not match, and update is needed
                     mapsToUpdate.add(remoteMap);
                     notifyListeners();
                     //client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) ); // download 
                 }
             }
             else if (theMaps.size() > 1) {
-                System.err.println("found more then 1 results for "+uid);
+                logger.warning("found more then 1 results for " + uid);
             }
             // else if 0 then we did not find it.
         }
@@ -95,7 +94,7 @@ public class MapUpdateService extends Observable {
         }
 
 // we print this just in case we get any errors so we know what we sent
-System.out.println("URL: "+url+" payload: "+payload);
+logger.fine("URL: " + url + " payload: " + payload);
 
         try {
             URLConnection conn = new URL(url).openConnection();
@@ -106,7 +105,7 @@ System.out.println("URL: "+url+" payload: "+payload);
 
             Task task = (Task)new XMLMapAccess().load( new InputStreamReader(conn.getInputStream(),"UTF-8") );
 
-//System.out.println("got: "+task);
+//logger.info("got: " + task);
             
             java.util.Map map = (java.util.Map)task.getObject();
             return (List)map.get("maps");

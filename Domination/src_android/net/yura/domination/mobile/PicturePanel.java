@@ -168,6 +168,10 @@ public class PicturePanel extends ImageView implements MapPanel {
             return map[0].length;
         }
 
+        /**
+         * TODO: Instead of keeping the sections of original image, we could keep the mask
+         * (so only alpha chanel, not RGB) of the image from the original one.
+         */
         public void memoryLoad(Image m, Image original) {
 
                 cc=NO_COUNTRY;

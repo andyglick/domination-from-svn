@@ -541,7 +541,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                 String ver = (String)info.get("ver");
 
-                if (map.getVersion()!=null && !"".equals(map.getVersion()) && !"1".equals(map.getVersion()) && !map.getVersion().equals( ver ) ) {
+                if (map.needsUpdate(ver)) {
                     // update needed!!!
 
                     client.downloadMap( getURL(context, map.mapUrl ) );

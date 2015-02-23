@@ -186,4 +186,9 @@ public class Map {
 //        System.out.println("dropping "+this);
 //    }
 
+    public boolean needsUpdate(String localVersion) {
+        String ver = getVersion();
+        return ver != null && !"".equals(ver) && !"1".equals(ver) && !ver.equals(localVersion);
+    }
+
 }
