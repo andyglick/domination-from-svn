@@ -314,6 +314,7 @@ public class MapServerClient extends HTTPClient {
                             RiskUtil.streamOpener.renameMapFile(fileName + ".part", fileName);
                         }
 
+                        MapChooser.clearFromCache(mapUID);
                         MapUpdateService.getInstance().downloadFinished(mapUID);
 
                         MapServerListener ch = chooser; // avoid null pointers, take a copy

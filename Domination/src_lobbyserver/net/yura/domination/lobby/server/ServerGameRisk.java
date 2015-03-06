@@ -3,6 +3,7 @@ package net.yura.domination.lobby.server;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -31,20 +32,15 @@ public class ServerGameRisk extends TurnBasedGame {
 	private ServerRisk myrisk;
 
         static {
-            final URL mapsdir;
-            try {
-                mapsdir = new java.io.File( RiskUtil.GAME_NAME + "/maps").toURI().toURL();
-            }
-            catch(Exception ex) {
-                throw new RuntimeException(ex);
-            }
+            final File gameDir = new File(RiskUtil.GAME_NAME);
+            final File mapsDir = new File(gameDir, "maps");
 
             RiskUtil.streamOpener = new RiskIO() {
                 public InputStream openStream(String name) throws IOException {
-                    return new File(name).toURI().toURL().openStream();
+                    return new FileInputStream(new File(gameDir, name));
                 }
                 public InputStream openMapStream(String name) throws IOException {
-                    return new URL(mapsdir,name).openStream();
+                    return new FileInputStream(new File(mapsDir, name));
                 }
                 public ResourceBundle getResourceBundle(Class c, String n, Locale l) {
                     // TODO this should be different for different clients connected to this server
@@ -56,7 +52,7 @@ public class ServerGameRisk extends TurnBasedGame {
                 public void openDocs(String doc) throws Exception {
 
                 }
-                public void saveGameFile(String name,RiskGame obj) throws Exception {
+                public void saveGameFile(String name, RiskGame obj) throws Exception {
 
                 }
                 public InputStream loadGameFile(String file) throws Exception {
@@ -67,15 +63,15 @@ public class ServerGameRisk extends TurnBasedGame {
                     risk.getMapError(ex.toString());
                 }
                 public java.io.OutputStream saveMapFile(String fileName) throws Exception {
-                    throw new UnsupportedOperationException("can not add maps to server");
+                    return RiskUtil.getOutputStream(mapsDir , fileName);
                 }
                 public void renameMapFile(String oldName, String newName) {
-                    throw new UnsupportedOperationException("can not add maps to server");
+                    RiskUtil.rename(new File(mapsDir, oldName), new File(mapsDir, newName));
                 }
             };
 
             try {
-                GameSettings settings = new GameSettings();
+                GameSettings settings = new GameSettings(mapsDir);
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                 mbs.registerMBean(settings, new ObjectName("net.yura.domination:type=GameSettings") );
             }
