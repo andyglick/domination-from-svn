@@ -333,6 +333,10 @@ public class MapChooser implements ActionListener,MapServerListener {
         return false;
     }
 
+    public static void clearFromCache(String mapUID) {
+        mapCache.remove(mapUID);
+    }
+
     public static Map createMap(String file) {
 
         WeakReference wr = (WeakReference)mapCache.get(file);
