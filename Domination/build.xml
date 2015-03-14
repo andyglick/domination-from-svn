@@ -459,8 +459,8 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 		<mkdir dir="${dir.build.lobby.server.classes}"/>
 
-		<javac debug="on" srcdir="src:src_lobbyserver" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**,net/yura/domination/engine/ai/**"
-		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/SwingME.jar"/>
+		<javac debug="on" srcdir="src:src_lobbyserver:src_mapstore" destdir="${dir.build.lobby.server.classes}" includes="net/yura/domination/lobby/server/**,net/yura/domination/engine/ai/**"
+		source="1.5" target="1.5" classpath="lib/LobbyServer.jar:lib/SwingME.jar:lib/midletrunner.jar"/>
 
                 <!-- copy translation files and other shared files -->
 		<copy todir="${dir.build.lobby.server.classes}" filtering="true">
@@ -468,6 +468,9 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
                         <fileset dir="src_swing" includes="**/*.ini"/>
                         <fileset dir="src" includes="META-INF/**"/>
 		</copy>
+
+		<unzip src="lib/SwingME.jar" dest="${dir.build.lobby.server.classes}"/>
+		<unzip src="lib/midletrunner.jar" dest="${dir.build.lobby.server.classes}"/>
 
 	</target>
 
