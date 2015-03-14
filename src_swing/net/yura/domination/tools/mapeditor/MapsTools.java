@@ -67,23 +67,12 @@ public class MapsTools {
     }
     
     public static void saveMaps(List maps) {
-        
         try {
-            
-            Task task = new Task("categories", maps);
-        
-            File mapsDir = RiskUIUtil.getSaveMapDir();
-            File xml = new File(mapsDir,MAPS_XML_FILE);
-
-            XMLMapAccess access = new XMLMapAccess();
-            
-            access.save( new FileOutputStream(xml) , task);
-            
+            new XMLMapAccess().save(RiskUtil.streamOpener.saveMapFile(MAPS_XML_FILE), new Task("categories", maps));
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-
     }
     
 //    public static void saveMapsHTML(Vector maps) {
