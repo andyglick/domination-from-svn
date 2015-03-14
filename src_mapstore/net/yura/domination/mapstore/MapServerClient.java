@@ -75,7 +75,8 @@ public class MapServerClient extends HTTPClient {
 	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.type == MAP_REQUEST_ID && ((MapDownload)request.id).ignoreErrorInDownload(request.url)) {
+        if (request.type == MAP_REQUEST_ID && responseCode == 404 && ((MapDownload)request.id).ignoreErrorInDownload(request.url)) {
+            logger.info("skipped "+request);
             return;
         }
 
