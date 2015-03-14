@@ -75,7 +75,7 @@ public class MapServerClient extends HTTPClient {
 	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.type == MAP_REQUEST_ID && responseCode == 404 && ((MapDownload)request.id).ignoreErrorInDownload(request.url)) {
+        if (request.type == MAP_REQUEST_ID && ((MapDownload) request.id).ignoreErrorInDownload(request.url, responseCode)) {
             logger.info("skipped "+request);
             return;
         }
@@ -295,6 +295,9 @@ public class MapServerClient extends HTTPClient {
             return urls.contains(url);
         }
 
+        /**
+         * This method must be called for ALL responses to map file requests, normal AND error!
+         */
         private void gotResponse(String url) {
             boolean empty;
 
@@ -380,14 +383,15 @@ public class MapServerClient extends HTTPClient {
             gotResponse(url);
         }
 
-        private boolean ignoreErrorInDownload(String url) {
+        private boolean ignoreErrorInDownload(String url, int responseCode) {
             //String fileName = url.substring(mapContext.length());
-
             String fileName = getPath(mapContext, url);
 
-            boolean fileExists = MapChooser.fileExists(fileName);
+            // only ignore server 404 errors, this happens when maps link to bundled cards files.
+            boolean ignoreError = responseCode == 404 && MapChooser.fileExists(fileName);
 
-            if (fileExists) {
+            if (ignoreError) {
+                // we got a error, but we already have this file, so ignore the error
                 fileNames.remove(fileName);
             }
             else {
@@ -396,9 +400,7 @@ public class MapServerClient extends HTTPClient {
 
             gotResponse(url);
 
-            // we got a error, but we already have this file, so ignore the error
-            return fileExists;
-
+            return ignoreError;
         }
     }
 
