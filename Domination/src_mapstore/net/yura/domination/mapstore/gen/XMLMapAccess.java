@@ -67,15 +67,11 @@ public class XMLMapAccess extends XMLUtil {
         if (object.getDateAdded()!=null) {
             serializer.attribute(null,"dateAdded", object.getDateAdded() );
         }
-        if (object.getMapHeight()!=null) {
-            serializer.attribute(null,"mapHeight", object.getMapHeight() );
-        }
+        serializer.attribute(null,"mapHeight", String.valueOf( object.getMapHeight() ) );
         if (object.getMapUrl()!=null) {
             serializer.attribute(null,"mapUrl", object.getMapUrl() );
         }
-        if (object.getMapWidth()!=null) {
-            serializer.attribute(null,"mapWidth", object.getMapWidth() );
-        }
+        serializer.attribute(null,"mapWidth", String.valueOf( object.getMapWidth() ) );
         if (object.getNumberOfDownloads()!=null) {
             serializer.attribute(null,"numberOfDownloads", object.getNumberOfDownloads() );
         }
@@ -162,13 +158,13 @@ public class XMLMapAccess extends XMLUtil {
                 object.setDateAdded(value);
             }
             else if ("mapHeight".equals(key)) {
-                object.setMapHeight(value);
+                object.setMapHeight( Integer.parseInt(value) );
             }
             else if ("mapUrl".equals(key)) {
                 object.setMapUrl(value);
             }
             else if ("mapWidth".equals(key)) {
-                object.setMapWidth(value);
+                object.setMapWidth( Integer.parseInt(value) );
             }
             else if ("numberOfDownloads".equals(key)) {
                 object.setNumberOfDownloads(value);

@@ -21,8 +21,8 @@ public class Map {
     String description;
     String version;
     String dateAdded;
-    String mapWidth;
-    String mapHeight;
+    int mapWidth;
+    int mapHeight;
 
 /*
     String cardsFile;
@@ -77,11 +77,11 @@ public class Map {
         this.id = id;
     }
 
-    public String getMapHeight() {
+    public int getMapHeight() {
         return mapHeight;
     }
 
-    public void setMapHeight(String mapHeight) {
+    public void setMapHeight(int mapHeight) {
         this.mapHeight = mapHeight;
     }
 
@@ -93,11 +93,11 @@ public class Map {
         this.mapUrl = mapUrl;
     }
 
-    public String getMapWidth() {
+    public int getMapWidth() {
         return mapWidth;
     }
 
-    public void setMapWidth(String mapWidth) {
+    public void setMapWidth(int mapWidth) {
         this.mapWidth = mapWidth;
     }
 

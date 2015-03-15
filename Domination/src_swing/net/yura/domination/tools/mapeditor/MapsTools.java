@@ -68,7 +68,7 @@ public class MapsTools {
     
     public static void saveMaps(List maps) {
         try {
-            new XMLMapAccess().save(RiskUtil.streamOpener.saveMapFile(MAPS_XML_FILE), new Task("categories", maps));
+            new XMLMapAccess().save(RiskUtil.streamOpener.saveMapFile(MAPS_XML_FILE), new Task("maps", maps));
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);

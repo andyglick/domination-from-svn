@@ -18,6 +18,9 @@ import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapServerClient;
 import net.yura.domination.mapstore.MapServerListener;
 import net.yura.domination.mapstore.MapUpdateService;
+import net.yura.domination.mapstore.gen.XMLMapAccess;
+import net.yura.lobby.server.GameLobby;
+import net.yura.mobile.io.ServiceLink.Task;
 
 /**
  * @author Yura Mamyrin
@@ -25,6 +28,8 @@ import net.yura.domination.mapstore.MapUpdateService;
 public class GameSettings implements GameSettingsMXBean {
 
     private File mapsDir;
+    private int mapMaxRes = 677;
+    private int mapMaxCountries = 100;
 
     public GameSettings(File mapsDir) {
         this.mapsDir = mapsDir;
@@ -34,15 +39,39 @@ public class GameSettings implements GameSettingsMXBean {
     public void setAIWait(int a) {
         AIManager.setWait(a);
     }
-
     @Override
     public int getAIWait() {
         return AIManager.getWait();
     }
 
+    @Override
+    public void setMaxMapResolution(int max) {
+        mapMaxRes = max;
+    }
+    @Override
+    public int getMaxMapResolution() {
+        return mapMaxRes;
+    }
+
+    @Override
+    public void setMaxMapCountries(int max) {
+        mapMaxCountries = max;
+    }
+    @Override
+    public int getMaxMapCountries() {
+        return mapMaxCountries;
+    }
+
     public void updateMaps() {
         // get list of all maps from the server
         List<Map> serverMaps = MapUpdateService.getMaps(MapChooser.MAP_PAGE,Collections.EMPTY_LIST);
+
+        try {
+            new XMLMapAccess().save(RiskUtil.streamOpener.saveMapFile("extra_maps.xml"), new Task("maps", serverMaps));
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
 
         // get list of lacal maps
         List<String> localMaps = Arrays.asList(mapsDir.list(new FilenameFilter() {
@@ -112,6 +141,23 @@ public class GameSettings implements GameSettingsMXBean {
                 throw new IllegalStateException("inbox not empty");
             }
         }
+
+        StringBuilder gameOptions = new StringBuilder("luca.map,ameroki.map,eurasien.map,geoscape.map,lotr.map,risk.map,RiskEurope.map,roman_empire.map,sersom.map,teg.map,tube.map,uk.map,world.map");
+
+        // find the maps that are smaller then max resolution
+        for (Map map : serverMaps) {
+            String mapName = MapChooser.getFileUID(map.getMapUrl());
+            int numCountries = (Integer) RiskUtil.loadInfo(mapName, false).get("countries");
+            if (map.getMapWidth() <= mapMaxRes && map.getMapHeight() <= mapMaxRes && numCountries <= mapMaxCountries) {
+                gameOptions.append(',').append(mapName);
+            }
+            else {
+                System.out.println("skipping " + mapName + " " + numCountries + " (" + map.getMapWidth() + "x" + map.getMapHeight() + ")");
+            }
+        }
+
+        // save a list of the file names into the GameType
+        GameLobby.getInstance().setGameOptions("Domination", gameOptions.toString());
     }
 
     ServerRisk getServerGame(int id) {
