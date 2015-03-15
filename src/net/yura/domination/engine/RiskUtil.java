@@ -293,7 +293,7 @@ public class RiskUtil {
 
         /**
          * gets the info for a map or cards file
-         * in the case of map files it will get the "name" "crd" "prv" "pic" "map" and any "comment"
+         * in the case of map files it will get the "name" "crd" "prv" "pic" "map" and any "comment" and number of "countries"
          * and for cards it will have a "missions" that will contain the String[] of all the missions
          */
 	public static java.util.Map loadInfo(String fileName,boolean cards) {
@@ -350,10 +350,12 @@ public class RiskUtil {
                                                 info.put( fm , val);
 
                                         }
-                                        else if ("continents".equals(mode)) {
-
+                                        else if ("borders".equals(mode)) {
+                                                // we dont care about anything in or after the borders section
                                                 break;
-
+                                        }
+                                        else if ("countries".equals(mode)) {
+                                            info.put("countries", Integer.parseInt(input.substring(0,input.indexOf(' '))));
                                         }
                                         else if ("missions".equals(mode)) {
 
@@ -388,11 +390,11 @@ public class RiskUtil {
                                                 info.put( input.substring(0,input.indexOf(' ')) , input.substring(input.indexOf(' ')+1) );
                                             }
                                         }
+                                        // if "continents" or "cards" then just dont do anything in those sections
 
                                 }
 
                                 input = bufferin.readLine(); // get next line
-
                         }
 
                         if (cards) {

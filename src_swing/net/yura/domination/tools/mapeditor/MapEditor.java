@@ -705,8 +705,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         final BufferedImage fullimg = editPanel.getImagePic();
                         
                         // add extra info
-                        map2.setMapWidth( String.valueOf( fullimg.getWidth() ) );
-                        map2.setMapHeight( String.valueOf( fullimg.getHeight() ) );
+                        map2.setMapWidth(fullimg.getWidth());
+                        map2.setMapHeight(fullimg.getHeight());
                         
                         map2.setVersion( version );
 

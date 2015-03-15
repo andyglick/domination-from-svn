@@ -10,6 +10,12 @@ public interface GameSettingsMXBean {
     void setAIWait(int a);
     int getAIWait();
 
+    void setMaxMapResolution(int max);
+    int getMaxMapResolution();
+
+    void setMaxMapCountries(int max);
+    int getMaxMapCountries();
+
     void updateMaps();
 
     void saveGame(int id) throws Exception;
