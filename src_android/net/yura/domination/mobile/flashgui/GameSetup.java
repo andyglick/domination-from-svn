@@ -1,7 +1,9 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
@@ -141,7 +143,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
             else if ("choosemap".equals(actionCommand)) {
                 MapListener al = new MapListener();
 
-                MapChooser mapc = new MapChooser(al, allowedMaps==null?MiniUtil.getFileList("map"):Arrays.asList(allowedMaps), localgame );
+                MapChooser mapc = new MapChooser(al, MiniUtil.getFileList("map"), allowedMaps == null ? null : new HashSet(Arrays.asList(allowedMaps)));
                 al.mapc = mapc;
 
                 Frame mapFrame = new Frame( resb.getProperty("newgame.choosemap") );
@@ -266,7 +268,8 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         autoplaceall = (Button)newgame.find("autoplaceall");
 
-        ((Spinner)newgame.find("human")).setMinimum( localgame ? ("true".equals( System.getProperty("debug") ) ? 0 : 1) : 2 );
+        ((Spinner) newgame.find("human")).setMinimum(localgame ? ("true".equals(System.getProperty("debug")) ? 0 : 1)
+                                                               : ("true".equals(System.getProperty("debug")) ? 1 : 2));
 
 
         for (int c=0;c<compsNames.length;c++) {

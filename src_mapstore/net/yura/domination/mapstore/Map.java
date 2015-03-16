@@ -1,40 +1,34 @@
 package net.yura.domination.mapstore;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import net.yura.domination.mapstore.gen.XMLMapAccess;
-
 /**
  * @author Yura
  */
 public class Map {
 
-    String id;
-    String name;
-    String authorId;
-    String authorName;
-    String numberOfDownloads;
-    String rating;
-    String numberOfRatings;
-    String previewUrl;
     String mapUrl;
-    String description;
+    String name;
+    String previewUrl;
     String version;
+    String description; // same as comment
+    String authorName; // for local maps only used when saving map detials.
+    String authorId; // int for remote id OR email for local saved maps
+
+    // only available on maps coming from the MapServer
+    String id;
+    String numberOfDownloads;
     String dateAdded;
     int mapWidth;
     int mapHeight;
+    // not currently used, server currently returns 0 for both
+    String rating;
+    String numberOfRatings;
 
-/*
-    String cardsFile;
+/*  // Local files also have these properties, maybe they should be part of this class.
     String cardsURL;
-    String mapFile;
-    String mapURL;
-    String previewFile;
-    String PreviewURL;
-    String imagePicFile;
     String imagePicURL;
-    String imageMapFile;
     String imageMapURL;
+    int numCountries;
+    String[] missions;
 */
 
     public String getAuthorId() {
@@ -173,12 +167,11 @@ public class Map {
     }
 
     public String toString() {
-
         // print out full info with XML
-        //ByteArrayOutputStream out = new ByteArrayOutputStream();
-        //try { new XMLMapAccess().save(out, this); } catch (IOException ex) { RiskUtil.printStackTrace(ex); }
+        //java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        //try { new net.yura.domination.mapstore.gen.XMLMapAccess().save(out, this); }
+        //catch (Exception ex) { net.yura.domination.engine.RiskUtil.printStackTrace(ex); }
         //return out.toString();
-
         return name; // this is used in the list for the keyboard quick jump
     }
 

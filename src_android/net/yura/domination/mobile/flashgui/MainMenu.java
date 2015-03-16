@@ -154,7 +154,7 @@ public class MainMenu extends Frame implements ActionListener {
             else if ("feedback".equals(actionCommand)) {
                 String url = "mailto:yura@yura.net" +
                         "?subject=" + Url.encode(
-                                RiskUtil.GAME_NAME+" "+Risk.RISK_VERSION+" "+
+                                RiskUtil.GAME_NAME+" "+RiskUtil.RISK_VERSION+" "+
                                 DominationMain.product+" "+DominationMain.version+" "+
                                 Locale.getDefault()+" Feedback").replace("+", "%20") // platforms do not seem to support + char here
                         +"&body=" + Url.encode(

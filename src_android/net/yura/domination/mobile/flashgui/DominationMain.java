@@ -45,7 +45,7 @@ public class DominationMain extends Midlet {
     public static final String version;
     static {
         String versionCode = System.getProperty("versionCode");
-        version = versionCode != null ? versionCode : Risk.RISK_VERSION;
+        version = versionCode != null ? versionCode : RiskUtil.RISK_VERSION;
     }
 
     public static Preferences appPreferences;
@@ -159,8 +159,11 @@ public class DominationMain extends Midlet {
                 @Override public void close() { }
             } );
 
-            // if we want to see DEBUG, default is INFO
-            java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
+            // cant do this on J2SE, swing will print too much junk.
+            if (Midlet.getPlatform() != Midlet.PLATFORM_ME4SE) {
+                // if we want to see DEBUG, default is INFO
+                java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.ALL);
+            }
 
             // so we do not need to wait for AI while testing
             net.yura.domination.engine.ai.AIManager.setWait(5);
