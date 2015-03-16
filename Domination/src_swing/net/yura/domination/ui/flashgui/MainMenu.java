@@ -716,7 +716,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
                 // catch everything in my PrintStream
                 try {
                     net.yura.grasshopper.PopupBug.initSimple(RiskUtil.GAME_NAME,
-                            Risk.RISK_VERSION+" FlashGUI" // "(save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
+                            RiskUtil.RISK_VERSION+" FlashGUI" // "(save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")"
                             , TranslationBundle.getBundle().getLocale().toString());
                 }
                 catch(Throwable th) {

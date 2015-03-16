@@ -1466,7 +1466,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
     public void submitBug(String messageFromUser,String from,String subjectIn,String cause) {
 
-            String subject = RiskUtil.GAME_NAME +" "+Risk.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
+            String subject = RiskUtil.GAME_NAME +" "+RiskUtil.RISK_VERSION+" SwingGUI "+ TranslationBundle.getBundle().getLocale().toString()+" "+subjectIn;
 
             try {
                 if (RiskUIUtil.checkForNoSandbox()) {
@@ -1483,7 +1483,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
                     map.put("errText", debugTab.getErrText());
 
                     net.yura.grasshopper.BugSubmitter.submitBug(map, from, subject, cause, RiskUtil.GAME_NAME,
-                            Risk.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")",
+                            RiskUtil.RISK_VERSION+" (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+")",
                             TranslationBundle.getBundle().getLocale().toString()
                         );
                     JOptionPane.showMessageDialog(this, "SENT!");

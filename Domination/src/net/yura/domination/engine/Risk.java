@@ -46,8 +46,6 @@ public class Risk extends Thread {
 
         private static final Logger logger = Logger.getLogger(Risk.class.getName());
 
-	public static String RISK_VERSION;
-
 	protected RiskController controller;
 	protected RiskGame game;
 
@@ -335,7 +333,7 @@ public class Risk extends Thread {
                 // Show version
                 if (message.equals("ver")) {
                         controller.sendMessage(">" + message, false, false );
-                        controller.sendMessage(RiskUtil.GAME_NAME+" Game Engine [Version " + RISK_VERSION + "]", false, false );
+                        controller.sendMessage(RiskUtil.GAME_NAME+" Game Engine [Version " + RiskUtil.RISK_VERSION + "]", false, false );
                         getInput();
                 }
                 // take no action

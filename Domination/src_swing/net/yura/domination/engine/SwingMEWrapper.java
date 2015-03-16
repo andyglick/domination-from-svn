@@ -3,11 +3,8 @@ package net.yura.domination.engine;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
-import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
@@ -50,7 +47,7 @@ public class SwingMEWrapper {
             public void actionPerformed(String actionCommand) {
                 SwingUtilities.getWindowAncestor(wrapper).setVisible(false);
             }
-        },files,true);
+        }, files, null);
 
         wrapper.add( chooser.getRoot() );
 
@@ -85,7 +82,7 @@ public class SwingMEWrapper {
                 return "SwingDomination";
             }
             public String getAppVersion() {
-                return Risk.RISK_VERSION;
+                return RiskUtil.RISK_VERSION;
             }
         } );
     }

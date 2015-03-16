@@ -8,6 +8,8 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Set;
+import java.util.Vector;
 import java.util.WeakHashMap;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
@@ -55,8 +57,8 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     // theos server
     public static final String SERVER_URL="http://maps.yura.net/";
-    public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( Risk.RISK_VERSION );
-    public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml&version="+Url.encode( Risk.RISK_VERSION );
+    public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( RiskUtil.RISK_VERSION );
+    public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml&version="+Url.encode( RiskUtil.RISK_VERSION );
 
 
     // these are both weak caches, they only keep a object if someone else holds it or a key
@@ -78,7 +80,8 @@ public class MapChooser implements ActionListener,MapServerListener {
     private ActionListener al;
     protected MapServerClient client;
 
-    private java.util.List mapfiles;
+    private java.util.List<String> localMaps;
+    private Set<String> allowedMaps;
     private List list;
 
     public static void loadThemeExtension() {
@@ -97,9 +100,10 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
     }
 
-    public MapChooser(ActionListener al,java.util.List mapfiles,boolean mapStore) {
+    public MapChooser(ActionListener al, java.util.List<String> localMaps, Set<String> allowedMaps) {
         this.al = al;
-        this.mapfiles = mapfiles;
+        this.localMaps = localMaps;
+        this.allowedMaps = allowedMaps;
 
         try {
             loader = XULLoader.load( Midlet.getResourceAsStream("/ms_maps.xml") , this, resBundle);
@@ -109,23 +113,25 @@ public class MapChooser implements ActionListener,MapServerListener {
         }
 
         Panel TabBar = (Panel)loader.find("TabBar");
+        if (TabBar != null) {
 
-        if (TabBar!=null) {
+            int count = 0;
+            if (allowedMaps != null) {
+                for (String localMap : localMaps) {
+                    if (allowedMaps.contains(localMap)) {
+                        count++;
+                    }
+                }
+            }
 
-            if (mapStore) {
-
+            // if we have all the allowed maps already, no point showing download UI.
+            if (allowedMaps != null && count == allowedMaps.size()) {
+                TabBar.setVisible(false);
+            }
+            else {
                 java.util.List buttons = TabBar.getComponents();
-
-                Icon on,off;
-
-                try {
-                    on = new Icon("/ms_bar_on.png");
-                    off = new Icon("/ms_bar_off.png");
-                }
-                catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-
+                Icon on = new Icon("/ms_bar_on.png");
+                Icon off = new Icon("/ms_bar_off.png");
                 int w = off.getIconWidth() / buttons.size();
                 for (int c=0;c<buttons.size();c++) {
                     RadioButton b = (RadioButton)buttons.get(c);
@@ -141,11 +147,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                     b.setText("");
                     b.setMargin(0);
-
                 }
-            }
-            else {
-                TabBar.setVisible(false);
             }
         }
 
@@ -164,7 +166,6 @@ public class MapChooser implements ActionListener,MapServerListener {
         activateGroup("MapView");
 
         MapUpdateService.getInstance().addObserver( (BadgeButton)loader.find("updateButton") );
-
     }
 
     public void destroy() {
@@ -173,7 +174,6 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         client.kill();
         client=null;
-
     }
 
     public static Icon getLocalIconForMap(Map map) {
@@ -402,9 +402,9 @@ public class MapChooser implements ActionListener,MapServerListener {
             new Thread() {
                 @Override
                 public void run() {
-                    java.util.List riskmaps = new java.util.Vector( mapfiles.size() );
-                    for (int c=0;c<mapfiles.size();c++) {
-                        String file = (String)mapfiles.get(c);
+                    java.util.List riskmaps = new java.util.Vector(localMaps.size());
+                    for (int c = 0; c < localMaps.size(); c++) {
+                        String file = (String) localMaps.get(c);
 
                         // we create a Map object for every localy stored map
                         Map map = createMap(file);
@@ -539,7 +539,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                 OptionPane.showMessageDialog(null, "already downloading", "message", 0);
             }
-            else if ( mapfiles.contains(fileUID) ) {
+            else if (localMaps.contains(fileUID)) {
 
                 java.util.Map info = RiskUtil.loadInfo(fileUID, false);
 
@@ -666,8 +666,8 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     public void downloadFinished(String download) {
 
-        if ( !this.mapfiles.contains( download ) ) {
-            this.mapfiles.add( download );
+        if ( !this.localMaps.contains( download ) ) {
+            this.localMaps.add( download );
         }
 
         if (((Button)loader.find("updateButton")).isSelected() && MapUpdateService.getInstance().mapsToUpdate.isEmpty()) {
@@ -692,11 +692,32 @@ public class MapChooser implements ActionListener,MapServerListener {
     }
 
     private void setListData(String url,java.util.List items) {
-        String context = getContext(url);
-        ((MapRenderer)list.getCellRenderer()).setContext(context);
-        list.setListData( RiskUtil.asVector(items==null?Collections.EMPTY_LIST:items) );
-        boolean showNoMatch = items!=null && items.isEmpty();
-        show( showNoMatch?"NoMatches":"ResultList" );
+        ((MapRenderer) list.getCellRenderer()).setContext(getContext(url));
+
+        java.util.Vector result;
+        if (items == null) {
+            result = new Vector(0);
+        }
+        else if (allowedMaps == null) {
+            result = RiskUtil.asVector(items);
+        }
+        else {
+            result = new java.util.Vector();
+            for (Object item : items) {
+                if (item instanceof Map) {
+                    if (allowedMaps.contains(getFileUID(((Map) item).getMapUrl()))) {
+                        result.add(item);
+                    }
+                }
+                else {
+                    result.add(item);
+                }
+            }
+        }
+
+        list.setListData(result);
+        boolean showNoMatch = items != null && result.isEmpty();
+        show(showNoMatch ? "NoMatches" : "ResultList");
     }
 
     private void show(String name) {
@@ -733,7 +754,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         String mapUID = MapChooser.getFileUID( map.getMapUrl() );
 
         // if we dont have a local file with the same uid
-        if ( !mapfiles.contains( mapUID ) ) {
+        if (!localMaps.contains(mapUID)) {
             return true;
         }
 

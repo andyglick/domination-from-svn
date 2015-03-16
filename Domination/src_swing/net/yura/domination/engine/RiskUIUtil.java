@@ -715,7 +715,7 @@ public class RiskUIUtil {
 			netInfo = "?";
 		}
 
-		return		" " + Risk.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
+		return		" " + RiskUtil.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
 				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + "\n" +
 				" " + netInfo + " \n" +
 				" " + getOSString() + " \n" +
@@ -838,7 +838,7 @@ public class RiskUIUtil {
 
                                         String v = newversion[0].substring(7, newversion[0].length() );
 
-                                        if (!v.equals(Risk.RISK_VERSION)) {
+                                        if (!v.equals(RiskUtil.RISK_VERSION)) {
 
                                                 for (int c=1;c<newversion.length;c++) {
                                                         v = v+"\n"+newversion[c];
@@ -974,9 +974,7 @@ public class RiskUIUtil {
             }
 
             return md;
-
         }
-
 
 	private static void setupLookAndFeel() {
 

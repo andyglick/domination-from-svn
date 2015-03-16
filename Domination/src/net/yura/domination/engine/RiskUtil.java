@@ -33,15 +33,15 @@ public class RiskUtil {
 	public static final String RISK_LOBBY_URL;
 //	public static final String RISK_POST_URL; // look in Grasshopper.jar now
 	public static final String GAME_NAME;
+	public static final String RISK_VERSION;
 //	private static final String DEFAULT_MAP;
 
         private static final Logger logger = Logger.getLogger(RiskUtil.class.getName());
 	public static RiskIO streamOpener;
 
-	private final static Properties settings;
 	static {
 
-		settings = new Properties();
+		Properties settings = new Properties();
 
 		try {
 			settings.load(RiskUtil.class.getResourceAsStream("settings.ini"));
@@ -55,7 +55,7 @@ public class RiskUtil {
 //		RISK_POST_URL = settings.getProperty("POST_URL");
 		GAME_NAME = settings.getProperty("name");
 		//DEFAULT_MAP = settings.getProperty("defaultmap");
-		Risk.RISK_VERSION = settings.getProperty("version");
+		RISK_VERSION = settings.getProperty("version");
 
 		String dmap = settings.getProperty("defaultmap");
 		String dcards = settings.getProperty("defaultcards");
