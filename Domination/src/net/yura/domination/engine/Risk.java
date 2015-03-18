@@ -2093,7 +2093,7 @@ RiskUtil.printStackTrace(e);
 	}
 
         // TODO is this thread safe???
-        public void setMap(String filename) throws Exception {
+        private void setMap(String filename) throws Exception {
 
             if (game.getState()==RiskGame.STATE_NEW_GAME) {
 
@@ -2111,7 +2111,7 @@ RiskUtil.printStackTrace(e);
                 controller.startGame(unlimitedLocalMode);
             }
         }
-        public void getMapError(String exception) {
+        private void getMapError(String exception) {
 
             String output = resb.getString( "core.choosemap.error.unable")+" "+exception;
             controller.sendMessage(output, false , true);
