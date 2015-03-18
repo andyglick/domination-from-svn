@@ -181,7 +181,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                         break;
                     case Game.STATE_CAN_PLAY:
                     case Game.STATE_CAN_WATCH:
-                        playGame(game.getId());
+                        this.game.prepareAndOpenGame(game);
                         break;
                 }
             }

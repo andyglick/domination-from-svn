@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -75,9 +76,8 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                     public InputStream loadGameFile(String file) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
-                    public void getMap(String filename, Risk risk,Exception ex) {
-                        RiskUtil.printStackTrace(ex);
-                        risk.getMapError(ex.toString());
+                    public void getMap(String filename, Observer observer) {
+                        observer.update(null, RiskUtil.ERROR);
                     }
                     public OutputStream saveMapFile(String fileName) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");

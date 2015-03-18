@@ -444,7 +444,7 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("update".equals(actionCommand)) {
             mainCatList(actionCommand);
 
-            java.util.List mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            java.util.List<Map> mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
 
             Component updateAll = loader.find("updateAll");
             if (mapsToUpdate.isEmpty()) {
@@ -457,10 +457,10 @@ public class MapChooser implements ActionListener,MapServerListener {
             }
         }
         else if ("updateall".equals(actionCommand)) {
-            java.util.List mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
+            java.util.List<Map> mapsToUpdate = MapUpdateService.getInstance().mapsToUpdate;
             synchronized(mapsToUpdate) {
                 for (int c=0;c<mapsToUpdate.size();c++) {
-                    click( (Map)mapsToUpdate.get(c) );
+                    click(mapsToUpdate.get(c));
                 }
             }
         }

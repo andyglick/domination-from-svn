@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -366,10 +368,7 @@ public class Risk extends Thread {
 				if (StringT.countTokens() >= 1) {
 				    if ( unlimitedLocalMode ) {
 
-					String filename = StringT.nextToken();
-					while ( StringT.hasMoreTokens() ) {
-						filename = filename + " " + StringT.nextToken();
-					}
+					String filename = RiskUtil.getAtLeastOne(StringT);
 
                                         try {
                                             RiskUtil.saveFile(filename,game);
@@ -487,11 +486,7 @@ RiskUtil.printStackTrace(e);
 
                                 // this is not needed here as u can only get into this bit of code if game == null
                                 //if (game == null) {
-                                        String filename = StringT.nextToken();
-
-                                        while ( StringT.hasMoreTokens() ) {
-                                                filename = filename + " " + StringT.nextToken();
-                                        }
+                                        String filename = RiskUtil.getAtLeastOne(StringT);
 
                                         try {
                                                 game = RiskGame.loadGame( filename );
@@ -1076,19 +1071,30 @@ RiskUtil.printStackTrace(e);
 				if (input.equals("choosemap")) {
 
 					if (StringT.countTokens() >= 1) {
-						String filename=StringT.nextToken();
-
-						while ( StringT.hasMoreTokens() ) {
-							filename = filename + " " + StringT.nextToken();
-						}
+						final String filename = RiskUtil.getAtLeastOne(StringT);
 
 						try {
                                                     setMap(filename);
 						}
-						catch (Exception e) {
+						catch (final Exception e) {
                                                     // crap, we wanted to use this map, but we would not load it
                                                     // maybe we can download it from the server and then use it
-                                                    RiskUtil.streamOpener.getMap(filename,this,e);
+                                                    RiskUtil.streamOpener.getMap(filename, new Observer() {
+                                                        @Override
+                                                        public void update(Observable observable, Object data) {
+                                                            if (data == RiskUtil.SUCCESS) {
+                                                                try {
+                                                                    setMap(filename);
+                                                                }
+                                                                catch (Exception ex) {
+                                                                    getMapError(ex.toString());
+                                                                }
+                                                            }
+                                                            else {
+                                                                getMapError(e.toString());
+                                                            }
+                                                        }
+                                                    });
 						}
                                                 output = null; // we have nothing to output now
 
@@ -1099,10 +1105,7 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("choosecards")) {
 
 					if (StringT.countTokens() >= 1) {
-						String filename=StringT.nextToken();
-						while ( StringT.hasMoreTokens() ) {
-							filename = filename + " " + StringT.nextToken();
-						}
+						String filename = RiskUtil.getAtLeastOne(StringT);
 
 						try {
 
@@ -1159,12 +1162,8 @@ RiskUtil.printStackTrace(e);
 				}
 				else if (input.equals("delplayer")) {
 
-					if (StringT.countTokens()>=1) {
-						String name=StringT.nextToken();
-
-						while ( StringT.hasMoreTokens() ) {
-							name = name +" "+ StringT.nextToken();
-						}
+					if (StringT.countTokens() >= 1) {
+						String name=RiskUtil.getAtLeastOne(StringT);
 
 						if ( game.delPlayer(name) ) {
 							controller.delPlayer(name);
@@ -1364,12 +1363,7 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("play")) {
 
 					if (StringT.countTokens() >= 1) {
-
-						String filename = StringT.nextToken();
-
-						while ( StringT.hasMoreTokens() ) {
-							filename = filename + " " + StringT.nextToken();
-						}
+						String filename = RiskUtil.getAtLeastOne(StringT);
 
 						try {
 

@@ -23,6 +23,11 @@ public interface MiniLobbyGame {
      */
     void openGameSetup(GameType gameType);
 
+    /**
+     * this method must trigger mlc.playGame(game.getId()) at some point in the future
+     */
+    void prepareAndOpenGame(Game game);
+
     void objectForGame(Object object);
     void stringForGame(String message);
 

@@ -1,6 +1,8 @@
 package net.yura.domination.lobby.mini;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import net.yura.domination.engine.OnlineRisk;
@@ -9,10 +11,12 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.GetMap;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapServerClient;
 import net.yura.domination.mapstore.MapServerListener;
+import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.mini.MiniLobbyGame;
 import net.yura.lobby.model.Game;
@@ -44,7 +48,32 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     }
 
     public boolean isMyGameType(GameType gametype) {
-        return RiskUtil.GAME_NAME.equals( gametype.getName() );
+        return RiskUtil.GAME_NAME.equals(gametype.getName());
+    }
+
+    @Override
+    public void prepareAndOpenGame(final Game game) {
+        final String mapUID = RiskUtil.getMapNameFromLobbyStartGameOption(game.getOptions());
+
+        // TODO check if we are already in the process of downloading this map
+
+        // check if we have this map already & if we need to do a update for the map
+        if (MapChooser.fileExists(mapUID) && !MapUpdateService.getInstance().contains(mapUID)) {
+            lobby.playGame(game.getId());
+        }
+        else {
+            net.yura.domination.mapstore.GetMap.getMap(mapUID, new Observer() {
+                @Override
+                public void update(Observable observable, Object data) {
+                    if (data == RiskUtil.SUCCESS) {
+                        lobby.playGame(game.getId());
+                    }
+                    else {
+                        lobby.error("map download failed " + mapUID);
+                    }
+                }
+            });
+        }
     }
 
     private boolean openGame;

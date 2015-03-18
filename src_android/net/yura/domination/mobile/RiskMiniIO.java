@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import javax.microedition.io.Connector;
 import net.yura.domination.engine.Risk;
@@ -55,8 +56,8 @@ public class RiskMiniIO implements RiskIO {
         return RiskUtil.getOutputStream( MiniUtil.getSaveMapDir(), fileName);
     }
 
-    public void getMap(String filename, Risk risk, Exception ex) {
-        net.yura.domination.mapstore.GetMap.getMap(filename, risk, ex);
+    public void getMap(String filename, Observer observer) {
+        net.yura.domination.mapstore.GetMap.getMap(filename, observer);
     }
 
     public void renameMapFile(String oldName, String newName) {

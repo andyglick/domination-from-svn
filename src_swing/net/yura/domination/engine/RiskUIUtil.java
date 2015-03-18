@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -117,8 +118,8 @@ public class RiskUIUtil {
                 public OutputStream saveMapFile(String fileName) throws Exception {
                     return RiskUtil.getOutputStream( getSaveMapDir() , fileName);
                 }
-                public void getMap(String filename, Risk risk,Exception ex) {
-                    net.yura.domination.mapstore.GetMap.getMap(filename,risk,ex);
+                public void getMap(String filename, Observer observer) {
+                    net.yura.domination.mapstore.GetMap.getMap(filename, observer);
                 }
                 public void renameMapFile(String oldName, String newName) {
                     File oldFile = new File( getSaveMapDir() ,oldName);

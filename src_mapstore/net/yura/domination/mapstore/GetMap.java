@@ -1,55 +1,46 @@
 package net.yura.domination.mapstore;
 
 import java.util.List;
-import net.yura.domination.engine.Risk;
+import java.util.Observable;
+import java.util.Observer;
 import net.yura.domination.engine.RiskUtil;
 
 /**
  * @author Yura Mamyrin
  */
-public class GetMap implements MapServerListener {
+public class GetMap extends Observable implements MapServerListener {
 
     MapServerClient client;
-    Risk myrisk;
     String filename;
-    Exception problem;
-    
-    public static void getMap(String filename, Risk risk,Exception ex) {
+
+    public static void getMap(String filename, Observer gml) {
         GetMap get = new GetMap();
         get.filename = filename;
-        get.myrisk = risk;
-        get.problem = ex;
+        get.addObserver(gml);
         get.client = new MapServerClient(get);
         get.client.start();
-        get.client.makeRequestXML( MapChooser.MAP_PAGE,"mapfile",filename );
+        get.client.makeRequestXML(MapChooser.MAP_PAGE, "mapfile", filename);
     }
 
-    private void onError(String exception) {
-        myrisk.getMapError(exception);
+    private void onError(String error) {
+        System.err.println(error);
         client.kill();
+        notifyObservers(RiskUtil.ERROR);
     }
 
     public void gotResultMaps(String url, List maps) {
-        if (maps.size()==1) {
+        if (maps.size() == 1) {
             Map themap = (Map)maps.get(0);
-            client.downloadMap( MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl ) );
+            client.downloadMap(MapChooser.getURL(MapChooser.getContext(url), themap.mapUrl));
         }
         else {
-            System.err.println( "wrong number of maps on server: "+maps.size()+" for map: "+filename );
-            RiskUtil.printStackTrace(problem);
-            onError(problem.toString());
+            onError("wrong number of maps on server: " + maps.size() + " for map: " + filename);
         }
     }
 
     public void downloadFinished(String mapUID) {
-        try {
-            myrisk.setMap(mapUID);
-            client.kill();
-        }
-        catch (Exception ex) {
-            RiskUtil.printStackTrace(ex);
-            onError(ex.toString());
-        }
+        client.kill();
+        notifyObservers(RiskUtil.SUCCESS);
     }
 
     public void onXMLError(String string) {
