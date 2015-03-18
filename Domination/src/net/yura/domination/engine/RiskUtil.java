@@ -29,6 +29,9 @@ import net.yura.domination.engine.translation.MapTranslator;
 
 public class RiskUtil {
 
+        public static final Object SUCCESS = "SUCCESS";
+        public static final Object ERROR = "ERROR";
+
 	public static final String RISK_VERSION_URL;
 	public static final String RISK_LOBBY_URL;
 //	public static final String RISK_POST_URL; // look in Grasshopper.jar now
@@ -73,7 +76,7 @@ public class RiskUtil {
 	}
 
 	public static ResourceBundle getResourceBundle(Class c,String n,Locale l) {
-            return streamOpener.getResourceBundle(c,n,l);
+            return streamOpener.getResourceBundle(c, n, l);
 	}
 
 	public static void openURL(URL url) throws Exception {
@@ -569,4 +572,12 @@ public class RiskUtil {
             }
     }
 
+    public static String getAtLeastOne(StringTokenizer stringT) {
+        StringBuilder text = new StringBuilder(stringT.nextToken());
+        while ( stringT.hasMoreTokens() ) {
+            text.append(' ');
+            text.append(stringT.nextToken());
+        }
+        return text.toString();
+    }
 }

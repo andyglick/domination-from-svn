@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.net.URL;
 import net.yura.domination.engine.core.RiskGame;
@@ -26,6 +27,9 @@ public interface RiskIO {
         
         OutputStream saveMapFile(String fileName) throws Exception;
         void renameMapFile(String oldName, String newName);
-        
-        void getMap(String filename,Risk risk,Exception ex);
+
+        /**
+         * get callback with either {@link RiskUtil#SUCCESS} or {@link RiskUtil#ERROR}
+         */
+        void getMap(String filename, Observer observer);
 }

@@ -27,7 +27,7 @@ public class MapUpdateService extends Observable {
     
     static MapUpdateService updateService;
     
-    public final List mapsToUpdate = new java.util.Vector();
+    public final List<Map> mapsToUpdate = new java.util.Vector();
 
     private MapUpdateService() { }
     public static MapUpdateService getInstance() {
@@ -39,12 +39,12 @@ public class MapUpdateService extends Observable {
 
     void notifyListeners() {
         setChanged();
-        notifyObservers( new Integer( mapsToUpdate.size() ) );
+        notifyObservers(new Integer(mapsToUpdate.size()));
     }
 
     public synchronized void addObserver(Observer o) {
         super.addObserver(o);
-        o.update(this, new Integer( mapsToUpdate.size() ) );
+        o.update(this, new Integer(mapsToUpdate.size()));
     }
 
     public void init(List mapsUIDs,String url) {
@@ -115,16 +115,27 @@ logger.fine("URL: " + url + " payload: " + payload);
             return Collections.EMPTY_LIST;
         }
     }
-    
-    public void downloadFinished(String mapUID) {
-        for (int c=0;c<mapsToUpdate.size();c++) {
-            Map map = (Map)mapsToUpdate.get(c);
-            String amapUID = MapChooser.getFileUID( map.getMapUrl() );
+
+    public boolean contains(String mapUID) {
+        return getIndexOfMap(mapUID) >= 0;
+    }
+
+    private int getIndexOfMap(String mapUID) {
+        for (int c = 0; c < mapsToUpdate.size(); c++) {
+            Map map = (Map) mapsToUpdate.get(c);
+            String amapUID = MapChooser.getFileUID(map.getMapUrl());
             if (mapUID.equals(amapUID)) {
-                mapsToUpdate.remove(c);
-                notifyListeners();
-                return;
+                return c;
             }
+        }
+        return -1;
+    }
+
+    public void downloadFinished(String mapUID) {
+        int i = getIndexOfMap(mapUID);
+        if (i >= 0) {
+            mapsToUpdate.remove(i);
+            notifyListeners();
         }
     }
 
