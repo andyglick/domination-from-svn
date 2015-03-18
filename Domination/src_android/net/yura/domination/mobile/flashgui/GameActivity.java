@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.microedition.lcdui.Display;
@@ -303,7 +305,7 @@ public class GameActivity extends Frame implements ActionListener {
     /**
      * @see net.yura.domination.ui.flashgui.GameFrame#setup(boolean)
      */
-    public void startGame(boolean localGame) {
+    public void startGame(final boolean localGame) {
         this.localGame = localGame;
 
         String mapFile = myrisk.getGame().getMapFile();
@@ -347,7 +349,16 @@ public class GameActivity extends Frame implements ActionListener {
                 if (file.exists()) {
                     System.out.println("deleting file: "+file+" date: "+new Date(file.lastModified()) );
                     file.delete();
-                    RiskUtil.streamOpener.getMap(mapFile,myrisk,null);
+                    RiskUtil.streamOpener.getMap(mapFile, new Observer() {
+                        public void update(Observable o, Object arg) {
+                            if (arg == RiskUtil.SUCCESS) {
+                                startGame(localGame);
+                            }
+                            else {
+                                OptionPane.showMessageDialog(null, "error downloading map", null, OptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
                     retry=true;
                 }
             }

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -58,9 +59,8 @@ public class ServerGameRisk extends TurnBasedGame {
                 public InputStream loadGameFile(String file) throws Exception {
                     return null;
                 }
-                public void getMap(String filename, Risk risk,Exception ex) {
-                    RiskUtil.printStackTrace(ex);
-                    risk.getMapError(ex.toString());
+                public void getMap(String filename, Observer observer) {
+                    observer.update(null, RiskUtil.ERROR);
                 }
                 public java.io.OutputStream saveMapFile(String fileName) throws Exception {
                     return RiskUtil.getOutputStream(mapsDir , fileName);

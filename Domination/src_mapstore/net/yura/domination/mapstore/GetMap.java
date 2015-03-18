@@ -22,12 +22,6 @@ public class GetMap extends Observable implements MapServerListener {
         get.client.makeRequestXML(MapChooser.MAP_PAGE, "mapfile", filename);
     }
 
-    private void onError(String error) {
-        System.err.println(error);
-        client.kill();
-        notifyObservers(RiskUtil.ERROR);
-    }
-
     public void gotResultMaps(String url, List maps) {
         if (maps.size() == 1) {
             Map themap = (Map)maps.get(0);
@@ -38,9 +32,19 @@ public class GetMap extends Observable implements MapServerListener {
         }
     }
 
-    public void downloadFinished(String mapUID) {
+    private void onError(String error) {
+        System.err.println(error);
+        notifyListeners(RiskUtil.ERROR);
+    }
+
+    private void notifyListeners(Object arg) {
         client.kill();
-        notifyObservers(RiskUtil.SUCCESS);
+        setChanged();
+        notifyObservers(arg);
+    }
+
+    public void downloadFinished(String mapUID) {
+        notifyListeners(RiskUtil.SUCCESS);
     }
 
     public void onXMLError(String string) {
