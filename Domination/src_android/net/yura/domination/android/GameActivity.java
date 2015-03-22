@@ -46,7 +46,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     private boolean pendingShowAchievements;
     private net.yura.lobby.model.Game pendingStartGameGooglePlay;
     private boolean pendingSendLobbyUsername;
-    private int pendingOpenGame = -1;
+    private Game pendingOpenGame;
 
     /**
      * need to create everything owned by the activity, but the game/static objects may already exist
@@ -67,8 +67,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
                 getUi().lobby.createNewGame(game);
             }
             @Override
-            public void playGame(int gameId) {
-                getUi().lobby.playGame(gameId);
+            public void playGame(Game game) {
+                getUi().lobby.game.prepareAndOpenGame(game);
             }
             @Override
             public void getUsername() {
@@ -114,36 +114,43 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     private void handleIntent(Intent intent) {
         String gameId = intent.getStringExtra(MiniLobbyClient.EXTRA_GAME_ID);
+        String options = intent.getStringExtra(MiniLobbyClient.EXTRA_GAME_OPTIONS);
+
         if (gameId != null) {
-            int id = Integer.parseInt(gameId);
+            Game game = new Game();
+            game.setId(Integer.parseInt(gameId));
+            game.setOptions(options);
+
             MiniFlashRiskAdapter ui = getUi();
             if (ui != null) {
                 if (ui.lobby != null) {
                     if (ui.lobby.whoAmI() != null) {
-                        ui.lobby.playGame(id);
+                        ui.lobby.game.prepareAndOpenGame(game);
                     }
                     else {
-                        pendingOpenGame = id;
+                        pendingOpenGame = game;
                         logger.warning("lobby open but we are not logged in yet");
                     }
                 }
                 else {
-                    pendingOpenGame = id;
+                    pendingOpenGame = game;
                     ui.openLobby();
                 }
             }
             else {
         	// the game has not initialized yet
-        	pendingOpenGame = id;
+        	pendingOpenGame = game;
             }
+
+            // as we have handled this open game request, clear it
+            intent.removeExtra(MiniLobbyClient.EXTRA_GAME_ID);
+            intent.removeExtra(MiniLobbyClient.EXTRA_GAME_OPTIONS);
         }
-        // as we have handled this open game request, clear it
-        intent.removeExtra(MiniLobbyClient.EXTRA_GAME_ID);
     }
 
     @Override
     public boolean hasPendingOpenLobby() {
-        return pendingOpenGame > -1;
+        return pendingOpenGame != null;
     }
 
     public static boolean getDefaultFullScreen(Context context) {
@@ -266,9 +273,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             pendingSendLobbyUsername = false;
             realTimeMultiplayer.setLobbyUsername(username);
         }
-        if (pendingOpenGame > -1) {
-            getUi().lobby.playGame(pendingOpenGame);
-            pendingOpenGame = -1;
+        if (pendingOpenGame != null) {
+            getUi().lobby.game.prepareAndOpenGame(pendingOpenGame);
+            pendingOpenGame = null;
         }
     }
 

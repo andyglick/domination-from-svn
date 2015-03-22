@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.R;
+import net.yura.lobby.client.AndroidLobbyClient;
 import net.yura.lobby.mini.MiniLobbyClient;
 import android.content.Context;
 import android.content.Intent;
@@ -41,16 +42,24 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
     }
 
+    /**
+     * @see MiniLobbyClient#notify(net.yura.lobby.model.Game, boolean)
+     */
     @Override
     protected void onMessage(Context context, Intent intent) {
-	String msg = intent.getExtras().getString("message");
-        String gameId = intent.getExtras().getString("gameId");
+	String msg = intent.getExtras().getString(AndroidLobbyClient.MESSAGE);
+        String gameId = intent.getExtras().getString(AndroidLobbyClient.GAME_ID);
+        String options = intent.getExtras().getString(AndroidLobbyClient.OPTIONS);
+
         String message = msg==null?"Received message":msg;
         displayMessage(context, message);
         // notifies user
         Map<String, Object> extras = new HashMap();
         if (gameId != null) {
             extras.put(MiniLobbyClient.EXTRA_GAME_ID, gameId);
+        }
+        if (options != null) {
+            extras.put(MiniLobbyClient.EXTRA_GAME_OPTIONS, options);
         }
         MIDlet.showNotification(context.getString(R.string.app_name), message, R.drawable.icon, -1, extras);
     }
