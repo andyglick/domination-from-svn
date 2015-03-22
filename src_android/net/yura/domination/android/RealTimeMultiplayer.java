@@ -73,7 +73,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     interface Lobby {
         void createNewGame(Game game);
-        void playGame(int gameId);
+        void playGame(Game gameId);
         void getUsername();
     }
 
@@ -260,8 +260,8 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             }
         }
         else if (ProtoAccess.COMMAND_GAME_STARTED.equals(command)) {
-            int gameId = (Integer)message.getParam();
-            lobby.playGame(gameId);
+            Object param = message.getParam();
+            lobby.playGame((Game) param);
         }
         else if (ProtoAccess.REQUEST_HELLO.equals(command)) {
             String creator = (String) message.getParam();
@@ -342,11 +342,12 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     }
 
     public void gameStarted(int id) {
-        logger.info("lobby gameStarted "+id+" "+gameRoom);
+        logger.info("lobby gameStarted " + id + " " + gameRoom + " " + lobbyGame);
         if (gameRoom != null) {
             Message message = new Message();
             message.setCommand(ProtoAccess.COMMAND_GAME_STARTED);
-            message.setParam(id);
+            lobbyGame.setId(id);
+            message.setParam(lobbyGame);
 
             List<String> participants = gameRoom.getParticipantIds();
             for (String participant : participants) {

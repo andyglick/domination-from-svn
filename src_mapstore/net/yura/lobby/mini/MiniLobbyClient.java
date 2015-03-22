@@ -41,16 +41,17 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
     private static final String LOBBY_SERVER = "lobby.yura.net";
-    //private static final String LOBBY_SERVER = "192.168.0.2";
+    //private static final String LOBBY_SERVER = "localhost";
 
     public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
+    public final static String EXTRA_GAME_OPTIONS = "net.yura.domination.GAME_OPTIONS";
 
     XULLoader loader;
     List list;
     Window adminPopup;
 
-    public Connection mycom;
-    MiniLobbyGame game;
+    public final Connection mycom;
+    public final MiniLobbyGame game;
 
     String myusername;
     int playerType;
@@ -257,6 +258,10 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    /**
+     * This method should be called when everything is ready for the game to open, e.g map has been downloaded
+     * This method should ONLY be called from inside the {@link MiniLobbyGame#prepareAndOpenGame(Game)} method
+     */
     public void playGame(int id) {
         if (openGameId==id) return; // we have already tried to open this game, do nothing
         if (openGameId!=-1) {
@@ -362,7 +367,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
             // if this game is not open and its our turn
             if (whoAmI().equals(game.getWhosTurn())) {
-                notify(game.getType().getName(), "It is your go: "+game.getName(), game.getId(), openGameId==game.getId() ); // TODO copy/paste same code as on server
+                notify(game, openGameId == game.getId());
             }
         }
         else {
@@ -377,7 +382,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
 
     public void resign() {
-        mycom.leaveGame( openGameId );
+        mycom.leaveGame(openGameId);
     }
 
     public void removeGame(int gameid) {
@@ -542,13 +547,24 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    static void notify(String title, String message, int gameId, boolean onlyBackground) {
+    /**
+     * @see net.yura.domination.android.GCMIntentService#onMessage(android.content.Context, android.content.Intent)
+     */
+    static void notify(Game game, boolean onlyBackground) {
+
+        String title = game.getType().getName();
+        String message = "It is your go: " + game.getName(); // TODO copy/paste same code as on server
+        int gameId = game.getId();
+        String options = game.getOptions();
+
         String icon = "icon"; // maps to R.drawable.icon
-        Midlet.openURL("notify://dummyServer?title="+Url.encode(title)+
+        Midlet.openURL("notify://dummyServer" +
+                "?title="+Url.encode(title)+
                 "&message="+Url.encode(message)+
                 "&icon="+Url.encode(icon)+
                 "&onlyBackground="+onlyBackground+
-                "&"+Url.encode(EXTRA_GAME_ID)+"="+Url.encode(String.valueOf(gameId)));
+                "&"+Url.encode(EXTRA_GAME_ID)+"="+Url.encode(String.valueOf(gameId))+
+                "&"+Url.encode(EXTRA_GAME_OPTIONS)+"="+Url.encode(options));
                 // not used &num=4
     }
 
