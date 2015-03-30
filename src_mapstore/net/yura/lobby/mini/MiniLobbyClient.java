@@ -182,7 +182,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                         break;
                     case Game.STATE_CAN_PLAY:
                     case Game.STATE_CAN_WATCH:
-                        this.game.prepareAndOpenGame(game);
+                        playGame(game);
                         break;
                 }
             }
@@ -262,16 +262,20 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
      * This method should be called when everything is ready for the game to open, e.g map has been downloaded
      * This method should ONLY be called from inside the {@link MiniLobbyGame#prepareAndOpenGame(Game)} method
      */
-    public void playGame(int id) {
-        if (openGameId==id) return; // we have already tried to open this game, do nothing
-        if (openGameId!=-1) {
+    public void openGame(int id) {
+        mycom.playGame(id);
+    }
+
+    public void playGame(Game game) {
+        if (openGameId == game.getId()) return; // we have already tried to open this game, do nothing
+        if (openGameId != -1) {
             // we should NOT try and close the game in the UI at this point
                 // as it may not have even opened yet, instead we will close it
                 // when we get the 2nd game object with "if (existing game!=null) {controller.closeGame();}"
             closeGame();
         }
-        openGameId = id;
-        mycom.playGame(id);
+        openGameId = game.getId();
+        this.game.prepareAndOpenGame(game);
     }
 
     public void sendGameMessage(String messagefromgui) {

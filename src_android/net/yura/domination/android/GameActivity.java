@@ -68,7 +68,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             }
             @Override
             public void playGame(Game game) {
-                getUi().lobby.game.prepareAndOpenGame(game);
+                getUi().lobby.playGame(game);
             }
             @Override
             public void getUsername() {
@@ -125,7 +125,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             if (ui != null) {
                 if (ui.lobby != null) {
                     if (ui.lobby.whoAmI() != null) {
-                        ui.lobby.game.prepareAndOpenGame(game);
+                        ui.lobby.playGame(game);
                     }
                     else {
                         pendingOpenGame = game;
@@ -274,7 +274,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             realTimeMultiplayer.setLobbyUsername(username);
         }
         if (pendingOpenGame != null) {
-            getUi().lobby.game.prepareAndOpenGame(pendingOpenGame);
+            getUi().lobby.playGame(pendingOpenGame);
             pendingOpenGame = null;
         }
     }

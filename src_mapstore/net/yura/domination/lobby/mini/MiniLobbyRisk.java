@@ -11,7 +11,6 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.mapstore.GetMap;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapServerClient;
@@ -59,14 +58,14 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 
         // check if we have this map already & if we need to do a update for the map
         if (MapChooser.fileExists(mapUID) && !MapUpdateService.getInstance().contains(mapUID)) {
-            lobby.playGame(game.getId());
+            lobby.openGame(game.getId());
         }
         else {
             net.yura.domination.mapstore.GetMap.getMap(mapUID, new Observer() {
                 @Override
                 public void update(Observable observable, Object data) {
                     if (data == RiskUtil.SUCCESS) {
-                        lobby.playGame(game.getId());
+                        lobby.openGame(game.getId());
                     }
                     else {
                         lobby.error("map download failed " + mapUID);

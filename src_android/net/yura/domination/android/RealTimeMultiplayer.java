@@ -63,7 +63,15 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     private static final Logger logger = Logger.getLogger(RealTimeMultiplayer.class.getName());
 
-    private ProtoAccess encodeDecoder = new ProtoAccess(null);
+    // we want to be able to send Game objects, but we dont care about the GameTypes, as its always going to be the same game
+    private ProtoAccess encodeDecoder = new ProtoAccess(new ProtoAccess.ObjectProvider() {
+        public Object getObjectId(Object var1) {
+            return -1;
+        }
+        public Object getObjetById(Object var1, Class var2) {
+            return null;
+        }
+    });
     private Activity activity;
     private GameHelper mHelper;
     private Lobby lobby;
