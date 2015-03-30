@@ -51,7 +51,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     Window adminPopup;
 
     public final Connection mycom;
-    public final MiniLobbyGame game;
+    final MiniLobbyGame game;
 
     String myusername;
     int playerType;
