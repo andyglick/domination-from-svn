@@ -258,14 +258,6 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
-    /**
-     * This method should be called when everything is ready for the game to open, e.g map has been downloaded
-     * This method should ONLY be called from inside the {@link MiniLobbyGame#prepareAndOpenGame(Game)} method
-     */
-    public void openGame(int id) {
-        mycom.playGame(id);
-    }
-
     public void playGame(Game game) {
         if (openGameId == game.getId()) return; // we have already tried to open this game, do nothing
         if (openGameId != -1) {

@@ -58,14 +58,14 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 
         // check if we have this map already & if we need to do a update for the map
         if (MapChooser.fileExists(mapUID) && !MapUpdateService.getInstance().contains(mapUID)) {
-            lobby.openGame(game.getId());
+            lobby.mycom.playGame(game.getId());
         }
         else {
             net.yura.domination.mapstore.GetMap.getMap(mapUID, new Observer() {
                 @Override
                 public void update(Observable observable, Object data) {
                     if (data == RiskUtil.SUCCESS) {
-                        lobby.openGame(game.getId());
+                        lobby.mycom.playGame(game.getId());
                     }
                     else {
                         lobby.error("map download failed " + mapUID);
