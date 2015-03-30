@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.yura.android.LoadingDialog;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.lobby.client.ProtoAccess;
 import net.yura.lobby.model.Game;
@@ -384,8 +385,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
     private AlertDialog createAcceptDialog(Invitation invitation) {
         ResourceBundle resb = TranslationBundle.getBundle();
         String title = resb.getString("mainmenu.googlePlayGame.acceptGame");
-        String message = resb.getString("mainmenu.googlePlayGame.invited")
-                .replaceAll("\\{0\\}", invitation.getInviter().getDisplayName());
+        String message = RiskUtil.replaceAll(resb.getString("mainmenu.googlePlayGame.invited"), "{0}", invitation.getInviter().getDisplayName());
         String accept = resb.getString("mainmenu.googlePlayGame.accept");
         String reject = resb.getString("mainmenu.googlePlayGame.reject");
         final String invitationId = invitation.getInvitationId();
