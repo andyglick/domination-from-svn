@@ -43,7 +43,7 @@ public class TranslationBundle {
 			loc = Locale.getDefault();
 		}
 		else {
-			loc = new Locale(strLanguage);
+			loc = getLocale(strLanguage);
 		}
 
 		resBundle = RiskUtil.getResourceBundle(TranslationBundle.class,"Risk",loc);
@@ -56,7 +56,18 @@ public class TranslationBundle {
 	}
 
 
-
+	public static Locale getLocale(String localeString) {
+		if ("".equals(localeString)) {
+                    return new Locale("");
+                }
+		String[] splitname = localeString.split("\\_");
+  		switch(splitname.length) {
+			case 1: return new Locale(splitname[0]);
+			case 2: return new Locale(splitname[0], splitname[1]);
+			case 3: return new Locale(splitname[0], splitname[1], splitname[2]);
+			default: throw new IllegalArgumentException("bad local name: " + localeString);
+		}
+	}
 
 
 
