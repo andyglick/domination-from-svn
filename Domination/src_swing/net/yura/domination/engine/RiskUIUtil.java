@@ -716,12 +716,15 @@ public class RiskUIUtil {
 			netInfo = "?";
 		}
 
+                Toolkit toolkit = Toolkit.getDefaultToolkit();
+
 		return		" " + RiskUtil.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
 				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + "\n" +
 				" " + netInfo + " \n" +
 				" " + getOSString() + " \n" +
 				" " + cpu + " \n" +
 				" " + UIManager.getLookAndFeel() + " \n" +
+                                " " + toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) \n" +
 				" " + System.getProperty("java.vendor") + " \n" +
 				" " + System.getProperty("java.vendor.url") + " \n" +
 				" " + name +" \n" +
