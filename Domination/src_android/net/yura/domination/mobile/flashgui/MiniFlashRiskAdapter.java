@@ -15,6 +15,7 @@ import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.logging.Logger;
+import net.yura.mobile.util.Url;
 
 public class MiniFlashRiskAdapter implements RiskListener {
 
@@ -36,7 +37,12 @@ public class MiniFlashRiskAdapter implements RiskListener {
             @Override
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
                 show("setup");
-                gameSetup.openNewGame(false, gameType.getOptions().split(","), lobby.whoAmI()+"'s "+RiskUtil.GAME_NAME+" Game" );
+                String[] split = gameType.getOptions().split(",");
+                String[] names = new String[split.length];
+                for (int c = 0; c < names.length; c++) {
+                    names[c] = Url.decode(split[c]);
+                }
+                gameSetup.openNewGame(false, names, lobby.whoAmI() + "'s " + RiskUtil.GAME_NAME + " Game");
             }
             @Override
             public String getAppName() {
