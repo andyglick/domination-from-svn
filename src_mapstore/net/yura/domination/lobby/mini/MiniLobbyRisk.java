@@ -57,7 +57,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
         // TODO check if we are already in the process of downloading this map
 
         // check if we have this map already & if we need to do a update for the map
-        if (MapChooser.fileExists(mapUID) && !MapUpdateService.getInstance().contains(mapUID)) {
+        if (MapChooser.haveLocalMap(mapUID) && !MapUpdateService.getInstance().contains(mapUID)) {
             lobby.mycom.playGame(game.getId());
         }
         else {
