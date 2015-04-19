@@ -3,6 +3,7 @@ package net.yura.domination.lobby.server;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -149,7 +150,7 @@ public class GameSettings implements GameSettingsMXBean {
             String mapName = MapChooser.getFileUID(map.getMapUrl());
             int numCountries = (Integer) RiskUtil.loadInfo(mapName, false).get("countries");
             if (map.getMapWidth() <= mapMaxRes && map.getMapHeight() <= mapMaxRes && numCountries <= mapMaxCountries) {
-                gameOptions.append(',').append(mapName);
+                gameOptions.append(',').append(encode(mapName));
             }
             else {
                 System.out.println("skipping " + mapName + " " + numCountries + " (" + map.getMapWidth() + "x" + map.getMapHeight() + ")");
@@ -158,6 +159,15 @@ public class GameSettings implements GameSettingsMXBean {
 
         // save a list of the file names into the GameType
         GameLobby.getInstance().setGameOptions("Domination", gameOptions.toString());
+    }
+
+    private static String encode(String name) {
+        try {
+            return URLEncoder.encode(name, "UTF-8");
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     ServerRisk getServerGame(int id) {
