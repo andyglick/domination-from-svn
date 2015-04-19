@@ -322,15 +322,21 @@ public class MapChooser implements ActionListener,MapServerListener {
         if (mapCache.containsKey(mapUID)) {
             return true;
         }
+        return fileExists(mapUID);
+    }
+
+    public static boolean fileExists(String fileUID) {
+
+        InputStream file=null;
         try {
-            InputStream is = RiskUtil.openMapStream(mapUID);
-            if (is != null) {
-                is.close();
-                return true;
-            }
+            file = RiskUtil.openMapStream(fileUID);
         }
-        catch (IOException ex) { }
-        return false;
+        catch (Exception ex) { } // not found?
+        finally{
+            FileUtil.close(file);
+        }
+
+        return (file != null); // we already have this file
     }
 
     public static void clearFromCache(String mapUID) {
@@ -583,18 +589,6 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         }
 
-    }
-
-    public static boolean fileExists(String fileUID) {
-
-        java.io.InputStream file=null;
-        try {
-            file = RiskUtil.openMapStream(fileUID);
-        }
-        catch (Exception ex) { } // not found?
-        finally{ net.yura.mobile.io.FileUtil.close(file); }
-
-        return (file!=null); // we already have this file
     }
 
     private void chosenMap(String mapName) {
