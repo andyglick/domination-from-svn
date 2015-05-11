@@ -161,15 +161,23 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
                         return;
                     }
                     Map map = (Map) maps.get(0);
-                    MapChooser.getRemoteImage(MapChooser.getFileUID(map.getMapUrl()), MapChooser.getURL(url, map.getPreviewUrl()), mapServerClient);
+                    Object mapUIDkey = MapChooser.getFileUID(map.getMapUrl());
+                    boolean fromCache = MapChooser.getRemoteImage(mapUIDkey, MapChooser.getURL(url, map.getPreviewUrl()), mapServerClient);
+
+                    if (fromCache) {
+                        publishImg(mapUIDkey);
+                    }
                 }
                 public void onXMLError(String string) {
                     logger.info("ERROR "+string);
                 }
                 public void downloadFinished(String mapUID) { }
                 public void onDownloadError(String string) { }
+                /**
+                 * key is mapUID in this case
+                 */
                 public void publishImg(Object key) {
-                    // TODO repaint game list
+                    lobby.getRoot().repaint();
                 }
 
             });
