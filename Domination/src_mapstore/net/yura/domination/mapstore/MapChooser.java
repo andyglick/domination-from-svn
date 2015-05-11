@@ -9,12 +9,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Set;
-import java.util.Vector;
 import java.util.WeakHashMap;
 import javax.microedition.lcdui.Image;
 import net.yura.cache.Cache;
 import net.yura.domination.ImageManager;
-import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -189,14 +187,19 @@ public class MapChooser implements ActionListener,MapServerListener {
         return aicon;
     }
 
-    public static void getRemoteImage(Object key, String url, MapServerClient c) {
+    /**
+     * @return true if icon is in the cache, or false and {@see MapServerListener#publishImg(java.lang.Object)} will be called later.
+     */
+    public static boolean getRemoteImage(Object key, String url, MapServerClient c) {
         InputStream in = repo != null ? repo.get(url) : null;
         if (in != null) {
             gotImg(key, in);
+            return true;
         }
         else {
             // can be null when shut down
             if (c != null) c.getImage(url, key);
+            return false;
         }
     }
 
@@ -690,7 +693,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         java.util.Vector result;
         if (items == null) {
-            result = new Vector(0);
+            result = new java.util.Vector(0);
         }
         else if (allowedMaps == null) {
             result = RiskUtil.asVector(items);
