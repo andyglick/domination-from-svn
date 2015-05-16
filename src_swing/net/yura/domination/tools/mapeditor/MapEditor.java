@@ -715,7 +715,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                             BufferedImage prvimg = new BufferedImage(150, 94, BufferedImage.TYPE_INT_BGR );
                             Graphics g = prvimg.getGraphics();
-                            g.drawImage(fullimg,0,0,prvimg.getWidth(),prvimg.getHeight(),0,0,fullimg.getWidth(),fullimg.getHeight(),null);
+                            g.drawImage(fullimg, 0, 0, prvimg.getWidth(), prvimg.getHeight(), this);
                             g.dispose();
                             
                             File mapsDir = RiskUIUtil.getSaveMapDir();
