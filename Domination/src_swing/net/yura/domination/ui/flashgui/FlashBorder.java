@@ -48,16 +48,10 @@ public class FlashBorder implements Border {
                 c);
 
         // left
-        g.drawImage(left,
-                x, y+top.getHeight(c), x+left.getWidth(c), y+height-bottom.getHeight(c),
-                0, 0, left.getWidth(c), left.getHeight(c),
-                c);
+        g.drawImage(left, x, y+top.getHeight(c), left.getWidth(c), height-bottom.getHeight(c)-top.getHeight(c), c);
 
         // right
-        g.drawImage(right,
-                x+width-right.getWidth(c), y+top.getHeight(c), x+width, y+height-bottom.getHeight(c),
-                0, 0, right.getWidth(c), right.getHeight(c),
-                c);    
+        g.drawImage(right, x+width-right.getWidth(c), y+top.getHeight(c), right.getWidth(c), height-bottom.getHeight(c)-top.getHeight(c), c);
     }
     
     private void drawImage(Graphics g, Image img, int dest_x, int dest_y, int src_x, int src_y, int w, int h,ImageObserver c) {

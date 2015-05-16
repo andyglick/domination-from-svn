@@ -420,7 +420,7 @@ public class MoveDialog extends JDialog {
                 h = (int)( scale * h );
             }
 
-            g.drawImage(img, x - w/2, y - h/2, x + w/2, y + h/2, 0, 0, img.getWidth(), img.getHeight(), null);
+            g.drawImage(img, x - w/2, y - h/2, w, h, null);
         }
 
 }

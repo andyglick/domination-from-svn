@@ -47,7 +47,7 @@ public class StatsPanel extends JPanel {
 	//super.paintComponent(g);
 
 	if (graph != null) {
-	    g.drawImage(graph, 0, 0, getWidth(),getHeight(),0,0,graph.getWidth(),graph.getHeight(),this);
+	    g.drawImage(graph, 0, 0, getWidth(), getHeight(), this);
 	}
 	else {
 	    g.fillRect(0,0,getWidth(),getHeight());
