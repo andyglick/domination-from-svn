@@ -200,7 +200,7 @@
 		-->
 
 		<!-- remember the installer chmod in installer/izpack/install.xml -->
-		<chmod dir="${dir.build.game}" includes="*.sh,**/JavaApplicationStub" perm="ugo+x" />
+		<chmod dir="${dir.build.game}" includes="*.sh,**/universalJavaApplicationStub" perm="ugo+x" />
 
 	</target>
 
@@ -227,9 +227,9 @@
 		<copy file="${file.src}" todir="${dir.build.game}"/>
 
 		<zip destfile="${dir.dist}/${game.name}_${game.version}.zip">
- 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh,**/JavaApplicationStub"/>
+ 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" excludes="*.sh,**/universalJavaApplicationStub"/>
 			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="._*" defaultexcludes="no"/>
-			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh,**/JavaApplicationStub" excludes="mac.sh" filemode="755"/>
+			<zipfileset dir="${dir.build.game}" prefix="${game.name}" includes="*.sh,**/universalJavaApplicationStub" excludes="mac.sh" filemode="755"/>
 		</zip>
 	</target>
 
