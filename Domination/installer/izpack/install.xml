@@ -100,8 +100,8 @@
 			<!-- set the executable flag on unix -->
 
 			<executable stage="postinstall" targetfile="$INSTALL_PATH/mac.sh" os="mac"/>
-			<executable stage="never" targetfile="$INSTALL_PATH/Domination.app/Contents/MacOS/JavaApplicationStub" os="mac"/>
-			<executable stage="never" targetfile="$INSTALL_PATH/Map Editor.app/Contents/MacOS/JavaApplicationStub" os="mac"/>
+			<executable stage="never" targetfile="$INSTALL_PATH/Domination.app/Contents/MacOS/universalJavaApplicationStub" os="mac"/>
+			<executable stage="never" targetfile="$INSTALL_PATH/Map Editor.app/Contents/MacOS/universalJavaApplicationStub" os="mac"/>
 
 			<executable stage="never" targetfile="$INSTALL_PATH/run.sh" os="unix"/>
 			<executable stage="never" targetfile="$INSTALL_PATH/CommandLine.sh" os="unix"/>
