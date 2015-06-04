@@ -22,6 +22,7 @@ CURRENT VERSION:
 	Greek added
 
 	Android 61 Bugs with Map updating fixed
+		   Sending a saved game added to save game dialog
 	Android 60 Cards dialog shows when the game has no cards to give
 		   error reports now have an error Signature
 	Android 59 fix for notifications not showing when game has & in name

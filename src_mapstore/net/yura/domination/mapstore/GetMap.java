@@ -13,6 +13,11 @@ public class GetMap extends Observable implements MapServerListener {
     MapServerClient client;
     String filename;
 
+    /**
+     * Should always use {@link #getMap(java.lang.String, java.util.Observer) }
+     */
+    private GetMap() { }
+
     public static void getMap(String filename, Observer gml) {
         GetMap get = new GetMap();
         get.filename = filename;
@@ -33,7 +38,7 @@ public class GetMap extends Observable implements MapServerListener {
     }
 
     private void onError(String error) {
-        System.err.println(error);
+        System.err.println(error); // TODO we dont want to trigger the error catcher for network problems
         notifyListeners(RiskUtil.ERROR);
     }
 

@@ -16,6 +16,7 @@ import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.gui.components.ScrollPane;
 import net.yura.mobile.gui.components.Window;
 import net.yura.mobile.gui.layout.XULLoader;
+import net.yura.mobile.io.FileUtil;
 import net.yura.mobile.util.Properties;
 import net.yura.mobile.util.Url;
 
@@ -99,8 +100,11 @@ public class MainMenu extends Frame implements ActionListener {
             }
             else if ("load game".equals(actionCommand)) {
 
+                // TODO using old SwingME file chooser, move to native android file picker.
+                // dir urls HAVE to start "file:///" and end with "/"
+                // but apart from that are not really real URLs as are not url encoded for things like spaces
                 chooser = new FileChooser();
-                chooser.setCurrentDirectory( MiniUtil.getSaveGameDirURL() );
+                chooser.setCurrentDirectory( FileUtil.ROOT_PREX + MiniUtil.getSaveGameDir() + "/" );
                 chooser.showDialog(this, "doLoad", resb.getProperty("mainmenu.loadgame.loadbutton") , resb.getProperty("mainmenu.loadgame.loadbutton") );
             }
             else if ("doLoad".equals(actionCommand)) {
@@ -109,7 +113,7 @@ public class MainMenu extends Frame implements ActionListener {
                 chooser = null;
 
                 if (file.endsWith( GameActivity.SAVE_EXTENSION )) {
-                    myrisk.parser("loadgame " + file );
+                    myrisk.parser("loadgame " + file.substring(FileUtil.ROOT_PREX.length()) );
                 }
                 // else ignore file
             }

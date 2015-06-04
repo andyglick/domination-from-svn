@@ -430,16 +430,33 @@ public class GameActivity extends Frame implements ActionListener {
             final TextField saveText = new TextField();
             saveText.setText( MiniUtil.getSaveGameName(myrisk.getGame()) );
 
+            Button ok = new Button((String) DesktopPane.get("okText"));
+            ok.setActionCommand("ok");
+            Button cancel = new Button((String) DesktopPane.get("cancelText"));
+            cancel.setActionCommand("cancel");
+            Button send = new Button(resb.getProperty("game.menu.send"));
+            send.setActionCommand("send");
+
             OptionPane.showOptionDialog(new ActionListener() {
                 public void actionPerformed(String actionCommand) {
+                    String name = RiskUtil.replaceAll(RiskUtil.replaceAll(saveText.getText(), "/", "-"),"\\","-");
+                    String filePath = new File(MiniUtil.getSaveGameDir(), name + SAVE_EXTENSION).toString();
                     if ("ok".equals(actionCommand)) {
-                        String fileName = saveText.getText();
-                        fileName = RiskUtil.replaceAll(RiskUtil.replaceAll(fileName, "/", "-"),"\\","-");
-                        String name = MiniUtil.getSaveGameDirURL() + fileName + SAVE_EXTENSION;
-                        go("savegame " + name );
+                        go("savegame " + filePath);
                     }
+                    else if ("send".equals(actionCommand)) {
+                        try {
+                            myrisk.parserAndWait("savegame " + filePath);
+                            GooglePlayGameServices androidNative = DominationMain.getGooglePlayGameServices();
+                            if (androidNative != null) {
+                                androidNative.sendFile(filePath);
+                            }
+                        }
+                        catch (InterruptedException interrupted) { } // for some reason we decided not do this action, ignore
+                    }
+                    // if user presses cancel then ignore
                 }
-            }, saveText, resb.getProperty("game.menu.save") , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+            }, saveText, resb.getProperty("game.menu.save") , 0, OptionPane.QUESTION_MESSAGE, null, new Button[] {ok, cancel, send}, ok);
 
         }
         else if ("graph".equals(actionCommand)) {

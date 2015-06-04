@@ -223,10 +223,6 @@ public class MiniUtil {
         return userMaps;
     }
 
-    public static String getSaveGameDirURL() {
-        return FileUtil.ROOT_PREX + getSaveGameDir().toString() +"/";
-    }
-
     public static String getSaveGameName(RiskGame game) {
         String file = game.getMapFile();
         if (file.endsWith(".map")) {
