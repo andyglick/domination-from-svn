@@ -66,6 +66,8 @@ public class DominationMain extends Midlet {
 	void gameStarted(int id);
 	
 	boolean hasPendingOpenLobby();
+
+        void sendFile(String filePath);
     }
 
     public DominationMain() {
@@ -244,7 +246,7 @@ public class DominationMain extends Midlet {
                     GameActivity.logger.info("[GameActivity] LOADING FROM AUTOSAVE");
                     // rename the file before we load it with the game thread so it does not get deleted by another thread
                     RiskUtil.rename(autoSaveFile, new File(autoSaveFile.getParent(),autoSaveFile.getName()+".load"));
-                    risk.parser( "loadgame "+getAutoSaveFileURL()+".load" );
+                    risk.parser( "loadgame "+getAutoSaveFile()+".load" );
                 }
                 else {
                     adapter.openMainMenu();
@@ -289,9 +291,6 @@ public class DominationMain extends Midlet {
     private final static String AUTO_SAVE_FILE_NAME = "auto.save";
     public static File getAutoSaveFile() {
         return new File(MiniUtil.getSaveGameDir(), AUTO_SAVE_FILE_NAME);
-    }
-    public static String getAutoSaveFileURL() {
-        return MiniUtil.getSaveGameDirURL() + AUTO_SAVE_FILE_NAME;
     }
 
     public static class CentreIcon extends Icon {

@@ -81,6 +81,17 @@
 
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="net.yura.domination.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 
 </manifest>
