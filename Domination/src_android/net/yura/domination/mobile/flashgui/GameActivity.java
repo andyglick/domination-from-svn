@@ -3,7 +3,6 @@ package net.yura.domination.mobile.flashgui;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -447,10 +446,12 @@ public class GameActivity extends Frame implements ActionListener {
                     else if ("send".equals(actionCommand)) {
                         try {
                             myrisk.parserAndWait("savegame " + filePath);
-                            GooglePlayGameServices androidNative = DominationMain.getGooglePlayGameServices();
-                            if (androidNative != null) {
-                                androidNative.sendFile(filePath);
-                            }
+
+                            String url = "mailto:yura@yura.net" +
+                                    "?subject=" + Url.encode("Saved game")
+                                    +"&attachment=" + Url.encode(filePath)
+                                    +"&authority=" + Url.encode("net.yura.domination.fileprovider");
+                            Midlet.openURL(url);
                         }
                         catch (InterruptedException interrupted) { } // for some reason we decided not do this action, ignore
                     }

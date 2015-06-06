@@ -13,10 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.FileProvider;
 import android.view.WindowManager;
 import net.yura.android.AndroidMeActivity;
 import net.yura.android.AndroidMeApp;
@@ -239,23 +237,6 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     // ----------------------------- GooglePlayGameServices -----------------------------
-
-
-    @Override
-    public void sendFile(String filePath) {
-
-        Uri contentUri = FileProvider.getUriForFile(AndroidMeActivity.DEFAULT_ACTIVITY, "net.yura.domination.fileprovider", new File(filePath));
-
-        // ONLY WORKS API 16+ (4.1+) as that is when Intent.migrateExtraStreamToClipData() was added for permissions to work
-
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        shareIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "yura@yura.net" });
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Saved Game");
-        startActivity(Intent.createChooser(shareIntent, "Choose an app"));
-    }
 
     @Override
     public void beginUserInitiatedSignIn() {
