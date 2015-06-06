@@ -66,8 +66,6 @@ public class DominationMain extends Midlet {
 	void gameStarted(int id);
 	
 	boolean hasPendingOpenLobby();
-
-        void sendFile(String filePath);
     }
 
     public DominationMain() {
