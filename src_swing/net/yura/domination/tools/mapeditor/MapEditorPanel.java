@@ -128,7 +128,10 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	public void setImageMap(BufferedImage a) {
 
 		if (a.getWidth() != pic.getWidth() || a.getHeight() != pic.getHeight() ) {
-			JOptionPane.showMessageDialog(this,"ImageMap does not match ImagePic size!\nThey should match for the game to work!");
+			JOptionPane.showMessageDialog(this, "ImageMap does not match ImagePic size!\n"
+                                + "PIC: "+pic.getWidth()+"x"+pic.getHeight()+"\n"
+                                + "MAP: "+a.getWidth()+"x"+a.getHeight()+"\n"
+                                + "They should match for the game to work!");
 		}
 
 		map = a;
@@ -144,7 +147,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		);
 
 		box = new Rectangle( new Dimension(a.getWidth(), a.getHeight()) );
-
 	}
 
 
