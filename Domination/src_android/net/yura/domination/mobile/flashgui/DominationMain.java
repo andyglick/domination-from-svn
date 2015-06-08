@@ -123,6 +123,11 @@ public class DominationMain extends Midlet {
                     if ("isDataSchedulerEnabled():false".equals(message)) {
                         return true;
                     }
+                    if (message != null && message.startsWith("remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-")) { // then some random GUID
+                                                            //"remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak"
+                                                            //"remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak"
+                        return true;
+                    }
 
                     return false;
                 }
