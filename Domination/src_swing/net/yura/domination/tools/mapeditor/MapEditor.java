@@ -613,6 +613,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
                 else if (a.getActionCommand().equals("publish")) {
 
+                    if ( !checkMap() ) {
+                        return;
+                    }
+
                     if (fileName==null) {
                         JOptionPane.showMessageDialog(this, "please save to disk first!");
                         return;
