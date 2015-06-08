@@ -165,7 +165,14 @@ public class CardsDialog extends Frame implements ActionListener {
 
             if (cards2.size()==3) {
 
-                myrisk.parser("trade "+cards2.get(0).getCardName() + " " + cards2.get(1).getCardName() + " " + cards2.get(2).getCardName() );
+                try {
+                    // we wait, as we will need to re-setup the correct message after making the trade, and so we want the trade to be finished
+                    myrisk.parserAndWait("trade " + cards2.get(0).getCardName() + " " + cards2.get(1).getCardName() + " " + cards2.get(2).getCardName());
+                }
+                catch (InterruptedException ex) {
+                    // we should not be getting interrupted here
+                    throw new RuntimeException(ex);
+                }
 
                 for (CardPanel cp:cards2) {
                     myCardsPanel.remove(cp);
