@@ -10,12 +10,14 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -86,7 +88,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		Server = MenuImage.getSubimage(400, 490, 60, 60);
 
-		Dimension menuSize = new Dimension(400,550);
+		Dimension menuSize = new Dimension(RiskUIUtil.scale(400), RiskUIUtil.scale(550));
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -156,53 +158,51 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
         */
 	public void paintComponent(Graphics g) {
 
-			g.drawImage( MenuImage ,0 ,0 ,400 ,550 ,0 ,0 ,400 ,550 ,this );
-
-
+			drawImage(g, MenuImage, 0, 0, 400, 550, 	0, 0, 400, 550, this);
 
 			if (highlightButton==BUTTON_NEW) {
-				g.drawImage( MenuImage ,57 ,219 ,187 ,269	,400 ,0 ,530 ,50 ,this );
+				drawImage(g, MenuImage, 57, 219, 187, 269,	400, 0, 530, 50, this);
 			}
 			else if (highlightButton==BUTTON_SERVER) {
-				g.drawImage( MenuImage ,212 ,219 ,342 ,269	,400 ,50 ,530 ,100 ,this );
+				drawImage(g, MenuImage, 212, 219, 342, 269,	400, 50, 530, 100, this);
 			}
 			else if (highlightButton==BUTTON_LOADGAME) {
-				g.drawImage( MenuImage ,57 ,279 ,187 ,329	,400 ,100 ,530 ,150 ,this );
+				drawImage(g, MenuImage, 57, 279, 187, 329,	400, 100, 530, 150, this);
 			}
 			else if (highlightButton==BUTTON_HELP) {
-				g.drawImage( MenuImage ,212 ,279 ,342 ,329	,400 ,150 ,530 ,200 ,this );
+				drawImage(g, MenuImage, 212, 279, 342, 329,	400, 150, 530, 200, this);
 			}
 			else if (highlightButton==BUTTON_JOIN) {
-				g.drawImage( MenuImage ,57 ,339 ,187 ,389	,400 ,200 ,530 ,250 ,this );
+				drawImage(g, MenuImage, 57, 339, 187, 389,	400, 200, 530, 250, this);
 			}
 			else if (highlightButton==BUTTON_ABOUT) {
-				g.drawImage( MenuImage ,212 ,339 ,342 ,389	,400 ,250 ,530 ,300 ,this );
+				drawImage(g, MenuImage, 212, 339, 342, 389,	400, 250, 530, 300, this);
 			}
 			//else if (highlightButton==BUTTON_LOBBY) {
-			//	g.drawImage( MenuImage ,145 ,401 ,255 ,511	,400 ,300 ,510 ,410 ,this );
+			//	drawImage(g, MenuImage, 145, 401, 255, 511,	400, 300, 510, 410, this);
 			//}
 
 
 			else if (button==BUTTON_NEW) {
-				g.drawImage( MenuImage ,57 ,219 ,187 ,269	,530 ,0 ,660 ,50 ,this );
+				drawImage(g, MenuImage, 57, 219, 187, 269,	530, 0, 660, 50, this);
 			}
 			else if (button==BUTTON_SERVER) {
-				g.drawImage( MenuImage ,212 ,219 ,342 ,269	,530 ,50 ,660 ,100 ,this );
+				drawImage(g, MenuImage, 212, 219, 342, 269,	530, 50, 660, 100, this);
 			}
 			else if (button==BUTTON_LOADGAME) {
-				g.drawImage( MenuImage ,57 ,279 ,187 ,329	,530 ,100 ,660 ,150 ,this );
+				drawImage(g, MenuImage, 57, 279, 187, 329,	530, 100, 660, 150, this);
 			}
 			else if (button==BUTTON_HELP) {
-				g.drawImage( MenuImage ,212 ,279 ,342 ,329	,530 ,150 ,660 ,200 ,this );
+				drawImage(g, MenuImage, 212, 279, 342, 329,	530, 150, 660, 200, this);
 			}
 			else if (button==BUTTON_JOIN) {
-				g.drawImage( MenuImage ,57 ,339 ,187 ,389	,530 ,200 ,660 ,250 ,this );
+				drawImage(g, MenuImage, 57, 339, 187, 389,	530, 200, 660, 250, this);
 			}
 			else if (button==BUTTON_ABOUT) {
-				g.drawImage( MenuImage ,212 ,339 ,342 ,389	,530 ,250 ,660 ,300 ,this );
+				drawImage(g, MenuImage, 212, 339, 342, 389,	530, 250, 660, 300, this);
 			}
 			//else if (button==BUTTON_LOBBY) {
-			//	g.drawImage( MenuImage ,145 ,401 ,255 ,511	,530 ,300 ,640 ,410 ,this );
+			//	drawImage(g, MenuImage, 145, 401, 255, 511,	530, 300, 640, 410, this);
 			//}
 
 			Graphics2D g2 = (Graphics2D)g;
@@ -240,6 +240,18 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			//tl = new TextLayout( resBundle.getString( "mainmenu.quit") , font, frc);
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
 	}
+
+        public static void drawImage(Graphics g, Image img,
+                int dx1, int dy1, int dx2, int dy2,
+                int sx1, int sy1, int sx2, int sy2,
+                ImageObserver observer) {
+            g.drawImage(img,
+                    RiskUIUtil.scale(dx1),
+                    RiskUIUtil.scale(dy1),
+                    RiskUIUtil.scale(dx2),
+                    RiskUIUtil.scale(dy2),
+                    sx1, sy1, sx2, sy2, observer);
+        }
         
         private void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
             FontMetrics metrics = g.getFontMetrics(g.getFont());

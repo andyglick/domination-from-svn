@@ -1196,4 +1196,17 @@ public class RiskUIUtil {
         catch (Throwable th) { }
         return 1;
     }
+
+    /**
+     * code "borrowed" from com.intellij.util.ui.JBUI
+     */
+    public static boolean IS_HIDPI;
+
+    static {
+        IS_HIDPI = System.getProperty("os.name").startsWith("windows") && Toolkit.getDefaultToolkit().getScreenResolution() > 144;
+    }
+
+    public static int scale(int i) {
+        return IS_HIDPI ? 2 * i : i;
+    }
 }
