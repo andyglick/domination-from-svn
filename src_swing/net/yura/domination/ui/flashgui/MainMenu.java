@@ -30,6 +30,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.me4se.ME4SEPanel;
@@ -108,8 +109,8 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		// (Risk.applet == null)?"mainmenu.online":"mainmenu.loading"
 
-		lobby = new JLabel( resBundle.getString("mainmenu.globe.playonline"), new javax.swing.ImageIcon( this.getClass().getResource("earth.gif") ),JLabel.CENTER );
-		lobby.setBounds(152,409,95,95);
+		lobby = new JLabel(resBundle.getString("mainmenu.globe.playonline"), new ImageIcon(getClass().getResource("earth.gif")), JLabel.CENTER);
+		RiskUIUtil.setBounds(lobby, 152, 409, 95, 95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
 		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
 
@@ -255,7 +256,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
         
         private void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
             FontMetrics metrics = g.getFontMetrics(g.getFont());
-            BasicGraphicsUtils.drawString(g, text, ch, x - metrics.stringWidth(text)/2, y);
+            BasicGraphicsUtils.drawString(g, text, ch, RiskUIUtil.scale(x) - metrics.stringWidth(text) / 2, RiskUIUtil.scale(y));
         }
 
 
@@ -500,22 +501,22 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		int yrel = Math.abs(455 - y);
 		int xrel = (int) (Math.sqrt(2255 - yrel * yrel) * 95 / 95);
 
-		if (x >= 65 && x < (65 + W) && y >= 228 && y < (228 + H)) {
+		if (insideButton(x, y, 65, 228, W, H)) {
 			B=BUTTON_NEW;
 		}
-		else if (x >= 220 && x < (220 + W) && y >= 228 && y < (228 + H)) {
+		else if (insideButton(x, y, 220, 228, W, H)) {
 			B=BUTTON_SERVER;
 		}
-		else if (x >= 65 && x < (65 + W) && y >= 289 && y < (289 + H)) {
+		else if (insideButton(x, y, 65, 289, W, H)) {
 			B=BUTTON_LOADGAME;
 		}
-		else if (x >= 220 && x < (220 + W) && y >= 289 && y < (289 + H)) {
+		else if (insideButton(x, y, 220, 289, W, H)) {
 			B=BUTTON_HELP;
 		}
-		else if (x >= 65 && x < (65 + W) && y >= 350 && y < (350 + H)) {
+		else if (insideButton(x, y, 65, 350, W, H)) {
 			B=BUTTON_JOIN;
 		}
-		else if (x >= 220 && x < (220 + W) && y >= 350 && y < (350 + H)) {
+		else if (insideButton(x, y, 220, 350, W, H)) {
 			B=BUTTON_ABOUT;
 		}
 		else if (x >= 200 - xrel && x < 200 + xrel) {
@@ -526,8 +527,11 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		}
 
 		return B;
-
 	}
+        
+        boolean insideButton(int x, int y, int bx, int by, int bw, int bh) {
+            return x >= RiskUIUtil.scale(bx) && x < RiskUIUtil.scale(bx + bw) && y >= RiskUIUtil.scale(by) && y < RiskUIUtil.scale(by + bh);
+        }
 
 	/**
 	 * key control

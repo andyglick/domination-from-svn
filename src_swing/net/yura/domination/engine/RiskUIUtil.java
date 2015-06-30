@@ -1203,10 +1203,14 @@ public class RiskUIUtil {
     public static boolean IS_HIDPI;
 
     static {
-        IS_HIDPI = System.getProperty("os.name").startsWith("windows") && Toolkit.getDefaultToolkit().getScreenResolution() > 144;
+        IS_HIDPI = System.getProperty("os.name").toLowerCase().startsWith("windows") && Toolkit.getDefaultToolkit().getScreenResolution() > 144;
     }
 
     public static int scale(int i) {
         return IS_HIDPI ? 2 * i : i;
+    }
+    
+    public static void setBounds(Component comp, int x, int y, int w, int h) {
+        comp.setBounds(scale(x), scale(y), scale(w), scale(h));
     }
 }
