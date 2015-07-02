@@ -30,6 +30,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.lobby.mini.MiniLobbyClient;
@@ -89,7 +90,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		Server = MenuImage.getSubimage(400, 490, 60, 60);
 
-		Dimension menuSize = new Dimension(RiskUIUtil.scale(400), RiskUIUtil.scale(550));
+		Dimension menuSize = new Dimension(GraphicsUtil.scale(400), GraphicsUtil.scale(550));
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -110,7 +111,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		// (Risk.applet == null)?"mainmenu.online":"mainmenu.loading"
 
 		lobby = new JLabel(resBundle.getString("mainmenu.globe.playonline"), new ImageIcon(getClass().getResource("earth.gif")), JLabel.CENTER);
-		RiskUIUtil.setBounds(lobby, 152, 409, 95, 95);
+		GraphicsUtil.setBounds(lobby, 152, 409, 95, 95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
 		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
 
@@ -130,10 +131,8 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	 * @param s The server's state
 	 */
 	public void setServerRunning(boolean s) {
-
 		serverRunning = s;
 		repaint();
-
 	}
 
 	public void hideJoinDialog(boolean a) {
@@ -149,35 +148,29 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		//loading.setVisible(false);
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
 	}
 
-
-       /**
-        * Paints the panel
-        * @param g The graphics
-        */
 	public void paintComponent(Graphics g) {
 
-			drawImage(g, MenuImage, 0, 0, 400, 550, 	0, 0, 400, 550, this);
+			GraphicsUtil.drawImage(g, MenuImage, 0, 0, 400, 550, 	0, 0, 400, 550, this);
 
 			if (highlightButton==BUTTON_NEW) {
-				drawImage(g, MenuImage, 57, 219, 187, 269,	400, 0, 530, 50, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 219, 187, 269,	400, 0, 530, 50, this);
 			}
 			else if (highlightButton==BUTTON_SERVER) {
-				drawImage(g, MenuImage, 212, 219, 342, 269,	400, 50, 530, 100, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 219, 342, 269,	400, 50, 530, 100, this);
 			}
 			else if (highlightButton==BUTTON_LOADGAME) {
-				drawImage(g, MenuImage, 57, 279, 187, 329,	400, 100, 530, 150, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 279, 187, 329,	400, 100, 530, 150, this);
 			}
 			else if (highlightButton==BUTTON_HELP) {
-				drawImage(g, MenuImage, 212, 279, 342, 329,	400, 150, 530, 200, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 279, 342, 329,	400, 150, 530, 200, this);
 			}
 			else if (highlightButton==BUTTON_JOIN) {
-				drawImage(g, MenuImage, 57, 339, 187, 389,	400, 200, 530, 250, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 339, 187, 389,	400, 200, 530, 250, this);
 			}
 			else if (highlightButton==BUTTON_ABOUT) {
-				drawImage(g, MenuImage, 212, 339, 342, 389,	400, 250, 530, 300, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 339, 342, 389,	400, 250, 530, 300, this);
 			}
 			//else if (highlightButton==BUTTON_LOBBY) {
 			//	drawImage(g, MenuImage, 145, 401, 255, 511,	400, 300, 510, 410, this);
@@ -185,22 +178,22 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 
 			else if (button==BUTTON_NEW) {
-				drawImage(g, MenuImage, 57, 219, 187, 269,	530, 0, 660, 50, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 219, 187, 269,	530, 0, 660, 50, this);
 			}
 			else if (button==BUTTON_SERVER) {
-				drawImage(g, MenuImage, 212, 219, 342, 269,	530, 50, 660, 100, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 219, 342, 269,	530, 50, 660, 100, this);
 			}
 			else if (button==BUTTON_LOADGAME) {
-				drawImage(g, MenuImage, 57, 279, 187, 329,	530, 100, 660, 150, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 279, 187, 329,	530, 100, 660, 150, this);
 			}
 			else if (button==BUTTON_HELP) {
-				drawImage(g, MenuImage, 212, 279, 342, 329,	530, 150, 660, 200, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 279, 342, 329,	530, 150, 660, 200, this);
 			}
 			else if (button==BUTTON_JOIN) {
-				drawImage(g, MenuImage, 57, 339, 187, 389,	530, 200, 660, 250, this);
+				GraphicsUtil.drawImage(g, MenuImage, 57, 339, 187, 389,	530, 200, 660, 250, this);
 			}
 			else if (button==BUTTON_ABOUT) {
-				drawImage(g, MenuImage, 212, 339, 342, 389,	530, 250, 660, 300, this);
+				GraphicsUtil.drawImage(g, MenuImage, 212, 339, 342, 389,	530, 250, 660, 300, this);
 			}
 			//else if (button==BUTTON_LOBBY) {
 			//	drawImage(g, MenuImage, 145, 401, 255, 511,	530, 300, 640, 410, this);
@@ -223,7 +216,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 			if (serverRunning) {
                                 drawStringCenteredAt( g2, resBundle.getString( "mainmenu.stopserver"),'S', 277, 247 );
-				g.drawImage( Server, 340, 490, this );
+				GraphicsUtil.drawImage(g, Server, 340, 490, this);
 			}
 			else {
                                 drawStringCenteredAt( g2, resBundle.getString( "mainmenu.startserver"),'S', 277, 247 );
@@ -241,24 +234,11 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			//tl = new TextLayout( resBundle.getString( "mainmenu.quit") , font, frc);
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
 	}
-
-        public static void drawImage(Graphics g, Image img,
-                int dx1, int dy1, int dx2, int dy2,
-                int sx1, int sy1, int sx2, int sy2,
-                ImageObserver observer) {
-            g.drawImage(img,
-                    RiskUIUtil.scale(dx1),
-                    RiskUIUtil.scale(dy1),
-                    RiskUIUtil.scale(dx2),
-                    RiskUIUtil.scale(dy2),
-                    sx1, sy1, sx2, sy2, observer);
-        }
         
         private void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
             FontMetrics metrics = g.getFontMetrics(g.getFont());
-            BasicGraphicsUtils.drawString(g, text, ch, RiskUIUtil.scale(x) - metrics.stringWidth(text) / 2, RiskUIUtil.scale(y));
+            BasicGraphicsUtils.drawString(g, text, ch, GraphicsUtil.scale(x) - metrics.stringWidth(text) / 2, GraphicsUtil.scale(y));
         }
-
 
 	private int button;
 	private int currentButton;
@@ -492,45 +472,40 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 	 * @return int The type of button presssed
 	 */
 	public int insideButton(int x, int y) {
-
 		int W=116;
 		int H=31;
-
-		int B=0;
-
-		int yrel = Math.abs(455 - y);
-		int xrel = (int) (Math.sqrt(2255 - yrel * yrel) * 95 / 95);
+		int r = lobby.getWidth() / 2;
 
 		if (insideButton(x, y, 65, 228, W, H)) {
-			B=BUTTON_NEW;
+			return BUTTON_NEW;
 		}
-		else if (insideButton(x, y, 220, 228, W, H)) {
-			B=BUTTON_SERVER;
+		if (insideButton(x, y, 220, 228, W, H)) {
+			return BUTTON_SERVER;
 		}
-		else if (insideButton(x, y, 65, 289, W, H)) {
-			B=BUTTON_LOADGAME;
+		if (insideButton(x, y, 65, 289, W, H)) {
+			return BUTTON_LOADGAME;
 		}
-		else if (insideButton(x, y, 220, 289, W, H)) {
-			B=BUTTON_HELP;
+		if (insideButton(x, y, 220, 289, W, H)) {
+			return BUTTON_HELP;
 		}
-		else if (insideButton(x, y, 65, 350, W, H)) {
-			B=BUTTON_JOIN;
+		if (insideButton(x, y, 65, 350, W, H)) {
+			return BUTTON_JOIN;
 		}
-		else if (insideButton(x, y, 220, 350, W, H)) {
-			B=BUTTON_ABOUT;
+		if (insideButton(x, y, 220, 350, W, H)) {
+			return BUTTON_ABOUT;
 		}
-		else if (x >= 200 - xrel && x < 200 + xrel) {
-			B=BUTTON_LOBBY;
+		if (insideButton(x, y, 0, 500, 115, 50)) { // google: 115px x 50px
+			return BUTTON_DONATE;
 		}
-		else if (x >= 0 && x < 115 && y >= (getHeight()-50) && y < getHeight() ) { // google: 115px x 50px
-			B=BUTTON_DONATE;
+                // check if we are in the circle lobby button
+		if (Math.sqrt(Math.pow(x - (lobby.getX() + r), 2) + Math.pow(y - (lobby.getY() + r), 2)) < r) {
+			return BUTTON_LOBBY;
 		}
-
-		return B;
+                return 0;
 	}
         
         boolean insideButton(int x, int y, int bx, int by, int bw, int bh) {
-            return x >= RiskUIUtil.scale(bx) && x < RiskUIUtil.scale(bx + bw) && y >= RiskUIUtil.scale(by) && y < RiskUIUtil.scale(by + bh);
+            return x >= GraphicsUtil.scale(bx) && x < GraphicsUtil.scale(bx + bw) && y >= GraphicsUtil.scale(by) && y < GraphicsUtil.scale(by + bh);
         }
 
 	/**

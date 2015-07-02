@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.net.URL;
-import net.yura.domination.engine.RiskUIUtil;
 
 public class ImageIcon extends javax.swing.ImageIcon {
     
@@ -22,12 +21,12 @@ public class ImageIcon extends javax.swing.ImageIcon {
 
     @Override
     public int getIconWidth() {
-        return RiskUIUtil.scale(super.getIconWidth());
+        return GraphicsUtil.scale(super.getIconWidth());
     }
     
     @Override
     public int getIconHeight() {
-        return RiskUIUtil.scale(super.getIconHeight());
+        return GraphicsUtil.scale(super.getIconHeight());
     }
 
     @Override
