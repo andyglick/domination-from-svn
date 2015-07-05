@@ -288,7 +288,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			if (gameStatus!=null) {
 
 				g.setColor( new Color( ColorUtil.getTextColorFor( cols[0] ) ) );
-				g.setFont( new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11) );
+				g.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, g.getFont().getSize() - 2)); // 13 - 2 = 11
 				g.drawString(gameStatus, 22, 105);
 			}
 
@@ -1294,7 +1294,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			FontRenderContext frc = g2.getFontRenderContext();
 
-			Font font = new java.awt.Font("Arial", java.awt.Font.BOLD, 24);
+			Font font = new java.awt.Font("Arial", java.awt.Font.BOLD, getFont().getSize() + 11);  // 13 + 11 = 24
 			g2.setColor( Color.black );
 			TextLayout tl;
 
