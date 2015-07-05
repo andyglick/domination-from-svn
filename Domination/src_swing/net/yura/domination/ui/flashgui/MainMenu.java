@@ -113,7 +113,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		lobby = new JLabel(resBundle.getString("mainmenu.globe.playonline"), new ImageIcon(getClass().getResource("earth.gif")), JLabel.CENTER);
 		GraphicsUtil.setBounds(lobby, 152, 409, 95, 95);
 		lobby.setHorizontalTextPosition(JLabel.CENTER);
-		lobby.setFont( new java.awt.Font("Arial", java.awt.Font.BOLD, 18) );
+		lobby.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, getFont().getSize() + 5)); // 13 + 5 = 18
 
 		lobby.setVisible( RiskUIUtil.checkForNoSandbox() );
 
