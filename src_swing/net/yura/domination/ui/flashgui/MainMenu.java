@@ -652,8 +652,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             root.setContentPane(panel);
             window.setTitle( mlc.getTitle() );
             window.setResizable(true);
-            window.setSize(500,600);
-
+            window.setSize(GraphicsUtil.scale(500), GraphicsUtil.scale(600));
         }
 
 	/**
