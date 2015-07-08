@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.image.ImageObserver;
 import javax.swing.border.Border;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 
 /**
  * @author Yura Mamyrin
@@ -22,48 +23,46 @@ public class FlashBorder implements Border {
     }
     
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        Insets insets = getBorderInsets(c);
         
         // top left
-        drawImage(g,top,x,y,0,0,left.getWidth(c),top.getHeight(c),c);
-        
+        g.drawImage(top,
+                x, y, x + insets.left, y + insets.top,
+                0, 0, left.getWidth(c), top.getHeight(c), c);
         // top right
-        drawImage(g,top,x+width-right.getWidth(c),y,top.getWidth(c)-right.getWidth(c),0,right.getWidth(c),top.getHeight(c),c);
-
+        g.drawImage(top,
+                x + width - insets.right, y, x + width, y + insets.top,
+                top.getWidth(c) - right.getWidth(c), 0, top.getWidth(c), top.getHeight(c), c);
         // bottom left
-        drawImage(g,bottom,x,y+height-bottom.getHeight(c),0,0,left.getWidth(c),bottom.getHeight(c),c);
-        
+        g.drawImage(bottom,
+                x, y + height - insets.bottom, x + insets.left, y + height,
+                0, 0, left.getWidth(c), bottom.getHeight(c), c);
         // bottom right
-        drawImage(g,bottom,x+width-right.getWidth(c),y+height-bottom.getHeight(c),bottom.getWidth(c)-right.getWidth(c),0,right.getWidth(c),bottom.getHeight(c),c);
+        g.drawImage(bottom,
+                x + width - insets.right, y + height - insets.bottom, x + width, y + height,
+                bottom.getWidth(c) - right.getWidth(c), 0, bottom.getWidth(c), bottom.getHeight(c), c);
 
         // top
         g.drawImage(top,
-                x+left.getWidth(c), y, x+width-right.getWidth(c), y+top.getHeight(c),
-                left.getWidth(c), 0, top.getWidth(c)-right.getWidth(c), top.getHeight(c),
+                x + insets.left, y, x + width - insets.right, y + insets.top,
+                left.getWidth(c), 0, top.getWidth(c) - right.getWidth(c), top.getHeight(c),
                 c);
-        
         // bottom
         g.drawImage(bottom,
-                x+left.getWidth(c), y+height-bottom.getHeight(c), x+width-right.getWidth(c), y+height,
-                left.getWidth(c), 0, bottom.getWidth(c)-right.getWidth(c), bottom.getHeight(c),
+                x + insets.left, y + height - insets.bottom, x + width - insets.right, y + height,
+                left.getWidth(c), 0, bottom.getWidth(c) - right.getWidth(c), bottom.getHeight(c),
                 c);
-
         // left
-        g.drawImage(left, x, y+top.getHeight(c), left.getWidth(c), height-bottom.getHeight(c)-top.getHeight(c), c);
-
+        g.drawImage(left, x, y + insets.top, insets.left, height - insets.top - insets.bottom, c);
         // right
-        g.drawImage(right, x+width-right.getWidth(c), y+top.getHeight(c), right.getWidth(c), height-bottom.getHeight(c)-top.getHeight(c), c);
-    }
-    
-    private void drawImage(Graphics g, Image img, int dest_x, int dest_y, int src_x, int src_y, int w, int h,ImageObserver c) {
-        g.drawImage(img, dest_x, dest_y, dest_x+w, dest_y+h, src_x, src_y, src_x+w, src_y+h, c);
+        g.drawImage(right, x + width - insets.right, y + insets.top, insets.right, height - insets.top - insets.bottom, c);
     }
 
     public Insets getBorderInsets(Component c) {
-        return new Insets(top.getHeight(c), left.getWidth(c), bottom.getHeight(c), right.getWidth(c));
+        return GraphicsUtil.newInsets(top.getHeight(c), left.getWidth(c), bottom.getHeight(c), right.getWidth(c));
     }
 
     public boolean isBorderOpaque() {
         return true;
     }
-    
 }

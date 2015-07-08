@@ -3,6 +3,7 @@ package net.yura.domination.engine.guishared;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 
@@ -24,6 +25,19 @@ public class GraphicsUtil {
     public static void setBounds(Component comp, int x, int y, int w, int h) {
         comp.setBounds(scale(x), scale(y), scale(w), scale(h));
     }
+    
+    public static Insets newInsets(int top, int left, int bottom, int right) {
+        return new Insets(scale(top), scale(left), scale(bottom), scale(right));
+    }
+
+    public static void drawImage(Graphics g, Image img, int x, int y, ImageObserver observer) {
+        g.drawImage(img,
+                scale(x),
+                scale(y),
+                scale(img.getWidth(observer)),
+                scale(img.getHeight(observer)),
+                observer);
+    }
 
     public static void drawImage(Graphics g, Image img,
             int dx1, int dy1, int dx2, int dy2,
@@ -35,14 +49,5 @@ public class GraphicsUtil {
                 scale(dx2),
                 scale(dy2),
                 sx1, sy1, sx2, sy2, observer);
-    }
-
-    public static void drawImage(Graphics g, Image img, int x, int y, ImageObserver observer) {
-        g.drawImage(img,
-                scale(x),
-                scale(y),
-                scale(img.getWidth(observer)),
-                scale(img.getHeight(observer)),
-                observer);
     }
 }
