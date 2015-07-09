@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.image.ImageObserver;
 import javax.swing.border.Border;
 import net.yura.domination.engine.guishared.GraphicsUtil;
 

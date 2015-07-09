@@ -10,14 +10,12 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -90,7 +88,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 
 		Server = MenuImage.getSubimage(400, 490, 60, 60);
 
-		Dimension menuSize = new Dimension(GraphicsUtil.scale(400), GraphicsUtil.scale(550));
+		Dimension menuSize = GraphicsUtil.newDimension(400, 550);
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -235,7 +233,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
 	}
         
-        private void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
+        static void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
             FontMetrics metrics = g.getFontMetrics(g.getFont());
             BasicGraphicsUtils.drawString(g, text, ch, GraphicsUtil.scale(x) - metrics.stringWidth(text) / 2, GraphicsUtil.scale(y));
         }
@@ -504,7 +502,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
                 return 0;
 	}
         
-        boolean insideButton(int x, int y, int bx, int by, int bw, int bh) {
+        static boolean insideButton(int x, int y, int bx, int by, int bw, int bh) {
             return x >= GraphicsUtil.scale(bx) && x < GraphicsUtil.scale(bx + bw) && y >= GraphicsUtil.scale(by) && y < GraphicsUtil.scale(by + bh);
         }
 
