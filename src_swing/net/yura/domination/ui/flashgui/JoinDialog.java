@@ -23,14 +23,14 @@ import java.util.ResourceBundle;
 import javax.swing.JDialog;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
  * Join Game for FlashGUI
  * @author Yura Mamyrin
  */
-public class JoinDialog extends JDialog implements MouseInputListener
-{
+public class JoinDialog extends JDialog implements MouseInputListener {
 
 	private Risk myrisk;
 	private BufferedImage joingame;
@@ -43,8 +43,7 @@ public class JoinDialog extends JDialog implements MouseInputListener
 	 * @param modal
 	 * @param r The risk game
 	 */
-	public JoinDialog(Frame parent, boolean modal, Risk r)
-	{
+	public JoinDialog(Frame parent, boolean modal, Risk r) {
 		super(parent, modal);
 
 		serverField = new JTextField( r.getRiskConfig("default.host") );
@@ -56,20 +55,15 @@ public class JoinDialog extends JDialog implements MouseInputListener
 		joingame = RiskUIUtil.getUIImage(this.getClass(),"joingame.jpg");
 
 		initGUI();
-
 		setResizable(false);
-
 		pack();
-
 	}
 
-	/** This method is called from within the constructor to initialize the form. */
-
 	/**
+	 * This method is called from within the constructor to initialize the form.
 	 * Initialises the GUI
 	 */
-	private void initGUI()
-	{
+	private void initGUI() {
 
 		// set title
 		setTitle(resb.getString("join.title"));
@@ -79,13 +73,12 @@ public class JoinDialog extends JDialog implements MouseInputListener
 					public void actionPerformed(ActionEvent a) {
 
 						myrisk.parser("join "+serverField.getText() );
-
 					}
 				}
 		);
 
 
-		Dimension d = new Dimension(350, 190);
+		Dimension d = GraphicsUtil.newDimension(350, 190);
 
 		JLayeredPane layeredPane = new JLayeredPane();
 		layeredPane.setPreferredSize(d);
@@ -97,7 +90,7 @@ public class JoinDialog extends JDialog implements MouseInputListener
 		join.addMouseListener(this);
 		join.addMouseMotionListener(this);
 
-		serverField.setBounds(149, 49, 150 , 25 );
+		GraphicsUtil.setBounds(serverField, 149, 49, 150 , 25 );
 		serverField.setBorder(null);
 		serverField.selectAll();
 		serverField.setOpaque(false);
@@ -127,7 +120,6 @@ public class JoinDialog extends JDialog implements MouseInputListener
 
 		setVisible(false);
 		dispose();
-
 	}
 
 	class joinPanel extends JPanel {
@@ -139,44 +131,32 @@ public class JoinDialog extends JDialog implements MouseInputListener
 		public void paintComponent(Graphics g) {
 
 //			  destination		source
-			g.drawImage(joingame,0,0,350,190,     0,0,350,190,this); // top
+			GraphicsUtil.drawImage(g, joingame, 0, 0, 350, 190,     0, 0, 350, 190, this); // top
 
 			Graphics2D g2 = (Graphics2D)g;
 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			FontRenderContext frc = g2.getFontRenderContext();
-			Font font = g2.getFont();
 			g2.setColor( Color.black );
-			TextLayout tl;
-
 
 			if (highlightButton==1) {
-				g.drawImage( joingame ,43 ,93 ,43+120 ,93+55	,350 ,0 ,470 ,55 ,this );
+				GraphicsUtil.drawImage(g, joingame, 43, 93, 43 + 120, 93 + 55,		350, 0, 470, 55, this);
 			}
 			else if (highlightButton==2) {
-				g.drawImage( joingame ,187 ,93 ,187+120 ,93+55	,350 ,110 ,470 ,165 ,this );
+				GraphicsUtil.drawImage(g, joingame, 187, 93, 187 + 120, 93 + 55,	350, 110, 470, 165, this);
 			}
 
 			else if (button==1) {
-				g.drawImage( joingame ,43 ,93 ,43+120 ,93+55	,350 ,55 ,470 ,110 ,this );
+				GraphicsUtil.drawImage(g, joingame, 43, 93, 43 + 120, 93 + 55,		350, 55, 470, 110, this);
 			}
 			else if (button==2) {
-				g.drawImage( joingame ,187 ,93 ,187+120 ,93+55	,350 ,165 ,470 ,220 ,this );
+				GraphicsUtil.drawImage(g, joingame, 187, 93, 187 + 120, 93 + 55,	350, 165, 470, 220, this);
 			}
 
-			tl = new TextLayout( resb.getString("join.servername") , font, frc);
-			tl.draw( g2, (float) (100-tl.getBounds().getWidth()/2), (float)65 );
-
-			tl = new TextLayout( resb.getString("join.cancel") , font, frc);
-			tl.draw( g2, (float) (103-tl.getBounds().getWidth()/2), (float)125 );
-
-			tl = new TextLayout( resb.getString("join.connect") , font, frc);
-			tl.draw( g2, (float) (247-tl.getBounds().getWidth()/2), (float)125 );
-
-
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.servername"), '\0', 100, 65);
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.cancel"), '\0', 103, 125);
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.connect"), '\0', 247, 125);
 		}
-
 	}
 
 	/**
@@ -187,17 +167,13 @@ public class JoinDialog extends JDialog implements MouseInputListener
 	 */
 	public int insideButton(int x, int y) {
 
-		int B=0;
-
-		if (x >= 51 && x < 156 && y >=101 && y < 141 ) {
-			B=1;
+		if (MainMenu.insideButton(x, y, 51, 101, 105, 40)) {
+			return 1;
 		}
-		else if (x >= 195 && x < 300 && y >=101 && y < 141 ) {
-			B=2;
+		if (MainMenu.insideButton(x, y, 195, 101, 105, 40)) {
+			return 2;
 		}
-
-		return B;
-
+		return 0;
 	}
 
 	private int button;
@@ -296,7 +272,5 @@ public class JoinDialog extends JDialog implements MouseInputListener
 				repaint();
 			}
 		}
-
 	}
-
 }

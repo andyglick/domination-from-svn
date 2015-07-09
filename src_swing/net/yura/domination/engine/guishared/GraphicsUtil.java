@@ -1,6 +1,7 @@
 package net.yura.domination.engine.guishared;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
@@ -25,7 +26,11 @@ public class GraphicsUtil {
     public static void setBounds(Component comp, int x, int y, int w, int h) {
         comp.setBounds(scale(x), scale(y), scale(w), scale(h));
     }
-    
+
+    public static Dimension newDimension(int width, int height) {
+        return new Dimension(scale(width), scale(height));
+    }
+
     public static Insets newInsets(int top, int left, int bottom, int right) {
         return new Insets(scale(top), scale(left), scale(bottom), scale(right));
     }
