@@ -45,6 +45,7 @@ import javax.swing.UIManager;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
@@ -719,12 +720,12 @@ public class RiskUIUtil {
                 Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 		return		" " + RiskUtil.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
-				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + "\n" +
+				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + " \n" +
 				" " + netInfo + " \n" +
 				" " + getOSString() + " \n" +
 				" " + cpu + " \n" +
 				" " + UIManager.getLookAndFeel() + " \n" +
-                                " " + toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) \n" +
+                                " " + toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) density="+GraphicsUtil.density+" scale="+GraphicsUtil.scale+" \n" +
 				" " + System.getProperty("java.vendor") + " \n" +
 				" " + System.getProperty("java.vendor.url") + " \n" +
 				" " + name +" \n" +
