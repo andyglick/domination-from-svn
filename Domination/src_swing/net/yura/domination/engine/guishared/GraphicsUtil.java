@@ -5,22 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 
-/**
- * code "borrowed" from com.intellij.util.ui.JBUI
- */
 public class GraphicsUtil {
 
-    public static boolean IS_HIDPI;
-
-    static {
-        IS_HIDPI = System.getProperty("os.name").toLowerCase().startsWith("windows") && Toolkit.getDefaultToolkit().getScreenResolution() > 144;
-    }
+    public static final double density = getDisplayDensity();
+    public static final double scale = getScale();
 
     public static int scale(int i) {
-        return IS_HIDPI ? 2 * i : i;
+        return (int) (i * density / scale);
     }
     
     public static void setBounds(Component comp, int x, int y, int w, int h) {
@@ -54,5 +47,23 @@ public class GraphicsUtil {
                 scale(dx2),
                 scale(dy2),
                 sx1, sy1, sx2, sy2, observer);
+    }
+
+    private static double getDisplayDensity() {
+        try {
+            return ((Double)Class.forName("javax.microedition.midlet.ApplicationManager")
+                    .getMethod("getDisplayDensity").invoke(null)).doubleValue();
+        }
+        catch (Throwable th) { }
+        return 1;
+    }
+    
+    private static double getScale() {
+        try {
+            return ((Double)Class.forName("javax.microedition.midlet.ApplicationManager")
+                    .getMethod("getScale").invoke(null)).doubleValue();
+        }
+        catch (Throwable th) { }
+        return 1;
     }
 }

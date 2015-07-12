@@ -1187,13 +1187,4 @@ public class RiskUIUtil {
             catch (Throwable th) { }
         }
     }
-
-    public static double getDisplayDensity() {
-        try {
-            return ((Double)Class.forName("javax.microedition.midlet.ApplicationManager")
-                    .getMethod("getDisplayDensity").invoke(null)).doubleValue();
-        }
-        catch (Throwable th) { }
-        return 1;
-    }
 }

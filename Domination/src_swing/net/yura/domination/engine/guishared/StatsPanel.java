@@ -57,9 +57,9 @@ public class StatsPanel extends JPanel {
 
     public void repaintStats(StatType a) {
 
-        double density = RiskUIUtil.getDisplayDensity();
+        double scale = GraphicsUtil.scale;
 
-	BufferedImage tempgraph = new BufferedImage((int)(getWidth()*density),(int)(getHeight()*density), java.awt.image.BufferedImage.TYPE_INT_RGB ); // spX, spY
+	BufferedImage tempgraph = new BufferedImage((int)(getWidth() * scale), (int)(getHeight() * scale), BufferedImage.TYPE_INT_RGB ); // spX, spY
 
 	List players = risk.getGame().getPlayersStats();
 
