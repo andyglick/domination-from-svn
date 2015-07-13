@@ -49,6 +49,14 @@ public class GraphicsUtil {
                 sx1, sy1, sx2, sy2, observer);
     }
 
+    public static void fillRect(Graphics g, int x, int y, int width, int height) {
+        g.fillRect(scale(x), scale(y), scale(width), scale(height));
+    }
+    
+    public static void drawString(Graphics g, String string, int x, int y) {
+        g.drawString(string, scale(x), scale(y));
+    }
+
     private static double getDisplayDensity() {
         try {
             return ((Double)Class.forName("javax.microedition.midlet.ApplicationManager")
