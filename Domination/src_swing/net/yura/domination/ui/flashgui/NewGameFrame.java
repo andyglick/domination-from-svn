@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -49,6 +48,8 @@ import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BadgeButton;
+import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -159,7 +160,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		Colors[10] = new MyColor(Color.DARK_GRAY, "darkgray",  435, 460, 25, 25, KeyEvent.VK_D);
 		Colors[11] = new MyColor(Color.BLACK,     "black",     460, 460, 25, 25, KeyEvent.VK_K);
 
-		Dimension d = new Dimension(700, 600);
+		Dimension d = GraphicsUtil.newDimension(700, 600);
 
 		JLayeredPane layeredPane = new JLayeredPane();
 		layeredPane.setPreferredSize(d);
@@ -172,7 +173,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		ngp.setBounds(0,0, (int)d.getWidth() , (int)d.getHeight() );
 
 		mapPic = new JLabel();
-		mapPic.setBounds(51, 51, 203 , 127 );
+		GraphicsUtil.setBounds(mapPic, 51, 51, 203, 127);
 
 		int w=93;
 		int h=32;
@@ -180,28 +181,28 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		chooseMap = new BadgeButton(resb.getString("newgame.choosemap"));
 		sortOutButton( chooseMap , newgame.getSubimage(54, 191, w, h) , newgame.getSubimage(700, 105, w, h) , newgame.getSubimage(700, 137, w, h) );
 		chooseMap.addActionListener( this );
-		chooseMap.setBounds(54, 192, w , h );
+		GraphicsUtil.setBounds(chooseMap, 54, 192, w, h);
 
 		defaultMap = new JButton(resb.getString("newgame.defaultmap"));
 		sortOutButton( defaultMap , newgame.getSubimage(159, 192, w, h) , newgame.getSubimage(700, 169, w, h) , newgame.getSubimage(700, 201, w, h) );
 		defaultMap.addActionListener( this );
-		defaultMap.setBounds(159, 192, 93 , 32 );
+		GraphicsUtil.setBounds(defaultMap, 159, 192, 93, 32);
 
 		cardsFile = new JTextField("");
 		cardsFile.setEditable(false);
 		cardsFile.setBorder(null);
 		cardsFile.setOpaque(false);
-		cardsFile.setBounds(54, 260, 200 , 27 );
+		GraphicsUtil.setBounds(cardsFile, 54, 260, 200, 27);
 
 		chooseCards = new JButton(resb.getString("newgame.choosecards"));
 		sortOutButton( chooseCards , newgame.getSubimage(54, 191, w, h) , newgame.getSubimage(700, 105, w, h) , newgame.getSubimage(700, 137, w, h) );
 		chooseCards.addActionListener( this );
-		chooseCards.setBounds(54, 301, 93 , 32 );
+		GraphicsUtil.setBounds(chooseCards, 54, 301, 93, 32);
 
 		defaultCards = new JButton(resb.getString("newgame.defaultcards"));
 		sortOutButton( defaultCards , newgame.getSubimage(159, 192, w, h) , newgame.getSubimage(700, 169, w, h) , newgame.getSubimage(700, 201, w, h) );
 		defaultCards.addActionListener( this );
-		defaultCards.setBounds(159, 301, 93 , 32 );
+		GraphicsUtil.setBounds(defaultCards, 159, 301, 93, 32);
 
 		ButtonGroup GameTypeButtonGroup = new ButtonGroup();
 		ButtonGroup CardTypeButtonGroup = new ButtonGroup();
@@ -212,43 +213,43 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
 		sortOutButton( domination );
-		domination.setBounds(60, 370, bw1 , bh );
+		GraphicsUtil.setBounds(domination, 60, 370, bw1, bh);
 		domination.addActionListener(this);
 
 		capital = new JRadioButton(resb.getString("newgame.mode.capital"));
 		sortOutButton( capital );
-		capital.setBounds(60, 390, bw1 , bh );
+		GraphicsUtil.setBounds(capital, 60, 390, bw1, bh);
 		capital.addActionListener(this);
 
 		mission = new JRadioButton(resb.getString("newgame.mode.mission"));
 		sortOutButton( mission );
-		mission.setBounds(60, 410, bw1 , bh );
+		GraphicsUtil.setBounds(mission, 60, 410, bw1, bh);
 		mission.addActionListener(this);
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
                 AutoPlaceAll.setToolTipText( resb.getString("newgame.autoplace"));
 		sortOutButton( AutoPlaceAll );
-		AutoPlaceAll.setBounds(60, 440, bw1 , bh );
+		GraphicsUtil.setBounds(AutoPlaceAll, 60, 440, bw1, bh);
                 AutoPlaceAll.setSelected( "true".equals(myrisk.getRiskConfig("default.autoplaceall")) );
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
                 recycle.setToolTipText( resb.getString("newgame.recycle"));
 		sortOutButton( recycle );
-		recycle.setBounds(160, 440, bw2 , bh );
+		GraphicsUtil.setBounds(recycle, 160, 440, bw2, bh);
                 recycle.setSelected( "true".equals(myrisk.getRiskConfig("default.recyclecards")) );
 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
 		sortOutButton( increasing );
-		increasing.setBounds(160,370,bw2,bh);
+		GraphicsUtil.setBounds(increasing, 160, 370, bw2, bh);
 
 		fixed = new JRadioButton(resb.getString("newgame.cardmode.fixed"));
 		sortOutButton( fixed );
-		fixed.setBounds(160,390,bw2,bh);
+		GraphicsUtil.setBounds(fixed, 160, 390, bw2, bh);
 
                 italianLike = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		sortOutButton( italianLike );
-		italianLike.setBounds(160,410,bw2,bh);
+		GraphicsUtil.setBounds(italianLike, 160, 410, bw2, bh);
 
 		//AutoEndGo = new JCheckBox("Auto End Go");
 		//sortOutButton( AutoEndGo );
@@ -265,7 +266,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		CardTypeButtonGroup.add ( increasing );
 
 		PlayersPanel = new JPanel();
-		PlayersPanel.setBounds(340, 51, 309 , 210 ); // this will allow 6 players, 30 pixels per player
+		GraphicsUtil.setBounds(PlayersPanel, 340, 51, 309, 210); // this will allow 6 players, 30 pixels per player
 		PlayersPanel.setOpaque(false);
 		PlayersPanel.setLayout(new javax.swing.BoxLayout(PlayersPanel, javax.swing.BoxLayout.Y_AXIS));
 
@@ -274,7 +275,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		resetplayers = new JButton(resb.getString("newgame.resetplayers"));
 		sortOutButton( resetplayers , newgame.getSubimage(705, 488, w, h) , newgame.getSubimage(700, 357, w, h) , newgame.getSubimage(700, 388, w, h) );
-		resetplayers.setBounds(437, 268, 115 , 31 );
+		GraphicsUtil.setBounds(resetplayers, 437, 268, 115, 31);
 		resetplayers.addActionListener( this );
 
 		playerName = new JTextField(resb.getString("newgame.newplayername")) {
@@ -285,7 +286,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		playerName.setBorder(null);
 		playerName.setOpaque(false);
-		playerName.setBounds(403, 335, 97 , 25);
+		GraphicsUtil.setBounds(playerName, 403, 335, 97, 25);
 
 		ButtonGroup playerTypeButtonGroup = new ButtonGroup();
 
@@ -297,22 +298,22 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		human = new JRadioButton(resb.getString("newgame.player.type.human"), true);
 		sortOutButton( human );
-		human.setBounds(typeX, typeY, typeW , typeH);
+		GraphicsUtil.setBounds(human, typeX, typeY, typeW, typeH);
 
                 typeY = typeY + typeGap;
 		ai = new JRadioButton(resb.getString("newgame.player.type.easyai"));
 		sortOutButton( ai );
-		ai.setBounds(typeX, typeY, typeW , typeH);
+		GraphicsUtil.setBounds(ai, typeX, typeY, typeW, typeH);
 
                 typeY = typeY + typeGap;
 		aiaverage = new JRadioButton(resb.getString("newgame.player.type.averageai"));
 		sortOutButton( aiaverage );
-		aiaverage.setBounds(typeX, typeY, typeW , typeH);
+		GraphicsUtil.setBounds(aiaverage, typeX, typeY, typeW, typeH);
 
                 typeY = typeY + typeGap;
 		aismart = new JRadioButton(resb.getString("newgame.player.type.hardai"));
 		sortOutButton( aismart );
-		aismart.setBounds(typeX, typeY, typeW , typeH);
+		GraphicsUtil.setBounds(aismart, typeX, typeY, typeW, typeH);
 
 
 
@@ -327,27 +328,27 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		playerColor = new JToggleButton("");
 		sortOutButton( playerColor , newgame.getSubimage(793, 105, 19, 19) , newgame.getSubimage(793, 125, 19, 19) , newgame.getSubimage(793, 145, 19, 19) );
 		playerColor.addActionListener( this );
-		playerColor.setBounds(475, 370, 25 , 25);
+		GraphicsUtil.setBounds(playerColor, 475, 370, 25, 25);
 
 		addplayer = new JButton(resb.getString("newgame.addplayer"));
 		sortOutButton( addplayer , newgame.getSubimage(437, 413, w, h) , newgame.getSubimage(700, 419, w, h) , newgame.getSubimage(700, 450, w, h) );
 		addplayer.addActionListener( this );
-		addplayer.setBounds(437, 413, 115 , 31 );
+		GraphicsUtil.setBounds(addplayer, 437, 413, 115, 31);
 
 		cancel = new JButton(resb.getString("newgame.cancel"));
 		sortOutButton( cancel , newgame.getSubimage(41, 528, w, h) , newgame.getSubimage(700, 233, w, h) , newgame.getSubimage(700, 264, w, h) );
 		cancel.addActionListener( this );
-		cancel.setBounds(41, 528, 115 , 31 );
+		GraphicsUtil.setBounds(cancel, 41, 528, 115, 31);
 
 		help = new JButton(); // 335 528
 		sortOutButton( help , newgame.getSubimage(781, 526, 30 , 30) , newgame.getSubimage(794, 171, 30 , 30) , newgame.getSubimage(794, 202, 30 , 30) );
 		help.addActionListener( this );
-		help.setBounds(335, 529, 30 , 30 ); // should be 528
+		GraphicsUtil.setBounds(help, 335, 529, 30, 30); // should be 528
 
 		start = new JButton(resb.getString("newgame.startgame"));
 		sortOutButton( start , newgame.getSubimage(544, 528, w, h) , newgame.getSubimage(700, 295, w, h) , newgame.getSubimage(700, 326, w, h) );
 		start.addActionListener( this );
-		start.setBounds(544, 528, 115 , 31 );
+		GraphicsUtil.setBounds(start, 544, 528, 115, 31);
 
 		ngp.add(mapPic);
 		ngp.add(chooseMap);
@@ -519,7 +520,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	 * Sets the game map
 	 * @param a The ImageIcon where the map is stored
 	 */
-	public void setMap(ImageIcon a) {
+	public void setMap(Icon a) {
 
 		mapPic.setIcon(a);
 
@@ -649,7 +650,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			color=c;
 			ip=i;
 
-			Dimension d = new Dimension(309, 30);
+			Dimension d = GraphicsUtil.newDimension(309, 30);
 
 			this.setPreferredSize(d);
 			this.setMinimumSize(d);
@@ -685,7 +686,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			g3.dispose();
 
 			sortOutButton( remove , remove1 , remove2 , remove3 );
-			remove.setBounds(226, 3, 80 , 25 );
+			GraphicsUtil.setBounds(remove, 226, 3, 80, 25);
 
 			remove.addActionListener(
 					new ActionListener() {
@@ -698,7 +699,6 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			);
 
 			add(remove);
-
 		}
 
 		/**
@@ -709,12 +709,12 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 			g.setColor( new Color(color.getRed(), color.getGreen(), color.getBlue(), 125) );
 
-			g.fillRect(0, 0, 309, 30);
+			GraphicsUtil.fillRect(g, 0, 0, 309, 30);
 
 			g.setColor( RiskUIUtil.getTextColorFor(color) );
 
 
-			g.drawString( name, 10, 20);
+			GraphicsUtil.drawString(g, name, 10, 20);
 
                         String typeString;
 			if (type == Player.PLAYER_HUMAN) {
@@ -729,7 +729,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
                                 typeString = command;
                             }
 			}
-                        g.drawString(typeString , 120, 20);
+                        GraphicsUtil.drawString(g, typeString, 120, 20);
 
 			//if (localgame) { g.drawString( resb.getString("newgame.type.local"), 140, 20); }
 			//else { g.drawString( ip, 140, 20); }
@@ -773,37 +773,36 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 //			  destination		source
-			g.drawImage(newgame,0,0,700,600,     0,0,700,600,this);
+			GraphicsUtil.drawImage(g, newgame, 0, 0, 700, 600,     0, 0, 700, 600, this);
 
 			if (localgame) {
 
-				g.drawImage(newgame,432,262,557,305,     700,482,825,525,this);
+				GraphicsUtil.drawImage(g, newgame, 432, 262, 557, 305,     700, 482, 825, 525, this);
 
 			}
 
 			g.setColor( thecolor );
-			g.fillRect(400, 370, 100, 25);
+			GraphicsUtil.fillRect(g, 400, 370, 100, 25);
 
 			g.setColor( Color.black );
 
-			g.drawString( resb.getString("newgame.label.map"), 55, 40);
-			g.drawString( resb.getString("newgame.label.players"), 350, 40);
-			g.drawString( resb.getString("newgame.label.cards"), 55, 250);
-			g.drawString( resb.getString("newgame.label.gametype"), 70, 365);
-			g.drawString( resb.getString("newgame.label.cardsoptions"), 170, 365);
-			g.drawString( resb.getString("newgame.label.name"), 400, 325);
-			g.drawString( resb.getString("newgame.label.type"), 520, 325);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.map"), 55, 40);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.players"), 350, 40);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.cards"), 55, 250);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.gametype"), 70, 365);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.cardsoptions"), 170, 365);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.name"), 400, 325);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.type"), 520, 325);
 
 			g.setColor( RiskUIUtil.getTextColorFor( thecolor ) );
 
-			g.drawString( resb.getString("newgame.label.color"), 410, 387);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.color"), 410, 387);
 
 		}
 
 	}
 
-	class colorChooserPanel extends JPanel
-	{
+	class colorChooserPanel extends JPanel {
 
 		/**
 		 * Paints a graphic
@@ -817,12 +816,12 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			g2.setComposite(ac);
 
 //			  destination		source
-			g.drawImage(newgame,370,395,500,500,     700,0,830,105,this);
+			GraphicsUtil.drawImage(g, newgame, 370, 395, 500, 500,     700, 0, 830, 105, this);
 
 			for (int c=0; c< Colors.length ; c++) {
 
 				g.setColor( Colors[c].getColor() );
-				g.fillRect(Colors[c].getX(), Colors[c].getY(), Colors[c].getWidth(), Colors[c].getHeight());
+				GraphicsUtil.fillRect(g, Colors[c].getX(), Colors[c].getY(), Colors[c].getWidth(), Colors[c].getHeight());
 
 			}
 
@@ -975,8 +974,8 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		if (e.getSource()==colorChooser) {
 
 			for (int c=0; c< Colors.length ; c++) {
-
-				if (e.getX() >= Colors[c].getX() && e.getX() < Colors[c].getX()+Colors[c].getWidth() && e.getY() >= Colors[c].getY() && e.getY() < Colors[c].getY()+Colors[c].getHeight() ) {
+                            
+				if (MainMenu.insideButton(e.getX(), e.getY(), Colors[c].getX(), Colors[c].getY(), Colors[c].getWidth(), Colors[c].getHeight())) {
 					setSelectedPlayerColor( Colors[c]);
 					break;
 				}
