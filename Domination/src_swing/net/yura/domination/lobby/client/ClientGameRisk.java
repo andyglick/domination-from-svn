@@ -33,6 +33,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.FlashRiskAdapter;
 import net.yura.domination.ui.flashgui.GameFrame;
@@ -223,9 +224,9 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 		sidepanel.setBorder( BorderFactory.createMatteBorder(bigPadding, bigPadding, bigPadding, bigPadding, borderimage ) );
 
 
-		playerListArea.setPreferredSize( new Dimension(160,120) );
+		playerListArea.setPreferredSize(GraphicsUtil.newDimension(160, 120));
 
-		sidepanel.setPreferredSize( new Dimension(200,600) );
+		sidepanel.setPreferredSize(GraphicsUtil.newDimension(200, 600));
 
 
 

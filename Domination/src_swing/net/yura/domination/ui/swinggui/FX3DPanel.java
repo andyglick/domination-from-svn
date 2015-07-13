@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import net.yura.domination.engine.guishared.ErdeAnsicht;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 
 /**
@@ -61,7 +62,7 @@ public class FX3DPanel extends JPanel implements ActionListener, SwingGUITab, Mo
 
 		fx3d = new ErdeAnsicht();
 
-		Dimension mapSize = new Dimension(480,480);
+		Dimension mapSize = GraphicsUtil.newDimension(480,480);
 
 		fx3d.setPreferredSize(mapSize);
 		fx3d.setMinimumSize(mapSize);

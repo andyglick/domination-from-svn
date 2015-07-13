@@ -32,6 +32,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -125,7 +126,7 @@ public class CardsDialog extends JDialog {
         note.setEditable(false);
 	note.setOpaque(false);
 
-	Dimension noteSize = new Dimension(180, 120);
+	Dimension noteSize = GraphicsUtil.newDimension(180, 120);
 
 	note.setPreferredSize( noteSize );
 	note.setMinimumSize( noteSize );
@@ -169,13 +170,13 @@ public class CardsDialog extends JDialog {
 
 	CardsPlane.getViewport().add(CardsPanel);
 
-	Dimension CardsPlaneSize = new Dimension(550, 230);
+	Dimension CardsPlaneSize = GraphicsUtil.newDimension(550, 230);
 	CardsPlane.setBorder(javax.swing.BorderFactory.createTitledBorder(resb.getString("cards.yourcards")));
 	CardsPlane.setPreferredSize( CardsPlaneSize );
 	CardsPlane.setMinimumSize( CardsPlaneSize );
 	CardsPlane.setMaximumSize( CardsPlaneSize );
 
-	Dimension TradePlaneSize = new Dimension(340, 210);
+	Dimension TradePlaneSize = GraphicsUtil.newDimension(340, 210);
 	TradePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(resb.getString("cards.trade")));
 	TradePanel.setPreferredSize( TradePlaneSize );
 	TradePanel.setMinimumSize( TradePlaneSize );
@@ -183,7 +184,7 @@ public class CardsDialog extends JDialog {
 
 	//CardsPlane.add(cards);
 
-	Dimension otherSize = new Dimension(200, 180);
+	Dimension otherSize = GraphicsUtil.newDimension(200, 180);
 
 	JPanel other = new JPanel();
 	other.setPreferredSize( otherSize );
@@ -259,7 +260,7 @@ public class CardsDialog extends JDialog {
 
 	    select=false;
 
-	    Dimension CardSize = new Dimension(cardWidth, cardHeight);
+	    Dimension CardSize = GraphicsUtil.newDimension(cardWidth, cardHeight);
 	    this.setPreferredSize( CardSize );
 	    this.setMinimumSize( CardSize );
 	    this.setMaximumSize( CardSize );

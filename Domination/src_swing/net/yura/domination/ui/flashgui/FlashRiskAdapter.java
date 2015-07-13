@@ -5,13 +5,13 @@ package net.yura.domination.ui.flashgui;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.guishared.PicturePanel;
 
 /**

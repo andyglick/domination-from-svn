@@ -143,7 +143,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                     //System.out.println("MAKING NEW SIZE!!!!");
 
-                    Dimension size = new Dimension(mWidth,mHeight);
+                    Dimension size = GraphicsUtil.newDimension(mWidth, mHeight);
 
                     setPreferredSize(size);
                     setMinimumSize(size);

@@ -24,6 +24,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
@@ -91,7 +92,7 @@ public class MoveDialog extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
-		Dimension d = new Dimension(480, 330);
+		Dimension d = GraphicsUtil.newDimension(480, 330);
 
 		movepanel = new movePanel();
 		movepanel.setPreferredSize(d);

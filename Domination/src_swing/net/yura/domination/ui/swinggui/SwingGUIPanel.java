@@ -39,13 +39,11 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import java.util.logging.LogRecord;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -82,13 +80,14 @@ import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.guishared.BadgeButton;
+import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
-import net.yura.grasshopper.ApplicationInfoProvider;
 
 /**
  * <p> Swing GUI Main Frame </p>
@@ -431,7 +430,7 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 		Console = new JTextArea();
 		Con = new JScrollPane(Console);
 
-		Dimension conSize = new Dimension(PicturePanel.PP_X,PicturePanel.PP_Y+60);
+		Dimension conSize = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y + 60);
 
 		Con.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		Con.setPreferredSize(conSize);
@@ -443,7 +442,7 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
 		Command = new JTextField("");
 		// Command.setColumns(75); // dont use because it goes odd in linux
-		Dimension CommandSize = new Dimension(PicturePanel.PP_X-50 , 20);
+		Dimension CommandSize = GraphicsUtil.newDimension(PicturePanel.PP_X - 50, 20);
 		//c.ipadx = 600; // width
 		//c.ipadx = 0; // width
 		Command.setPreferredSize(CommandSize);
@@ -851,7 +850,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		// cant use this as it goes even worse in xp
 		//lobby.setContentAreaFilled(false);
 
-		JLabel pixlogo = new JLabel("yura.net "+product+", "+RiskUtil.GAME_NAME+" IDE", new javax.swing.ImageIcon(  this.getClass().getResource("about.jpg") ) , JLabel.CENTER );
+		JLabel pixlogo = new JLabel("yura.net " + product + ", " + RiskUtil.GAME_NAME + " IDE", new ImageIcon(this.getClass().getResource("about.jpg")), JLabel.CENTER);
 		pixlogo.setHorizontalTextPosition( JLabel.CENTER );
 		pixlogo.setVerticalTextPosition( JLabel.TOP );
 
@@ -920,7 +919,7 @@ class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		autoplace			= new JButton(resbundle.getString("game.button.go.autoplace"));
 
 
-			Dimension gameOptionsSize = new Dimension(PicturePanel.PP_X,25);
+			Dimension gameOptionsSize = GraphicsUtil.newDimension(PicturePanel.PP_X, 25);
 
 			gameOptions = makeGameOptionsPanel();
 			gameOptions.setPreferredSize(gameOptionsSize);
@@ -2420,7 +2419,7 @@ public void setNODDefender(int n) {}
 
 			mapViewComboBox = new JComboBox();
 
-			Dimension mapViewSize = new Dimension(120 , 20);
+			Dimension mapViewSize = GraphicsUtil.newDimension(120, 20);
 
 			mapViewComboBox.setPreferredSize(mapViewSize);
 			mapViewComboBox.setMinimumSize(mapViewSize);
@@ -2446,7 +2445,7 @@ public void setNODDefender(int n) {}
 
 			JLabel playersLabel = new JLabel(resbundle.getString("newgame.label.players"));
 
-			Dimension playerPanelSize = new Dimension(120 , 20);
+			Dimension playerPanelSize = GraphicsUtil.newDimension(120, 20);
 
 			JPanel players = new playersPanel();
 
@@ -2475,7 +2474,7 @@ public void setNODDefender(int n) {}
 
 			resultsLabel = new JLabel("RESULTS");
 
-			Dimension mapSize = new Dimension(PicturePanel.PP_X,PicturePanel.PP_Y);
+			Dimension mapSize = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y);
 
 			pp.setPreferredSize(mapSize);
 			pp.setMinimumSize(mapSize);
@@ -2501,7 +2500,7 @@ public void setNODDefender(int n) {}
 			pp.addMouseListener(mapListener);
 			pp.addMouseMotionListener(mapListener);
 
-			Dimension d = new Dimension(PicturePanel.PP_X , 50);
+			Dimension d = GraphicsUtil.newDimension(PicturePanel.PP_X, 50);
 
 			inGameCards = new CardLayout();
 
@@ -2884,7 +2883,7 @@ public void setNODDefender(int n) {}
 
 
 			JScrollPane scrollpane = new JScrollPane(players);
-			Dimension psize = new Dimension(200,140);
+			Dimension psize = GraphicsUtil.newDimension(200, 140);
 
 			scrollpane.setPreferredSize(psize);
 			scrollpane.setMinimumSize(psize);
@@ -3059,7 +3058,7 @@ public void setNODDefender(int n) {}
 
 		mapPic = new JLabel();
 		mapPic.setBorder( BorderFactory.createLoweredBevelBorder() );
-		Dimension size = new Dimension(203,127);
+		Dimension size = GraphicsUtil.newDimension(203, 127);
 		mapPic.setPreferredSize(size);
 		mapPic.setMinimumSize(size);
 		mapPic.setMaximumSize(size);
@@ -3093,7 +3092,7 @@ public void setNODDefender(int n) {}
 			cardsFile.setEditable(false);
 			cardsFile.setBackground( mapOptions.getBackground() ); // SystemColor.control
 
-			size = new Dimension(200,20);
+			size = GraphicsUtil.newDimension(200, 20);
 
 			cardsFile.setPreferredSize(size);
 			cardsFile.setMinimumSize(size);
@@ -3577,7 +3576,7 @@ public void setNODDefender(int n) {}
 
 			this.setLayout(new java.awt.GridBagLayout());
 
-			Dimension size = new Dimension(300,20);
+			Dimension size = GraphicsUtil.newDimension(300, 20);
 
 			attacker = new JLabel(resbundle.getString("game.note.selectattacker"));
 
@@ -3627,7 +3626,7 @@ public void setNODDefender(int n) {}
 
 			this.setLayout(new java.awt.GridBagLayout());
 
-			Dimension size = new Dimension(200,40);
+			Dimension size = GraphicsUtil.newDimension(200, 40);
 
 			country1 = new JTextField("");
 			country1.setEditable(false);
@@ -3652,7 +3651,7 @@ public void setNODDefender(int n) {}
 
 			// s.setBorder(new TitledBorder("Number of Armies to move") );
 
-			moveNumber.setMinimumSize(new Dimension(300, 50));
+			moveNumber.setMinimumSize(GraphicsUtil.newDimension(300, 50));
 
 			moveNumber.putClientProperty("JSlider.isFilled", Boolean.TRUE );
 
@@ -3797,7 +3796,7 @@ public void setNODDefender(int n) {}
 
 			// s.setBorder(new TitledBorder("Number of Armies to move") );
 
-			slider.setMinimumSize(new Dimension(300, 50));
+			slider.setMinimumSize(GraphicsUtil.newDimension(300, 50));
 
 			slider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
 

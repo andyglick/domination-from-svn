@@ -180,7 +180,7 @@ public class AboutDialog extends JDialog {
                         }
                     }
                 };
-                colors.setPreferredSize( new Dimension(100, 50) );
+                colors.setPreferredSize(GraphicsUtil.newDimension(100, 50));
 
                 JPanel mainInfo = new JPanel(new BorderLayout());
                 mainInfo.add(infoPanel,BorderLayout.SOUTH);
