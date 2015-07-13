@@ -25,6 +25,7 @@ import javax.swing.JToggleButton;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 /**
@@ -127,7 +128,7 @@ public class BattleDialog extends JDialog implements MouseListener {
 		battle.setLayout(null);
 		battle.addMouseListener(this);
 
-		Dimension bSize = new Dimension(480, 350);
+		Dimension bSize = GraphicsUtil.newDimension(480, 350);
 
 		battle.setPreferredSize( bSize );
 		battle.setMinimumSize( bSize );

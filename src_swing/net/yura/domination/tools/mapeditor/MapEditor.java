@@ -67,6 +67,7 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.ui.swinggui.SwingGUIPanel;
@@ -215,7 +216,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		zoom = new JTextField(3);
 		zoom.setEditable(false);
 
-		Dimension size = new Dimension(25,25);
+		Dimension size = GraphicsUtil.newDimension(25, 25);
 
 		zoom.setMaximumSize(size);
 		zoom.setMinimumSize(size);
@@ -235,7 +236,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		JScrollPane scroll = new JScrollPane(editPanel);
 
-		size = new Dimension(PicturePanel.PP_X , PicturePanel.PP_Y);
+		size = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y);
 
 		scroll.setPreferredSize(size);
 		scroll.setMinimumSize(size);
@@ -758,7 +759,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 editorPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE ); // not sure why this is needed, but it is
                                 editorPane.setText( responce );
                                 JScrollPane scroll = new JScrollPane(editorPane);
-                                scroll.setPreferredSize( new Dimension(500, 250) );
+                                scroll.setPreferredSize(GraphicsUtil.newDimension(500, 250));
                                 JOptionPane.showMessageDialog(this, new Object[] {"Congratulations! your map has been send to the server.\n"
                                         + "It will appear in the MapStore once it has been approved by one of the moderators.",scroll} );
                             }

@@ -42,6 +42,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.NewGameFrame;
 import net.yura.lobby.model.Game;
@@ -102,7 +103,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 		setLayout(null);
 
-		Dimension d = new Dimension(700, 600);
+		Dimension d = GraphicsUtil.newDimension(700, 600);
 
 		setPreferredSize(d);
 		setMinimumSize(d);

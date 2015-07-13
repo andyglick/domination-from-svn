@@ -15,6 +15,7 @@ import javax.swing.JToggleButton;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.StatType;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -76,7 +77,7 @@ public class StatsDialog extends JDialog implements ActionListener {
                         Back.getSubimage(50, 0, 50, 400)
                         ) );
 
-		Dimension d = new Dimension(740, 600);
+		Dimension d = GraphicsUtil.newDimension(740, 600);
 		thisgraph.setPreferredSize(d);
 		thisgraph.setMinimumSize(d);
 		thisgraph.setMaximumSize(d);
@@ -105,7 +106,7 @@ public class StatsDialog extends JDialog implements ActionListener {
                 ((AbstractButton)thisgraph.getComponent(0)).setSelected(true);
 
 		graph = new StatsPanel(myrisk);
-		graph.setBounds(50,50,640,400);
+		GraphicsUtil.setBounds(graph, 50, 50, 640, 400);
 
 		thisgraph.add(graph);
 
@@ -149,12 +150,11 @@ public class StatsDialog extends JDialog implements ActionListener {
                 AbstractButton statbutton = new JToggleButton(resb.getString("swing.toolbar."+a));
                 statbutton.setActionCommand(s+"");
                 statbutton.addActionListener( this );
-                statbutton.setBounds(x, y, w , h );
+                GraphicsUtil.setBounds(statbutton, x, y, w, h);
                 group.add(statbutton);
 
                 NewGameFrame.sortOutButton( statbutton, Back.getSubimage(x+100,y-433+165,w,h), Back.getSubimage(x+100,y-433,w,h), Back.getSubimage(x+100,y-433+66,w,h) );
 
                 return statbutton;
         }
-
 }

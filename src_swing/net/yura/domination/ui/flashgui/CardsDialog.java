@@ -39,6 +39,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -132,7 +133,7 @@ public class CardsDialog extends JDialog {
 
 		cardspanel.setLayout(null); // new java.awt.GridBagLayout()
 
-		Dimension Size = new Dimension(630,500);
+		Dimension Size = GraphicsUtil.newDimension(630,500);
 
 		cardspanel.setPreferredSize(Size);
 		cardspanel.setMinimumSize(Size);
@@ -150,7 +151,7 @@ public class CardsDialog extends JDialog {
 
 		tradeButton = GameFrame.makeRiskButton(Cards.getSubimage(396, 420, 88, 31), Cards.getSubimage(630, 335, 88, 31), Cards.getSubimage(630, 366, 88, 31), Cards.getSubimage(630, 397, 88, 31));
 		tradeButton.setText(resb.getString("cards.trade"));
-		tradeButton.setBounds(396, 420, 88, 31);
+		GraphicsUtil.setBounds(tradeButton, 396, 420, 88, 31);
 
 		JTextArea note = new JTextArea(resb.getString("cards.note"));
 
@@ -160,10 +161,10 @@ public class CardsDialog extends JDialog {
 		//note.setForeground((new JLabel()).getForeground());
 		note.setFont((new JLabel()).getFont());
 		note.setEditable(false);
-		note.setBounds(400, 270, 180, 150);
+		GraphicsUtil.setBounds(note, 400, 270, 180, 150);
 		note.setOpaque(false);
 
-		Dimension noteSize = new Dimension(180, 120);
+		Dimension noteSize = GraphicsUtil.newDimension(180, 120);
 
 		note.setPreferredSize( noteSize );
 		note.setMinimumSize( noteSize );
@@ -172,7 +173,7 @@ public class CardsDialog extends JDialog {
 
 		JButton okButton = GameFrame.makeRiskButton(Cards.getSubimage(500, 420, 88, 31), Cards.getSubimage(630, 428, 88, 31), Cards.getSubimage(630, 459, 88, 31), Cards.getSubimage(500, 420, 88, 31));
 		okButton.setText(resb.getString("cards.done"));
-		okButton.setBounds(500, 420, 88, 31);
+		GraphicsUtil.setBounds(okButton, 500, 420, 88, 31);
 
 		okButton.addActionListener(
 				new ActionListener() {
@@ -219,11 +220,11 @@ public class CardsDialog extends JDialog {
 
 		CardsPlane.setBorder(null);
 		//CardsPlane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 1));
-		CardsPlane.setBounds(49, 48, 532, 198);
+		GraphicsUtil.setBounds(CardsPlane, 49, 48, 532, 198);
 
 
 		//TradePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 1));
-		TradePanel.setBounds(49, 270, 322, 182);
+		GraphicsUtil.setBounds(TradePanel, 49, 270, 322, 182);
 
 
 		cardspanel.add(note);
@@ -300,15 +301,13 @@ public class CardsDialog extends JDialog {
 
 			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			g.drawImage( Back ,0 ,0 ,this );
+			GraphicsUtil.drawImage(g, Back, 0, 0, this);
 
-			g.drawString( resb.getString("cards.yourcards"), 60, 41);
-			g.drawString( resb.getString("cards.trade"), 60, 263);
+			GraphicsUtil.drawString(g, resb.getString("cards.yourcards"), 60, 41);
+			GraphicsUtil.drawString(g, resb.getString("cards.trade"), 60, 263);
 
-			g.drawString( getNumArmies() , 400, 410);
-
+			GraphicsUtil.drawString(g, getNumArmies() , 400, 410);
 		}
-
 	}
 
 	class CardPanel extends JPanel implements MouseListener {
@@ -332,7 +331,7 @@ public class CardsDialog extends JDialog {
 
 			select=false;
 
-			Dimension CardSize = new Dimension(cardWidth, cardHeight);
+			Dimension CardSize = GraphicsUtil.newDimension(cardWidth, cardHeight);
 			this.setPreferredSize( CardSize );
 			this.setMinimumSize( CardSize );
 			this.setMaximumSize( CardSize );

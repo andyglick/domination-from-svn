@@ -21,6 +21,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.guishared.GraphicsUtil;
 
 /**
  * Mission Dialog for FlashGUI
@@ -63,7 +64,7 @@ public class MissionDialog extends JDialog implements MouseListener {
         // set title
         setTitle("");
 
-	Dimension d = new Dimension(150, 230);
+	Dimension d = GraphicsUtil.newDimension(150, 230);
 
 	missionPanel missionpanel = new missionPanel();
 	missionpanel.setPreferredSize(d);
@@ -104,15 +105,15 @@ public class MissionDialog extends JDialog implements MouseListener {
      */
 	public void paintComponent(Graphics g) {
 
-	    g.drawImage(mission, 0, 0, this);
+	    GraphicsUtil.drawImage(g, mission, 0, 0, this);
 
 	    Graphics2D g2 = (Graphics2D)g;
 
 	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	    int cardWidth = 150;
+	    int cardWidth = getWidth();
 
-	    Font font = new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11);
+	    Font font = new java.awt.Font("SansSerif", java.awt.Font.PLAIN, g.getFont().getSize() - 2); // 13 - 2 = 11
 
 	    AttributedString as = new AttributedString(text);
 	    as.addAttribute(TextAttribute.FONT, font);
@@ -125,19 +126,17 @@ public class MissionDialog extends JDialog implements MouseListener {
 	    g2.setColor( GameFrame.UI_COLOR );
 	    TextLayout tl = new TextLayout(aci, frc);
 
-            float y = 70;
+            float y = GraphicsUtil.scale(70);
+            int padding = GraphicsUtil.scale(50);
 
 	    lbm.setPosition( 0 );
 
 	    while (lbm.getPosition() < text.length()) {
-		tl = lbm.nextLayout(cardWidth - 50);
+		tl = lbm.nextLayout(cardWidth - padding);
 		tl.draw(g2, (float)(cardWidth/2-tl.getBounds().getWidth()/2), y += tl.getAscent());
 		y += tl.getDescent() + tl.getLeading();
 	    }
-
-
 	}
-
     }
 
 	//**********************************************************************

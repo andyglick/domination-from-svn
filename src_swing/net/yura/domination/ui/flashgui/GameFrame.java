@@ -11,7 +11,6 @@ import java.awt.Toolkit;
 import java.awt.Dimension;
 import javax.swing.JLayeredPane;
 import javax.swing.JButton;
-import javax.swing.ImageIcon;
 import java.awt.Insets;
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
@@ -38,6 +37,8 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.domination.engine.guishared.ImageIcon;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -143,9 +144,8 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	}
 
-	/** This method is called from within the constructor to initialize the form. */
-
 	/**
+	 * This method is called from within the constructor to initialize the form.
 	 * Initialises the GUI
 	 */
 	private void initGUI() {
@@ -346,35 +346,35 @@ public class GameFrame extends JFrame implements KeyListener {
 		int y=77;
 
 		graphbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
-		graphbutton.setBounds(x-63, y-54, w , h );
+		GraphicsUtil.setBounds(graphbutton, x - 63, y - 54, w, h);
 		graphbutton.addActionListener( buttonActionListener );
 		graphbutton.setToolTipText( resb.getString("game.button.statistics") );
 
 		x=x+w;
 
 		cardsbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
-		cardsbutton.setBounds(x-63, y-54, w , h );
+		GraphicsUtil.setBounds(cardsbutton, x - 63, y - 54, w, h);
 		cardsbutton.addActionListener( buttonActionListener );
 		cardsbutton.setToolTipText(resb.getString("game.button.cards"));
 
 		x=x+w;
 
 		missionbutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
-		missionbutton.setBounds(x-63, y-54, w , h );
+		GraphicsUtil.setBounds(missionbutton, x - 63, y - 54, w, h);
 		missionbutton.addActionListener( buttonActionListener );
 		missionbutton.setToolTipText(resb.getString("game.button.mission"));
 
 		x=x+w;
 
 		undobutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
-		undobutton.setBounds(x-63, y-54, w , h );
+		GraphicsUtil.setBounds(undobutton, x - 63, y - 54, w, h);
 		undobutton.addActionListener( buttonActionListener );
 		undobutton.setToolTipText(resb.getString("game.button.undo"));
 
 		x=x+w;
 
 		menubutton = makeRiskButton(gameImg.getSubimage(x, y, w, h), gameImg.getSubimage(x, y+230, w, h), gameImg.getSubimage(x, y+164, w, h), gameImg.getSubimage(x, y+98, w, h) );
-		menubutton.setBounds(x-63, y-54, w , h );
+		GraphicsUtil.setBounds(menubutton, x - 63, y - 54, w, h);
 		menubutton.addActionListener( buttonActionListener );
 		menubutton.setToolTipText( resb.getString("game.button.menu") );
 
@@ -400,7 +400,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		gm = new GameMenuPanel();
 		gm.setVisible(false);
-		gm.setBounds(285, 141, 170 , 250);
+		GraphicsUtil.setBounds(gm, 285, 141, 170, 250);
 		//gm.addMouseListener(this);
 		//gm.addMouseMotionListener(this);
 		getRootPane().getLayeredPane().add(gm , JLayeredPane.MODAL_LAYER);
@@ -440,22 +440,22 @@ public class GameFrame extends JFrame implements KeyListener {
 		// #################################################################################
 		// sort out size and add to main panel
 
-		Dimension d = new Dimension(740, 54);
+		Dimension d = GraphicsUtil.newDimension(740, 54);
 		fp.setPreferredSize(d);
 		fp.setMinimumSize(d);
 		fp.setMaximumSize(d);
 
-		d = new Dimension(740, 121);
+		d = GraphicsUtil.newDimension(740, 121);
 		fpBottom.setPreferredSize(d);
 		fpBottom.setMinimumSize(d);
 		fpBottom.setMaximumSize(d);
 
-		d = new Dimension(31,425);
+		d = GraphicsUtil.newDimension(31,425);
 		fpLeft.setPreferredSize(d);
 		fpLeft.setMinimumSize(d);
 		fpLeft.setMaximumSize(d);
 
-		d = new Dimension(32,425);
+		d = GraphicsUtil.newDimension(32,425);
 		fpRight.setPreferredSize(d);
 		fpRight.setMinimumSize(d);
 		fpRight.setMaximumSize(d);
@@ -468,7 +468,6 @@ public class GameFrame extends JFrame implements KeyListener {
 		flashPanel.add(fpRight,BorderLayout.EAST);
 
 		getContentPane().add( flashPanel );
-
 	}
 
 	public void setup(boolean s) {
@@ -1215,12 +1214,12 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			savebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			savebutton.setText(resb.getString("game.menu.save"));
-			savebutton.setBounds(35, 50, w , 20 );
+			GraphicsUtil.setBounds(savebutton, 35, 50, w, 20);
 			savebutton.addActionListener( buttonActionListener );
 
 			closebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 
-			closebutton.setBounds(35, 80, w , 20 );
+			GraphicsUtil.setBounds(closebutton, 35, 80, w, 20);
 			closebutton.addActionListener( buttonActionListener );
 
 
@@ -1234,7 +1233,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			AutoEndGo.setBorderPainted(false);
 			AutoEndGo.setFocusPainted(false);
 
-			AutoEndGo.setBounds(35, 110, w , 20 );
+			GraphicsUtil.setBounds(AutoEndGo, 35, 110, w, 20);
 			AutoEndGo.addActionListener( buttonActionListener );
 			AutoEndGo.setBackground( Color.lightGray );
 
@@ -1250,7 +1249,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			AutoDefend.setBorderPainted(false);
 			AutoDefend.setFocusPainted(false);
 
-			AutoDefend.setBounds(35, 140, w , 20 );
+			GraphicsUtil.setBounds(AutoDefend, 35, 140, w, 20);
 			AutoDefend.addActionListener( buttonActionListener );
 			AutoDefend.setBackground( Color.lightGray );
 
@@ -1260,7 +1259,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			helpbutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			helpbutton.setText(resb.getString("game.menu.manual"));
-			helpbutton.setBounds(35, 170, w , 20 );
+			GraphicsUtil.setBounds(helpbutton, 35, 170, w, 20);
 			helpbutton.addActionListener( buttonActionListener );
 
 
@@ -1268,7 +1267,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			resumebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
 			resumebutton.setText(resb.getString("game.menu.closemenu"));
-			resumebutton.setBounds(35, 200, w , 20 );
+			GraphicsUtil.setBounds(resumebutton, 35, 200, w, 20);
 			resumebutton.addActionListener( buttonActionListener );
 
 			add(savebutton);
@@ -1290,7 +1289,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			g2.setComposite(ac);
 
 //					  destination		source
-			g2.drawImage(gameImg,0,0,170,250,     633,175,803,425,this); // top
+			GraphicsUtil.drawImage(g2, gameImg, 0, 0, 170, 250,     633, 175, 803, 425, this); // top
 
 			FontRenderContext frc = g2.getFontRenderContext();
 
@@ -1302,11 +1301,6 @@ public class GameFrame extends JFrame implements KeyListener {
 			tl.draw( g2, (float) (85-tl.getBounds().getWidth()/2), (float)40 );
 
 		}
-
 	}
-
-
-
-
 }
 
