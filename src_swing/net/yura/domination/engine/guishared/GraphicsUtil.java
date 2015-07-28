@@ -52,7 +52,11 @@ public class GraphicsUtil {
     public static void fillRect(Graphics g, int x, int y, int width, int height) {
         g.fillRect(scale(x), scale(y), scale(width), scale(height));
     }
-    
+
+    public static void fillArc(Graphics g, int x, int y, int width, int height, int startAngle, int arcAngle) {
+        g.fillArc(scale(x), scale(y), scale(width), scale(height), startAngle, arcAngle);
+    }
+
     public static void drawString(Graphics g, String string, int x, int y) {
         g.drawString(string, scale(x), scale(y));
     }
