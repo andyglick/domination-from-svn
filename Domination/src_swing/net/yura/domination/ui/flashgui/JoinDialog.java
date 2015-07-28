@@ -12,9 +12,6 @@ import javax.swing.JTextField;
 import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.RenderingHints;
@@ -153,9 +150,9 @@ public class JoinDialog extends JDialog implements MouseInputListener {
 				GraphicsUtil.drawImage(g, joingame, 187, 93, 187 + 120, 93 + 55,	350, 165, 470, 220, this);
 			}
 
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.servername"), '\0', 100, 65);
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.cancel"), '\0', 103, 125);
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.connect"), '\0', 247, 125);
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.servername"), 100, 65);
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.cancel"), 103, 125);
+                        MainMenu.drawStringCenteredAt(g, resb.getString("join.connect"), 247, 125);
 		}
 	}
 

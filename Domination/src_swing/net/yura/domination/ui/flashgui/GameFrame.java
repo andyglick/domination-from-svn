@@ -160,6 +160,24 @@ public class GameFrame extends JFrame implements KeyListener {
 		//layeredPane.setMinimumSize(d);
 		//layeredPane.setMaximumSize(d);
 
+		final JPanel fpLeft = new JPanel() {
+		    public void paintComponent(Graphics g) {
+			// getHeight() = 425
+			g.drawImage(gameImg, 0, 0, getWidth(), getHeight(),    0, 0, 31, 425, this); // left
+			g.setColor(Color.BLACK);
+			g.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight());
+		    }
+		};
+
+		final JPanel fpRight = new JPanel() {
+		    public void paintComponent(Graphics g) {
+			// getHeight() = 425
+			g.drawImage(gameImg, 0, 0, getWidth(), getHeight(),    31, 0, 63, 425, this); // right
+			g.setColor(Color.BLACK);
+			g.drawLine(0,0,0,getHeight());
+		    }
+		};
+                
 		int l=715,m=6;
 
 		final BufferedImage topleft=gameImg.getSubimage(63,0,l,54);
@@ -172,62 +190,45 @@ public class GameFrame extends JFrame implements KeyListener {
 			//		  destination		source
 			//g.drawImage(game,0,0,740,54,     63,0,803,54,this); // top
 
-			g.drawImage(topleft,0,0,this);
-			for (int c=topleft.getWidth();c<getWidth()-topright.getWidth();c=c+topmiddle.getWidth() ) {
-				g.drawImage(topmiddle,c,0,this);
+			GraphicsUtil.drawImage(g, topleft, 0, 0, this);
+			for (int c = GraphicsUtil.scale(topleft.getWidth()); c < getWidth() - GraphicsUtil.scale(topright.getWidth()); c = c + GraphicsUtil.scale(topmiddle.getWidth())) {
+				g.drawImage(topmiddle, c, 0, GraphicsUtil.scale(topmiddle.getWidth()), GraphicsUtil.scale(topmiddle.getHeight()), this);
 			}
-			g.drawImage(topright,getWidth()-topright.getWidth(),0,this);
+			g.drawImage(topright, getWidth() - GraphicsUtil.scale(topright.getWidth()), 0, GraphicsUtil.scale(topright.getWidth()), GraphicsUtil.scale(topright.getHeight()), this);
 
 			Graphics2D g2 = (Graphics2D)g;
 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			FontRenderContext frc = g2.getFontRenderContext();
-			Font font = g2.getFont();
 			g2.setColor( Color.BLACK );
-			TextLayout tl;
 
-			tl = new TextLayout( resb.getString("game.tabs.continents") , font, frc);
-			tl.draw( g2, (float) (81-tl.getBounds().getWidth()/2), (float)26 );
-
-			tl = new TextLayout( resb.getString("game.tabs.ownership") , font, frc);
-			tl.draw( g2, (float) (196-tl.getBounds().getWidth()/2), (float)26 );
-
-			tl = new TextLayout( resb.getString("game.tabs.borderthreat") , font, frc);
-			tl.draw( g2, (float) (311-tl.getBounds().getWidth()/2), (float)26 );
-
-			tl = new TextLayout( resb.getString("game.tabs.cardownership") , font, frc);
-			tl.draw( g2, (float) (426-tl.getBounds().getWidth()/2), (float)26 );
-
-			tl = new TextLayout( resb.getString("game.tabs.troopstrength") , font, frc);
-			tl.draw( g2, (float) (541-tl.getBounds().getWidth()/2), (float)26 );
-
-			tl = new TextLayout( resb.getString("game.tabs.connectedempire") , font, frc);
-			tl.draw( g2, (float) (656-tl.getBounds().getWidth()/2), (float)26 );
-
-
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.continents"), 81, 26);
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.ownership"), 196, 26);
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.borderthreat"), 311, 26);
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.cardownership"), 426, 26);
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.troopstrength"), 541, 26);
+			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.connectedempire"), 656, 26);
 
 			if (mapView==PicturePanel.VIEW_CONTINENTS) {
-				g.drawImage(gameImg,24,32,139,39,   64,383,179,390,this);
+				GraphicsUtil.drawImage(g, gameImg, 24, 32, 139, 39,   64, 383, 179, 390,this);
 			}
 			else if (mapView==PicturePanel.VIEW_OWNERSHIP) {
-				g.drawImage(gameImg,139,32,254,39,     64,390,179,397,this);
+				GraphicsUtil.drawImage(g, gameImg, 139, 32, 254, 39,     64, 390, 179, 397,this);
 			}
 			else if (mapView==PicturePanel.VIEW_BORDER_THREAT) {
-				g.drawImage(gameImg,254,32,369,39,     64,397,179,404,this);
+				GraphicsUtil.drawImage(g, gameImg, 254, 32, 369, 39,     64, 397, 179, 404, this);
 			}
 			else if (mapView==PicturePanel.VIEW_CARD_OWNERSHIP) {
-				g.drawImage(gameImg,369,32,484,39,     64,404,179,411,this);
+				GraphicsUtil.drawImage(g, gameImg, 369, 32, 484, 39,     64, 404, 179, 411, this);
 			}
 			else if (mapView==PicturePanel.VIEW_TROOP_STRENGTH) {
-				g.drawImage(gameImg,484,32,599,39,     64,411,179,418,this);
+				GraphicsUtil.drawImage(g, gameImg, 484, 32, 599, 39,     64, 411, 179, 418, this);
 			}
 			else if (mapView==PicturePanel.VIEW_CONNECTED_EMPIRE) {
-				g.drawImage(gameImg,599,32,714,39,     64,418,179,425,this);
+				GraphicsUtil.drawImage(g, gameImg, 599, 32, 714, 39,     64, 418, 179, 425, this);
 			}
 
-			g.drawLine(30,53,getWidth()-32,53);
-
+			g.drawLine(fpLeft.getWidth() - 1, getHeight() - 1, getWidth() - fpRight.getWidth(), getHeight() - 1);
 		    }
 		};
 		//fp.setBounds(0,0, (int)d.getWidth() , (int)d.getHeight() );
@@ -256,16 +257,15 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			//g.drawImage(game,0,0,740,121,  63,54,803,175,this); // bottom
 
-			g.drawImage(bottomleft,0,0,this);
-			for (int c=bottomleft.getWidth();c<getWidth()-bottomright.getWidth();c=c+bottommiddle.getWidth() ) {
-				g.drawImage(bottommiddle,c,0,this);
+                        GraphicsUtil.drawImage(g, bottomleft, 0, 0, this);
+			for (int c = GraphicsUtil.scale(bottomleft.getWidth()); c < getWidth() - GraphicsUtil.scale(bottomright.getWidth()); c = c + GraphicsUtil.scale(bottommiddle.getWidth())) {
+				g.drawImage(bottommiddle, c, 0, GraphicsUtil.scale(bottommiddle.getWidth()), GraphicsUtil.scale(bottommiddle.getHeight()), this);
 			}
-			g.drawImage(bottomright,getWidth()-bottomright.getWidth(),0,this);
+			g.drawImage(bottomright, getWidth() - GraphicsUtil.scale(bottomright.getWidth()), 0, GraphicsUtil.scale(bottomright.getWidth()), GraphicsUtil.scale(bottomright.getHeight()), this);
 
 			Graphics2D g2 = (Graphics2D)g;
 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 
 			int[] cols = colors;
 
@@ -276,11 +276,11 @@ public class GameFrame extends JFrame implements KeyListener {
 				g.setColor( new Color(col.getRed(),col.getGreen(),col.getBlue(), 100) );
 
 				if (c==0) {
-					g.fillArc(8, 89, 24 , 24, 90, 180);
-					g.fillRect( 20 , 89 , (getWidth()-173)-(24*(cols.length-c)) , 24);
+					GraphicsUtil.fillArc(g, 8, 89, 24 , 24, 90, 180);
+					g.fillRect(GraphicsUtil.scale(20), GraphicsUtil.scale(89), (getWidth() - GraphicsUtil.scale(173)) - (GraphicsUtil.scale(24) * (cols.length - c)), GraphicsUtil.scale(24));
 				}
 				else {
-					g.fillRect( (getWidth()-177)-(24*(cols.length-c)) , 89 , 24 , 24);
+					g.fillRect((getWidth() - GraphicsUtil.scale(177)) - (GraphicsUtil.scale(24) * (cols.length - c)), GraphicsUtil.scale(89), GraphicsUtil.scale(24), GraphicsUtil.scale(24));
 				}
 
 			}
@@ -289,7 +289,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 				g.setColor( new Color( ColorUtil.getTextColorFor( cols[0] ) ) );
 				g.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, g.getFont().getSize() - 2)); // 13 - 2 = 11
-				g.drawString(gameStatus, 22, 105);
+				GraphicsUtil.drawString(g, gameStatus, 22, 105);
 			}
 
 			g2.setColor( Color.BLACK );
@@ -306,38 +306,18 @@ public class GameFrame extends JFrame implements KeyListener {
 			}
 
 			if (tl!=null) {
-				tl.draw( g2, (float) (getWidth()-84-tl.getBounds().getWidth()/2), (float)57 );
+				tl.draw(g2, (float) (getWidth() - GraphicsUtil.scale(84) - tl.getBounds().getWidth() / 2), (float) GraphicsUtil.scale(57));
 			}
 
-
-			g.drawLine(30,0,getWidth()-32,0);
-
+			g.drawLine(fpLeft.getWidth() - 1, 0, getWidth() - fpRight.getWidth(), 0);
 		    }
 
 		    public void setBounds(int x,int y,int w,int h) {
 			super.setBounds(x,y,w,h);
-			gobutton.setBounds(getWidth()-140, 74, 115 , 31 );
+			gobutton.setBounds(getWidth() - GraphicsUtil.scale(140), GraphicsUtil.scale(74), GraphicsUtil.scale(115) , GraphicsUtil.scale(31));
 		    }
 		};
 		fpBottom.setLayout(null);
-
-		JPanel fpLeft = new JPanel() {
-		    public void paintComponent(Graphics g) {
-			// getHeight() = 425
-			g.drawImage(gameImg,0,0,31,getHeight(),    0,0,31,425,this); // left
-			g.setColor(Color.BLACK);
-			g.drawLine(30,0,30,getHeight());
-		    }
-		};
-
-		JPanel fpRight = new JPanel() {
-		    public void paintComponent(Graphics g) {
-			// getHeight() = 425
-			g.drawImage(gameImg,0,0,32,getHeight(), 31,0,63,425,this); // right
-			g.setColor(Color.BLACK);
-			g.drawLine(0,0,0,getHeight());
-		    }
-		};
 
 		int w=114;
 		int h=66;
@@ -779,40 +759,32 @@ public class GameFrame extends JFrame implements KeyListener {
         }
 
 	/**
-	 * checks if the coordinates are in one of the
-	 * tabs at the top of the window
+	 * checks if the coordinates are in one of the tabs at the top of the window
 	 */
 	public int insideButton(int x, int y) {
 
-		int B=-1;
+                int W = 115;
+                int H = 23;
 
-		if (y >=9 && y < 32 ) {
-
-			int W=115;
-
-			if (x >= 24 && x < (24 + W)) {
-				B=PicturePanel.VIEW_CONTINENTS;
-			}
-			else if (x >= 139 && x < (139 + W)) {
-				B=PicturePanel.VIEW_OWNERSHIP;
-			}
-			else if (x >= 254 && x < (254 + W)) {
-				B=PicturePanel.VIEW_BORDER_THREAT;
-			}
-			else if (x >= 369 && x < (369 + W)) {
-				B=PicturePanel.VIEW_CARD_OWNERSHIP;
-			}
-			else if (x >= 484 && x < (484 + W)) {
-				B=PicturePanel.VIEW_TROOP_STRENGTH;
-			}
-			else if (x >= 599 && x < (599 + W)) {
-				B=PicturePanel.VIEW_CONNECTED_EMPIRE;
-			}
-
-		}
-
-		return B;
-
+                if (MainMenu.insideButton(x, y, 24, 9, W, H)) {
+                        return PicturePanel.VIEW_CONTINENTS;
+                }
+                if (MainMenu.insideButton(x, y, 139, 9, W, H)) {
+                        return PicturePanel.VIEW_OWNERSHIP;
+                }
+                if (MainMenu.insideButton(x, y, 254, 9, W, H)) {
+                        return PicturePanel.VIEW_BORDER_THREAT;
+                }
+                if (MainMenu.insideButton(x, y, 369, 9, W, H)) {
+                        return PicturePanel.VIEW_CARD_OWNERSHIP;
+                }
+                if (MainMenu.insideButton(x, y, 484, 9, W, H)) {
+                        return PicturePanel.VIEW_TROOP_STRENGTH;
+                }
+                if (MainMenu.insideButton(x, y, 599, 9, W, H)) {
+                        return PicturePanel.VIEW_CONNECTED_EMPIRE;
+                }
+		return -1;
 	}
 
 	/** calls the parser with the command  */
@@ -1298,9 +1270,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			TextLayout tl;
 
 			tl = new TextLayout( resb.getString("game.menu.title") , font, frc);
-			tl.draw( g2, (float) (85-tl.getBounds().getWidth()/2), (float)40 );
-
+			tl.draw( g2, (float) (GraphicsUtil.scale(85) - tl.getBounds().getWidth()/2), (float) GraphicsUtil.scale(40));
 		}
 	}
 }
-

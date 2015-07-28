@@ -233,7 +233,11 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
 	}
         
-        static void drawStringCenteredAt(Graphics g, String text,char ch,int x,int y) {
+        static void drawStringCenteredAt(Graphics g, String text, int x, int y) {
+            drawStringCenteredAt(g, text, '\0', x, y);
+        }
+        
+        static void drawStringCenteredAt(Graphics g, String text, char ch, int x, int y) {
             FontMetrics metrics = g.getFontMetrics(g.getFont());
             BasicGraphicsUtils.drawString(g, text, ch, GraphicsUtil.scale(x) - metrics.stringWidth(text) / 2, GraphicsUtil.scale(y));
         }
