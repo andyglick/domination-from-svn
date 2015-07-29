@@ -975,7 +975,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 			for (int c=0; c< Colors.length ; c++) {
                             
-				if (MainMenu.insideButton(e.getX(), e.getY(), Colors[c].getX(), Colors[c].getY(), Colors[c].getWidth(), Colors[c].getHeight())) {
+				if (GraphicsUtil.insideButton(e.getX(), e.getY(), Colors[c].getX(), Colors[c].getY(), Colors[c].getWidth(), Colors[c].getHeight())) {
 					setSelectedPlayerColor( Colors[c]);
 					break;
 				}

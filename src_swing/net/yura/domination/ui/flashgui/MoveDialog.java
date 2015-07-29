@@ -4,7 +4,6 @@ package net.yura.domination.ui.flashgui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,9 +11,6 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -62,7 +58,7 @@ public class MoveDialog extends JDialog {
 		int y=40;
 		int xCoords[] = {x+60, x+130, x+130, x+200, x+130, x+130, x+60};
 		int yCoords[] = {y+40,  y+40,  y+20,  y+60, y+100,  y+80, y+80};
-		arrow = new Polygon(xCoords, yCoords, xCoords.length);
+		arrow = GraphicsUtil.newPolygon(xCoords, yCoords);
         }
         
 	public MoveDialog(Frame parent, boolean modal) {
@@ -80,7 +76,6 @@ public class MoveDialog extends JDialog {
 		setResizable(false);
 
 		pack();
-
 	}
 
 	/**
@@ -108,17 +103,17 @@ public class MoveDialog extends JDialog {
 
 		cancel = new JButton(resb.getString("move.cancel"));
 		NewGameFrame.sortOutButton( cancel, Move.getSubimage(484, 5, w, h), Move.getSubimage(480, 72, w, h) ,Move.getSubimage(480, 41, w, h) );
-		cancel.setBounds(50, 250, w, h);
+		GraphicsUtil.setBounds(cancel, 50, 250, w, h);
 		cancel.setActionCommand("cancel");
 
 		JButton moveall = new JButton(resb.getString("move.moveall"));
 		NewGameFrame.sortOutButton( moveall, Move.getSubimage(196, 250, w, h) ,Move.getSubimage(480, 134, w, h), Move.getSubimage(480, 103, w, h) );
-		moveall.setBounds(196, 250, w, h);
+		GraphicsUtil.setBounds(moveall, 196, 250, w, h);
 		moveall.setActionCommand("all");
 
 		JButton button = new JButton(resb.getString("move.move"));
 		NewGameFrame.sortOutButton( button, Move.getSubimage(342, 250, w, h), Move.getSubimage(480, 196, w, h), Move.getSubimage(480, 165, w, h) );
-		button.setBounds(343, 250, w, h);
+		GraphicsUtil.setBounds(button, 343, 250, w, h);
 		button.setActionCommand("move");
 
 
@@ -128,12 +123,12 @@ public class MoveDialog extends JDialog {
 
 		JButton b1 = new JButton(resb.getString("move.min"));
 		NewGameFrame.sortOutButton( b1, Move.getSubimage(25, 192, w, h), Move.getSubimage(480, 252, w, h), Move.getSubimage(515, 252, w, h) );
-		b1.setBounds(25, 192, w, h);
+		GraphicsUtil.setBounds(b1, 25, 192, w, h);
 		b1.setActionCommand("b1");
 
 		JButton b4 = new JButton(resb.getString("move.max"));
 		NewGameFrame.sortOutButton( b4, Move.getSubimage(25, 192, w, h), Move.getSubimage(480, 252, w, h), Move.getSubimage(515, 252, w, h) );
-		b4.setBounds(420, 192, w, h);
+		GraphicsUtil.setBounds(b4, 420, 192, w, h);
 		b4.setActionCommand("b4");
 
 
@@ -143,12 +138,12 @@ public class MoveDialog extends JDialog {
 
 		JButton b2 = new JButton(resb.getString("move.minus"));
 		NewGameFrame.sortOutButton( b2, Move.getSubimage(60, 192, w, h), Move.getSubimage(480, 227, w, h), Move.getSubimage(505, 227, w, h) );
-		b2.setBounds(60, 192, w, h);
+		GraphicsUtil.setBounds(b2, 60, 192, w, h);
 		b2.setActionCommand("b2");
 
 		JButton b3 = new JButton(resb.getString("move.plus"));
 		NewGameFrame.sortOutButton( b3, Move.getSubimage(60, 192, w, h), Move.getSubimage(480, 227, w, h), Move.getSubimage(505, 227, w, h) );
-		b3.setBounds(395, 192, w, h);
+		GraphicsUtil.setBounds(b3, 395, 192, w, h);
 		b3.setActionCommand("b3");
 
 
@@ -302,12 +297,11 @@ public class MoveDialog extends JDialog {
 
 					move = slider.getValue();
 					movepanel.repaint();
-
 				}
 			}
 		);
 
-		slider.setBounds(90, 180, 300, 50);
+		GraphicsUtil.setBounds(slider, 90, 180, 300, 50);
 
 		movepanel.add(slider);
 	}
@@ -328,10 +322,10 @@ public class MoveDialog extends JDialog {
 		 */
 		public void paintComponent(Graphics g) {
 
-			g.drawImage(MoveBack, 0, 0, this);
+			GraphicsUtil.drawImage(g, MoveBack, 0, 0, this);
 
 			if (tacmove) {
-				g.drawImage(Move.getSubimage(480, 0, 98, 41), 46, 245, this);
+				GraphicsUtil.drawImage(g, Move.getSubimage(480, 0, 98, 41), 46, 245, this);
 			}
 
 			paintMove(g, 
@@ -341,7 +335,7 @@ public class MoveDialog extends JDialog {
                                 csrc-move,cdes+move );
 
                         g.setColor( RiskUIUtil.getTextColorFor(color) );
-			g.drawString( Integer.toString(move) , 240, 104);
+			GraphicsUtil.drawStringCenteredAt(g, java.lang.Integer.toString(move), 240, 104);
 		}
 	}
 
@@ -357,54 +351,26 @@ public class MoveDialog extends JDialog {
                         drawCountry(g2, c1img, 130, 100);
                         drawCountry(g2, c2img, 350, 100);
 
-			FontRenderContext frc = g2.getFontRenderContext();
-			Font font = g2.getFont();
 			g2.setColor( Color.black );
-			TextLayout tl;
 
-			tl = new TextLayout( name1, font, frc); // Display
-			tl.draw( g2, (float) (130-(tl.getBounds().getWidth()/2)), 40f );
-
-			tl = new TextLayout( name2, font, frc); // Display
-			tl.draw( g2, (float) (350-(tl.getBounds().getWidth()/2)), 40f );
-
-			Ellipse2D ellipse;
+                        GraphicsUtil.drawStringCenteredAt(g, name1, 130, 40);
+                        GraphicsUtil.drawStringCenteredAt(g, name2, 350, 40);
 
 			g2.setColor( color1 );
-			ellipse = new Ellipse2D.Double();
-			ellipse.setFrame( 120 , 90 , 20, 20);
-			g2.fill(ellipse);
+                        GraphicsUtil.fillOval(g, 120 , 90 , 20, 20);
 
 			g2.setColor( color2 );
-			ellipse = new Ellipse2D.Double();
-			ellipse.setFrame( 340 , 90 , 20, 20);
-			g2.fill(ellipse);
+                        GraphicsUtil.fillOval(g, 340 , 90 , 20, 20);
 
 			g2.setColor( new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 150) );
 
 			g2.fillPolygon( arrow );
 
 			g2.setColor( RiskUIUtil.getTextColorFor(color1) );
-			if (noa1i < 10) {
-				g2.drawString( String.valueOf( noa1i ) , 126, 105 );
-			}
-			else if (noa1i < 100) {
-				g2.drawString( String.valueOf( noa1i ) , 123, 105 );
-			}
-			else {
-				g2.drawString( String.valueOf( noa1i ) , 120, 105 );
-			}
+                        GraphicsUtil.drawStringCenteredAt(g, String.valueOf(noa1i), 130, 105);
 
 			g2.setColor( RiskUIUtil.getTextColorFor(color2) );
-			if (noa2i < 10) {
-				g2.drawString( String.valueOf( noa2i ) , 346, 105 );
-			}
-			else if (noa2i < 100) {
-				g2.drawString( String.valueOf( noa2i ) , 343, 105 );
-			}
-			else {
-				g2.drawString( String.valueOf( noa2i ) , 340, 105 );
-			}
+                        GraphicsUtil.drawStringCenteredAt(g, String.valueOf(noa2i), 350, 105);
         }
 
         static void drawCountry(Graphics2D g, BufferedImage img, int x, int y) {
@@ -421,7 +387,6 @@ public class MoveDialog extends JDialog {
                 h = (int)( scale * h );
             }
 
-            g.drawImage(img, x - w/2, y - h/2, w, h, null);
+            GraphicsUtil.drawImage(g, img, x - w/2, y - h/2, w, h, null);
         }
-
 }

@@ -150,9 +150,9 @@ public class JoinDialog extends JDialog implements MouseInputListener {
 				GraphicsUtil.drawImage(g, joingame, 187, 93, 187 + 120, 93 + 55,	350, 165, 470, 220, this);
 			}
 
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.servername"), 100, 65);
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.cancel"), 103, 125);
-                        MainMenu.drawStringCenteredAt(g, resb.getString("join.connect"), 247, 125);
+                        GraphicsUtil.drawStringCenteredAt(g, resb.getString("join.servername"), 100, 65);
+                        GraphicsUtil.drawStringCenteredAt(g, resb.getString("join.cancel"), 103, 125);
+                        GraphicsUtil.drawStringCenteredAt(g, resb.getString("join.connect"), 247, 125);
 		}
 	}
 
@@ -164,10 +164,10 @@ public class JoinDialog extends JDialog implements MouseInputListener {
 	 */
 	public int insideButton(int x, int y) {
 
-		if (MainMenu.insideButton(x, y, 51, 101, 105, 40)) {
+		if (GraphicsUtil.insideButton(x, y, 51, 101, 105, 40)) {
 			return 1;
 		}
-		if (MainMenu.insideButton(x, y, 195, 101, 105, 40)) {
+		if (GraphicsUtil.insideButton(x, y, 195, 101, 105, 40)) {
 			return 2;
 		}
 		return 0;

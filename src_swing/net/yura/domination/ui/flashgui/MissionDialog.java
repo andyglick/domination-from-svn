@@ -2,17 +2,11 @@
 
 package net.yura.domination.ui.flashgui;
 
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.text.AttributedString;
-import java.awt.font.LineBreakMeasurer;
-import java.text.AttributedCharacterIterator;
-import java.awt.font.TextAttribute;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -111,31 +105,11 @@ public class MissionDialog extends JDialog implements MouseListener {
 
 	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	    int cardWidth = getWidth();
-
 	    Font font = new java.awt.Font("SansSerif", java.awt.Font.PLAIN, g.getFont().getSize() - 2); // 13 - 2 = 11
+            g.setFont(font);
+            g2.setColor( GameFrame.UI_COLOR );
 
-	    AttributedString as = new AttributedString(text);
-	    as.addAttribute(TextAttribute.FONT, font);
-
-	    AttributedCharacterIterator aci = as.getIterator();
-	    FontRenderContext frc = g2.getFontRenderContext();
-
-            LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
-
-	    g2.setColor( GameFrame.UI_COLOR );
-	    TextLayout tl = new TextLayout(aci, frc);
-
-            float y = GraphicsUtil.scale(70);
-            int padding = GraphicsUtil.scale(50);
-
-	    lbm.setPosition( 0 );
-
-	    while (lbm.getPosition() < text.length()) {
-		tl = lbm.nextLayout(cardWidth - padding);
-		tl.draw(g2, (float)(cardWidth/2-tl.getBounds().getWidth()/2), y += tl.getAscent());
-		y += tl.getDescent() + tl.getLeading();
-	    }
+            GraphicsUtil.drawStringCenteredAt(g, text, 75, 70, 100);
 	}
     }
 
