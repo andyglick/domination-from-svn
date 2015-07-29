@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.event.MouseInputListener;
-import javax.swing.plaf.basic.BasicGraphicsUtils;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
@@ -210,37 +208,28 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 			tl = new TextLayout( as.getIterator(), frc);
 			*/
 			
-                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.newgame"),'N', 122, 247 );
+                        GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.newgame"), 'N', 122, 247);
 
 			if (serverRunning) {
-                                drawStringCenteredAt( g2, resBundle.getString( "mainmenu.stopserver"),'S', 277, 247 );
+                                GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.stopserver"), 'S', 277, 247);
 				GraphicsUtil.drawImage(g, Server, 340, 490, this);
 			}
 			else {
-                                drawStringCenteredAt( g2, resBundle.getString( "mainmenu.startserver"),'S', 277, 247 );
+                                GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.startserver"), 'S', 277, 247);
 			}
 
-                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.loadgame"),'L', 122, 309 );
+                        GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.loadgame"), 'L', 122, 309);
 
-                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.help"),'H', 277, 309 );
+                        GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.help"), 'H', 277, 309);
 
-                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.joingame"),'J', 122, 369 );
+                        GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.joingame"), 'J', 122, 369);
 
-                        drawStringCenteredAt( g2, resBundle.getString( "mainmenu.about"),'A', 277, 369 );
+                        GraphicsUtil.drawStringCenteredAt(g2, resBundle.getString("mainmenu.about"), 'A', 277, 369);
 
 			//font = new java.awt.Font("Arial", java.awt.Font.BOLD, 24);
 			//tl = new TextLayout( resBundle.getString( "mainmenu.quit") , font, frc);
 			//tl.draw( g2, (float) (200-tl.getBounds().getWidth()/2), (float)465 );
 	}
-        
-        static void drawStringCenteredAt(Graphics g, String text, int x, int y) {
-            drawStringCenteredAt(g, text, '\0', x, y);
-        }
-        
-        static void drawStringCenteredAt(Graphics g, String text, char ch, int x, int y) {
-            FontMetrics metrics = g.getFontMetrics(g.getFont());
-            BasicGraphicsUtils.drawString(g, text, ch, GraphicsUtil.scale(x) - metrics.stringWidth(text) / 2, GraphicsUtil.scale(y));
-        }
 
 	private int button;
 	private int currentButton;
@@ -478,25 +467,25 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		int H=31;
 		int r = lobby.getWidth() / 2;
 
-		if (insideButton(x, y, 65, 228, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 65, 228, W, H)) {
 			return BUTTON_NEW;
 		}
-		if (insideButton(x, y, 220, 228, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 220, 228, W, H)) {
 			return BUTTON_SERVER;
 		}
-		if (insideButton(x, y, 65, 289, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 65, 289, W, H)) {
 			return BUTTON_LOADGAME;
 		}
-		if (insideButton(x, y, 220, 289, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 220, 289, W, H)) {
 			return BUTTON_HELP;
 		}
-		if (insideButton(x, y, 65, 350, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 65, 350, W, H)) {
 			return BUTTON_JOIN;
 		}
-		if (insideButton(x, y, 220, 350, W, H)) {
+		if (GraphicsUtil.insideButton(x, y, 220, 350, W, H)) {
 			return BUTTON_ABOUT;
 		}
-		if (insideButton(x, y, 0, 500, 115, 50)) { // google: 115px x 50px
+		if (GraphicsUtil.insideButton(x, y, 0, 500, 115, 50)) { // google: 115px x 50px
 			return BUTTON_DONATE;
 		}
                 // check if we are in the circle lobby button
@@ -506,9 +495,6 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
                 return 0;
 	}
         
-        static boolean insideButton(int x, int y, int bx, int by, int bw, int bh) {
-            return x >= GraphicsUtil.scale(bx) && x < GraphicsUtil.scale(bx + bw) && y >= GraphicsUtil.scale(by) && y < GraphicsUtil.scale(by + bh);
-        }
 
 	/**
 	 * key control

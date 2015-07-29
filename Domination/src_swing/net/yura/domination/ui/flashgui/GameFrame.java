@@ -202,12 +202,12 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			g2.setColor( Color.BLACK );
 
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.continents"), 81, 26);
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.ownership"), 196, 26);
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.borderthreat"), 311, 26);
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.cardownership"), 426, 26);
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.troopstrength"), 541, 26);
-			MainMenu.drawStringCenteredAt(g, resb.getString("game.tabs.connectedempire"), 656, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.continents"), 81, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.ownership"), 196, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.borderthreat"), 311, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.cardownership"), 426, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.troopstrength"), 541, 26);
+			GraphicsUtil.drawStringCenteredAt(g, resb.getString("game.tabs.connectedempire"), 656, 26);
 
 			if (mapView==PicturePanel.VIEW_CONTINENTS) {
 				GraphicsUtil.drawImage(g, gameImg, 24, 32, 139, 39,   64, 383, 179, 390,this);
@@ -766,22 +766,22 @@ public class GameFrame extends JFrame implements KeyListener {
                 int W = 115;
                 int H = 23;
 
-                if (MainMenu.insideButton(x, y, 24, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 24, 9, W, H)) {
                         return PicturePanel.VIEW_CONTINENTS;
                 }
-                if (MainMenu.insideButton(x, y, 139, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 139, 9, W, H)) {
                         return PicturePanel.VIEW_OWNERSHIP;
                 }
-                if (MainMenu.insideButton(x, y, 254, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 254, 9, W, H)) {
                         return PicturePanel.VIEW_BORDER_THREAT;
                 }
-                if (MainMenu.insideButton(x, y, 369, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 369, 9, W, H)) {
                         return PicturePanel.VIEW_CARD_OWNERSHIP;
                 }
-                if (MainMenu.insideButton(x, y, 484, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 484, 9, W, H)) {
                         return PicturePanel.VIEW_TROOP_STRENGTH;
                 }
-                if (MainMenu.insideButton(x, y, 599, 9, W, H)) {
+                if (GraphicsUtil.insideButton(x, y, 599, 9, W, H)) {
                         return PicturePanel.VIEW_CONNECTED_EMPIRE;
                 }
 		return -1;

@@ -16,22 +16,14 @@ import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.Shape;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.RenderingHints;
 import java.awt.AlphaComposite;
-import java.text.AttributedString;
-import java.awt.font.LineBreakMeasurer;
-import java.text.AttributedCharacterIterator;
-import java.awt.font.TextAttribute;
 import java.awt.Component;
 import java.util.List;
 import net.yura.domination.engine.Risk;
@@ -74,7 +66,6 @@ public class CardsDialog extends JDialog {
 	 * @param modal
 	 * @param r the risk main program
 	 */
-
 	public CardsDialog(Frame parent, boolean modal, Risk r, PicturePanel p) {
 		super(parent, modal);
 		myrisk = r;
@@ -92,7 +83,6 @@ public class CardsDialog extends JDialog {
 		initGUI();
 
 		pack();
-
 	}
 
 	public void setup(boolean ct) {
@@ -118,10 +108,11 @@ public class CardsDialog extends JDialog {
 		}
 
                 tradeButton.setEnabled(false);
-
 	}
 
-	/** This method is called from within the constructor to initialize the dialog. */
+	/**
+         * This method is called from within the constructor to initialize the dialog.
+         */
 	private void initGUI() {
 		resb = TranslationBundle.getBundle();
 
@@ -243,7 +234,6 @@ public class CardsDialog extends JDialog {
 					}
 				}
 		);
-
 	}
 
 	/**
@@ -253,18 +243,7 @@ public class CardsDialog extends JDialog {
 	 */
 	public Image getCountryImage(int a) {
 
-		BufferedImage pictureB;
-
-		if ( myrisk.isOwnedCurrentPlayerInt(a) ) {
-
-			pictureB = pp.getCountryImage(a, true);
-
-		}
-		else {
-
-			pictureB = pp.getCountryImage(a, false);
-
-		}
+		BufferedImage pictureB = pp.getCountryImage(a, myrisk.isOwnedCurrentPlayerInt(a));
 
 		int width = pictureB.getWidth();
 		int height = pictureB.getHeight();
@@ -273,7 +252,6 @@ public class CardsDialog extends JDialog {
 		if (height > 50) { height=50; }
 
 		return pictureB.getScaledInstance(width,height, java.awt.Image.SCALE_SMOOTH );
-
 	}
 
 	public String getNumArmies() {
@@ -340,63 +318,39 @@ public class CardsDialog extends JDialog {
 
 			//this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 1));
 
-			grayImage = new BufferedImage(cardWidth, cardHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+			grayImage = new BufferedImage(CardSize.width, CardSize.height, java.awt.image.BufferedImage.TYPE_INT_RGB );
 			Graphics2D g2 = grayImage.createGraphics();
 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g2.setColor( Color.lightGray );
-			g2.fillRect(0, 0, cardWidth, cardHeight);
-
+			g2.fillRect(0, 0, grayImage.getWidth(), grayImage.getHeight());
 
 			if (!(card.getName().equals("wildcard"))) {
 
 				String text = ((Country)card.getCountry()).getName(); // Display
 
+                                g2.setColor( GameFrame.UI_COLOR );
 
-				Font font = g2.getFont();
-
-				AttributedString as = new AttributedString(text);
-				as.addAttribute(TextAttribute.FONT, font);
-
-				AttributedCharacterIterator aci = as.getIterator();
-				FontRenderContext frc = g2.getFontRenderContext();
-
-				LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
-
-				g2.setColor( GameFrame.UI_COLOR );
-				TextLayout tl = new TextLayout(aci, frc);
-
-				float y = 5;
-
-				lbm.setPosition( 0 );
-
-				while (lbm.getPosition() < text.length()) {
-					tl = lbm.nextLayout(cardWidth - 10);
-					tl.draw(g2, (float)(cardWidth/2-tl.getBounds().getWidth()/2), y += tl.getAscent());
-					y += tl.getDescent() + tl.getLeading();
-				}
-
-				//TextLayout tl = new TextLayout("bob" , font, frc);
-				//tl.draw( g2, (float)(100/2-tl.getBounds().getWidth()/2) , (float)15 );
+                                GraphicsUtil.drawStringCenteredAt(g2, text, cardWidth / 2, 5, cardWidth - 10);
 
 				Image i = getCountryImage( ((Country)card.getCountry()).getColor() );
 
-				g2.drawImage( i , 25+ (25-(i.getWidth(this)/2)) ,35+ (25-(i.getHeight(this)/2)) ,null );
+				GraphicsUtil.drawImage(g2, i, 25 + (25 - (i.getWidth(this) / 2)), 35 + (25 - (i.getHeight(this) / 2)), null);
 
 				if (card.getName().equals("Infantry")) {
-					g2.drawImage( Infantry ,25 ,90 ,null );
+					GraphicsUtil.drawImage(g2, Infantry, 25, 90, null);
 				}
 				else if (card.getName().equals("Cavalry")) {
-					g2.drawImage( Cavalry ,25 ,90 ,null );
+					GraphicsUtil.drawImage(g2, Cavalry, 25, 90, null);
 				}
 				else if (card.getName().equals("Cannon")) {
-					g2.drawImage( Artillery ,15 ,105 ,null );
+					GraphicsUtil.drawImage(g2, Artillery, 15, 105, null);
 				}
 
 			}
 			else {
-				g2.drawImage( Wildcard ,25 ,10 ,null );
+				GraphicsUtil.drawImage(g2, Wildcard, 25, 10, null);
 			}
 
 			//g2.setColor( Color.black );
@@ -405,17 +359,16 @@ public class CardsDialog extends JDialog {
 
 			g2.setColor( GameFrame.UI_COLOR );
 
-			Shape shape2 = new RoundRectangle2D.Float(2, 2, 95, 165, 20, 20);
+			Shape shape2 = GraphicsUtil.newRoundRectangle(2, 2, 95, 165, 20, 20);
 
 			g2.draw(shape2);
 
-			highlightImage = new BufferedImage(cardWidth, cardHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+			highlightImage = new BufferedImage(grayImage.getWidth(), grayImage.getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB);
 
 			RescaleOp HighLight = new RescaleOp(1.5f, 1.0f, null);
 			HighLight.filter( grayImage , highlightImage );
 
 			g2.dispose();
-
 		}
 
 		/**
@@ -423,7 +376,6 @@ public class CardsDialog extends JDialog {
 		 * @param g The graphics
 		 */
 		public void paintComponent(Graphics g) {
-
 			super.paintComponent(g);
 
 			Graphics2D g2 = (Graphics2D)g;
@@ -431,13 +383,12 @@ public class CardsDialog extends JDialog {
 			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
 			g2.setComposite(ac);
 
-			Shape shape = new RoundRectangle2D.Float(0, 0, 100, 170, 25, 25);
+			Shape shape = GraphicsUtil.newRoundRectangle(0, 0, 100, 170, 25, 25);
 
 			g2.clip(shape);
 
 			if (select) { g2.drawImage( highlightImage ,0 ,0 ,this ); }
 			else { g2.drawImage( grayImage ,0 ,0 ,this ); }
-
 		}
 
 		/**
@@ -451,7 +402,6 @@ public class CardsDialog extends JDialog {
 			} else {
 				return card.getName();
 			}
-
 		}
 
 		//**********************************************************************
@@ -480,7 +430,6 @@ public class CardsDialog extends JDialog {
 
 			myCardsPanel.repaint();
 			TradePanel.repaint();
-
 		}
 
 		/**
@@ -508,7 +457,6 @@ public class CardsDialog extends JDialog {
 
 	}
 
-	/** Closes the dialog */
 	private void closeDialog() {
 		setVisible(false);
 	}
