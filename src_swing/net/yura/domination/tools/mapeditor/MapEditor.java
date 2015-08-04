@@ -50,6 +50,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
@@ -57,6 +58,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
@@ -1079,7 +1082,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 JOptionPane.showMessageDialog(this, "no islands found");
             }
             else {
-                Map<Integer,Integer> counts = new TreeMap();
+                final Map<Integer,Integer> counts = new TreeMap();
                 for (List<Integer> island: allIslands) {
                     int islandSize = island.size();
                     if (counts.get(islandSize)==null) {
@@ -1089,6 +1092,40 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         counts.put(islandSize, counts.get(islandSize)+1);
                     }
                 }
+
+                final List<Integer> islandSizes = new ArrayList(counts.keySet());
+                final boolean[] del = new boolean[islandSizes.size()];
+                TableModel islandsTable = new AbstractTableModel() {
+			private final String[] columnNames = {"size", "count", "del"};
+			public int getColumnCount() {
+				return columnNames.length;
+			}
+			public String getColumnName(int col) {
+				return columnNames[col];
+			}
+			public int getRowCount() {
+				return islandSizes.size();
+  			}
+			public Object getValueAt(int row, int col) {
+				switch (col) {
+					case 0: return islandSizes.get(row);
+					case 1: return counts.get(islandSizes.get(row));
+					case 2: return del[row];
+					default: throw new RuntimeException();
+				}
+			}
+                        public boolean isCellEditable(int row, int col) {
+                                return col == 2;
+                        }
+                        public Class<?> getColumnClass(int col) {
+                                return col == 2 ? Boolean.class : super.getColumnClass(col);
+                        }
+                        public void setValueAt(Object aValue, int row, int col) {
+                                if (col != 2) throw new RuntimeException();
+                                del[row] = (Boolean)aValue;
+                        }
+		};
+/*
                 StringBuilder table = new StringBuilder();
                 table.append("<table border=\"1\"><tr><th>size</th><th>count</th></tr>");
                 for (Integer islandSize: counts.keySet()) {
@@ -1099,11 +1136,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     table.append("</td></tr>");
                 }
                 table.append("</table>");
+*/
+                int result = JOptionPane.showConfirmDialog(this, new Object[] {
+                    "<html>"+allIslands.size()+" islands found, are you sure you want to delete them from the map?",
+                    new JScrollPane(new JTable(islandsTable))}, "Del Islands?", JOptionPane.YES_NO_OPTION);
 
-                int result = JOptionPane.showConfirmDialog(this, "<html>"+allIslands.size()+" islands found:"+table+"are you sure you want to delete them from the map?", "Del Islands?", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    for (List<Integer> island: allIslands) for (int pos: island) {
-                        pixels[pos] = 0xFFFFFFFF;
+                    for (List<Integer> island: allIslands) {
+                        if (del[islandSizes.indexOf(island.size())]) {
+                            for (int pos: island) {
+                                pixels[pos] = 0xFFFFFFFF;
+                            }
+                        }
                     }
                     map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
                     repaint();                
