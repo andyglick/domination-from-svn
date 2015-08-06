@@ -267,20 +267,18 @@ public class CardsDialog extends JDialog {
 
 	    this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 1));
 
-	    grayImage = new BufferedImage(cardWidth, cardHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+	    grayImage = new BufferedImage(CardSize.width, CardSize.height, java.awt.image.BufferedImage.TYPE_INT_RGB );
 	    Graphics2D g2 = grayImage.createGraphics();
 
 	    g2.setColor( Color.lightGray );
-	    g2.fillRect(0, 0, cardWidth, cardHeight);
+	    g2.fillRect(0, 0, grayImage.getWidth(), grayImage.getHeight());
 
-            FontRenderContext frc = g2.getFontRenderContext();
-            Font font = g2.getFont();
+            g2.setFont(getFont());
 
 	    if (!(card.getName().equals("wildcard"))) {
 
 		g2.setColor( Color.black );
-		TextLayout tl = new TextLayout( ((Country)card.getCountry()).getName() , font, frc); // Display
-		tl.draw( g2, (float) (100/2-tl.getBounds().getWidth()/2), (float)15 );
+                GraphicsUtil.drawStringCenteredAt(g2, ((Country)card.getCountry()).getName(), cardWidth / 2, 15);
 
 
 
@@ -295,29 +293,27 @@ public class CardsDialog extends JDialog {
 		Image i = pictureB.getScaledInstance(width,height, java.awt.Image.SCALE_SMOOTH );
 
 
-
-		g2.drawImage( i , 25+ (25-(i.getWidth(this)/2)) ,25+ (25-(i.getHeight(this)/2)) ,null );
+		GraphicsUtil.drawImage(g2, i, 25 + (25 - (i.getWidth(this) / 2)), 25 + (25 - (i.getHeight(this) / 2)), null);
 
 		if (card.getName().equals("Infantry")) {
-		    g2.drawImage( Infantry ,15 ,85 ,null );
+		    GraphicsUtil.drawImage(g2, Infantry, 15, 85, null);
 		}
 		else if (card.getName().equals("Cavalry")) {
-		    g2.drawImage( Cavalry ,15 ,85 ,null );
+		    GraphicsUtil.drawImage(g2, Cavalry, 15, 85, null);
 		}
 		else if (card.getName().equals("Cannon")) {
-		    g2.drawImage( Artillery ,15 ,85 ,null );
+		    GraphicsUtil.drawImage(g2, Artillery, 15, 85, null);
 		}
 
 	    }
 	    else {
-		g2.drawImage( Wildcard ,20 ,8 ,null );
+                GraphicsUtil.drawImage(g2, Wildcard, 20, 8, null);
 	    }
 
 	    g2.setColor( Color.black );
-            TextLayout tl = new TextLayout( card.getName() , font, frc);
-            tl.draw( g2, (float) (100/2-tl.getBounds().getWidth()/2), (float)160 );
+            GraphicsUtil.drawStringCenteredAt(g2, card.getName(), cardWidth / 2, 160);
 
-	    highlightImage = new BufferedImage(cardWidth, cardHeight, java.awt.image.BufferedImage.TYPE_INT_RGB );
+	    highlightImage = new BufferedImage(grayImage.getWidth(), grayImage.getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB );
 
 	    RescaleOp HighLight = new RescaleOp(1.5f, 1.0f, null);
 	    HighLight.filter( grayImage , highlightImage );
