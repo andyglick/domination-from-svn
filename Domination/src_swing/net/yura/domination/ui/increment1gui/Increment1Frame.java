@@ -35,6 +35,7 @@ import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.swing.ImageIcon;
 
 /**
  * <p> Increment1 GUI </p>
@@ -89,7 +90,7 @@ public class Increment1Frame extends JFrame {
 	Command = new JTextField();
 	Submit = new JButton();
 
-	Pix = new JLabel(new javax.swing.ImageIcon( this.getClass().getResource("map.png") ));
+	Pix = new JLabel(new ImageIcon( this.getClass().getResource("map.png") ));
 	statusBar = new JLabel("Loading...");
 	Con = new JScrollPane(Console);
 	Log = new JScrollPane(Testing);

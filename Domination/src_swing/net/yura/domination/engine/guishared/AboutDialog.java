@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.swing.ImageIcon;
 
 /**
  * About Dialog
@@ -108,7 +109,7 @@ public class AboutDialog extends JDialog {
 		commentField.setEditable(false);
 		commentField.setOpaque(false);
 
-		JLabel image = new JLabel(new javax.swing.ImageIcon( AboutDialog.class.getResource("logo.png") ), JLabel.CENTER);
+		JLabel image = new JLabel(new ImageIcon( AboutDialog.class.getResource("logo.png") ), JLabel.CENTER);
 
 		//Dimension size = new Dimension(120,120);
 

@@ -47,6 +47,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.swing.ImageIcon;
 
 /**
  * <p> Simple GUI for Risk </p>
@@ -217,7 +218,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
                 Pix = new JLabel();
                 URL about = this.getClass().getResource("about.png");
                 if (about!=null) {
-                    Pix.setIcon( new javax.swing.ImageIcon( about ) );
+                    Pix.setIcon( new ImageIcon( about ) );
                 }
                 else {
                     System.out.println("WARN: no about.png image found");

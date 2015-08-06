@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,6 +40,7 @@ import net.yura.lobby.client.LobbyClientGUI;
 import net.yura.lobby.client.ResBundle;
 import net.yura.lobby.client.TurnBasedAdapter;
 import net.yura.lobby.model.Game;
+import net.yura.swing.ImageIcon;
 
 public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 

@@ -35,7 +35,6 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -74,6 +73,7 @@ import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.ui.swinggui.SwingGUIPanel;
 import net.yura.domination.ui.swinggui.SwingGUITab;
+import net.yura.swing.ImageIcon;
 import net.yura.swing.JTable;
 
 /**
@@ -192,12 +192,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 
 		toolbar.addSeparator();
 
-		loadimagepic = new JButton("Load Image Pic",new javax.swing.ImageIcon(this.getClass().getResource("edit_pic.png")) );
+		loadimagepic = new JButton("Load Image Pic",new ImageIcon(this.getClass().getResource("edit_pic.png")) );
 		loadimagepic.setActionCommand("loadimagepic");
 		loadimagepic.addActionListener(this);
 		toolbar.add(loadimagepic);
 
-		loadimagemap = new JButton("Load Image Map",new javax.swing.ImageIcon(this.getClass().getResource("edit_map.png")) );
+		loadimagemap = new JButton("Load Image Map",new ImageIcon(this.getClass().getResource("edit_map.png")) );
 		loadimagemap.setActionCommand("loadimagemap");
 		loadimagemap.addActionListener(this);
 		toolbar.add(loadimagemap);
@@ -326,7 +326,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		add(topPanel, BorderLayout.NORTH );
 
-		setZoom(1);
+		setZoom(GraphicsUtil.scale(1));
 	}
 
 	private JRadioButton newJRadioButton(String a,boolean sel, ButtonGroup bg,JPanel jp) {
@@ -405,7 +405,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				Point frameLocation = frame.getLocation();
 
 				views.setLocation(frameLocation.x+frameSize.width, frameLocation.y);
-				views.setSize(200, frameSize.height);
+				views.setSize(GraphicsUtil.scale(200), frameSize.height);
 
 			}
 
@@ -828,7 +828,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                         String[] options = {"Dots", "Flood Fill", "Cancel"};
                         int result = JOptionPane.showOptionDialog(this, new Object[] {
-                                new javax.swing.ImageIcon(this.getClass().getResource("bam.png")),
+                                new ImageIcon(this.getClass().getResource("bam.png")),
                                 "Are you sure you want to add country regions wherever the country badge is?\n"+
                                 "This action is not reversible so please save a copy of your map first." },"Auto Draw?",
                                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

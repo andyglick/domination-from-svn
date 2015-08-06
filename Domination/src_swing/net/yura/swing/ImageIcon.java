@@ -31,6 +31,17 @@ public class ImageIcon extends javax.swing.ImageIcon {
 
     @Override
     public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-        g.drawImage(getImage(), x, y, getIconWidth(), getIconHeight(), c);
+        g.drawImage(super.getImage(), x, y, getIconWidth(), getIconHeight(), c);
+    }
+
+    /**
+     * Swing uses this to get the disabled grey icon for disabled buttons. 
+     */
+    @Override
+    public Image getImage() {
+        if (getIconWidth() == super.getIconWidth()) {
+            return super.getImage();
+        }
+        return super.getImage().getScaledInstance(getIconWidth(), getIconHeight(), Image.SCALE_SMOOTH);
     }
 }

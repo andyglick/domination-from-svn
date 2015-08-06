@@ -43,6 +43,7 @@ import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.swing.GraphicsUtil;
 
 /**
  * <p> Options Dialog for SwingGUI </p>
@@ -143,11 +144,11 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
                     }
 
                     public int getIconWidth() {
-                        return 10;
+                        return GraphicsUtil.scale(10);
                     }
 
                     public int getIconHeight() {
-                        return 10;
+                        return GraphicsUtil.scale(10);
                     }
                 } );
             }
