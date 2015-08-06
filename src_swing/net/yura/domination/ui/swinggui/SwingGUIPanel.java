@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -62,6 +63,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -1680,11 +1682,10 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
 		setContinuousLayout(true);
 		setOneTouchExpandable(true);
-		setDividerLocation(400);
+		setDividerLocation(GraphicsUtil.scale(400));
 		setBorder( BorderFactory.createEmptyBorder() );
 
 		setOpaque(false);
-
 	}
 
         public void start() {
@@ -2384,21 +2385,23 @@ public void setNODDefender(int n) {}
 
 		public void paintComponent(Graphics g) {
 
+                        int width = getWidth();
+                        int height = getHeight();
 			int[] colors = myrisk.getPlayerColors();
 
                         if (colors.length==0) return;
 
 			for (int c=0; c < colors.length ; c++) {
 				g.setColor( new Color( colors[c] ) );
-				g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
+				g.fillRect(((width / colors.length) * c), 0, width / colors.length, height);
 			}
 
 			g.setColor( new Color( ColorUtil.getTextColorFor( colors[0] ) ) );
 
-			g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
+			g.drawRect( 2 , 2 , (width/colors.length)-5 , height - 5);
 
 			g.setColor( Color.black );
-			g.drawLine( (120/colors.length)-1 , 0, (120/colors.length)-1, 19);
+			g.drawLine((width / colors.length) - 1, 0, (width / colors.length) - 1, height - 1);
 
 		}
 
@@ -2473,6 +2476,7 @@ public void setNODDefender(int n) {}
 		public GamePanel() {
 
 			resultsLabel = new JLabel("RESULTS");
+                        resultsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 			Dimension mapSize = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y);
 
@@ -2510,17 +2514,15 @@ public void setNODDefender(int n) {}
 			inGameInput.setMinimumSize(d);
 			inGameInput.setMaximumSize(d);
 
-			JPanel nothing = new JPanel();
+			JLabel nothing = new JLabel(resbundle.getString("game.pleasewaitnetwork"));
+                        nothing.setHorizontalAlignment(SwingConstants.CENTER);
 			nothing.setPreferredSize(d);
 			nothing.setMinimumSize(d);
 			nothing.setMaximumSize(d);
-			nothing.add(new JLabel(resbundle.getString("game.pleasewaitnetwork")) );
 
-			JPanel results = new JPanel();
-			results.setPreferredSize(d);
-			results.setMinimumSize(d);
-			results.setMaximumSize(d);
-			results.add(resultsLabel);
+			resultsLabel.setPreferredSize(d);
+			resultsLabel.setMinimumSize(d);
+			resultsLabel.setMaximumSize(d);
 
 			JPanel placeArmies = new placeArmiesPanel();
 			placeArmies.setPreferredSize(d);
@@ -2574,7 +2576,6 @@ public void setNODDefender(int n) {}
 
 			inGameInput.setOpaque(false);
 
-			nothing.setOpaque(false);
 			placeArmies.setOpaque(false);
 			roll.setOpaque(false);
 			move.setOpaque(false);
@@ -2585,7 +2586,6 @@ public void setNODDefender(int n) {}
 			tradeCards.setOpaque(false);
 			winner.setOpaque(false);
 			endgo.setOpaque(false);
-			results.setOpaque(false);
 
 			inGameInput.add(nothing, "nothing");
 			inGameInput.add(placeArmies, "placeArmies");
@@ -2598,7 +2598,7 @@ public void setNODDefender(int n) {}
 			inGameInput.add(tradeCards, "tradeCards");
 			inGameInput.add(winner, "winner");
 			inGameInput.add(endgo, "endgo");
-			inGameInput.add(results, "results");
+			inGameInput.add(resultsLabel, "results");
 
 			// ################### IN GAME #######################
 /*
@@ -3628,10 +3628,12 @@ public void setNODDefender(int n) {}
 
 			Dimension size = GraphicsUtil.newDimension(200, 40);
 
+                        Font titleFont = new Font("SansSerif", Font.PLAIN, getFont().getSize() - 2); // 13 - 2 = 11
+
 			country1 = new JTextField("");
 			country1.setEditable(false);
 			//country1.setBackground(SystemColor.control);
-			country1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED),"Source",javax.swing.border.TitledBorder.LEADING,javax.swing.border.TitledBorder.TOP,new java.awt.Font("SansSerif",0,11),new java.awt.Color(60,60,60)));
+			country1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED),"Source",javax.swing.border.TitledBorder.LEADING,javax.swing.border.TitledBorder.TOP,titleFont,new java.awt.Color(60,60,60)));
 
 			country1.setPreferredSize(size);
 			country1.setMinimumSize(size);
@@ -3640,7 +3642,7 @@ public void setNODDefender(int n) {}
 			country2 = new JTextField("");
 			country2.setEditable(false);
 			//country2.setBackground(SystemColor.control);
-			country2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED),"Target",javax.swing.border.TitledBorder.LEADING,javax.swing.border.TitledBorder.TOP,new java.awt.Font("SansSerif",0,11),new java.awt.Color(60,60,60)));
+			country2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED),"Target",javax.swing.border.TitledBorder.LEADING,javax.swing.border.TitledBorder.TOP,titleFont,new java.awt.Color(60,60,60)));
 
 			country2.setPreferredSize(size);
 			country2.setMinimumSize(size);
@@ -3673,7 +3675,7 @@ public void setNODDefender(int n) {}
 
 			GridBagConstraints c = new GridBagConstraints();
 			c.insets = new java.awt.Insets(3, 3, 3, 3);
-			c.anchor = GridBagConstraints.SOUTH;
+			c.anchor = GridBagConstraints.CENTER;
 
 			JButton moveButton = new JButton(resbundle.getString("move.move"));
 
