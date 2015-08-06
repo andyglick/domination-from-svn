@@ -1,4 +1,4 @@
-package net.yura.domination.engine.guishared;
+package net.yura.swing;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
@@ -45,6 +44,7 @@ import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.ui.flashgui.MainMenu;
 import net.yura.mobile.util.Url;
+import net.yura.swing.JTable;
 
 /**
  * @author Yura Mamyrin

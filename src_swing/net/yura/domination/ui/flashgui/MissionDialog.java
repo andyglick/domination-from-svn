@@ -15,7 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.swing.GraphicsUtil;
 
 /**
  * Mission Dialog for FlashGUI

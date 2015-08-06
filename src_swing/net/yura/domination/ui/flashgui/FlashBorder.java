@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
 import javax.swing.border.Border;
-import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.swing.GraphicsUtil;
 
 /**
  * @author Yura Mamyrin

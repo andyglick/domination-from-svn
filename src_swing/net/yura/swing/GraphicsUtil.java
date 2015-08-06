@@ -1,4 +1,4 @@
-package net.yura.domination.engine.guishared;
+package net.yura.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;

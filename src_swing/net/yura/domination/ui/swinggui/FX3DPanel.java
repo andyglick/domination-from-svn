@@ -15,7 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import net.yura.domination.engine.guishared.ErdeAnsicht;
-import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 
 /**
