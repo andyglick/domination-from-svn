@@ -2,6 +2,7 @@
 
 package net.yura.domination.engine.guishared;
 
+import net.yura.swing.GraphicsUtil;
 import collisionphysics.BallWorld;
 import java.awt.BasicStroke;
 import java.awt.Color;

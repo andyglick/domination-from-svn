@@ -32,7 +32,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 

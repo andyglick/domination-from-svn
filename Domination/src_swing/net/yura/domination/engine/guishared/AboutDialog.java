@@ -2,6 +2,7 @@
 
 package net.yura.domination.engine.guishared;
 
+import net.yura.swing.GraphicsUtil;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;

@@ -59,7 +59,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -80,14 +79,15 @@ import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.guishared.BadgeButton;
-import net.yura.domination.engine.guishared.GraphicsUtil;
-import net.yura.domination.engine.guishared.ImageIcon;
+import net.yura.swing.GraphicsUtil;
+import net.yura.swing.ImageIcon;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
+import net.yura.swing.JTable;
 
 /**
  * <p> Swing GUI Main Frame </p>

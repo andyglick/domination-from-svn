@@ -11,7 +11,7 @@ import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
-import net.yura.domination.engine.guishared.ImageIcon;
+import net.yura.swing.ImageIcon;
 import net.yura.domination.engine.guishared.PicturePanel;
 
 /**

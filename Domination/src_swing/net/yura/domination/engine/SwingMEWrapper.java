@@ -5,7 +5,7 @@ import java.awt.Window;
 import java.io.File;
 import java.util.List;
 import javax.swing.SwingUtilities;
-import net.yura.domination.engine.guishared.GraphicsUtil;
+import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.mapstore.MapChooser;
