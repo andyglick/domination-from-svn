@@ -47,6 +47,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.swing.GraphicsUtil;
 import net.yura.swing.ImageIcon;
 
 /**
@@ -240,9 +241,8 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 		statusBar.setText("Ready");
 	}
 
-	/** This method is called from within the constructor to initialize the form. */
-
 	/**
+	 * This method is called from within the constructor to initialize the form.
 	 * Initialises the GUI
 	 */
 	private void initGUI() {
@@ -257,7 +257,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 		c.insets = new java.awt.Insets(3, 3, 3, 3);
 
-		Dimension ppSize = new Dimension(PicturePanel.PP_X,PicturePanel.PP_Y);
+		Dimension ppSize = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y);
 
 		pp.setPreferredSize(ppSize);
 		pp.setMinimumSize(ppSize);
@@ -273,18 +273,18 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 		Console.setEditable(false);
 
 		Con.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		Con.setPreferredSize(new java.awt.Dimension(PicturePanel.PP_X,100));
-		Con.setMinimumSize(new java.awt.Dimension(PicturePanel.PP_X,100));
+		Con.setPreferredSize(GraphicsUtil.newDimension(PicturePanel.PP_X, 100));
+		Con.setMinimumSize(GraphicsUtil.newDimension(PicturePanel.PP_X, 100));
 
-		Command.setPreferredSize(new java.awt.Dimension(600,20));
-		Command.setMinimumSize(new java.awt.Dimension(600,20));
-		Command.setMaximumSize(new java.awt.Dimension(600,20));
+		Command.setPreferredSize(GraphicsUtil.newDimension(600, 20));
+		Command.setMinimumSize(GraphicsUtil.newDimension(600, 20));
+		Command.setMaximumSize(GraphicsUtil.newDimension(600, 20));
 
 		Submit.setText("Submit");
 
 		guiMain = new JPanel();
 
-		Dimension guiMainSize = new Dimension(PicturePanel.PP_X, PicturePanel.PP_Y+30);
+		Dimension guiMainSize = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y + 30);
 		guiMain.setPreferredSize(guiMainSize);
 		guiMain.setMinimumSize(guiMainSize);
 		guiMain.setMaximumSize(guiMainSize);
@@ -622,7 +622,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 			//Command.setEnabled(false);
 			risk.parser(input);
 		}
-
 	}
 
 	/**
@@ -660,7 +659,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 	public void openAbout() {
 
 		RiskUIUtil.openAbout(RiskGUI.this,product, version);
-
 	}
 
 	class playersPanel extends JPanel {
@@ -701,7 +699,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 			//JButton leave = new JButton("leave");
 
-			Dimension mapViewSize = new Dimension(150 , 20);
+			Dimension mapViewSize = GraphicsUtil.newDimension(150, 20);
 
 			mapViewComboBox.setPreferredSize(mapViewSize);
 			mapViewComboBox.setMinimumSize(mapViewSize);
@@ -727,7 +725,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 			JLabel playersLabel = new JLabel("Players:");
 
-			Dimension playerPanelSize = new Dimension(120 , 20);
+			Dimension playerPanelSize = GraphicsUtil.newDimension(120, 20);
 
 			JPanel players = new playersPanel();
 
@@ -761,7 +759,7 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 					}
 			);
 
-			Dimension size = new Dimension(PicturePanel.PP_X , 30);
+			Dimension size = GraphicsUtil.newDimension(PicturePanel.PP_X, 30);
 
 			OptionsPanel.setPreferredSize(size);
 			OptionsPanel.setMinimumSize(size);
@@ -779,7 +777,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 			this.add(OptionsPanel, java.awt.BorderLayout.NORTH );
 			this.add(pp, java.awt.BorderLayout.CENTER);
-
 		}
 	}
 
@@ -798,7 +795,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 		}
 
 		pp.repaintCountries( newview );
-
 	}
 
 	//**********************************************************************
@@ -864,7 +860,5 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
                 RiskUIUtil.center(gui);
 		gui.setVisible(true);
-
 	}
-
 }
