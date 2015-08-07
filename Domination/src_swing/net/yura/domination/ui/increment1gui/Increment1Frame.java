@@ -3,7 +3,6 @@
 package net.yura.domination.ui.increment1gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -35,13 +34,13 @@ import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.guishared.AboutDialog;
+import net.yura.swing.GraphicsUtil;
 import net.yura.swing.ImageIcon;
 
 /**
  * <p> Increment1 GUI </p>
  * @author Yura Mamyrin
  */
-
 public class Increment1Frame extends JFrame {
 
     private final static String version = "1.1.1.1";
@@ -118,7 +117,6 @@ public class Increment1Frame extends JFrame {
 
         Testing.append("Program loaded\n");
 	statusBar.setText("Ready");
-
     }
 
     /** This method is called from within the constructor to initialize the form. */
@@ -157,18 +155,18 @@ public class Increment1Frame extends JFrame {
 
 	Log.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	Log.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	Log.setPreferredSize(new java.awt.Dimension(200,550));
-	Log.setMinimumSize(new java.awt.Dimension(200,550));
+	Log.setPreferredSize(GraphicsUtil.newDimension(200, 550));
+	Log.setMinimumSize(GraphicsUtil.newDimension(200, 550));
 
 	Con.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	Con.setPreferredSize(new java.awt.Dimension(677,150));
-	Con.setMinimumSize(new java.awt.Dimension(677,150));
+	Con.setPreferredSize(GraphicsUtil.newDimension(677, 150));
+	Con.setMinimumSize(GraphicsUtil.newDimension(677, 150));
 
         //	c.ipadx = 600; // width
         //	c.ipadx = 0; // width
-	Command.setPreferredSize(new java.awt.Dimension(600,20));
-	Command.setMinimumSize(new java.awt.Dimension(600,20));
-	Command.setMaximumSize(new java.awt.Dimension(600,20));
+	Command.setPreferredSize(GraphicsUtil.newDimension(600, 20));
+	Command.setMinimumSize(GraphicsUtil.newDimension(600, 20));
+	Command.setMaximumSize(GraphicsUtil.newDimension(600, 20));
         // Command.setColumns(75); // dont use because it goes odd in linux
 
 
@@ -520,7 +518,6 @@ public class Increment1Frame extends JFrame {
 	);
 
         // pack();
-
     }
 
     /** Exit the Application */
@@ -577,7 +574,6 @@ public class Increment1Frame extends JFrame {
 	}
 
 	// Console.setCaretPosition(Console.getDocument().getLength());
-
     }
 
     /**
@@ -619,7 +615,6 @@ public class Increment1Frame extends JFrame {
 	RiskUIUtil.openAbout(Increment1Frame.this,product, version);
 
 	Testing.append("About Box opened\n");
-
     }
 
 class Increment1RiskAdapter extends RiskAdapter {
@@ -636,7 +631,6 @@ class Increment1RiskAdapter extends RiskAdapter {
 	Console.append(output + System.getProperty("line.separator") );
 
 	Console.setCaretPosition(Console.getDocument().getLength());
-
     }
 
     /**
@@ -649,7 +643,6 @@ class Increment1RiskAdapter extends RiskAdapter {
 	Command.setEnabled(true);
 	Command.requestFocus();
 	statusBar.setText("Done... Ready");
-
     }
 
     /**
@@ -662,7 +655,6 @@ class Increment1RiskAdapter extends RiskAdapter {
 	Command.setEnabled(false);
 
         Testing.append("Input Blocked\n");
-
     }
 
 }
@@ -679,7 +671,5 @@ class Increment1RiskAdapter extends RiskAdapter {
 
         RiskUIUtil.center(gui);
         gui.setVisible(true);
-
     }
-
 }
