@@ -54,10 +54,9 @@ import net.yura.swing.ImageIcon;
  * <p> Simple GUI for Risk </p>
  * @author Yura Mamyrin
  */
-
 public class RiskGUI extends JFrame implements MouseInputListener {
 
-	private final static String version = "1.1.1.1";
+	private final static String version = "1.2";
 	private final static String product = "Simple GUI for RISK";
 
 	private JTextPane Console;
@@ -80,8 +79,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 	private JLabel Pix;
 
 	private JComboBox mapViewComboBox;
-
-	/** Creates new form JFrame */
 
 	/**
 	 * Creates a new RiskGUI
@@ -343,7 +340,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 				history.add(input);
 				pointer = history.size()-1;
 				go(input);
-
 			}
 		};
 
@@ -353,7 +349,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 
 		class CommandKeyAdapter extends KeyAdapter {
 			RiskGUI adaptee;
-
 
 			CommandKeyAdapter(RiskGUI adaptee) {
 				this.adaptee = adaptee;
@@ -391,7 +386,6 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 				else {
 					pointer = history.size()-1;
 				}
-
 			}
 		}
 
@@ -664,23 +658,23 @@ public class RiskGUI extends JFrame implements MouseInputListener {
 	class playersPanel extends JPanel {
 
 		public void paintComponent(Graphics g) {
+                        int width = getWidth();
+                        int height = getHeight();
 
 			int[] colors = risk.getPlayerColors();
 
 			for (int c=0; c < colors.length ; c++) {
 				g.setColor( new Color( colors[c] ) );
-				g.fillRect( ((120/colors.length) * c) , 0 , (120/colors.length) , 20);
+				g.fillRect( ((width/colors.length) * c), 0, (width/colors.length), height);
 			}
 
 			g.setColor( new Color( ColorUtil.getTextColorFor( colors[0] ) ) );
 
-			g.drawRect( 2 , 2 , (120/colors.length)-5 , 15);
+			g.drawRect( 2 , 2 , (width/colors.length)-5 , height - 5);
 
 			g.setColor( Color.black );
-			g.drawLine( (120/colors.length)-1 , 0, (120/colors.length)-1, 19);
-
+			g.drawLine( (width/colors.length)-1 , 0, (width/colors.length)-1, height - 1);
 		}
-
 	}
 
 	class GamePanel extends JPanel {
