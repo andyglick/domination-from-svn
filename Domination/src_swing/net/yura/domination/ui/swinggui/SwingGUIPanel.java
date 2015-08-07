@@ -3073,6 +3073,7 @@ public void setNODDefender(int n) {}
 			c.gridy = 1; // row
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
+			c.weightx = 1;
 			mapOptions.add(chooseMap, c);
 
 			c.gridx = 1; // col
@@ -3080,7 +3081,7 @@ public void setNODDefender(int n) {}
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
 			mapOptions.add(defaultMap, c);
-
+			c.weightx = 0;
 
 
 			JPanel cardOptions = new JPanel();
@@ -3138,6 +3139,7 @@ public void setNODDefender(int n) {}
 			c.gridy = 1; // row
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
+			c.weightx = 1;
 			cardOptions.add(chooseCards, c);
 
 			c.gridx = 1; // col
@@ -3145,6 +3147,7 @@ public void setNODDefender(int n) {}
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
 			cardOptions.add(defaultCards, c);
+			c.weightx = 0;
 
 
 			JPanel GameTypeButtons = new JPanel();
