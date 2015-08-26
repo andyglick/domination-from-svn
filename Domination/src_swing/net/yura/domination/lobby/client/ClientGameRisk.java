@@ -1,6 +1,6 @@
 package net.yura.domination.lobby.client;
 
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -109,15 +109,13 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
             return gsp.showDialog(parent, serveroptions, myname);
 	}
 
-        public Icon getIcon(String options) {
+        Map<String, String> optionsToMapUID = new WeakHashMap();
 
-		RiskMap iconedmap = GameSetupPanel.getRiskMap( RiskUtil.getMapNameFromLobbyStartGameOption(options) );
-
-                // TODO this is a long task and should NOT be done in the caller thread
-		iconedmap.loadInfo();
-
-                // TODO return some sort of icon placeholder, then load full icon later on
-		return iconedmap.getSmallIcon();
+        public Icon getIcon(String options, Component comp) {
+            String mapUID = RiskUtil.getMapNameFromLobbyStartGameOption(options);
+            // keep a strong ref to the mapUID while we have a string ref to the options
+            optionsToMapUID.put(options, mapUID);
+            return RiskMap.getMapIcon(mapUID).getIcon(32, 20, comp);
 	}
 
         public String getGameDescription(String string) {
