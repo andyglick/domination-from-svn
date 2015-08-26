@@ -1,47 +1,35 @@
 package net.yura.swing;
 
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.net.URL;
 
+/**
+ * TODO: add support for apple image@2x.png
+ */
 public class ImageIcon extends javax.swing.ImageIcon {
     
     public ImageIcon (String filename) {
         super(filename);
+        adjustImage();
     }
 
     public ImageIcon(URL location) {
         super(location);
+        adjustImage();
     }
 
     public ImageIcon(Image image) {
         super(image);
+        adjustImage();
     }
 
-    @Override
-    public int getIconWidth() {
-        return GraphicsUtil.scale(super.getIconWidth());
-    }
-    
-    @Override
-    public int getIconHeight() {
-        return GraphicsUtil.scale(super.getIconHeight());
-    }
-
-    @Override
-    public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-        g.drawImage(super.getImage(), x, y, getIconWidth(), getIconHeight(), c);
-    }
-
-    /**
-     * Swing uses this to get the disabled grey icon for disabled buttons. 
-     */
-    @Override
-    public Image getImage() {
-        if (getIconWidth() == super.getIconWidth()) {
-            return super.getImage();
+    private void adjustImage() {
+        // we HAVE to reset the current image as otherwise we can get problems with either:
+        // * disabled (getImage() then to grayscale) draw directly for disabled icons
+        // * aimated (SwingUtilities.doesIconReferenceImage in JLabel needs to return true)
+        if (GraphicsUtil.scale(getIconWidth()) != getIconWidth()) {
+            // only scale default and fst work for animated gifs
+            setImage(getImage().getScaledInstance(GraphicsUtil.scale(getIconWidth()), GraphicsUtil.scale(getIconHeight()), Image.SCALE_DEFAULT));
         }
-        return super.getImage().getScaledInstance(getIconWidth(), getIconHeight(), Image.SCALE_SMOOTH);
     }
 }

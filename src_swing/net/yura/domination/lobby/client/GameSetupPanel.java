@@ -14,17 +14,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -43,9 +49,12 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mapstore.GetMap;
+import net.yura.domination.mapstore.Map;
 import net.yura.domination.ui.flashgui.NewGameFrame;
 import net.yura.lobby.model.Game;
 import net.yura.swing.ImageIcon;
+import net.yura.swing.SpriteIcon;
 
 /**
  * <p> New Game Frame for FlashGUI </p>
@@ -78,7 +87,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	private ResourceBundle resb;
 
 	private String options;
-	private JList list;
+	private JList<RiskMap> list;
 
 	private JDialog dialog;
 	private RiskMap riskmap;
@@ -90,11 +99,8 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 	private JTextField gamename;
 
-	/**
-	 * The NewGameFrame Constructor
-	 * @param r The Risk Parser used for playing the game
-	 * @param t States whether this game is local
-	 */
+        private Set<RiskMap> downloading = Collections.synchronizedSet(new HashSet());
+
 	public GameSetupPanel() {
 
                 // ALL PROBLEMS COME FROM THIS!!!! (in applet mode)
@@ -129,7 +135,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 
 		mapPic = new JLabel();
-		mapPic.setBounds(51, 51, 203 , 127 );
+		GraphicsUtil.setBounds(mapPic, 51, 51, 203, 127);
 		add(mapPic);
 
 
@@ -138,7 +144,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 		mapsMissions.setLayout(new javax.swing.BoxLayout(mapsMissions, javax.swing.BoxLayout.Y_AXIS));
 
 		final JScrollPane sp2 = new JScrollPane(mapsMissions);
-		sp2.setBounds(340, 51, 309 , 210 ); // this will allow 6 players, 30 pixels per player
+		GraphicsUtil.setBounds(sp2, 340, 51, 309, 210); // this will allow 6 players, 30 pixels per player
 		sp2.setBorder(null);
 
 		sp2.setOpaque(false);
@@ -157,10 +163,11 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 		list = new JList();
 		list.setCellRenderer(new RiskMapListCellRenderer());
+                list.setFixedCellWidth(10); // will stretch
 		//list.setVisibleRowCount(10);
 		list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		JScrollPane scrollPane = new JScrollPane(list);
-		scrollPane.setBounds(54, 192, 200 , 260 );
+		GraphicsUtil.setBounds(scrollPane, 54, 192, 200, 260);
 		scrollPane.setBorder(null);
 		list.setOpaque(false);
 		scrollPane.setOpaque(false);
@@ -179,43 +186,75 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 				if (e.getValueIsAdjusting()) {return;}
 
-				RiskMap it = ((RiskMap)list.getSelectedValue());
+				final RiskMap it = list.getSelectedValue();
 
 				if (it!=null) {
 
+                                    if (!it.isLocalMap()) {
+                                        // no easy way to make modal JInternalFrame, as JOptionPane uses Container.startLWModal voodoo
+
+                                        // reset the list
+                                        list.setSelectedValue(riskmap, false);
+                                        
+                                        if(downloading.contains(it)) {
+                                            return;
+                                        }
+                                        
+                                        String[] message = { "Do you want to Download", "map: " + it.toString() };
+
+                                        // if we have more info about the map then show it.
+                                        Map map = it.getMap();
+                                        if (map != null) {
+                                            message = new String[] { message[0], message[1],
+                                            "By: " + map.getAuthorName(),
+                                            "Downloads: " + map.getNumberOfDownloads(),
+                                            "Version: " + map.getVersion(),
+                                            map.getDescription()};
+                                        }
+
+                                        int result = JOptionPane.showInternalConfirmDialog(GameSetupPanel.this, message, "Download?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, it.getIcon(203, 127, GameSetupPanel.this));
+
+                                        if (result == JOptionPane.OK_OPTION) {
+                                            
+                                            downloading.add(it);
+
+                                            GetMap.getMap(it.getID(), new Observer() {
+                                                public void update(Observable o, Object result) {
+                                                    downloading.remove(it);
+
+                                                    if (result == RiskUtil.SUCCESS) {
+                                                        list.setSelectedValue(it, true);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else {
 					riskmap = it;
-					mapPic.setIcon( riskmap.getBigIcon() );
+					mapPic.setIcon(riskmap.getIcon(203, 127, mapPic));
 
-					mapsMissions.removeAll();
+                                        mapsMissions.removeAll();
 
-					String[] missions = riskmap.getMissions();
+                                        String[] missions = riskmap.getMissions();
 
-					for (int c=0;c<missions.length;c++) {
+                                        for (int c=0;c<missions.length;c++) {
+                                                mapsMissions.add( makeNewMission(missions[c]) );
+                                                mapsMissions.add( Box.createVerticalStrut(3) );
+                                        }
+                                        if (missions.length == 0) {
+                                                mapsMissions.add(new JLabel(" No missions for this map."));
+                                                if (mission.isSelected()) {
+                                                    domination.setSelected(true);
+                                                    AutoPlaceAll.setEnabled(true);
+                                                }
+                                        }
+                                        mission.setEnabled( missions.length != 0 );
 
-						mapsMissions.add( makeNewMission(missions[c]) );
-
-						mapsMissions.add( Box.createVerticalStrut(3) );
-
-					}
-
-					if (missions.length == 0) {
-
-						mapsMissions.add( new JLabel(" No missions for this map.") );
-
-						if (mission.isSelected()) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
-
-					}
-
-					mission.setEnabled( missions.length != 0 );
-
-					mapsMissions.revalidate();
-					// @TODO: scroll to the top
-
-				}
-
+                                        mapsMissions.revalidate();
+                                        // @TODO: scroll to the top
+                                    }
+                                }
 			}
-
-
 		});
 
 
@@ -228,7 +267,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 		aihard = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 
 		JPanel playernum = new JPanel();
-		playernum.setBounds(300,310,400,60);
+		GraphicsUtil.setBounds(playernum, 300, 310, 400, 60);
 		playernum.setOpaque(false);
 		add(playernum);
 
@@ -261,32 +300,32 @@ aialabel.setVisible(false);
 
 		domination = new JRadioButton(resb.getString("newgame.mode.domination"), true);
 		NewGameFrame.sortOutButton( domination );
-		domination.setBounds(380, 370, bw1 , bh );
+		GraphicsUtil.setBounds(domination, 380, 370, bw1, bh);
 		domination.addActionListener(this);
 
 		capital = new JRadioButton(resb.getString("newgame.mode.capital"));
 		NewGameFrame.sortOutButton( capital );
-		capital.setBounds(380, 390, bw1 , bh );
+		GraphicsUtil.setBounds(capital, 380, 390, bw1, bh);
 		capital.addActionListener(this);
 
 		mission = new JRadioButton(resb.getString("newgame.mode.mission"));
 		NewGameFrame.sortOutButton( mission );
-		mission.setBounds(380, 410, bw1 , bh );
+		GraphicsUtil.setBounds(mission, 380, 410, bw1, bh);
 		mission.addActionListener(this);
 
                 
 
 		increasing = new JRadioButton(resb.getString("newgame.cardmode.increasing"),true);
 		NewGameFrame.sortOutButton( increasing );
-		increasing.setBounds(500,370,bw2,bh);
+		GraphicsUtil.setBounds(increasing, 500, 370, bw2, bh);
 
 		fixed = new JRadioButton(resb.getString("newgame.cardmode.fixed"));
 		NewGameFrame.sortOutButton( fixed );
-		fixed.setBounds(500,390,bw2,bh);
+		GraphicsUtil.setBounds(fixed, 500, 390, bw2, bh);
 
                 italian = new JRadioButton(resb.getString("newgame.cardmode.italianlike"));
 		NewGameFrame.sortOutButton( italian );
-		italian.setBounds(500,410,bw2,bh);
+		GraphicsUtil.setBounds(italian, 500, 410, bw2, bh);
 
 
 		GameTypeButtonGroup.add ( domination );
@@ -308,11 +347,11 @@ aialabel.setVisible(false);
 
 		AutoPlaceAll = new JCheckBox(resb.getString("newgame.autoplace"));
 		NewGameFrame.sortOutButton( AutoPlaceAll );
-		AutoPlaceAll.setBounds(380, 440, bw1 , bh );
+		GraphicsUtil.setBounds(AutoPlaceAll, 380, 440, bw1, bh);
 
 		recycle = new JCheckBox(resb.getString("newgame.recycle"));
 		NewGameFrame.sortOutButton( recycle );
-		recycle.setBounds(500, 440, bw2 , bh );
+		GraphicsUtil.setBounds(recycle, 500, 440, bw2, bh);
 
 		add(AutoPlaceAll);
 		add(recycle);
@@ -323,18 +362,19 @@ aialabel.setVisible(false);
 		cancel = new JButton(resb.getString("newgame.cancel"));
 		NewGameFrame.sortOutButton( cancel , newgame.getSubimage(41, 528, w, h) , newgame.getSubimage(700, 233, w, h) , newgame.getSubimage(700, 264, w, h) );
 		cancel.addActionListener( this );
-		cancel.setBounds(41, 528, 115 , 31 );
+		GraphicsUtil.setBounds(cancel, 41, 528, 115, 31);
 
 		//help = new JButton();
 		//NewGameFrame.sortOutButton( help , newgame.getSubimage(335, 528, 30 , 30) , newgame.getSubimage(794, 171, 30 , 30) , newgame.getSubimage(794, 202, 30 , 30) );
 		//help.addActionListener( this );
 		//help.setBounds(335, 529, 30 , 30 ); // should be 528
 
-                JPanel bottompanel = new JPanel();
+                JComponent bottompanel = Box.createHorizontalBox();
                 bottompanel.setOpaque(false);
                 
                 bottompanel.add(new JLabel(resb.getString("newgame.label.name"))); // "Game Name:"
 		gamename = new JTextField();
+                gamename.setMaximumSize(new Dimension(gamename.getMaximumSize().width, gamename.getPreferredSize().height));
 		bottompanel.add(gamename);
 
                 bottompanel.add(new JLabel(resb.getString("newgame.label.timeout"))); // "Turn Timeout:"
@@ -358,19 +398,19 @@ aialabel.setVisible(false);
                 timeout.setSelectedIndex(3 /* 1 minute */);
 		bottompanel.add(timeout);
                 
-                bottompanel.setBounds(150, 525, 400 , 80 ); // should be 528
+                GraphicsUtil.setBounds(bottompanel, 160, 504, 380, 80); // should be 528
                 add(bottompanel);
 
 		start = new JButton(resb.getString("newgame.startgame"));
 		NewGameFrame.sortOutButton( start , newgame.getSubimage(544, 528, w, h) , newgame.getSubimage(700, 295, w, h) , newgame.getSubimage(700, 326, w, h) );
 		start.addActionListener( this );
-		start.setBounds(544, 528, 115 , 31 );
+		GraphicsUtil.setBounds(start, 544, 528, 115, 31);
 
 		add(cancel);
 		//add(help);
 		add(start);
 
-		list.setFixedCellHeight(33);
+		list.setFixedCellHeight(GraphicsUtil.scale(33));
 
 	}
         private JComboBox timeout;
@@ -390,8 +430,6 @@ aialabel.setVisible(false);
         }
 
         private String newGameOptions;
-	//private String mapsurl;
-	private RiskMap[] maps;
         
         public Game showDialog(Window parent,String serveroptions, String myname) {
             
@@ -400,12 +438,7 @@ aialabel.setVisible(false);
                 if (dialog == null) {
 
                         // TODO parent is passed in each time but is only used the first time
-                        if (parent instanceof Frame) {
-                            dialog = new JDialog((Frame)parent,"Game Options",true);
-                        }
-                        else {
-                            dialog = new JDialog((Dialog)parent,"Game Options",true);
-                        }
+                        dialog = newJDialog(parent, "Game Options", true);
 
 			// @todo:
 			// do noting on close
@@ -422,32 +455,16 @@ aialabel.setVisible(false);
 
 			newGameOptions = serveroptions;
 
-			String[] split = newGameOptions.split(",");
+                        final String[] split = newGameOptions.split(",");
+			final RiskMap[] maps = new RiskMap[split.length];
 
-			maps = new RiskMap[split.length];
+                        for (int c = 0; c < maps.length; c++) {
+                            maps[c] = RiskMap.getMapIcon(decode(split[c]));
+                        }
 
-			for (int c=0;c<split.length;c++) {
-				maps[c] = getRiskMap(split[c]);
-			}
-
-			setMaps(maps);
-
-			final javax.swing.JList list = getList();
-
-			new Thread() {
-				public void run() {
-					for (int c=0;c<maps.length;c++) {
-						maps[c].loadInfo();
-						if (c==0) {
-							setSelected(c);
-						}
-						list.repaint();
-					}
-				}
-
-			}.start();
+                        list.setListData(maps);
+                        list.setSelectedIndex(0);
 		}
-
 
 		reset();
 
@@ -458,58 +475,35 @@ aialabel.setVisible(false);
 		if (op!=null) { return new Game( getGameName(), op, getNumberOfHumanPlayers(), ((Timeout)timeout.getSelectedItem()).getTime() ); }
 
 		return null;
-
         }
 
-        private static Map MapMap;
-        public static RiskMap getRiskMap(String name) {
+        static JDialog newJDialog(Window parent, String title, boolean modal) {
+            //new JDialog(window, JDialog.DEFAULT_MODALITY_TYPE); java 1.6
+            if (parent instanceof Frame) {
+                return new JDialog((Frame) parent, title, modal);
+            }
+            return new JDialog((Dialog) parent, title, modal);
+        }
 
-		//Risk.setupMapsDir(applet);
-
-		if (MapMap==null) { MapMap = new HashMap(); }
-
-		RiskMap themap = (RiskMap)MapMap.get(name);
-
-		if (themap==null) {
-
-			themap = new RiskMap(name);
-
-			MapMap.put(name,themap);
-
-		}
-
-		return themap;
-
-	}
-        
-        
-	public void setMaps(final RiskMap[] maps) {
-
-		list.setListData(maps);
-
-	}
+        private static String decode(String text) {
+            try {
+                return URLDecoder.decode(text, "UTF-8");
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
 	public JList getList() {
-
 		return list;
-	}
-
-	public void setSelected(int a) {
-
-		list.setSelectedIndex(a);
-
 	}
 
 	public JPanel makeNewMission(String a) {
 
-
 			JPanel mission = new JPanel() {
-
 				public void paintComponent(Graphics g) {
-
 					g.setColor( new Color(255,255,255,100) );
 					g.fillRect(0,0,getWidth(),getHeight());
-
 				}
 			};
 
@@ -545,26 +539,18 @@ aialabel.setVisible(false);
 			//mission.setBackground( new Color(255,255,255,100) );
 
 			return mission;
-
-
 	}
 
 	public String getOptions() {
-
 		return options;
-
 	}
 
 	public String getGameName() {
-
 		return gamename.getText();
-
 	}
 
 	public int getNumberOfHumanPlayers() {
-
 		return ((Integer)human.getValue()).intValue();
-
 	}
 
 	public void paintComponent(Graphics g) {
@@ -572,29 +558,28 @@ aialabel.setVisible(false);
 			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 //			  destination		source
-			g.drawImage(newgame,0,0,this);
+			GraphicsUtil.drawImage(g, newgame, 0, 0, this);
 
 
-			g.drawImage(game2.getSubimage(0,0,223,155), 41 ,185 ,this);
-			g.drawImage(game2.getSubimage(25,155,169,127), 391 ,325 ,this );
+			GraphicsUtil.drawImage(g, game2.getSubimage(0,0,223,155), 41, 185, this);
+			GraphicsUtil.drawImage(g, game2.getSubimage(25,155,169,127), 391, 325, this);
 
 			g.setColor( Color.black );
 
-			g.drawString( resb.getString("newgame.label.map"), 55, 40);
-			g.drawString( "Missions:", 350, 40);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.map"), 55, 40);
+			GraphicsUtil.drawString(g, "Missions:", 350, 40);
 
-			g.drawString( "Number of Players", 440, 300);
+			GraphicsUtil.drawString(g, "Number of Players", 440, 300);
 
 			//g.drawString( "Game Name:", 240, 545);
 
-			g.drawString( resb.getString("newgame.label.gametype"), 400, 365);
-			g.drawString( resb.getString("newgame.label.cardsoptions"), 515, 365);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.gametype"), 400, 365);
+			GraphicsUtil.drawString(g, resb.getString("newgame.label.cardsoptions"), 515, 365);
 
 
 	}
 
 	public void reset() {
-
 		options=null;
 	}
         
@@ -626,10 +611,9 @@ aialabel.setVisible(false);
                                 else if (fixed.isSelected()) cardsMode = RiskGame.CARD_FIXED_SET;
                                 else cardsMode = RiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
 
-				options = RiskUtil.createGameString(b, c, d, gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
+				options = RiskUtil.createGameString(b, c, d, gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getID());
 
 				dialog.setVisible(false);
-
 			}
 			else {
 
@@ -670,31 +654,38 @@ aialabel.setVisible(false);
 		}
 	}
 
-
-
     class RiskMapListCellRenderer extends DefaultListCellRenderer {
-       public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus)
-        {
-            Component retValue = super.getListCellRendererComponent(
-		list, value, index, isSelected, cellHasFocus
- 	    );
-
-
-
-		if (isSelected) { setBackground( new Color(255,255,255,100) ); }
-		else { setBackground( new Color(0,0,0,0) ); }
-
-            setIcon( ((RiskMap)value).getIcon() );
+        private final Icon downloadIcon = new ImageIcon(getClass().getResource("/ms_download.png"));
+        private final Icon downloadingIcon = new SpriteIcon(getClass().getResource("/ms_strip.png"), 1, 8);
+        /**
+         * as the renderer is not part of the view hierarchy, repainting it does nothing, so we need to pass the real component to paint in icons.
+         */
+        private JComponent component;
+        private RiskMap map;
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            setBackground(isSelected ? new Color(255,255,255,100) : new Color(0,0,0,0));
+            component = list;
+            if (value instanceof RiskMap) {
+                map = (RiskMap) value;
+                setIcon(map.getIcon(50, 31, list));
+            }
 	    return retValue;
         }
 
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (downloading.contains(map)) {
+                int x = getWidth() - downloadingIcon.getIconWidth() - 5;
+                int y = (getHeight() - downloadingIcon.getIconHeight()) / 2;
+                g.setColor(Color.WHITE);
+                g.fillOval(x, y, downloadingIcon.getIconWidth(), downloadingIcon.getIconHeight());
+                downloadingIcon.paintIcon(component, g, x, y);
+            }
+            else if (!map.isLocalMap()) {
+                downloadIcon.paintIcon(component, g, getWidth() - downloadIcon.getIconWidth() - 5, (getHeight() - downloadIcon.getIconHeight()) / 2);
+            }
+        }
     }
-
-
-
 }
