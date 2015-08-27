@@ -43,7 +43,7 @@ import net.yura.swing.ImageIcon;
  */
 public class Increment1Frame extends JFrame {
 
-    private final static String version = "1.1.1.1";
+    private final static String version = "2";
     private final static String product = "Increment1 GUI for RISK";
 
     private BorderLayout layout;

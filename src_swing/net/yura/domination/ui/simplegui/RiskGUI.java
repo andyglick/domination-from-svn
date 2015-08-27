@@ -56,7 +56,7 @@ import net.yura.swing.ImageIcon;
  */
 public class RiskGUI extends JFrame implements MouseInputListener {
 
-	private final static String version = "1.2";
+	private final static String version = "2";
 	private final static String product = "Simple GUI for RISK";
 
 	private JTextPane Console;
