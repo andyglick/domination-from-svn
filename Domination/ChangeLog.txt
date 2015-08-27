@@ -4,22 +4,26 @@ CURRENT VERSION:
 
 	Risk Game:	1.1.1.6
 	 * Save:	8
-	 * Network:	11
+	 * Network:	12
 
 	Android		61
 	Flash GUI:	2
 	Swing GUI:	2
-	Simple GUI:	1.1.1.1
-	Increment1GUI:	1.1.1.1
+	Simple GUI:	2
+	Increment1GUI:	2
 	CommandLine:	1.0.4.1
 
 1.1.1.6
 
 	OS X java 1.7 maps dir missing deadlock fix
 	OS X java 1.7 open html help in browser fix
+	OS X .app launches on latest version of java
 	pt_PT update by Pipanni
 	SwingGUI sends more info on crash and feedback
 	Greek added
+	Support for windows hi-dpi screens added
+	Support for online play with any map added
+	MapEditor: can select what Islands to delete.
 
 	Android 61 Bugs with Map updating fixed
 		   Sending a saved game added to save game dialog
@@ -47,7 +51,7 @@ CURRENT VERSION:
 	Android 50 Send feedback option added
 		   can change default app language
 
-1.1.1.5
+1.1.1.5 (22.08.2013)
 
 	annihilate button added to FlashGUI attack screen
 	Czech and Slovak languages added by Viliam Tomcanyi
@@ -83,7 +87,7 @@ CURRENT VERSION:
 		   prefActivity theme on Honeycomb fix
 	Android 38 option for color blind people added
 
-1.1.1.4
+1.1.1.4 (22.04.2013)
 
 	main map (luca.map) is now higher resolution (800x500)
 	world map (world.map) is now higher resolution (800x500)
