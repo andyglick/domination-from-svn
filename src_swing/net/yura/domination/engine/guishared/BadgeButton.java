@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.mapstore.MapUpdateService;
 
 /**
@@ -38,7 +39,7 @@ public class BadgeButton extends JButton implements Observer {
 
             int w = getWidth();
             g.translate(w+overlap, -overlap);
-            MapUpdateService.paintBadge(new net.yura.mobile.gui.Graphics2D( new javax.microedition.lcdui.Graphics(g) ),badge,(net.yura.mobile.gui.border.Border)border );
+            MapUpdateService.paintBadge(SwingMEWrapper.getSwingMEGraphics(g), badge, (net.yura.mobile.gui.border.Border)border);
             g.translate(-w-overlap, +overlap);
         }
         catch (Throwable th) {
