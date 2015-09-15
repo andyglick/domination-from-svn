@@ -1,6 +1,7 @@
 package net.yura.domination.engine;
 
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Window;
 import java.io.File;
 import java.util.List;
@@ -87,4 +88,12 @@ public class SwingMEWrapper {
         } );
     }
 
+    public static net.yura.mobile.gui.Graphics2D getSwingMEGraphics(Graphics g) {
+        javax.microedition.lcdui.Graphics j2meG = new javax.microedition.lcdui.Graphics(g);
+        // on retina mac all our SwingME images are double size
+        // but our Swing Graphics are not scaled, so we reverse scale the graphics
+        double scale = javax.microedition.midlet.ApplicationManager.getScale();
+        j2meG.scale(1 / scale, 1 / scale);
+        return new net.yura.mobile.gui.Graphics2D(j2meG);
+    }
 }
