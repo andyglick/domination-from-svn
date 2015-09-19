@@ -80,8 +80,10 @@ public class PicturePanel extends JPanel implements MapPanel {
 		 			 // 0-2  0-255
 		HighLight = new RescaleOp(1.5f, 1.0f, null);
 
-		//setupSize(PicturePanel.PP_X , PicturePanel.PP_Y);
+                Dimension size = GraphicsUtil.newDimension(PicturePanel.PP_X, PicturePanel.PP_Y);
 
+                setPreferredSize(size);
+                setMinimumSize(size);
 	}
 
         protected void processMouseEvent(MouseEvent e) {
@@ -141,14 +143,6 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 // creates a 2D byte array and double paint buffer
                 if (map==null || map.length!=mWidth || map[0].length!=mHeight) {
-
-                    //System.out.println("MAKING NEW SIZE!!!!");
-
-                    Dimension size = GraphicsUtil.newDimension(mWidth, mHeight);
-
-                    setPreferredSize(size);
-                    setMinimumSize(size);
-                    setMaximumSize(size);
 
                     // clear out old values
                     img = null;
