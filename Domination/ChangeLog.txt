@@ -24,6 +24,7 @@ CURRENT VERSION:
 	Support for windows hi-dpi screens added
 	Support for online play with any map added
 	MapEditor: can select what Islands to delete.
+	Resign button added in menu of FlashGUI for online play
 
 	Android 61 Bugs with Map updating fixed
 		   Sending a saved game added to save game dialog

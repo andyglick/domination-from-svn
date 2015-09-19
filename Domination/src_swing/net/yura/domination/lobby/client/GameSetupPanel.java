@@ -87,7 +87,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 	private ResourceBundle resb;
 
 	private String options;
-	private JList<RiskMap> list;
+	private JList list; // not using generics for java 1.6 support
 
 	private JDialog dialog;
 	private RiskMap riskmap;
@@ -186,7 +186,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
 				if (e.getValueIsAdjusting()) {return;}
 
-				final RiskMap it = list.getSelectedValue();
+				final RiskMap it = (RiskMap) list.getSelectedValue();
 
 				if (it!=null) {
 
