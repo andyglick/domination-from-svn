@@ -43,7 +43,6 @@ public class FlashRiskAdapter implements RiskListener {
 		gameFrame.setBattleDialog(battledialog);
 
                 RiskUIUtil.center(battledialog);
-
 	}
 
 
@@ -114,7 +113,6 @@ public class FlashRiskAdapter implements RiskListener {
 			gameFrame.setGameStatus(state);
 		}
 		catch (NullPointerException e) { }
-
 	}
 
 	/**
@@ -153,7 +151,6 @@ public class FlashRiskAdapter implements RiskListener {
 		battledialog.setup(c1num, c2num, c1img, c2img, country1, country2, color1 ,color2);
 
 		battledialog.setVisible(true);
-
 	}
 
 	/**
@@ -165,7 +162,6 @@ public class FlashRiskAdapter implements RiskListener {
 		if (battledialog.isVisible() ) {
 			battledialog.setNODAttacker(n);
 		}
-
 	}
 
 	/**
@@ -177,7 +173,6 @@ public class FlashRiskAdapter implements RiskListener {
 		if (battledialog.isVisible() ) {
 			battledialog.setNODDefender(n);
 		}
-
 	}
 
 	/**
@@ -190,7 +185,6 @@ public class FlashRiskAdapter implements RiskListener {
 		if (battledialog.isVisible() ) {
 			battledialog.showDiceResults(att, def);
 		}
-
 	}
 
 	/**
@@ -201,9 +195,7 @@ public class FlashRiskAdapter implements RiskListener {
 		if (battledialog.isVisible() ) {
 
 			battledialog.setVisible(false);
-
 		}
-
 	}
 
 	/**
@@ -222,7 +214,6 @@ public class FlashRiskAdapter implements RiskListener {
 
 		newgameframe.setVisible(true);
 		newgameframe.requestFocus();
-
 	}
 
 	/**
@@ -262,13 +253,14 @@ public class FlashRiskAdapter implements RiskListener {
 			menu.hide();
 		}
 
+                gameFrame.setExtraAction(menu.getOnlineAction());
+                
 		gameFrame.setVisible(true);
 
 		// this should not have to be here, but is the only way to get rid of it
 		battledialog.setVisible(false);
 
 		gameFrame.requestFocus();
-
 	}
 
 	/**
@@ -312,7 +304,6 @@ public class FlashRiskAdapter implements RiskListener {
 
 		menu.requestFocus();
 		menu.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
 	}
 
 	/**

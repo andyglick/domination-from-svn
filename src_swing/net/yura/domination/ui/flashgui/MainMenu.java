@@ -11,10 +11,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +28,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.SwingMEWrapper;
+import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.swing.GraphicsUtil;
 import net.yura.swing.ImageIcon;
@@ -610,19 +614,22 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             window.setResizable(false);
             window.pack();
         }
-        
+
+        MiniLobbyClient mlc;
+
         void showMiniLobby() {
             
             final ME4SEPanel wrapper = new ME4SEPanel();
             wrapper.getApplicationManager().applet = RiskUIUtil.applet;
             
-            MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
+            mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
             wrapper.add(mlc.getRoot());
 
             mlc.addCloseListener(new net.yura.mobile.gui.ActionListener() {
                 public void actionPerformed(String actionCommand) {
                     wrapper.destroy();
                     showMainMenu();
+                    mlc = null;
                 }
             });
 
@@ -641,6 +648,25 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             window.setTitle( mlc.getTitle() );
             window.setResizable(true);
             window.setSize(GraphicsUtil.scale(500), GraphicsUtil.scale(600));
+        }
+
+        Action getOnlineAction() {
+            return mlc == null ? null : new AbstractAction(resBundle.getString("lobby.resign")) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mlc.resign();
+                    setEnabled(false); // we can only resign once
+                }
+                /**
+                 * TODO remove duplicate code from:
+                 * @see net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter#amOnlinePlayer();
+                 */
+                @Override
+                public boolean isEnabled() {
+                    Player player = mlc == null ? null : myrisk.getGame().getPlayer(mlc.whoAmI());
+                    return super.isEnabled() && player != null && player.isAlive();
+                }
+            };
         }
 
 	/**

@@ -26,7 +26,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
@@ -67,6 +70,13 @@ public class GameFrame extends JFrame implements KeyListener {
 	private JButton menubutton;
 	private JButton graphbutton;
 	private JButton gobutton;
+
+        private final Action closeAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+		go("closegame");
+            }
+        };
+        private Action extraAction;
 
 	private java.util.ResourceBundle resb;
 	private StatsDialog graphdialog;
@@ -143,6 +153,20 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 
 	}
+
+        public void setExtraAction(Action action) {
+            extraAction = action;
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            if (!visible) {
+		if (graphOn) { displayGraph(); }
+		if (menuOn) { displayMenu(); }
+		extraAction = null;
+            }
+            super.setVisible(visible);
+        }
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -396,7 +420,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		addWindowListener(
 			new java.awt.event.WindowAdapter() {
 				public void windowClosing(java.awt.event.WindowEvent evt) {
-					closeleave();
+					closeAction.actionPerformed(null);
 				}
 			}
 		);
@@ -470,7 +494,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		localGame = s;
 
-		closebutton.setText(resb.getString(localGame?"game.menu.close":"game.menu.leave"));
+		closeAction.putValue(Action.NAME, resb.getString(localGame ? "game.menu.close" : "game.menu.leave"));
 
 		repaintCountries();
 
@@ -497,9 +521,7 @@ public class GameFrame extends JFrame implements KeyListener {
 				displayMenu();
 			}
 			else if (e.getSource()==graphbutton) {
-
 				displayGraph();
-
 			}
 			else if (e.getSource()==gobutton) {
 				goOn();
@@ -513,16 +535,11 @@ public class GameFrame extends JFrame implements KeyListener {
 				);
 
 				if (name!=null) {
-
 					go("savegame " + name );
-
 				}
-
 			}
 			else if (e.getSource()==resumebutton) {
-
 				displayMenu();
-
 			}
 			else if (e.getSource()==AutoEndGo) {
 
@@ -532,12 +549,6 @@ public class GameFrame extends JFrame implements KeyListener {
 				else {
 					go("autoendgo off");
 				}
-
-			}
-			else if (e.getSource()==closebutton) {
-
-				closeleave();
-
 			}
 			else if (e.getSource()==AutoDefend) {
 
@@ -547,7 +558,6 @@ public class GameFrame extends JFrame implements KeyListener {
 				else {
 					go("autodefend off");
 				}
-
 			}
 			else if (e.getSource()==helpbutton) {
 
@@ -557,15 +567,9 @@ public class GameFrame extends JFrame implements KeyListener {
 				catch(Exception er) {
 					JOptionPane.showMessageDialog(GameFrame.this,"Unable to open manual: "+er.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 				}
-
 			}
 		}
 	};
-
-	public void closeleave() {
-		if (graphOn) { graphdialog.setVisible(false); graphOn=false; }
-                go("closegame");
-	}
 
 	public void repaintCountries() {
 
@@ -670,7 +674,6 @@ public class GameFrame extends JFrame implements KeyListener {
 				goButtonText = resb.getString("game.button.go.endgo");
 
 				break;
-
 			}
 			case RiskGame.STATE_GAME_OVER: {
                                 if (myrisk.getGame().canContinue()) {
@@ -685,7 +688,6 @@ public class GameFrame extends JFrame implements KeyListener {
                                     }
                                 }
 				break;
-
 			}
 			case RiskGame.STATE_SELECT_CAPITAL: {
 
@@ -706,7 +708,6 @@ public class GameFrame extends JFrame implements KeyListener {
 			// for gameState 4 look in FlashRiskAdapter.java
 			// for gameState 10 look in FlashRiskAdapter.java
 			default: break;
-
 		}
 
 
@@ -804,7 +805,6 @@ public class GameFrame extends JFrame implements KeyListener {
 		blockInput();
 
 		myrisk.parser(command);
-
 	}
 
 	public void blockInput() {
@@ -946,7 +946,6 @@ public class GameFrame extends JFrame implements KeyListener {
             if (oldnote!=note) {
                 repaint();
             }
-
         }
 
 
@@ -955,8 +954,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	 * (normal, border threat, ...)
 	 * @param click		The tab number the user has clicked on
 	 */
-	private void setMapView(int click)
-	{
+	private void setMapView(int click) {
 		mapView = click;
 		repaintCountries();
 		repaint();
@@ -971,7 +969,6 @@ public class GameFrame extends JFrame implements KeyListener {
 		cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
 
 		cardsDialog.setVisible(true);
-
 	}
 
 
@@ -979,8 +976,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	/**
 	 * displays the mission window
 	 */
-	private void displayMission()
-	{
+	private void displayMission() {
 		MissionDialog missiondialog = new MissionDialog(GameFrame.this, true, myrisk);
 
 		Dimension frameSize = getSize();
@@ -999,8 +995,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	/**
 	 * does an "undo"
 	 */
-	private void doUndo()
-	{
+	private void doUndo() {
 
                 pp.setC1(PicturePanel.NO_COUNTRY);
                 pp.setC2(PicturePanel.NO_COUNTRY);
@@ -1017,14 +1012,17 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	    if(menuOn) {
 
+                setMenuButtonAction(closebutton, null);
+                
 		gm.setVisible(false);
 		pp.addMouseListener(mapListener);
 		pp.addMouseMotionListener(mapListener);
 
 		menuOn=false;
-
 	    }
 	    else {
+
+                setMenuButtonAction(closebutton, extraAction != null && extraAction.isEnabled() ? extraAction : closeAction);
 
 		pp.removeMouseListener(mapListener);
 		pp.removeMouseMotionListener(mapListener);
@@ -1033,15 +1031,31 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			AutoEndGo.setSelected( myrisk.getAutoEndGo() );
 			AutoDefend.setSelected( myrisk.getAutoDefend() );
-
 		}
 
 		gm.setVisible(true);
 		menuOn=true;
 	    }
-
 	}
 
+        static void setMenuButtonAction(AbstractButton button, Action action) {
+                    Icon normal = button.getIcon();
+                    Icon rollover = button.getRolloverIcon();
+                    Icon selected = button.getSelectedIcon();
+                    Icon rolloverSelected = button.getRolloverSelectedIcon();
+                    Icon pressed = button.getPressedIcon();
+                    Icon disabled = button.getDisabledIcon();
+
+                    button.setAction(action);
+                    
+                    button.setIcon(normal);
+                    button.setRolloverIcon(rollover);
+                    button.setSelectedIcon(selected);
+                    button.setRolloverSelectedIcon(rolloverSelected);
+                    button.setPressedIcon(pressed);
+                    button.setDisabledIcon(disabled);
+        }
+        
 	public void displayGraph() {
 
 		if (graphOn) {
@@ -1097,7 +1111,7 @@ public class GameFrame extends JFrame implements KeyListener {
                             go("continue");
                         }
                         else {
-                            closeleave();
+                            closeAction.actionPerformed(null);
                         }
 		}
 		else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
@@ -1189,10 +1203,9 @@ public class GameFrame extends JFrame implements KeyListener {
 			GraphicsUtil.setBounds(savebutton, 35, 50, w, 20);
 			savebutton.addActionListener( buttonActionListener );
 
+                        // close button text and action set when menu is opened
 			closebutton = makeRiskButton(gameImg.getSubimage(480, 373, w, 21), gameImg.getSubimage(380, 373, w, 21), gameImg.getSubimage(280, 373, w, 21), gameImg.getSubimage(180, 373, w, 21) );
-
 			GraphicsUtil.setBounds(closebutton, 35, 80, w, 20);
-			closebutton.addActionListener( buttonActionListener );
 
 
 

@@ -534,7 +534,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void privateMessage(String fromwho, String message) { }
     public void setUserInfo(String user,java.util.List info) { }
 
-    void showMessage(String fromwho,String message) {
+    static void showMessage(String fromwho,String message) {
         if (fromwho!=null) {
             toast(fromwho+": "+message);
         }
