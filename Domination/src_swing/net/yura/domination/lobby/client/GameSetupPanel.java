@@ -395,6 +395,7 @@ aialabel.setVisible(false);
                     new Timeout("24hours",hour*24)
                 };
 		timeout = new JComboBox(timeouts);
+                timeout.setMaximumSize(new Dimension(timeout.getMaximumSize().width, timeout.getPreferredSize().height));
                 timeout.setSelectedIndex(3 /* 1 minute */);
 		bottompanel.add(timeout);
                 
