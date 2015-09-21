@@ -11,7 +11,7 @@ CURRENT VERSION:
 	Swing GUI:	2
 	Simple GUI:	2
 	Increment1GUI:	2
-	CommandLine:	1.0.4.1
+	CommandLine:	2
 
 1.1.1.6
 
