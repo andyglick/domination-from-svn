@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.RiskGame;
@@ -28,6 +29,8 @@ import net.yura.mobile.io.ServiceLink.Task;
  */
 public class GameSettings implements GameSettingsMXBean {
 
+    public static final Logger logger = Logger.getLogger(GameSettings.class.getName());
+    
     private File mapsDir;
     private int mapMaxRes = 677;
     private int mapMaxCountries = 100;
@@ -95,6 +98,8 @@ public class GameSettings implements GameSettingsMXBean {
         //List<net.yura.domination.mapstore.Map> mapsToUpdate = service.mapsToUpdate;
 
         if (!mapsToDownload.isEmpty()) {
+            
+            logger.info(mapsToDownload.size() + " maps to download");
 
             final AtomicReference<MapServerClient> mapServerClient = new AtomicReference();
             final AtomicReference<String> error = new AtomicReference();
@@ -141,6 +146,11 @@ public class GameSettings implements GameSettingsMXBean {
             if (!client.getInbox().isEmpty()) {
                 throw new IllegalStateException("inbox not empty");
             }
+            
+            logger.info("maps download finished");
+        }
+        else {
+            logger.info("no maps to download");
         }
 
         StringBuilder gameOptions = new StringBuilder("luca.map,ameroki.map,eurasien.map,geoscape.map,lotr.map,risk.map,RiskEurope.map,roman_empire.map,sersom.map,teg.map,tube.map,uk.map,world.map");
@@ -153,12 +163,14 @@ public class GameSettings implements GameSettingsMXBean {
                 gameOptions.append(',').append(encode(mapName));
             }
             else {
-                System.out.println("skipping " + mapName + " " + numCountries + " (" + map.getMapWidth() + "x" + map.getMapHeight() + ")");
+                logger.info("skipping " + mapName + " " + numCountries + " (" + map.getMapWidth() + "x" + map.getMapHeight() + ")");
             }
         }
 
         // save a list of the file names into the GameType
         GameLobby.getInstance().setGameOptions("Domination", gameOptions.toString());
+        
+        logger.info("updateMaps DONE");
     }
 
     private static String encode(String name) {
