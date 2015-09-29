@@ -377,6 +377,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         }
     }
 
+    public Game findGame(int id) {
+        Game g = new Game();
+        g.setId(id);
+        int index = Collections.binarySearch(games, g);
+        return index >= 0 ? (Game) games.get(index) : null;
+    }
+
     public void resign() {
         mycom.leaveGame(openGameId);
     }
