@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
@@ -717,7 +718,15 @@ public class RiskUIUtil {
 			netInfo = "?";
 		}
 
-                Toolkit toolkit = Toolkit.getDefaultToolkit();
+		String displayInfo;
+		try {
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
+			displayInfo = toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) density="+GraphicsUtil.density+" scale="+GraphicsUtil.scale;
+		}
+		catch(HeadlessException ex) {
+			displayInfo = ex.getMessage();
+			if (displayInfo != null) displayInfo = RiskUtil.replaceAll(displayInfo, "\n", " ");
+		}
 
 		return		" " + RiskUtil.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION + " network: "+RiskGame.NETWORK_VERSION+") \n" +
 				" " + "system:"+java.util.Locale.getDefault()+" current:" + resb.getLocale() + " \n" +
@@ -725,7 +734,7 @@ public class RiskUIUtil {
 				" " + getOSString() + " \n" +
 				" " + cpu + " \n" +
 				" " + UIManager.getLookAndFeel() + " \n" +
-                                " " + toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) density="+GraphicsUtil.density+" scale="+GraphicsUtil.scale+" \n" +
+                                " " + displayInfo + " \n" +
 				" " + System.getProperty("java.vendor") + " \n" +
 				" " + System.getProperty("java.vendor.url") + " \n" +
 				" " + name +" \n" +
