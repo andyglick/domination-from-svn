@@ -100,7 +100,13 @@ public class PlayerList extends List {
                 if ((getCurrentState() & Style.FOCUSED) != 0) {
                     int padding = XULLoader.adjustSizeToDensity(5);
                     g.setColor(foreground);
+
+                    int oldStroke = g.getGraphics().getStrokeWidth();
+                    g.getGraphics().setStrokeWidth(Math.max(1, XULLoader.adjustSizeToDensity(1)));
+
                     g.drawRect(padding, padding, getWidth() - padding * 2, getHeight() - padding * 2);
+                    
+                    g.getGraphics().setStrokeWidth(oldStroke);
                 }
 
             }

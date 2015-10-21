@@ -4,6 +4,7 @@ import java.util.Calendar;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
 import net.yura.mobile.gui.components.Component;
+import net.yura.mobile.gui.layout.XULLoader;
 import net.yura.mobile.gui.plaf.Style;
 
 public class AnalogClock extends Component {
@@ -35,6 +36,9 @@ public class AnalogClock extends Component {
     }
 
     public void paintComponent(Graphics2D g) {
+
+        int oldStroke = g.getGraphics().getStrokeWidth();
+        g.getGraphics().setStrokeWidth(Math.max(1, XULLoader.adjustSizeToDensity(1)));
 
         int Width = getWidth();
         int Height = getHeight();
@@ -95,6 +99,8 @@ public class AnalogClock extends Component {
                     pointX((double) second, _raduis * LineLengthSeconds, _circleCenterX),
                     pointY((double) second, _raduis * LineLengthSeconds, _circleCenterY));
         }
+
+        g.getGraphics().setStrokeWidth(oldStroke);
     }
 
     public void updateUI() {
