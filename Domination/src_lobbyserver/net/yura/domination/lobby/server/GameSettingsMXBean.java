@@ -17,6 +17,8 @@ public interface GameSettingsMXBean {
     int getMaxMapCountries();
 
     void updateMaps();
+    void allowMap(String mapName);
+    void disallowMap(String mapName);
 
     void saveGame(int id) throws Exception;
     void saveGameLog(int id) throws Exception;
