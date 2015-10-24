@@ -6,7 +6,10 @@ import java.io.FilenameFilter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +25,7 @@ import net.yura.domination.mapstore.MapServerListener;
 import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.lobby.server.GameLobby;
+import net.yura.lobby.server.LobbyServerMXBean;
 import net.yura.mobile.io.ServiceLink.Task;
 
 /**
@@ -153,14 +157,14 @@ public class GameSettings implements GameSettingsMXBean {
             logger.info("no maps to download");
         }
 
-        StringBuilder gameOptions = new StringBuilder("luca.map,ameroki.map,eurasien.map,geoscape.map,lotr.map,risk.map,RiskEurope.map,roman_empire.map,sersom.map,teg.map,tube.map,uk.map,world.map");
+        List<String> gameOptions = new ArrayList();
 
         // find the maps that are smaller then max resolution
         for (Map map : serverMaps) {
             String mapName = MapChooser.getFileUID(map.getMapUrl());
             int numCountries = (Integer) RiskUtil.loadInfo(mapName, false).get("countries");
             if (map.getMapWidth() <= mapMaxRes && map.getMapHeight() <= mapMaxRes && numCountries <= mapMaxCountries) {
-                gameOptions.append(',').append(encode(mapName));
+                gameOptions.add(encode(mapName));
             }
             else {
                 logger.info("skipping " + mapName + " " + numCountries + " (" + map.getMapWidth() + "x" + map.getMapHeight() + ")");
@@ -168,9 +172,53 @@ public class GameSettings implements GameSettingsMXBean {
         }
 
         // save a list of the file names into the GameType
-        GameLobby.getInstance().setGameOptions("Domination", gameOptions.toString());
+        LobbyServerMXBean lobby = GameLobby.getInstance();
+
+        String oldOptionsString = lobby.getGameOptions(RiskUtil.GAME_NAME);
+
+        List<String> oldOptions = new ArrayList<String>(Arrays.asList(oldOptionsString.split(",")));
+        oldOptions.removeAll(gameOptions);
         
+        logger.info("base list: " + oldOptions);
+        
+        oldOptions.addAll(gameOptions);
+        
+        lobby.setGameOptions(RiskUtil.GAME_NAME, toOptionString(oldOptions));
+
         logger.info("updateMaps DONE");
+    }
+
+    public void allowMap(String mapName) {
+        if (mapName == null || "".equals(mapName) || !mapName.endsWith(".map")) {
+            throw new IllegalArgumentException("bad map name "+mapName);
+        }
+        if (!new File(mapsDir, mapName).exists()) {
+            throw new IllegalArgumentException("file does not exists");
+        }
+        LobbyServerMXBean lobby = GameLobby.getInstance();
+        String oldOptionsString = lobby.getGameOptions(RiskUtil.GAME_NAME);
+        List<String> oldOptions = new ArrayList<String>(Arrays.asList(oldOptionsString.split(",")));
+        
+        String gameOption = encode(mapName);
+        if (oldOptions.contains(gameOption)) {
+            throw new IllegalArgumentException("already in options");
+        }
+        
+        oldOptions.add(gameOption);
+        lobby.setGameOptions(RiskUtil.GAME_NAME, toOptionString(oldOptions));
+    }
+
+    public void disallowMap(String mapName) {
+        LobbyServerMXBean lobby = GameLobby.getInstance();
+        String oldOptionsString = lobby.getGameOptions(RiskUtil.GAME_NAME);
+        List<String> oldOptions = new ArrayList<String>(Arrays.asList(oldOptionsString.split(",")));
+        
+        String gameOption = encode(mapName);
+        if (!oldOptions.remove(gameOption)) {
+            throw new IllegalArgumentException("not in options");
+        }
+
+        lobby.setGameOptions(RiskUtil.GAME_NAME, toOptionString(oldOptions));
     }
 
     private static String encode(String name) {
@@ -179,6 +227,27 @@ public class GameSettings implements GameSettingsMXBean {
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * if you have items "hello" and "world" in a collection
+     * then the returned string will be "hello,world"
+     */
+    private static <E> String toOptionString(Collection<E> list) {
+        Iterator<E> i = list.iterator();
+        if (! i.hasNext()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (;;) {
+            E e = i.next();
+            sb.append(e);
+            if (!i.hasNext()) {
+                return sb.toString();
+            }
+            sb.append(",");
         }
     }
 
