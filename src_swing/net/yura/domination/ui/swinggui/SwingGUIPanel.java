@@ -557,24 +557,32 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 		c.gridy = 0; // row
 		c.gridwidth = 2; // width
 		c.gridheight = 1; // height
+                c.weightx = 1d;
+                c.weighty = 1d;
 		add(Con, c);
 
 		c.gridx = 0; // col
 		c.gridy = 1; // row
 		c.gridwidth = 1; // width
 		c.gridheight = 1; // height
+                c.weightx = 1d;
+                c.weighty = 0d;
 		add(Command, c);
 
 		c.gridx = 1; // col
 		c.gridy = 1; // row
 		c.gridwidth = 1; // width
 		c.gridheight = 1; // height
+                c.weightx = 0d;
+                c.weighty = 0d;
 		add(Submit, c);
 
 		c.gridx = 0; // col
 		c.gridy = 2; // row
 		c.gridwidth = 2; // width
 		c.gridheight = 1; // height
+                c.weightx = 1d;
+                c.weighty = 0d;
 		add(statusBar, c);
 
 
@@ -624,9 +632,7 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
 		setOpaque(false);
 
-
 		statusBar.setText(resbundle.getString( "swing.status.ready"));
-
 	}
 
 	private void cgo(String input) {
