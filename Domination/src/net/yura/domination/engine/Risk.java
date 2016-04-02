@@ -43,8 +43,11 @@ import net.yura.mobile.util.Url;
  */
 public class Risk extends Thread {
 
-        private final int SHOW_DICE_SLEEP = 1000;
-        private final int ROLL_DICE_SLEEP = 500;
+        private static final int DEFAULT_SHOW_DICE_SLEEP = 1000;
+        private static final int DEFAULT_ROLL_DICE_SLEEP = 500;
+
+        private static int SHOW_DICE_SLEEP = DEFAULT_SHOW_DICE_SLEEP;
+        private static int ROLL_DICE_SLEEP = DEFAULT_ROLL_DICE_SLEEP;
 
         private static final Logger logger = Logger.getLogger(Risk.class.getName());
 
@@ -210,6 +213,17 @@ public class Risk extends Thread {
 		catch (Exception e) { // if network has not been setup
 			return "nonet" + randomString;
 		}
+        }
+
+        public static void setShowDice(boolean show) {
+            if (show) {
+                SHOW_DICE_SLEEP = DEFAULT_SHOW_DICE_SLEEP;
+                ROLL_DICE_SLEEP = DEFAULT_ROLL_DICE_SLEEP;
+            }
+            else {
+                SHOW_DICE_SLEEP = 0;
+                ROLL_DICE_SLEEP = 0;
+            }
         }
 
 	public String getRiskConfig(String a) {

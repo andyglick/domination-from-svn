@@ -1,7 +1,6 @@
 package net.yura.domination.android;
 
 import com.google.android.gcm.GCMRegistrar;
-
 import net.yura.android.AndroidMeApp;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;

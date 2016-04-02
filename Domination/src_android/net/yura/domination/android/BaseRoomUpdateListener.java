@@ -1,7 +1,6 @@
 package net.yura.domination.android;
 
 import java.util.logging.Logger;
-
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 

@@ -1,11 +1,6 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Handler;
@@ -40,6 +35,9 @@ import net.yura.swingme.core.CoreUtil;
 import net.yura.util.Service;
 
 public class DominationMain extends Midlet {
+
+    public static final boolean DEFAULT_SHOW_DICE = true;
+    public static final String SHOW_DICE_KEY = "show_dice";
 
     public static final String product = "AndroidGUI";
     public static final String version;
@@ -182,6 +180,7 @@ public class DominationMain extends Midlet {
             if (lang!=null) {
                 TranslationBundle.setLanguage(lang);
             }
+            Risk.setShowDice(appPreferences.getBoolean(SHOW_DICE_KEY, DEFAULT_SHOW_DICE));
         }
     }
 

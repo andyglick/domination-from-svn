@@ -5,10 +5,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import net.yura.android.AndroidMeActivity;
+import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.translation.TranslationBundle;
+import net.yura.domination.mobile.flashgui.DominationMain;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         show_toasts.setTitle( resb.getString("game.menu.showtoasts") );
         show_toasts.setKey("show_toasts");
         inlinePrefCat.addPreference(show_toasts);
+
+        CheckBoxPreference showDice = new CheckBoxPreference(context); // TwoStatePreference = new SwitchPreference(this);
+        showDice.setTitle(resb.getString("game.menu.showdice"));
+        showDice.setKey(DominationMain.SHOW_DICE_KEY);
+        showDice.setDefaultValue(DominationMain.DEFAULT_SHOW_DICE);
+        showDice.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Risk.setShowDice((Boolean)newValue);
+                return true;
+            }
+        });
+        inlinePrefCat.addPreference(showDice);
 
         CheckBoxPreference color_blind = new CheckBoxPreference(context); // TwoStatePreference = new SwitchPreference(this);
         color_blind.setTitle( resb.getString("game.menu.colorblind") );
