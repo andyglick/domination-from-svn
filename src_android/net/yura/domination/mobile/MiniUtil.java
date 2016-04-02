@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
