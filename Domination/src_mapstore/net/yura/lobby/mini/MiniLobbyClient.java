@@ -253,6 +253,16 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 logger.warning(actionCommand+"called when we are "+playerType+" "+myusername);
             }
         }
+        else if ("renameGame2".equals(actionCommand)) {
+            if (playerType >= Player.PLAYER_MODERATOR) {
+                final Game game = (Game) list.getSelectedValue();
+                game.setName("game");
+                mycom.createNewGame(game);
+            }
+            else {
+                logger.warning(actionCommand+"called when we are "+playerType+" "+myusername);
+            }
+        }
         else {
             OptionPane.showMessageDialog(null,"unknown command: "+actionCommand, null, OptionPane.INFORMATION_MESSAGE);
         }
