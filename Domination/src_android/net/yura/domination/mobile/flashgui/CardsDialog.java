@@ -3,6 +3,7 @@ package net.yura.domination.mobile.flashgui;
 import android.graphics.ColorMatrix;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.ColorUtil;
@@ -85,7 +86,7 @@ public class CardsDialog extends Frame implements ActionListener {
         public void setupNumArmies() {
 
             if (myrisk.getGame().isRecycleCards() && myrisk.getGame().getCards().isEmpty() && !myrisk.getGame().getUsedCards().isEmpty()) {
-                throw new IllegalStateException();
+                Logger.getLogger(CardsDialog.class.getName()).warning("IllegalState! we RecycleCards but have no cards, but do have usedcards");
             }
 
             final String text;
