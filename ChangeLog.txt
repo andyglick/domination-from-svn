@@ -28,6 +28,7 @@ CURRENT VERSION:
 
 	Android 62 can toggle showing dice results in game options
 		   isGame=true added to android manifest
+		   saves default new game settings after a game is created
 	Android 61 Bugs with Map updating fixed
 		   Sending a saved game added to save game dialog
 	Android 60 Cards dialog shows when the game has no cards to give
