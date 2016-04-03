@@ -131,6 +131,9 @@ public class DominationMain extends Midlet {
                                                             //"remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak"
                         return true;
                     }
+                    if (message != null && message.startsWith("remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-")) { // then some random GUID
+                        return true;
+                    }
 
                     return false;
                 }
