@@ -39,6 +39,11 @@ public class DominationMain extends Midlet {
     public static final boolean DEFAULT_SHOW_DICE = true;
     public static final String SHOW_DICE_KEY = "show_dice";
 
+    public static final String DEFAULT_GAME_TYPE_KEY = "default.gametype";
+    public static final String DEFAULT_CARD_TYPE_KEY = "default.cardtype";
+    public static final String DEFAULT_AUTO_PLACE_ALL_KEY = "default.autoplaceall";
+    public static final String DEFAULT_RECYCLE_CARDS_KEY = "default.recycle";
+
     public static final String product = "AndroidGUI";
     public static final String version;
     static {
@@ -310,8 +315,28 @@ public class DominationMain extends Midlet {
     }
 
     public static boolean getBoolean(String key, boolean deflt) {
-        if (appPreferences==null) return deflt;
+        if (appPreferences == null) return deflt;
         return appPreferences.getBoolean(key, deflt);
+    }
+
+    public static String getString(String key, String defaultValue) {
+        if (appPreferences == null) return defaultValue;
+        return appPreferences.get(key, defaultValue);
+    }
+
+    public static void saveGameSettings(String gameTypeCommand, String cardTypeCommand, boolean autoPlaceAllBoolean, boolean recycleCardsBoolean) {
+        if (appPreferences != null) {
+            appPreferences.put(DEFAULT_GAME_TYPE_KEY, gameTypeCommand);
+            appPreferences.put(DEFAULT_CARD_TYPE_KEY, cardTypeCommand);
+            appPreferences.putBoolean(DEFAULT_AUTO_PLACE_ALL_KEY, autoPlaceAllBoolean);
+            appPreferences.putBoolean(DEFAULT_RECYCLE_CARDS_KEY, recycleCardsBoolean);
+            try {
+                appPreferences.flush();
+            }
+            catch(Exception ex) {
+                Logger.getLogger(DominationMain.class.getName()).log(Level.INFO, "can not flush prefs", ex);
+            }
+        }
     }
 
     public GooglePlayGameServices googlePlayGameServices;

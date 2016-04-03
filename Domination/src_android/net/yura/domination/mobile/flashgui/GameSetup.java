@@ -1,6 +1,7 @@
 package net.yura.domination.mobile.flashgui;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import net.yura.domination.engine.ColorUtil;
@@ -79,8 +80,8 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         	}
             }
             else if ("startgame".equals(actionCommand)) {
-                ButtonGroup GameType = (ButtonGroup)newgame.getGroups().get("GameType");
-                ButtonGroup CardType = (ButtonGroup)newgame.getGroups().get("CardType");
+                ButtonGroup gameType = (ButtonGroup)newgame.getGroups().get("GameType");
+                ButtonGroup cardType = (ButtonGroup)newgame.getGroups().get("CardType");
 
                 //Button autoplaceall = (Button)newgame.find("autoplaceall");
                 Button recycle = (Button)newgame.find("recycle");
@@ -95,12 +96,16 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                         // do not allow the user to accidently tap the start button twice.
                         newgame.find("startButton").setFocusable(false);
 
-                        myrisk.parser("startgame "+
-                                GameType.getSelection().getActionCommand()+" "+
-                                CardType.getSelection().getActionCommand()+
-                                ((autoplaceall!=null&&autoplaceall.isSelected()?" autoplaceall":""))+
-                                ((recycle!=null&&recycle.isSelected()?" recycle":""))
-                                );
+                        String gameTypeCommand = gameType.getSelection().getActionCommand();
+                        String cardTypeCommand = cardType.getSelection().getActionCommand();
+                        boolean autoPlaceAllBoolean = autoplaceall != null && autoplaceall.isSelected();
+                        boolean recycleCardsBoolean = recycle != null && recycle.isSelected();
+
+                        DominationMain.saveGameSettings(gameTypeCommand, cardTypeCommand, autoPlaceAllBoolean, recycleCardsBoolean);
+
+                        myrisk.parser("startgame " + gameTypeCommand + " " + cardTypeCommand +
+                                (autoPlaceAllBoolean ? " autoplaceall" : "") +
+                                (recycleCardsBoolean ? " recycle" : ""));
                     }
                     else {
                         String name = ((TextComponent)newgame.find("GameName")).getText().trim();
@@ -118,8 +123,8 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
                                             easyAI,
                                             averageAI,
                                             hardAI,
-                                            getStartGameOption(GameType.getSelection().getActionCommand()),
-                                            getStartGameOption(CardType.getSelection().getActionCommand()),
+                                            getStartGameOption(gameType.getSelection().getActionCommand()),
+                                            getStartGameOption(cardType.getSelection().getActionCommand()),
                                             autoplaceall.isSelected(),
                                             recycle.isSelected(),
                                             lobbyMapName),
@@ -263,7 +268,21 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
         MapUpdateService.getInstance().addObserver( (BadgeButton)newgame.find("MapImg") );
 
+
+        ButtonGroup gameType = (ButtonGroup)newgame.getGroups().get("GameType");
+        ButtonGroup cardType = (ButtonGroup)newgame.getGroups().get("CardType");
         autoplaceall = (Button)newgame.find("autoplaceall");
+        Button recycle = (Button)newgame.find("recycle");
+
+        setSelected(gameType, DominationMain.getString(DominationMain.DEFAULT_GAME_TYPE_KEY, gameType.getSelection().getActionCommand()));
+        setSelected(cardType, DominationMain.getString(DominationMain.DEFAULT_CARD_TYPE_KEY, cardType.getSelection().getActionCommand()));
+
+        if (autoplaceall != null) {
+            autoplaceall.setSelected(DominationMain.getBoolean(DominationMain.DEFAULT_AUTO_PLACE_ALL_KEY, autoplaceall.isSelected()));
+        }
+        if (recycle != null) {
+            recycle.setSelected(DominationMain.getBoolean(DominationMain.DEFAULT_RECYCLE_CARDS_KEY, recycle.isSelected()));
+        }
 
         ((Spinner) newgame.find("human")).setMinimum(localgame ? ("true".equals(System.getProperty("debug")) ? 0 : 1)
                                                                : ("true".equals(System.getProperty("debug")) ? 1 : 2));
@@ -295,6 +314,17 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         revalidate();
 
         setVisible(true);
+    }
+
+    private static void setSelected(ButtonGroup group, String actionCommand) {
+        Enumeration<Button> buttons = group.getElements();
+        while (buttons.hasMoreElements()) {
+            Button button = buttons.nextElement();
+            if ((actionCommand == null) ? (button.getActionCommand() == null) : actionCommand.equals(button.getActionCommand())) {
+                button.setSelected(true);
+                return;
+            }
+        }
     }
 
     @Override
