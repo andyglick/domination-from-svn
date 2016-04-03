@@ -334,7 +334,7 @@ public class DominationMain extends Midlet {
                 appPreferences.flush();
             }
             catch(Exception ex) {
-                Logger.getLogger(DominationMain.class.getName()).log(Level.INFO, "can not flush prefs", ex);
+                Logger.getLogger(DominationMain.class.getName()).log(Level.WARNING, "can not flush prefs", ex);
             }
         }
     }
