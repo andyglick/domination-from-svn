@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
@@ -460,17 +461,30 @@ public class RiskUIUtil {
                 return getNewFileInSandbox(f, a);
             }
         }
+        
+        public static boolean isMac() {
+            String osName = System.getProperty("os.name").toLowerCase(Locale.US);
+            return osName.startsWith("mac");
+        }
 
         public static String getNewFileNoSandbox(Frame f,String a) {
 
             File md = getFile( mapsdir );
+            RiskFileFilter filter = new RiskFileFilter(a);
+
+            // JFileChooser on mac is really bad, but FileDialog uses the native picker
+            if (isMac()) {
+                FileDialog fileDialog = new FileDialog(f);
+                fileDialog.setDirectory(md.toString());
+                fileDialog.setFilenameFilter(filter);
+                fileDialog.setVisible(true);
+                return fileDialog.getFile();
+            }
 
             JFileChooser fc = new JFileChooser( md );
-            RiskFileFilter filter = new RiskFileFilter(a);
             fc.setFileFilter(filter);
 
             int returnVal = fc.showOpenDialog( f );
-
             if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
 
                     java.io.File file = fc.getSelectedFile();

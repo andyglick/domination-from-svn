@@ -3,6 +3,7 @@
 package net.yura.domination.engine.guishared;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import javax.swing.filechooser.FileFilter;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -10,8 +11,7 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * <p> Risk File Filter </p>
  * @author Yura Mamyrin
  */
-
-public class RiskFileFilter extends FileFilter {
+public class RiskFileFilter extends FileFilter implements FilenameFilter {
 
 	public final static String RISK_MAP_FILES		="map";
 	public final static String RISK_CARDS_FILES		="cards";
@@ -50,8 +50,7 @@ public class RiskFileFilter extends FileFilter {
 	/**
 	 * returns the description for a file extension
 	 */
-	public String getDescription()
-	{
+	public String getDescription() {
 		java.util.ResourceBundle resb = TranslationBundle.getBundle();
 
 		String name;
@@ -85,7 +84,6 @@ public class RiskFileFilter extends FileFilter {
 	}//public String getDescription()
 
 	public String getExtension() {
-
 		return extension;
 	}
 
@@ -103,5 +101,7 @@ public class RiskFileFilter extends FileFilter {
 		return ext;
 	}
 
-
+	public boolean accept(File dir, String name) {
+		return accept(new File(dir, name));
+	}
 }
