@@ -106,32 +106,45 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
                 if (checkmap && (pic.getWidth()!=map.getWidth() || pic.getHeight()!=map.getHeight())) {
 
-                    int result = JOptionPane.showConfirmDialog(this,
-                            "The image size does not match the size of the imgmap, would you like to update the imgmap size?",
-                            "?",JOptionPane.YES_NO_OPTION);
-
-                    if (result==JOptionPane.YES_OPTION) {
-                        BufferedImage newmap = new BufferedImage(pic.getWidth(), pic.getHeight(), map.getType());
-                        Graphics g = newmap.getGraphics();
-                        g.setColor( Color.WHITE );
-                        g.fillRect(0, 0, newmap.getWidth(), newmap.getHeight());
-                        g.drawImage(map, 0, 0, this);
-                        g.dispose();
-                        setImageMap(newmap);
-                    }
+			int result = JOptionPane.showConfirmDialog(this,
+				"This ImagePic does not match the ImageMap size!\n"
+			      + "ImagePic: "+pic.getWidth()+"x"+pic.getHeight()+"\n"
+			      + "ImageMap: "+map.getWidth()+"x"+map.getHeight()+"\n"
+			      + "They should match for the game to work!\n"      
+			      + "would you like to update the ImageMap size?",
+				"?", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				resizeAndSetImageMap(map);
+			}
                 }
 
 		zoom(zoom);
-
+	}
+        
+	private void resizeAndSetImageMap(BufferedImage imageMap) {
+		BufferedImage newmap = new BufferedImage(pic.getWidth(), pic.getHeight(), imageMap.getType());
+		Graphics g = newmap.getGraphics();
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, newmap.getWidth(), newmap.getHeight());
+		g.drawImage(imageMap, 0, 0, this);
+		g.dispose();
+		setImageMap(newmap);
 	}
 
 	public void setImageMap(BufferedImage a) {
 
 		if (a.getWidth() != pic.getWidth() || a.getHeight() != pic.getHeight() ) {
-			JOptionPane.showMessageDialog(this, "ImageMap does not match ImagePic size!\n"
-                                + "PIC: "+pic.getWidth()+"x"+pic.getHeight()+"\n"
-                                + "MAP: "+a.getWidth()+"x"+a.getHeight()+"\n"
-                                + "They should match for the game to work!");
+			int result = JOptionPane.showConfirmDialog(this,
+				"This ImageMap does not match the ImagePic size!\n"
+			      + "ImagePic: "+pic.getWidth()+"x"+pic.getHeight()+"\n"
+			      + "ImageMap: "+a.getWidth()+"x"+a.getHeight()+"\n"
+			      + "They should match for the game to work!\n"
+			      + "would you like to update the ImageMap size?",
+				"?", JOptionPane.YES_NO_OPTION);
+                        if (result == JOptionPane.YES_OPTION) {
+                            resizeAndSetImageMap(a);
+                            return;
+                        }
 		}
 
 		map = a;
