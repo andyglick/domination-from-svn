@@ -8,12 +8,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.awt.image.IndexColorModel;
 import java.util.List;
 import java.util.Map;
@@ -282,7 +284,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	    if (alpha!=1) {
 
-            	g.drawImage(pic,0,0,this);
+            	drawImage(g, pic, 0, 0, this);
 
 	    	drawCountries(g);
 	    }
@@ -293,11 +295,11 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
 		g2.setComposite(ac);
 
-		g2.drawImage(map,0,0,this);
+		drawImage(g2, map, 0, 0, this);
 
 		//if (mode == MODE_DRAW) {
 
-			g2.drawImage(drawImage,0,0,this);
+			drawImage(g2, drawImage, 0, 0, this);
 
 		//}
 
@@ -319,6 +321,15 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	}
 
+    }
+
+    // if we dont do this, draw is very slow on OS X
+    public static void drawImage(Graphics g, Image img, int x, int y, ImageObserver io) {
+        Rectangle clip = g.getClipBounds();
+        clip = clip.intersection(new Rectangle(x, y, img.getWidth(io), img.getHeight(io)));
+        int imgX = clip.x - x;
+        int imgY = clip.y - y;
+        g.drawImage(img, clip.x, clip.y, clip.x + clip.width, clip.y + clip.height, imgX, imgY, imgX + clip.width, imgY + clip.height, io);
     }
 
     int badness;
@@ -750,11 +761,15 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 				drawLine(dragpoint,end, ( (e.getModifiers() & MouseEvent.BUTTON1_MASK) == MouseEvent.BUTTON1_MASK) );
 
+                                // Only repaint the area where we have drawn something (or the draw is very slow on OS X)
+                                int halfBrush = brush / 2;
+                                Rectangle rect = new Rectangle(dragpoint.x - halfBrush, dragpoint.y - halfBrush, brush, brush);
+                                rect.add(new Rectangle(end.x - halfBrush, end.y - halfBrush, brush, brush));
+                                rect.grow(3, 3);
+                                repaint(rect);
 			}
 
 			dragpoint = end;
-
-			repaint();
 		}
 	    }
 	}
