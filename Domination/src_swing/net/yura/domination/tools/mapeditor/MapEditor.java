@@ -788,7 +788,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 			NewImage img = getNewImage(false);
 
-			if (img!=null) {
+			if (img != null && checkNewImageMap(img.bufferedImage)) {
                             setImageMap(img.bufferedImage);
 			}
 		}
@@ -1240,6 +1240,25 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
+        private boolean checkNewImageMap(BufferedImage map) {
+                int[] pixels = getAllPixels(map);
+                int badPixels = 0;
+                HashSet bad = new HashSet();
+                for (int c=0;c<pixels.length;c++) {
+                        Color color = new Color(pixels[c], true);
+                        if (color.getRed() != color.getBlue() ||color.getRed() != color.getGreen()) {
+                                bad.add(color);
+                                badPixels++;
+                        }
+                }
+                if (!bad.isEmpty()) {
+                        showMessageDialog(this, "This image is not grayscale, ("+ bad.size() +" non greyscale colors, "+badPixels+" pixels)\n"
+                                + "The ImageMap image should be grayscale.");
+                        return false;
+		}
+		return true;
+        }
+
 	public boolean checkMap() {
 
 		String errors="";
@@ -1298,7 +1317,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		}
 
 
-		int[] pixels = map.getRGB(0,0,map.getWidth(),map.getHeight(),null,0,map.getWidth());
+		int[] pixels = getAllPixels(map);
 
 		int color,noc = myMap.getNoCountries();
 		HashSet bad = new HashSet();
@@ -1375,6 +1394,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		return true;
 
 	}
+        
+        private static int[] getAllPixels(BufferedImage map) {
+            return map.getRGB(0, 0, map.getWidth(), map.getHeight(), null, 0, map.getWidth());
+        }
         
         private void showMessageDialog(Component c, String string) {
             System.out.println(string);
