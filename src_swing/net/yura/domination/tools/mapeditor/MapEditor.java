@@ -663,7 +663,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             
                             if (localVersion <= onlineVersion) {
                                 JOptionPane.showMessageDialog(this, "MapStore version: " + onlineVersion + "\n"
-                                        + "Saving map with higher version: " + (onlineVersion + 1));
+                                        + "Local version:" + localVersion + "\n"
+                                        + "Saving map with new version: " + (onlineVersion + 1));
                                 myMap.setVersion(onlineVersion + 1);
                                 boolean successfulSave = false;
                                 try {
