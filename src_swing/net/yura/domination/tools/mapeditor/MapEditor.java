@@ -657,6 +657,28 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 save.doClick();
                                 return;
                             }
+
+                            int localVersion = myMap.getVersion();
+                            int onlineVersion = getVersion(map);
+                            
+                            if (localVersion <= onlineVersion) {
+                                JOptionPane.showMessageDialog(this, "MapStore version: " + onlineVersion + "\n"
+                                        + "Saving map with higher version: " + (onlineVersion + 1));
+                                myMap.setVersion(onlineVersion + 1);
+                                boolean successfulSave = false;
+                                try {
+                                    successfulSave = saveMap(new File(RiskUIUtil.getSaveMapDir(), fileName));
+                                }
+                                catch (Exception ex) {
+                                    showError(ex);
+                                }
+                                if (!successfulSave) {
+                                    // we failed to save for whatever reason, set old version back on game object and cancel publish action
+                                    myMap.setVersion(localVersion);
+                                    return;
+                                }
+                                // the save worked, this means the map now has a version higher then in the MapStore, we are all set to publish
+                            }
                         }
 
                         map2 = net.yura.domination.mapstore.MapChooser.createMap(fileName);
@@ -1659,7 +1681,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             }
             return buffer.toString();
         }
-        
+
+        // TODO really the net.yura.domination.mapstore.Map#getVersion() method should return a int
+        public static int getVersion(net.yura.domination.mapstore.Map map) {
+                String version = map.getVersion();
+                if (version == null || "".equals(version)) {
+                    return 1;
+                }
+                else {
+                    return Integer.parseInt(version);
+                }
+        }
+
         /**
          * @return true if everything is ok, false if the user cancelled
          */
@@ -1670,14 +1703,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             net.yura.domination.mapstore.Map map2 = MapsTools.findMap( MapsTools.loadMaps() ,mapName);
 
             if (map2!=null) { // this means it has been published at least once
-                String version = map2.getVersion();
-                int newVersion;
-                if (version==null || "".equals(version)) {
-                    newVersion = 2;
-                }
-                else {
-                    newVersion = Integer.parseInt(version) + 1;
-                }
+                int newVersion = getVersion(map2) + 1;
                 myMap.setVersion( newVersion );
             }
             
