@@ -56,5 +56,5 @@ task copyAssets(type: Copy) {
     from 'ChangeLog.txt'
     into 'assets'
 }
-assembleDebug.dependsOn(copyAssets)
-assembleRelease.dependsOn(copyAssets)
+project.preBuild.dependsOn(copyAssets)
+
