@@ -26,6 +26,7 @@ CURRENT VERSION:
 	MapEditor: can select what Islands to delete.
 	Resign button added in menu of FlashGUI for online play
 
+	Android 63 Sending a message from inside game added
 	Android 62 can toggle showing dice results in game options
 		   isGame=true added to android manifest
 		   saves default new game settings after a game is created
