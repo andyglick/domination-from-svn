@@ -106,6 +106,15 @@ public class MiniFlashRiskAdapter implements RiskListener {
             });
             menu.add(button);
         }
+        if (lobby != null) {
+            Button button = new Button(GameActivity.resb.getString("lobby.chat"), new Icon("/ic_menu_chat.png"));
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(String actionCommand) {
+                    lobby.sendChatMessage();
+                }
+            });
+            menu.add(button);
+        }
 //        else if ( myRisk.findEmptySpot() != null ) {
 //            Button button = new Button("Join");
 //            button.addActionListener(new ActionListener() {
