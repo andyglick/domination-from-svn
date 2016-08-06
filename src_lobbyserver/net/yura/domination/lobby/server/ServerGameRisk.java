@@ -219,6 +219,9 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
+        /**
+         * @return May return null, all methods calling this method must handle null!
+         */
         private String getPlayerId(String username) {
             RiskGame game = myrisk.getGame();
             List<Player> players = game.getPlayers();
@@ -338,8 +341,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	}
 
-        private void sendRename(String oldName,String newName,String newAddress,int newType,
-                boolean doLegacySend) {
+        private void sendRename(String oldName, String newName, String newAddress, int newType, boolean doLegacySend) {
             HashMap map = new HashMap();
             map.put("oldName", oldName);
             map.put("newName", newName);
@@ -387,9 +389,12 @@ public class ServerGameRisk extends TurnBasedGame {
         }
 
         @Override
-	public void renamePlayer(String oldser,String newuser) {
-            String playerId = getPlayerId(oldser);
-            sendRename(oldser,newuser,playerId,Player.PLAYER_HUMAN,false);
+	public void renamePlayer(String oldUser, String newUser) {
+            String playerId = getPlayerId(oldUser);
+            if (playerId == null) {
+                throw new IllegalArgumentException(oldUser + " not found in game");
+            }
+            sendRename(oldUser, newUser, playerId, Player.PLAYER_HUMAN, false);
 	}
 
 
