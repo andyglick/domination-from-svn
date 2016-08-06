@@ -284,6 +284,22 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         mycom.sendGameMessage(openGameId,messagefromgui);
     }
 
+    public void sendChatMessage() {
+        final TextField chatText = new TextField();
+        OptionPane.showOptionDialog(new ActionListener() {
+            public void actionPerformed(String actionCommand) {
+                String message = chatText.getText();
+                if ("ok".equals(actionCommand) && !"".equals(message.trim())) {
+                    sendChatMessage(message);
+                }
+            }
+        }, chatText, "Chat" , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+    }
+
+    public void sendChatMessage(String message) {
+        mycom.sendChat(openGameId, message);
+    }
+
     public void closeGame() {
         mycom.closeGame(openGameId);
         openGameId = -1;
