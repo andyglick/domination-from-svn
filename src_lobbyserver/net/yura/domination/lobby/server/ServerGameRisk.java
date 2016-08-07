@@ -392,7 +392,7 @@ public class ServerGameRisk extends TurnBasedGame {
 	public void renamePlayer(String oldUser, String newUser) {
             String playerId = getPlayerId(oldUser);
             if (playerId == null) {
-                throw new IllegalArgumentException(oldUser + " not found in game");
+                throw new IllegalArgumentException(oldUser + " not found in game player: " + myrisk.getGame().getPlayers());
             }
             sendRename(oldUser, newUser, playerId, Player.PLAYER_HUMAN, false);
 	}
