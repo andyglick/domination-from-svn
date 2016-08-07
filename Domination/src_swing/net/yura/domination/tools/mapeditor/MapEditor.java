@@ -71,6 +71,7 @@ import net.yura.domination.engine.core.RiskGame;
 import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
+import net.yura.domination.mapstore.MapUpdateService;
 import net.yura.domination.ui.swinggui.SwingGUIPanel;
 import net.yura.domination.ui.swinggui.SwingGUITab;
 import net.yura.swing.ImageIcon;
@@ -636,7 +637,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     if (map2==null) { // we have never published this map before!
 
                         // check if someone else has published a map with this name
-                        net.yura.domination.mapstore.Map map = MapsTools.getOnlineMap(fileName);
+                        net.yura.domination.mapstore.Map map = MapUpdateService.getOnlineMap(fileName);
                         
                         if (map!=null) {
 

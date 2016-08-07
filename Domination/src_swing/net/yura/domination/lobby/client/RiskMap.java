@@ -20,7 +20,6 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
-import net.yura.domination.tools.mapeditor.MapsTools;
 import net.yura.swing.GraphicsUtil;
 
 public class RiskMap {
@@ -58,21 +57,25 @@ public class RiskMap {
                         if (!requestMade.getAndSet(true)) {
                             executor.submit(new Runnable() {
                                 public void run() {
-                                    if (isLocalMap()) {
-                                        map = MapChooser.createMap(mapUID);
-                                        setImage(MapChooser.getLocalIconForMap(map).getImage()._image);
-                                    }
-                                    else {
-                                        try {
-                                            map = MapsTools.getOnlineMap(mapUID);
+                                    try {
+                                        if (isLocalMap()) {
+                                            //PicturePanel.getImage(RiskGame) can also get a icon, but MapChooser caches the small preview
+                                            map = MapChooser.createMap(mapUID);
+                                            setImage(MapChooser.getLocalIconForMap(map).getImage()._image);
+                                        }
+                                        else {
+                                            map = MapUpdateService.getOnlineMap(mapUID);
                                             // map is null if we can not connect to the server to get it
                                             if (map != null) {
                                                 setImage(ImageIO.read(new URL(new URL(MapChooser.MAP_PAGE), map.getPreviewUrl())));
                                             }
+                                            else {
+                                                logger.log(Level.INFO, "no online map found " + mapUID);
+                                            }
                                         }
-                                        catch (Exception ex) {
-                                            logger.log(Level.WARNING, "failed to get " + mapUID, ex);
-                                        }
+                                    }
+                                    catch (Throwable ex) {
+                                        logger.log(Level.WARNING, "failed to get " + mapUID, ex);
                                     }
                                 }
                             });
