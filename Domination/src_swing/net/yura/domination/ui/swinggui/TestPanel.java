@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -522,9 +523,10 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		}
 		else if ("aiwait".equals(command)) {
 
-			Object[] message = new Object[2];
+			Object[] message = new Object[3];
 			message[0] = new JLabel("AI wait time (in milliseconds):");
 			message[1] = new JSpinner( new SpinnerNumberModel( AIManager.getWait(),0,10000,100 ) );
+			message[2] = new JCheckBox("show dice", true);
 
 			String[] options = {
 			    "OK",
@@ -544,6 +546,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			if (result == JOptionPane.OK_OPTION ) {
 				AIManager.setWait( ((Integer)((JSpinner)message[1]).getValue()).intValue() );
+				Risk.setShowDice(((JCheckBox)message[2]).isSelected());
 			}
 		}
 		else if ("allcards".equals(command)) {
