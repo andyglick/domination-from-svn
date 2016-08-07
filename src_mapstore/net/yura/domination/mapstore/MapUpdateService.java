@@ -5,12 +5,14 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.mapstore.gen.XMLMapAccess;
 import net.yura.mobile.gui.Font;
 import net.yura.mobile.gui.Graphics2D;
@@ -137,6 +139,19 @@ logger.fine("URL: " + url + " payload: " + payload);
             mapsToUpdate.remove(i);
             notifyListeners();
         }
+    }
+
+    public static Map getOnlineMap(String uid) {
+        String[] names;
+        if (uid.indexOf(' ') >= 0) {
+            names = new String[] {uid, RiskUtil.replaceAll(uid, " ", "")};
+        }
+        else {
+            names = new String[] {uid};
+        }
+        // TODO: This still does not catch the case when the map on the server has a space in it.
+        List maps = getMaps(MapChooser.MAP_PAGE,Arrays.asList(names));
+        return maps.size()>0 ? (Map)maps.get(0) : null;
     }
 
     /**
