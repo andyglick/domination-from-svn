@@ -94,7 +94,7 @@
                 <mkdir dir="${dir.dist}"/>
 
 		<!-- compile the classes -->
-		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.classes}" excludes="net/yura/domination/lobby/**"
+		<javac debug="on" srcdir="${dir.sources}" destdir="${dir.build.classes}"
 		source="1.5" target="1.5" classpath="${dir.libs}"/>
 
                 <!-- copy translation files and other shared files -->
