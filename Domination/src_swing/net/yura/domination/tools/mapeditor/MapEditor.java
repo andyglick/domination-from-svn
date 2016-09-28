@@ -176,6 +176,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		load.addActionListener(this);
 		toolbar.add(load);
 
+		JButton load2 = new JButton("Load current");
+		load2.setActionCommand("load2");
+		load2.addActionListener(this);
+		toolbar.add(load2);
+
 		save = new JButton("Save map");
 		save.setActionCommand("save");
 		save.addActionListener(this);
@@ -502,8 +507,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
         }
 
 	public void actionPerformed(ActionEvent a) {
+		String action = a.getActionCommand();
 
-		if (a.getActionCommand().equals("newmap")) {
+		if ("newmap".equals(action)) {
 			try {
 				RiskGame map = makeNewMap();
 				map.setupNewMap();
@@ -517,25 +523,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				showError(ex);
 			}
 		}
-		else if (a.getActionCommand().equals("load")) {
+		else if ("load".equals(action)) {
 
 		    try {
-
 			String name = RiskUIUtil.getNewFile( RiskUIUtil.findParentFrame(this), "map" );
 
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			if (name!=null) {
-                            
                             if (name.endsWith(".xml")) {
-                                
                                 loadMap("teg.map");
-                                
                                 File file = new File(name);
-                                
                                 TegMapLoader loader = new TegMapLoader();
                                 loader.load( file , myMap , this);
-
                                 myMap.setMapName(null);
                                 myMap.setPreviewPic(null);
                                 fileName = file.getParentFile().getName();
@@ -552,8 +552,24 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         setCursor(null);
                     }
 		}
+                else if ("load2".equals(action)) {
+                    RiskGame game = myrisk.getGame();
+                    try {
+                        if (game == null || game.getMapFile() == null) {
+                            String name = RiskUIUtil.getNewMap(RiskUIUtil.findParentFrame(this));
+                            if (name != null) {
+                                loadMap(name);
+                            }
+                        }
+                        else {
+                            loadMap(game.getMapFile());
+                        }
+                    }
+                    catch (Exception ex) {
+                        showError(ex);
+                    }
+                }
 		else if (a.getActionCommand().equals("save")) {
-
 		    checkMap();
 
 		    if (!RiskUIUtil.checkForNoSandbox()) {
@@ -865,7 +881,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			delIslands();
 		}
 		else {
-			throw new RuntimeException("unknown command: "+a.getActionCommand());
+			throw new RuntimeException("unknown command: " + action);
 		}
 	}
 
