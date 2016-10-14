@@ -61,7 +61,8 @@ public class MapChooser implements ActionListener,MapServerListener {
 
     // these are both weak caches, they only keep a object if someone else holds it or a key
     private static ImageManager iconCache = new ImageManager( XULLoader.adjustSizeToDensity(150),XULLoader.adjustSizeToDensity(94) ); // 150x94
-    private static java.util.Map mapCache = new WeakHashMap();
+    // needs to be synchronizedMap or we get endless loop in WeakHashMap: http://www.adam-bien.com/roller/abien/entry/endless_loops_in_unsychronized_weakhashmap
+    private static java.util.Map mapCache = Collections.synchronizedMap(new WeakHashMap());
     private static Cache repo;
     static {
         try {
@@ -346,6 +347,8 @@ public class MapChooser implements ActionListener,MapServerListener {
         mapCache.remove(mapUID);
     }
 
+    // this may be called from 2 threads at the same time
+    // e.g. MapUpdateService.init and MapChooser.actionPerformed."local".run
     public static Map createMap(String file) {
 
         WeakReference wr = (WeakReference)mapCache.get(file);
