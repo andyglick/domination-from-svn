@@ -153,7 +153,7 @@ public class MapServerClient extends HTTPClient {
                             request1.post = true;
                             request1.postData = GooglePlusOne.getRequest(urls);
                             request1.headers = new Hashtable();
-                            request1.headers.put("Content-Type:", "application/json");
+                            request1.headers.put("Content-Type", "application/json");
                             makeRequest(request1);
                         }
                         else {
