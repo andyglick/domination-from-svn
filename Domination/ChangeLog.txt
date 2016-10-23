@@ -13,6 +13,10 @@ CURRENT VERSION:
 	Increment1GUI:	2
 	CommandLine:	2
 
+1.1.1.7
+
+	Fix for 'Top Rated' being broken on PC Domination.
+
 1.1.1.6
 
 	OS X java 1.7 maps dir missing deadlock fix
