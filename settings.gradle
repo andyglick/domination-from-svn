@@ -7,3 +7,6 @@ project(':BaseGameUtils').projectDir = new File(rootDir.getParentFile(), 'BaseGa
 include ':AndroidME'
 project(':AndroidME').projectDir = new File(rootDir.getParentFile(), 'AndroidME')
 
+
+// this will only be supported when Android Studio adds support for gradle 3
+//includeBuild '../AndroidME'
