@@ -105,7 +105,9 @@ logger.fine("URL: " + url + " payload: " + payload);
             wr.write( payload.toString() );
             wr.close();
 
-            Task task = (Task)new XMLMapAccess().load( new InputStreamReader(conn.getInputStream(),"UTF-8") );
+            InputStreamReader re = new InputStreamReader(conn.getInputStream(), "UTF-8");
+            Task task = (Task)new XMLMapAccess().load(re);
+            re.close();
 
 //logger.info("got: " + task);
             
