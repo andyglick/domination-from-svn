@@ -1716,6 +1716,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 
                     net.yura.grasshopper.BugManager.interceptAndAlert(new Writer() {
                         public void write(char[] cbuf, int off, int len) {
+                            // TODO this will throw Error if current thread is interrupted
                             errText.append(String.valueOf(cbuf, off, len));
                         }
                         public void flush() { }
