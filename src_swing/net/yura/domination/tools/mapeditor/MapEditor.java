@@ -72,6 +72,7 @@ import net.yura.swing.GraphicsUtil;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.mapstore.MapUpdateService;
+import net.yura.domination.ui.swinggui.GameTab;
 import net.yura.domination.ui.swinggui.SwingGUIPanel;
 import net.yura.domination.ui.swinggui.SwingGUITab;
 import net.yura.swing.ImageIcon;
@@ -626,6 +627,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				try {
 					myrisk.newMemoryGame(myMap,buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic"));
                                         panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
+                                        panel.setSelectedTab(GameTab.class);
 				}
                                 catch (Exception e) {
 					showError(e);
