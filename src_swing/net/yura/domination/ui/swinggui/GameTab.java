@@ -99,34 +99,33 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 	private JPanel gameOptions;
         private JLabel capitalLabel;
 
+	private JTextField country1;
+	private JTextField country2;
+
+	private JSlider moveNumber;
+	private boolean localGame;
+
+	private JPanel inGameInput;
+	private CardLayout inGameCards;
+	private JComboBox mapViewComboBox;
+
 	SetupPanel guiSetup;
 	JLabel resultsLabel;
 
-        JLabel armies;
+	JLabel attacker;
+	JLabel armies;
         
 	JSlider slider;
-	JSlider moveNumber;
         
 	JButton roll1;
 	JButton roll2;
 	JButton roll3;
 
-	JComboBox mapViewComboBox;
-	boolean localGame;
-
-	JPanel inGameInput;
-	CardLayout inGameCards;
-        
 	JPanel defend;
 	JPanel roll;
-        winnerPanel winner;
-        tradeCardsPanel tradeCards;
-        
-	JLabel attacker;
+	winnerPanel winner;
+	tradeCardsPanel tradeCards;
 
-	private JTextField country1;
-	private JTextField country2;
-        
 	public GameTab(SwingGUIPanel swingGUI) {
 		swingGUIPanel = swingGUI;
 
@@ -797,6 +796,14 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		inGameCards.show(inGameInput, name);
 	}
 
+	void setLocalGame(boolean lg) {
+		localGame = lg;
+	}
+
+	String getSelectedMapView() {
+		return (String)mapViewComboBox.getSelectedItem();
+	}
+
 	//############################################################################################################
 
 	class playersPanel extends JPanel {
@@ -1051,14 +1058,14 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 
 	class SetupPanel extends JPanel implements ActionListener {
 
-            private JRadioButton domination;
-            private JRadioButton capital;
-            private JRadioButton mission;
-            private JCheckBox AutoPlaceAll;
-            private JCheckBox recycle;
+		private JRadioButton domination;
+		private JRadioButton capital;
+		private JRadioButton mission;
+		private JCheckBox AutoPlaceAll;
+		private JCheckBox recycle;
 
-            private JLabel mapPic;
-            private JTextField cardsFile;
+		private JLabel mapPic;
+		private JTextField cardsFile;
 
 		private ButtonGroup CardTypeButtonGroup;
 		private ButtonGroup GameTypeButtonGroup;
@@ -1068,20 +1075,20 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		private NamedColor[] namedColors;
                 private PlayerType[] playerTypes;
 
-            class PlayerType {
-                String displayString;
-                String type;
-                public PlayerType(String displayString, String type) {
-                    this.displayString = displayString;
-                    this.type = type;
-                }
-                String getType() {
-                    return type;
-                }
-                public String toString() {
-                    return displayString;
-                }
-            }
+		class PlayerType {
+		    String displayString;
+		    String type;
+		    public PlayerType(String displayString, String type) {
+			this.displayString = displayString;
+			this.type = type;
+		    }
+		    String getType() {
+			return type;
+		    }
+		    public String toString() {
+			return displayString;
+		    }
+		}
 
                 class NamedColor extends Color {
                     private String name;
@@ -1098,39 +1105,6 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
                         return name;
                     }
                 }
-
-            public void showCardsFile(String c, boolean m) {
-                cardsFile.setText(c);
-
-                if ( m==false && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
-
-                mission.setEnabled(m);
-            }
-
-            public void showMapImage(Icon p) {
-                mapPic.setIcon( p ); // SCALE_DEFAULT
-                swingGUIPanel.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-            }
-
-		public void actionPerformed(ActionEvent e) {
-
-			if (e.getSource()==mission) {
-
-				AutoPlaceAll.setEnabled(false);
-
-			}
-			else if (e.getSource()==domination) {
-
-				AutoPlaceAll.setEnabled(true);
-
-			}
-			else if (e.getSource()==capital) {
-
-				AutoPlaceAll.setEnabled(true);
-
-			}
-
-		}
 
 		public SetupPanel() {
 
@@ -1685,7 +1659,32 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
 			this.add(startGame, c);
+		}
 
+		public void showCardsFile(String c, boolean m) {
+			cardsFile.setText(c);
+
+			if ( m==false && mission.isSelected() ) { domination.setSelected(true); AutoPlaceAll.setEnabled(true); }
+
+			mission.setEnabled(m);
+		}
+
+		public void showMapImage(Icon p) {
+			mapPic.setIcon( p ); // SCALE_DEFAULT
+			swingGUIPanel.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+		}
+
+		public void actionPerformed(ActionEvent e) {
+
+			if (e.getSource()==mission) {
+				AutoPlaceAll.setEnabled(false);
+			}
+			else if (e.getSource()==domination) {
+				AutoPlaceAll.setEnabled(true);
+			}
+			else if (e.getSource()==capital) {
+				AutoPlaceAll.setEnabled(true);
+			}
 		}
 
 		public void resetPlayers(boolean lastUsed) {
@@ -1721,7 +1720,6 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		}
 
 		public void setupGame() {
-
 			players.removeEditor();
 
 			if (localGame) {
@@ -1816,7 +1814,6 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			c.gridwidth = 1; // width
 			c.gridheight = 1; // height
 			this.add(endtrade, c);
-
 		}
 	}
 

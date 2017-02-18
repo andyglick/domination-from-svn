@@ -368,7 +368,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 	public void pprepaintCountries() {
 
-		String tmp = (String)gameTab.mapViewComboBox.getSelectedItem();
+		String tmp = gameTab.getSelectedMapView();
 		int newview = -1;
 
 		if (tmp.equals(resbundle.getString("game.tabs.continents")))           { newview=PicturePanel.VIEW_CONTINENTS; }
@@ -651,7 +651,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		}
 
 		public void newGame(boolean t) { // t==true: this is a local game
-			gameTab.localGame = t;
+			gameTab.setLocalGame(t);
 			gameTab.newGame();
 		}
 
@@ -662,7 +662,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		public void startGame(boolean s) {
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-			gameTab.localGame = s;
+			gameTab.setLocalGame(s);
 			// check maybe we should load from memory
 			if (myrisk.getGame().getMapFile() == null && myrisk.getGame().getCardsFile() == null) {
 				pp.memoryLoad(editorTab.getImageMap(),editorTab.getImagePic());
