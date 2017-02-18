@@ -3,23 +3,18 @@
 package net.yura.domination.ui.swinggui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,22 +27,14 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -55,41 +42,27 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.StatType;
-import net.yura.domination.engine.guishared.BadgeButton;
 import net.yura.swing.GraphicsUtil;
 import net.yura.swing.ImageIcon;
-import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
-import net.yura.swing.JTable;
 
 /**
  * <p> Swing GUI Main Frame </p>
@@ -98,19 +71,9 @@ import net.yura.swing.JTable;
 public class SwingGUIPanel extends JPanel implements ActionListener{
 
 	public final static String version = "2";
-	public final static String product;
-
-	static {
-
-		product = "Swing GUI for " + RiskUtil.GAME_NAME;
-
-	}
-
-	// TRUE GUI GLOBAL THINGS:
+	public final static String product = "Swing GUI for " + RiskUtil.GAME_NAME;
 
 	private ResourceBundle resbundle = TranslationBundle.getBundle();
-
-
 
 	private JTabbedPane tabbedpane;
 	private JToolBar currentToolbar;
@@ -145,7 +108,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		//setDefaultLookAndFeelDecorated(true);
 		//setUndecorated(true);
 		//getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-
 
 		// add menu bar
 		gMenuBar = new JMenuBar();
@@ -357,11 +319,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 	 * Blocks the game panel
 	 */
 	public void blockInput() {
-
 		gameState= -1;
-
                 gameTab.showPanel("nothing");
-
 		gameTab.blockInput();
 		consoleTab.blockInput();
 	}
@@ -520,9 +479,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		 * @param repaintNeeded If frame needs to be repainted
 		 */
 		public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
-
 			// Testing.append("Returned: \""+output+"\"\n");
-
 			consoleTab.addOutput(output);
 
 			if (redrawNeeded) {
@@ -555,7 +512,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 		 * @param s determines what needs input
 		 */
 		public void needInput(int s) {
-
 			gameState=s;
 
 			if (gameState != -1 && gameState!=RiskGame.STATE_NEW_GAME) {
@@ -624,9 +580,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 			}
 
 			consoleTab.getInput();
-
 			repaint();
-
 		}
 
 		/**
@@ -760,7 +714,6 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 			gameTab.resultsLabel.setText(output);
 
 			gameTab.showPanel("results");
-
 		}
 
 		public void closeBattle() {
@@ -791,7 +744,7 @@ public void setNODDefender(int n) {}
 class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
 	private String temptext;
-	private Vector history;
+	private List history;
 	private int pointer;
 
 	JMenu cConsole;
@@ -806,12 +759,11 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
 
 	public ConsoleTab() {
-
 		setName( resbundle.getString("swing.tab.console") );
 
 		// ################### CONSOLE #######################
 
-		history = new Vector();
+		history = new java.util.Vector();
 		pointer=-1;
 
 		statusBar = new JLabel(resbundle.getString("swing.status.loading"));
@@ -826,7 +778,6 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 
 		// Console.setBackground(Color.white); // not needed with swing
 		Console.setEditable(false);
-
 
 		Command = new JTextField("");
 		// Command.setColumns(75); // dont use because it goes odd in linux
@@ -931,7 +882,6 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 		c.insets = new java.awt.Insets(3, 3, 3, 3);
 		c.fill = GridBagConstraints.BOTH;
 
-
 		setLayout(new java.awt.GridBagLayout());
 
 		c.gridx = 0; // col
@@ -982,7 +932,7 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 					}
 					else {
 						if (pointer == history.size()-1) { temptext=Command.getText(); }
-						Command.setText( (String)history.elementAt(pointer) );
+						Command.setText( (String)history.get(pointer) );
 						pointer--;
 					}
 				}
@@ -999,7 +949,7 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 					}
 					else {
 						pointer=pointer+2;
-						Command.setText( (String)history.elementAt(pointer) );
+						Command.setText( (String)history.get(pointer) );
 						pointer--;
 					}
 
@@ -1040,12 +990,10 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 			catch(Exception e) {
 				addOutput("Unable to open manual: "+e.getMessage() );
 			}
-
 		}
 		else {
 			go(input);
 		}
-
 	}
 
 	public void addOutput(String output) {
@@ -1089,7 +1037,6 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 			history.add(input);
 			pointer = history.size()-1;
 			cgo(input);
-
 		}
 		else if (a.getActionCommand().equals("run script")) {
 
@@ -1127,7 +1074,6 @@ class ConsoleTab extends JPanel implements SwingGUITab, ActionListener {
 			} else {
 				// Write your code here what to do if user has canceled Open dialog
 			}
-
 		}
 		else if (a.getActionCommand().equals("save console")) {
 			saveLog(Console);
@@ -1287,7 +1233,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		errText = new JTextArea();
 		errText.setEditable(false);
 
-
 		JScrollPane errScroll = new JScrollPane( errText );
 		//errScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		//errScroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLoweredBevelBorder() , "Error Log", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP ) );
@@ -1313,7 +1258,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 	}
 
         public void start() {
-
 		int size = 16;
 		Image img = new BufferedImage(size,size,BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
@@ -1321,7 +1265,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
 		g.fillOval(0,0,size,size);
 		g.dispose();
 		final Icon icon = new ImageIcon(img);
-
 
                 if (RiskUIUtil.checkForNoSandbox()) {
 
@@ -1356,9 +1299,7 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                     catch (Throwable th) {
                         RiskUtil.printStackTrace(th);
                     }
-
 		}
-
         }
 
 	public void actionPerformed(ActionEvent a) {
@@ -1395,7 +1336,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                                 }
                             }
                         }
-
 		}
 		else if (a.getActionCommand().equals("clear debug")) {
 			debugText.setText("");
@@ -1410,7 +1350,6 @@ class DebugTab extends JSplitPane implements SwingGUITab,ActionListener {
                         if (email == null) { email ="none"; }
 
                         submitBug(null, email, "Bug", cause);
-
 		}
                 else if (a.getActionCommand().equals("clear error")) {
                     errText.setText("");
@@ -1497,7 +1436,6 @@ class StatisticsTab extends JPanel implements SwingGUITab,ActionListener {
 
 		setLayout( new BorderLayout() );
 		add(graph);
-
 	}
 
 	public void startGame() {
