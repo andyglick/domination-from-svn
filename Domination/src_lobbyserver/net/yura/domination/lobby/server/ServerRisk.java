@@ -68,7 +68,14 @@ public class ServerRisk extends Risk {
 		// game.getCurrentPlayer().getAddress()
 		//inbox.add( myAddress +" "+m);
 		//this.notify();
+            
+            // over 20,000 commands, the game must be stuck in a loop, kill the game
+            if (getGame().getCommands().size() > 200000) {
+                sgr.gameFinished("Nobody");
+            }
+            else {
 		addPlayerCommandToInbox(myAddress,m);
+            }
 	}
 
 	@Override
