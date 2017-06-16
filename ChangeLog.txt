@@ -2,11 +2,11 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.6
+	Risk Game:	1.1.1.7
 	 * Save:	8
 	 * Network:	12
 
-	Android		61
+	Android		63
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	2
@@ -16,6 +16,9 @@ CURRENT VERSION:
 1.1.1.7
 
 	Fix for 'Top Rated' being broken on PC Domination.
+	Swedish translation update by sa-w w waara09
+
+	Android 63 Sending a message from inside game added
 
 1.1.1.6
 
@@ -30,7 +33,6 @@ CURRENT VERSION:
 	MapEditor: can select what Islands to delete.
 	Resign button added in menu of FlashGUI for online play
 
-	Android 63 Sending a message from inside game added
 	Android 62 can toggle showing dice results in game options
 		   isGame=true added to android manifest
 		   saves default new game settings after a game is created
