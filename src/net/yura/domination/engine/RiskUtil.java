@@ -137,12 +137,19 @@ public class RiskUtil {
          */
         public static String getGameDescriptionFromLobbyStartGameOption(String options) {
             String[] lines = options.split( RiskUtil.quote("\n") );
-            //int ai=0;
-            //for (int c=0;c<3;c++) {
-            //    ai = ai + Integer.parseInt(lines[c]);
-            //}
-            // easy,average,hard for historic reasons, they are stored as 'average \n easy \n hard'
-            return "AI:"+lines[1]+","+lines[0]+","+lines[2]+" "+lines[4].substring( "startgame ".length() );
+            int aiTotal=0;
+            for (int c=0;c<3;c++) {
+                aiTotal = aiTotal + Integer.parseInt(lines[c]);
+            }
+            String aiInfo;
+            if (aiTotal == 0) {
+                aiInfo = "0";
+            }
+            else {
+                // easy,average,hard for historic reasons, they are stored as 'average \n easy \n hard'
+                aiInfo = lines[1]+","+lines[0]+","+lines[2];
+            }
+            return "AI:"+aiInfo+" "+lines[4].substring( "startgame ".length() );
         }
 
         public static void printStackTrace(Throwable ex) {
