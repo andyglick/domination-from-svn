@@ -130,13 +130,19 @@ public class RiskUtil {
             String choosemap = lines[3];
             return choosemap.substring( "choosemap ".length() ).intern();
         }
+
+        /**
+         * @see #createGameString(int, int, int, int, int, boolean, boolean, java.lang.String)
+         * @see net.yura.domination.lobby.server.ServerGameRisk#startGame(java.lang.String, java.lang.String[])
+         */
         public static String getGameDescriptionFromLobbyStartGameOption(String options) {
             String[] lines = options.split( RiskUtil.quote("\n") );
-            int ai=0;
-            for (int c=0;c<3;c++) {
-                ai = ai + Integer.parseInt(lines[c]);
-            }
-            return "AI:"+ai+" "+lines[4].substring( "startgame ".length() );
+            //int ai=0;
+            //for (int c=0;c<3;c++) {
+            //    ai = ai + Integer.parseInt(lines[c]);
+            //}
+            // easy,average,hard for historic reasons, they are stored as 'average \n easy \n hard'
+            return "AI:"+lines[1]+","+lines[0]+","+lines[2]+" "+lines[4].substring( "startgame ".length() );
         }
 
         public static void printStackTrace(Throwable ex) {

@@ -283,11 +283,6 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 
                 playernum.add(new JLabel( resb.getString("newgame.player.type.hardai") ));
 		playernum.add(aihard);
-
-// temp hack while we do not have a average AI on the server
-aiaverage.setValue(0);
-aiaverage.setVisible(false);
-aialabel.setVisible(false);
                 
 		ButtonGroup GameTypeButtonGroup = new ButtonGroup();
 		ButtonGroup CardTypeButtonGroup = new ButtonGroup();

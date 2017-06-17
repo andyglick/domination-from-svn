@@ -18,8 +18,10 @@ CURRENT VERSION:
 	Fix for 'Top Rated' being broken on PC Domination.
 	Swedish translation update by sa-w w waara09
 	Fix for hi-res mouse wheel getting UI stuck
+	Can create online games with average AI on PC version
 
 	Android 63 Sending a message from inside game added
+		   shows how many of each type of AI in online game description
 
 1.1.1.6
 
