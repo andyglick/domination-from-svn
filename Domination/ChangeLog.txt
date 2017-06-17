@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	Fix for 'Top Rated' being broken on PC Domination.
 	Swedish translation update by sa-w w waara09
+	Fix for hi-res mouse wheel getting UI stuck
 
 	Android 63 Sending a message from inside game added
 
