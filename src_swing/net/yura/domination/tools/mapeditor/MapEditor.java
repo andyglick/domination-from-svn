@@ -111,8 +111,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	private JButton play;
 	private JButton loadimagepic;
 	private JButton loadimagemap;
-	private JButton fixButton;
-        private JButton bamButton;
+	private JButton delBadColorsButton;
+        private JButton smartFill;
+        private JButton autoDrawButton;
         private JButton cleanIslands;
 
 	private JButton zoomin;
@@ -281,11 +282,17 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		disjoin = newJRadioButton("disjoin",false,modes,modesPanel);
 		draw = newJRadioButton("draw",false,modes,modesPanel);
 
-		bamButton = new JButton("Auto Draw");
-		bamButton.setActionCommand("autodraw");
-		bamButton.addActionListener(this);
-		modesPanel.add(bamButton);
-		bamButton.setEnabled(false);
+                smartFill = new JButton("Smart Fill");
+		smartFill.setActionCommand("smartFill");
+		smartFill.addActionListener(this);
+		modesPanel.add(smartFill);
+		smartFill.setEnabled(false);
+                
+		autoDrawButton = new JButton("Auto Draw");
+		autoDrawButton.setActionCommand("autodraw");
+		autoDrawButton.addActionListener(this);
+		modesPanel.add(autoDrawButton);
+		autoDrawButton.setEnabled(false);
 
 		cleanIslands = new JButton("del islands");
 		cleanIslands.setActionCommand("islands");
@@ -293,12 +300,9 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		modesPanel.add(cleanIslands);
 		cleanIslands.setEnabled(false);
 
-
-		fixButton = new JButton("del bad map colors");
-		fixButton.setActionCommand("fix");
-		fixButton.addActionListener(this);
-		modesPanel.add(fixButton);
-		fixButton.setEnabled(false);
+		delBadColorsButton = new JButton("del bad map colors");
+		delBadColorsButton.setActionCommand("fix");
+		delBadColorsButton.addActionListener(this);
 
 		add(modesPanel, BorderLayout.SOUTH );
 
@@ -337,21 +341,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	private JRadioButton newJRadioButton(String a,boolean sel, ButtonGroup bg,JPanel jp) {
-
 		JRadioButton b = new JRadioButton(a,sel);
-
 		b.setActionCommand("mode");
-
 		b.addActionListener(this);
-
 		b.setOpaque(false);
-
 		bg.add(b);
-
 		jp.add(b);
-
 		return b;
-
 	}
 
 	public void stateChanged(ChangeEvent e) {
@@ -380,14 +376,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	public JToolBar getToolBar() {
-
 		return toolbar;
-
 	}
 	public JMenu getMenu() {
-
 		return null;
-
 	}
 
 
@@ -399,7 +391,6 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		if (v && views == null ) {
 
 			views = new MapEditorViews( RiskUIUtil.findParentFrame(this) , editPanel );
-
 		}
 
 		if (views!= null) {
@@ -415,12 +406,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				views.setSize(GraphicsUtil.scale(200), frameSize.height);
 
 			}
-
 			views.setVisible(v);
-
 		}
-
-
 	}
 
 	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname,File img) {
@@ -437,8 +424,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		play.setEnabled(true);
 		loadimagepic.setEnabled(true);
 		loadimagemap.setEnabled(true);
-		fixButton.setEnabled(true);
-                bamButton.setEnabled(true);
+		smartFill.setEnabled(true);
+                autoDrawButton.setEnabled(true);
                 cleanIslands.setEnabled(true);
 
                 fileName = fname;
@@ -448,7 +435,6 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 
 		revalidate();
 		repaint();
-
 	}
 
 	public RiskGame makeNewMap() throws Exception {
@@ -879,6 +865,18 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             autodraw(result == JOptionPane.YES_OPTION);
                         }
 		}
+                else if ("smartFill".equals(a.getActionCommand())) {                    
+                    JSpinner tolerance = new JSpinner(new SpinnerNumberModel(20,0,255,1) );
+                    int result = JOptionPane.showConfirmDialog(this, new Object[] {"Smart Fill will use the color from the Image Pic\nto select the area in the Image Map. Tolerance:", tolerance}, "Smart Fill", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        int t = ((Number)tolerance.getValue()).intValue();
+                        for (Country country : myMap.getCountries()) {
+                            Color color = new Color(country.getColor(), country.getColor(), country.getColor());
+                            ImageUtil.smartFill(editPanel.getImagePic(), editPanel.getImageMap(), country.getX(), country.getY(), color.getRGB(), t);
+                        }
+                        editPanel.repaintSelected();
+                    }
+                }
 		else if (a.getActionCommand().equals("islands")) {
 			delIslands();
 		}
@@ -1038,35 +1036,11 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     g.fillOval(country.getX()-(size/2),country.getY()-(size/2),size,size);
                 }
                 else {
-                    floodFill(imgMap, country.getX(), country.getY(), color.getRGB());
+                    ImageUtil.floodFill(imgMap, country.getX(), country.getY(), color.getRGB());
                 }
             }
             g.dispose();
             editPanel.repaintSelected();
-        }
-
-        /**
-         * http://java.macteki.com/2011/03/how-to-do-flood-fill-operation-in-java.html
-         */
-        public static void floodFill(BufferedImage image, int x, int y, int fillColor) {
-            java.util.ArrayList<Point> examList = new java.util.ArrayList<Point>();
-
-            int initialColor = image.getRGB(x, y);
-            examList.add(new Point(x, y));
-
-            while (examList.size() > 0) {
-                Point p = examList.remove(0);  // get and remove the first point in the list
-                if (image.getRGB(p.x, p.y) == initialColor) {
-                    x = p.x;
-                    y = p.y;
-                    image.setRGB(x, y, fillColor);  // fill current pixel
-
-                    examList.add(new Point(x - 1, y));        // check west neighbor
-                    examList.add(new Point(x + 1, y));        // check east neighbor
-                    examList.add(new Point(x, y - 1));        // check north neighbor
-                    examList.add(new Point(x, y + 1));        // check south neighbor
-                }
-            }
         }
 
         private void delIslands() {
@@ -1425,23 +1399,26 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         }
 		}
 
-		if (errors.length() >0) {
-
-			showMessageDialog(this,"There are errors in this map that need to be fixed before it can be used:"+errors);
-
-			return false;
-
+		if (errors.length() > 0) {
+                    
+                    String errorMessage = "There are errors in this map that need to be fixed before it can be used:" + errors;
+                    
+                    if (bad.size() > 0) {
+                        showMessageDialog(this, new Object[] {errorMessage, delBadColorsButton});
+                    }
+                    else {
+			showMessageDialog(this, errorMessage);
+                    }
+		    return false;
 		}
-
 		return true;
-
 	}
         
         private static int[] getAllPixels(BufferedImage map) {
             return map.getRGB(0, 0, map.getWidth(), map.getHeight(), null, 0, map.getWidth());
         }
         
-        private void showMessageDialog(Component c, String string) {
+        private void showMessageDialog(Component c, Object string) {
             System.out.println(string);
             JOptionPane pane = new JOptionPane() {
                 public int getMaxCharactersPerLineCount() {
