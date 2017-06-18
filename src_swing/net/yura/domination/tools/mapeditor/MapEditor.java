@@ -1166,7 +1166,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         }
                     }
                     map.setRGB(0,0,width,map.getHeight(),pixels,0,width);
-                    repaint();                
+                    editPanel.repaintSelected();
                 }
             }
         }
