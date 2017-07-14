@@ -10,6 +10,9 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -31,6 +34,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -1380,6 +1384,16 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		mapPic.setPreferredSize(size);
 		mapPic.setMinimumSize(size);
 		mapPic.setMaximumSize(size);
+                
+                JPopupMenu mapPopup = new JPopupMenu();
+                mapPopup.add("copy name").addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        StringSelection selection = new StringSelection(mapPic.getToolTipText());
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(selection, selection);
+                    }
+                });
+                mapPic.setComponentPopupMenu(mapPopup);
 
 			c.gridx = 0; // col
 			c.gridy = 0; // row
@@ -1669,8 +1683,9 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 			mission.setEnabled(m);
 		}
 
-		public void showMapImage(Icon p) {
+		public void showMapImage(Icon p, String tooltip) {
 			mapPic.setIcon( p ); // SCALE_DEFAULT
+                        mapPic.setToolTipText(tooltip);
 			swingGUIPanel.setCursor(null); // Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
 		}
 
