@@ -7,10 +7,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -735,7 +737,13 @@ public class RiskUIUtil {
 		String displayInfo;
 		try {
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
-			displayInfo = toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi) density="+GraphicsUtil.density+" scale="+GraphicsUtil.scale;
+
+                        AffineTransform dat = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform();
+                        double scaleX = dat.getScaleX();
+                        double scaleY = dat.getScaleY();
+
+			displayInfo = toolkit.getScreenSize().width + "x" + toolkit.getScreenSize().height + " (" + toolkit.getScreenResolution() + "dpi " + 
+                                "scaleX=" + scaleX + " scaleY=" + scaleY + ") density=" + GraphicsUtil.density + " scale=" + GraphicsUtil.scale;
 		}
 		catch(HeadlessException ex) {
 			displayInfo = ex.getMessage();
