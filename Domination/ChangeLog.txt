@@ -21,6 +21,7 @@ CURRENT VERSION:
 	Can create online games with average AI on PC version
 
 	Android 63 Sending a message from inside game added
+		   show last few chat messages in chat window
 		   shows how many of each type of AI in online game description
 
 1.1.1.6
