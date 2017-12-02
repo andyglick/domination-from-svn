@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 import java.util.logging.Logger;
 import javax.microedition.lcdui.Display;
@@ -57,6 +59,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     int playerType;
     GameType theGameType;
     int openGameId = -1;
+    private final Queue<String> chatMessages = new LinkedList<String>();
 
     private Properties resBundle;
 
@@ -286,6 +289,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     public void sendChatMessage() {
         final TextField chatText = new TextField();
+
+        StringBuilder messages = new StringBuilder();
+        for (String message : chatMessages) {
+            messages.append(message);
+            messages.append('\n');
+        }
+
         OptionPane.showOptionDialog(new ActionListener() {
             public void actionPerformed(String actionCommand) {
                 String message = chatText.getText();
@@ -293,7 +303,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                     sendChatMessage(message);
                 }
             }
-        }, chatText, "Chat" , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
+        }, new Object[] {messages.toString(), chatText}, "Chat" , OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE, null, null, null);
     }
 
     public void sendChatMessage(String message) {
@@ -303,6 +313,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     public void closeGame() {
         mycom.closeGame(openGameId);
         openGameId = -1;
+        chatMessages.clear();
     }
 
     public void createNewGame(Game game) {
@@ -334,6 +345,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
         if (openGameId != -1) {
             game.disconnected();
             openGameId = -1;
+            chatMessages.clear();
         }
     }
 
@@ -555,6 +567,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
     public void incomingChat(int roomid, String fromwho, String message) {
         if (openGameId == roomid) {
+
+            if (chatMessages.size() >= 4) {
+                chatMessages.remove();
+            }
+            chatMessages.add(fromwho + ": " + message);
+
             showMessage(fromwho, message);
         }
     }
