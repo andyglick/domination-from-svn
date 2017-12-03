@@ -117,21 +117,18 @@ public class DominationMain extends Midlet {
                     }
 
                     String message = record.getMessage();
-                    if ("rto value is too small:0".equals(message)) {
+                    if ("rto value is too small:0".equals(message) ||
+                        "/data/system/carrierinfo.prop: open failed: ENOENT (No such file or directory)".equals(message) ||
+                        "isDataSchedulerEnabled():false".equals(message) ||
+                        "remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak".equals(message) ||
+                        "remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak".equals(message) ||
+                        "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak".equals(message) ||
+                        "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak".equals(message)) {
                         return true;
                     }
-                    if ("/data/system/carrierinfo.prop: open failed: ENOENT (No such file or directory)".equals(message)) {
-                        return true;
-                    }
-                    if ("isDataSchedulerEnabled():false".equals(message)) {
-                        return true;
-                    }
-                    if (message != null && message.startsWith("remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-")) { // then some random GUID
-                                                            //"remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak"
-                                                            //"remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak"
-                        return true;
-                    }
-                    if (message != null && message.startsWith("remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-")) { // then some random GUID
+                    if (message != null && (
+                            message.startsWith("remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-") || // then some random GUID
+                            message.startsWith("remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/files/.java/.userPrefs/net/yura/domination/mobile/flashgui/prefs-"))) { // then some random GUID
                         return true;
                     }
 
