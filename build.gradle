@@ -1,31 +1,31 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(":AndroidME")
-    compile project(":BaseGameUtils")
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile project(':AndroidME')
+    compile project(':BaseGameUtils')
+    compile fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.1.2'
-
+    buildToolsVersion '26.0.2'
     // this to to avoid error from httpcore-4.1.2.jar and httpcore-4.1.2.jar having the same file
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE.txt'
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -35,12 +35,10 @@ android {
             assets.srcDirs = ['assets']
         }
     }
-
     // this is to avoid the @TargetApi missing on methods giving errors.
     lintOptions {
         abortOnError false
     }
-
 }
 
 // same as ant tasks "setup.android"
