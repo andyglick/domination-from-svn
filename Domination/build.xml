@@ -216,7 +216,7 @@
 		description="creates a zip with all the java files">
 
 		<zip destfile="${file.src}">
-			<fileset dir="${basedir}" includes="**/*.java,res_swing/images/ChatServerLayout.gif" excludes="gen/**,test/**"/>
+			<fileset dir="${basedir}" includes="src*/**/*.java,res_swing/images/ChatServerLayout.gif"/>
 		</zip>
 	</target>
 
