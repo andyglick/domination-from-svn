@@ -567,12 +567,12 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     }
     public void incomingChat(int roomid, String fromwho, String message) {
         if (openGameId == roomid) {
-
-            if (chatMessages.size() >= 4) {
-                chatMessages.remove();
+            if (fromwho != null) { // only put messages from people into history, not room announcements
+                if (chatMessages.size() >= 4) {
+                    chatMessages.remove();
+                }
+                chatMessages.add(fromwho + ": " + message);
             }
-            chatMessages.add(fromwho + ": " + message);
-
             showMessage(fromwho, message);
         }
     }
