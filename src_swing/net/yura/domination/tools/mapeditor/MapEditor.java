@@ -570,7 +570,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                     String newFileName = fileName;
 
-                    getloop: while(true) {
+                    while(true) {
                         if (newFileName!=null) {
                             fc.setSelectedFile( new File( newFileName ) );
                         }                        
@@ -578,16 +578,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fc.getSelectedFile();
                             newFileName = file.getName();
-                            
-                            for (int c=0;c<newFileName.length();c++) {
-                                char ch = newFileName.charAt(c);
-                                if (ch < 32 || ch > 127) {
+
+                            if (!RiskUtil.isValidName(newFileName)) {
                                     JOptionPane.showMessageDialog(this, "please use only standard ASCII characters in the file name.");
-                                    continue getloop;
-                                }
+                                    continue;
                             }
-                            
-                            
+
                             if (!(newFileName.endsWith( "." + RiskFileFilter.RISK_MAP_FILES ))) {
                                     newFileName = newFileName + "." + RiskFileFilter.RISK_MAP_FILES;
                             }

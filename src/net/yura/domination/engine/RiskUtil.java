@@ -23,6 +23,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.MapTranslator;
@@ -592,5 +594,22 @@ public class RiskUtil {
             text.append(stringT.nextToken());
         }
         return text.toString();
+    }
+    
+    public static boolean isValidName(String text) {
+
+        // !"#$%&'()*+,-./
+        //0123456789:;<=>?
+        //@ABCDEFGHIJKLMNO
+        //PQRSTUVWXYZ[\]^_
+        //`abcdefghijklmno
+        //pqrstuvwxyz{|}~
+
+        final String allowedChars = " !#$%&'()+,\\-0-9;=@A-Z\\[\\]^_`a-z{}";
+        Pattern pattern = Pattern.compile(
+            "^(?!(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\\.[^.]*)?$)[" + allowedChars + "\\.]*[" + allowedChars + "]$", 
+            Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
     }
 }
