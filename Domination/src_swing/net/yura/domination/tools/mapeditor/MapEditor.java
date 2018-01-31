@@ -645,7 +645,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                             String mapUID = net.yura.domination.mapstore.MapChooser.getFileUID(map.getMapUrl());
                             if (!fileName.equals(mapUID)) {
-                                JOptionPane.showMessageDialog(this, "Name clashes with existing map: \""+fileName+"\" and \""+mapUID+"\"\nplease pick a new name for your map.");
+                                JOptionPane.showMessageDialog(this, "File name clashes with existing map: \""+fileName+"\" and \""+mapUID+"\"\nplease pick a new unique file name for your map.");
                                 save.doClick();
                                 return;
                             }
@@ -656,7 +656,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                             // TODO some file names can still clash even if the main name does not "Bob Map.map" and "BobMap.map" will have the same cards file?!
 
                             if (result==JOptionPane.NO_OPTION) {
-                                JOptionPane.showMessageDialog(this, "please pick a new name for your map.");
+                                JOptionPane.showMessageDialog(this, "please pick a new unique file name for your map.");
                                 save.doClick();
                                 return;
                             }
@@ -716,8 +716,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     String version = String.valueOf( myMap.getVersion() );
 
                     int result = showInputDialog(
-                            new String[] {"Author's Full Name:","Email:","Map Name:","Description:","Categories:","version:"},
-                            new JComponent[] {authorName,authorEmail,mapName,description,list, new JLabel( version )},
+                            new String[] {"Author's Full Name:","Email:","Map Name:","Description:","Categories:","Filename (Unique Map ID):","version:"},
+                            new JComponent[] {authorName,authorEmail,mapName,description,list, new JLabel(fileName), new JLabel(version)},
                             "edit info"
                     );
                     
