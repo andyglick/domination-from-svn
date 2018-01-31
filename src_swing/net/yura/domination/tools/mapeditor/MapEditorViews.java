@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,17 +174,17 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
                 return c;
             }
         });
-        
     }
 
     public void valueChanged(ListSelectionEvent e) {
+	editPanel.setSelectedCountry( (Country)countriesList.getSelectedValue() );
+    }
 
-	editPanel.setCountry( (Country)countriesList.getSelectedValue() );
-
+    public Collection<Country> getSelectedCountries() {
+        return countriesList.getSelectedValuesList();
     }
 
     public void setMap(RiskGame m) {
-
 	map = m;
 
 	((ViewTab)countriesList.getModel()).changed();
@@ -194,35 +195,23 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	add.setEnabled(true);
 	remove.setEnabled(true);
 	edit.setEnabled(true);
-
     }
 
     public void actionPerformed(ActionEvent a) {
-
 	ViewTab current = ((ViewTab)((JList)((javax.swing.JViewport)((JScrollPane)tabs.getSelectedComponent()).getViewport()).getView()).getModel());
 
-
 	if (a.getActionCommand().equals("add")) {
-
 		current.add();
-
 	}
 	else if (a.getActionCommand().equals("remove")) {
-
 		current.remove();
-
 	}
 	else if (a.getActionCommand().equals("edit")) {
-
 		current.edit();
-
 	}	
 	else {
-
 		throw new RuntimeException(a.getActionCommand());
-
 	}
-
     }
 
 	public int openOptionDialog(Object[] message,String title) {
@@ -358,7 +347,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			message[1] = new JTextField( country.getIdString().replace('_',' ') );
 			message[2] = new JLabel("Continent:");
 			message[3] = new JComboBox( map.getContinents() );
-
+                        
 			((JComboBox)message[3]).setSelectedItem( oldContinent );
 
 			int result = openOptionDialog(message,"Edit country");
@@ -381,10 +370,9 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				editPanel.repaint();
                             }
 			}
-
 		}
-
 	}
+
 	public void remove() {
 
 		Object[] a = countriesList.getSelectedValues();
@@ -396,7 +384,6 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			for (int c=0;c<a.length;c++) {
 
 				countriesString = countriesString + "\n" + a[c];
-
 			}
 
 			int result = JOptionPane.showConfirmDialog(MapEditorViews.this, "Are you sure you want to remove:"+
@@ -406,24 +393,17 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			if (result == JOptionPane.YES_OPTION) {
 
 				removeCountries( a );
-
 			}
-
-
-
 		}
-
 	}
-	public void add() {
 
+	public void add() {
 
 			if (map.getContinents().length == 0) {
 
 				JOptionPane.showMessageDialog(MapEditorViews.this,"Need to add a continent first");
 				return;
-
 			}
-
 
 			Object[] message = new Object[4];
 			message[0] = new JLabel("Names: (each line will be made into a new country)");
@@ -463,10 +443,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 				editPanel.repaint();
 			}
-
-
 	}
-
     }
 
 
@@ -481,14 +458,12 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 		if (map==null) { return null; }
 		return map.getContinents()[index];
-
 	}
 
 	public int getSize() {
 
 		if (map==null) { return 0; }
 		return map.getNoContinents();
-
 	}
 
 	private Color editcolor;
@@ -548,10 +523,9 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				editPanel.repaint();
                             }
 			}
-
 		}
-
 	}
+
 	public void remove() {
 
 
@@ -607,19 +581,11 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 					if (removeList.contains( mission.getContinent3() )) {
 						mission.setContinent3(null);
 					}
-
 				}
-
 			}
-
-
-
 		}
-
-
-
-
 	}
+
 	public void add() {
 
 
@@ -657,7 +623,6 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
     }
 
-
     class CardsListModel extends AbstractListModel implements ViewTab {
 
 	public void changed() {
@@ -680,8 +645,6 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	}
 
 	public void edit() {
-
-
 		int sel = cardsList.getSelectedIndex();
 
 		if (sel != -1) {
@@ -731,10 +694,9 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 				fireContentsChanged(this,sel, sel );
 			}
-
 		}
-
 	}
+
 	public void remove() {
 
 		Object[] a = cardsList.getSelectedValues();
@@ -769,15 +731,10 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 				fireContentsChanged(this,0,getSize()-1);
 				cardsList.clearSelection();
-
-
 			}
-
-
-
 		}
-
 	}
+
 	public void add() {
 
 
@@ -828,11 +785,8 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 				fireContentsChanged(this,cards.size()-n, cards.size()-1 );
 			}
-
 	}
-
     }
-
 
     class MissionsListModel extends AbstractListModel implements ViewTab {
 
@@ -845,14 +799,12 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 		if (map==null) { return null; }
 		return map.getMissions().elementAt(index);
-
 	}
 
 	public int getSize() {
 
 		if (map==null) { return 0; }
 		return map.getNoMissions();
-
 	}
 
 	private JComboBox makeContinentsJComboBox() {
@@ -861,7 +813,6 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 		a.insertItemAt(RiskGame.ANY_CONTINENT,0);
 		a.insertItemAt(null,0);
 		return a;
-
 	}
 
 	private Object[] newBox(int a,int b,String text,Player p,Continent c1,Continent c2, Continent c3) {
@@ -898,12 +849,9 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 			((JComboBox)message[11]).setSelectedItem( c3 );
 
 			return message;
-
 	}
 
 	public void edit() {
-
-
 		int sel = missionsList.getSelectedIndex();
 
 		if (sel != -1) {
@@ -934,13 +882,10 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				mission.setDiscription( ((OptionPaneTextArea)message[13]).getLineText() );
 
 				fireContentsChanged(this,sel, sel );
-
 			}
-
 		}
-
-
 	}
+
 	public void remove() {
 
 		Object[] m = missionsList.getSelectedValues();
@@ -968,17 +913,10 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				fireContentsChanged(this,0,missions.size()-1);
 				missionsList.clearSelection();
 			}
-
-
-
 		}
-
-
-
 	}
+
 	public void add() {
-
-
 			Object[] message = newBox(0,0,"",null,null,null,null);
 
 			int result = openOptionDialog(message,"New mission");
@@ -1002,12 +940,8 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 				missions.add(mission);
 
 				fireContentsChanged(this,missions.size()-1,missions.size()-1);
-
 			}
-
-
 	}
-
     }
 
     static class OptionPaneTextArea extends JScrollPane {
@@ -1022,19 +956,14 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 		textarea.setLineWrap(true);
 
 		setViewportView(textarea);
-
 	}
 
 	public String getText() {
-
 		return textarea.getText();
-
 	}
 
 	public String getLineText() {
-
 		return getText().replace('\n',' ');
-
 	}
 
 	public String[] getLines() {
@@ -1047,8 +976,5 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
             }
             return (String[]) goodStrings.toArray( new String[goodStrings.size()] );
 	}
-
     }
-
 }
-
