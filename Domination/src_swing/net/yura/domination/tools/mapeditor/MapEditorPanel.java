@@ -38,7 +38,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	public static final int MODE_JOIN1WAY = 3;
 	public static final int MODE_DISJOIN = 4;
 	public static final int MODE_DRAW = 5;
-
+        
 	//private List countries; // every item in this list also has its position+1 stored as the "color" value of it
 	//private List continents;
 	private RiskGame myMap;
@@ -56,7 +56,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	private MapEditor editor;
 
 	public MapEditorPanel(MapEditor a) {
-
 		editor = a;
 
         	addMouseMotionListener(this);
@@ -67,7 +66,6 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		ToolTipManager.sharedInstance().setDismissDelay(10000);
 
 		mode = MODE_MOVE;
-
 	}
 
 	public BufferedImage getImageMap() {
@@ -93,12 +91,10 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 		revalidate();
 		repaint();
-
 	    }
 	}
 
 	public void setImagePic(BufferedImage a,boolean checkmap) {
-
 		pic = a;
             
 		if (a.getWidth()!=PicturePanel.PP_X || a.getHeight()!=PicturePanel.PP_Y) {
@@ -167,12 +163,10 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 
 	public void setMap(RiskGame a) {
-
 		myMap = a;
 
 		//countries = Arrays.asList( myMap.getCountries() );
 		//continents = Arrays.asList( myMap.getContinents() );
-
 	}
 
 	public void update(Map a) {
@@ -228,7 +222,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	}
 
-	public void setCountry(Country a) {
+	public void setSelectedCountry(Country a) {
 	    if (selected != a) {
 		selected = a;
                 repaintSelected();
@@ -316,11 +310,8 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 		g.drawOval(dragpoint.x-(brush/2),dragpoint.y-(brush/2),brush,brush);
 
 		g.setPaintMode();
-
 	    }
-
 	}
-
     }
 
     // if we dont do this, draw is very slow on OS X
@@ -476,34 +467,31 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 	public void drawLine(Point a,Point b,boolean draw) {
 
-		if (selected!=null || !draw) {
+                // this fixes a really odd bug with drawing lines on indexed images
+                if (a.y>b.y) {
 
-			// this fixes a really odd bug with drawing lines on indexed images
-			if (a.y>b.y) {
+                        Point z = a;
+                        a = b;
+                        b = z;
+                }
 
-				Point z = a;
-				a = b;
-				b = z;
-			}
+                //@YURA:TODO  should not do this each time
+                Graphics2D g1 = (Graphics2D)drawImage.getGraphics();
+                Graphics2D g2 = (Graphics2D)map.getGraphics();
 
-			//@YURA:TODO  should not do this each time
-			Graphics2D g1 = (Graphics2D)drawImage.getGraphics();
-			Graphics2D g2 = (Graphics2D)map.getGraphics();
+                BasicStroke bs = new BasicStroke(brush,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
 
-			BasicStroke bs = new BasicStroke(brush,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
+                g1.setStroke(bs);
+                g2.setStroke(bs);
 
-			g1.setStroke(bs);
-			g2.setStroke(bs);
+                if (selected != null && draw) { g1.setColor(Color.RED); g2.setColor( new Color(selected.getColor(),selected.getColor(),selected.getColor()) ); }
+                else { g1.setColor(Color.BLACK); g2.setColor(Color.WHITE); }
 
-			if (draw) { g1.setColor(Color.RED); g2.setColor( new Color(selected.getColor(),selected.getColor(),selected.getColor()) ); }
-			else { g1.setColor(Color.BLACK); g2.setColor(Color.WHITE); }
+                g1.drawLine(a.x, a.y, b.x, b.y);
+                g2.drawLine(a.x, a.y, b.x, b.y);
 
-			g1.drawLine(a.x, a.y, b.x, b.y);
-			g2.drawLine(a.x, a.y, b.x, b.y);
-
-			g1.dispose();
-			g2.dispose();
-		}
+                g1.dispose();
+                g2.dispose();
 	}
 
 	public Country getCountryAt(int x,int y) {
@@ -556,7 +544,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 			if (mode != MODE_DRAW) {
 
-				setCountry(null);
+				setSelectedCountry(null);
 
 			}
 
@@ -569,12 +557,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 				if (mynode!=null && selected==null) {
 
-					setCountry(mynode);
+					setSelectedCountry(mynode);
 
 				}
 				else if (mynode!=null && mynode==selected) {
 
-					setCountry(null);
+					setSelectedCountry(null);
 
 				}
 				else if (mynode!=null) {
@@ -595,12 +583,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 				if (mynode!=null && selected==null) {
 
-					setCountry(mynode);
+					setSelectedCountry(mynode);
 
 				}
 				else if (mynode!=null && mynode==selected) {
 
-					setCountry(null);
+					setSelectedCountry(null);
 
 				}
 				else if (mynode!=null) {
@@ -619,12 +607,12 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 				if (mynode!=null && selected==null) {
 
-					setCountry(mynode);
+					setSelectedCountry(mynode);
 
 				}
 				else if (mynode!=null && mynode==selected) {
 
-					setCountry(null);
+					setSelectedCountry(null);
 
 				}
 				else if (mynode!=null) {
@@ -662,7 +650,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 				if (mynode!=null) {
 
-					setCountry(mynode);
+					setSelectedCountry(mynode);
 					xdrag = true;
 				}
 				else {

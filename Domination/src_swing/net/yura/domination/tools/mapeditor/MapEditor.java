@@ -24,13 +24,16 @@ import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -95,6 +98,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
         
 	private MapEditorPanel editPanel;
 	private JToolBar toolbar;
+	private MapEditorViews views;
 
 	private JRadioButton move;
 	private JRadioButton moveall;
@@ -382,8 +386,6 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		return null;
 	}
 
-
-	private MapEditorViews views;
 	public void setVisible(boolean v) {
 
 		super.setVisible(v);
@@ -849,37 +851,75 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			removeBadMapColors();
 		}
                 else if (a.getActionCommand().equals("autodraw")) {
+                        Collection<Country> selectedCountries = views.getSelectedCountries();
+                        if (selectedCountries.isEmpty()) {
+                            showNoCountrySelectedError();
+                            return;
+                        }
 
                         String[] options = {"Dots", "Flood Fill", "Cancel"};
                         int result = JOptionPane.showOptionDialog(this, new Object[] {
                                 new ImageIcon(this.getClass().getResource("bam.png")),
+                                getCountiresListMessage(selectedCountries),
                                 "Are you sure you want to add country regions wherever the country badge is?\n"+
                                 "This action is not reversible so please save a copy of your map first." },"Auto Draw?",
                                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-                        if (result == JOptionPane.YES_OPTION || result == JOptionPane.NO_OPTION) {
-                            autodraw(result == JOptionPane.YES_OPTION);
+                        if (result == JOptionPane.YES_OPTION || result == JOptionPane.NO_OPTION) {                            
+                            autodraw(selectedCountries, result == JOptionPane.YES_OPTION);
                         }
 		}
-                else if ("smartFill".equals(a.getActionCommand())) {                    
-                    JSpinner tolerance = new JSpinner(new SpinnerNumberModel(20,0,255,1) );
-                    int result = JOptionPane.showConfirmDialog(this, new Object[] {"Smart Fill will use the color from the Image Pic\nto select the area in the Image Map. Tolerance:", tolerance}, "Smart Fill", JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        int t = ((Number)tolerance.getValue()).intValue();
-                        for (Country country : myMap.getCountries()) {
-                            Color color = new Color(country.getColor(), country.getColor(), country.getColor());
-                            ImageUtil.smartFill(editPanel.getImagePic(), editPanel.getImageMap(), country.getX(), country.getY(), color.getRGB(), t);
+                else if ("smartFill".equals(a.getActionCommand())) {
+                        Collection<Country> selectedCountries = views.getSelectedCountries();
+                        if (selectedCountries.isEmpty()) {
+                            showNoCountrySelectedError();
+                            return;
                         }
-                        editPanel.repaintSelected();
-                    }
+
+                        JSpinner tolerance = new JSpinner(new SpinnerNumberModel(20,0,255,1) );
+                        int result = JOptionPane.showConfirmDialog(this, new Object[] {
+                            getCountiresListMessage(selectedCountries),
+                            "Smart Fill will use the color from the Image Pic\nto select the area in the Image Map. Tolerance:", tolerance}, "Smart Fill", JOptionPane.OK_CANCEL_OPTION);
+                        if (result == JOptionPane.OK_OPTION) {
+                            int t = ((Number)tolerance.getValue()).intValue();
+                            for (Country country : selectedCountries) {
+                                Color color = new Color(country.getColor(), country.getColor(), country.getColor());
+                                ImageUtil.smartFill(editPanel.getImagePic(), editPanel.getImageMap(), country.getX(), country.getY(), color.getRGB(), t);
+                            }
+                            editPanel.repaintSelected();
+                        }
                 }
 		else if (a.getActionCommand().equals("islands")) {
-			delIslands();
+                        Collection<Country> selectedCountries = views.getSelectedCountries();
+                        if (selectedCountries.isEmpty()) {
+                            showNoCountrySelectedError();
+                            return;
+                        }
+
+			delIslands(selectedCountries);
 		}
 		else {
 			throw new RuntimeException("unknown command: " + action);
 		}
 	}
+ 
+        public static String getCountiresListMessage(Collection<Country> selectedCountries) {
+            if (selectedCountries.size() == 1) {
+                return "One selected country: " + selectedCountries.iterator().next();
+            }
+            if (selectedCountries.size() > 10) {
+                return selectedCountries.size() + " selected countries";
+            }
+            List<Integer> numbers = new ArrayList<Integer>();
+            for (Country country : selectedCountries) {
+                numbers.add(country.getColor());
+            }
+            return "Selected countries: " + numbers;
+        }
+
+        private void showNoCountrySelectedError() {
+            JOptionPane.showMessageDialog(this, "No Countries Selected", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         private int showInputDialog(String[] labels, JComponent[] comps,String title) {
             
@@ -990,19 +1030,15 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                     newFile+"\n"+
                                     "supported file formats are:\n"+
                                     list );
-
 			}
-
 		}
 		catch(Throwable ex) {
 
 			RiskUtil.printStackTrace(ex);
 			showError(ex);
-
 		}
 
 		return null;
-
 	}
 
 	private void removeBadMapColors() {
@@ -1020,11 +1056,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 		editPanel.repaint();
 	}
 
-        private void autodraw(boolean dots) {
+        private void autodraw(Collection<Country> countries, boolean dots) {
             BufferedImage imgMap = editPanel.getImageMap();
             Graphics g = imgMap.getGraphics();
             int size = myMap.getCircleSize();
-            Country[] countries = myMap.getCountries();
             for (Country country:countries) {
                 Color color = new Color(country.getColor(), country.getColor(), country.getColor());
                 if (dots) {
@@ -1039,7 +1074,13 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             editPanel.repaintSelected();
         }
 
-        private void delIslands() {
+        public void delIslands(Collection<Country> countries) {
+            Set findColors = new HashSet();
+            for (Country country : countries) {
+                Color color = new Color(country.getColor(),country.getColor(),country.getColor());
+                findColors.add(color.getRGB());
+            }
+            
             long startTime = System.currentTimeMillis();
             BufferedImage map = editPanel.getImageMap();
             int width = map.getWidth();
@@ -1047,7 +1088,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
             Map<Integer,List<Integer>> colorToPositions = new HashMap();
             for (int c=0;c<pixels.length;c++) {
-                if (pixels[c] != 0xFFFFFFFF) {
+                if (findColors.contains(pixels[c])) {
                     List<Integer> positions = colorToPositions.get( pixels[c] );
                     if (positions==null) { positions = new ArrayList(); colorToPositions.put(pixels[c], positions); }
                     positions.add(c);
@@ -1091,24 +1132,28 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
             System.out.println("finished! took "+(System.currentTimeMillis()-startTime));
 
             if (allIslands.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "no islands found");
+                JOptionPane.showMessageDialog(this, MapEditor.getCountiresListMessage(countries) + "\nNo islands found");
             }
             else {
-                final Map<Integer,Integer> counts = new TreeMap();
+                final Map<Integer,Integer> counts = new TreeMap(); // island size -> number of islands
+                final Map<Integer,Set> colors = new TreeMap(); // island size -> island colors
                 for (List<Integer> island: allIslands) {
                     int islandSize = island.size();
                     if (counts.get(islandSize)==null) {
                         counts.put(islandSize, 1);
+                        colors.put(islandSize, new TreeSet());
                     }
                     else {
                         counts.put(islandSize, counts.get(islandSize)+1);
                     }
+                    colors.get(islandSize).add(Integer.valueOf(pixels[island.get(0).intValue()] & 0xff));
                 }
 
                 final List<Integer> islandSizes = new ArrayList(counts.keySet());
                 final boolean[] del = new boolean[islandSizes.size()];
                 TableModel islandsTable = new AbstractTableModel() {
-			private final String[] columnNames = {"size", "count", "del"};
+                        private static final int BOOL_ROW = 3;
+			private final String[] columnNames = {"size", "count", "Countries", "del"};
 			public int getColumnCount() {
 				return columnNames.length;
 			}
@@ -1122,18 +1167,19 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 				switch (col) {
 					case 0: return islandSizes.get(row);
 					case 1: return counts.get(islandSizes.get(row));
-					case 2: return del[row];
+					case 2: return colors.get(islandSizes.get(row));
+                                        case BOOL_ROW: return del[row];
 					default: throw new RuntimeException();
 				}
 			}
                         public boolean isCellEditable(int row, int col) {
-                                return col == 2;
+                                return col == BOOL_ROW;
                         }
                         public Class<?> getColumnClass(int col) {
-                                return col == 2 ? Boolean.class : super.getColumnClass(col);
+                                return col == BOOL_ROW ? Boolean.class : super.getColumnClass(col);
                         }
                         public void setValueAt(Object aValue, int row, int col) {
-                                if (col != 2) throw new RuntimeException();
+                                if (col != BOOL_ROW) throw new RuntimeException();
                                 del[row] = (Boolean)aValue;
                         }
 		};
@@ -1211,16 +1257,12 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	public BufferedImage getImageMap() {
-
 		return editPanel.getImageMap();
-
 	}
 
 
 	public BufferedImage getImagePic() {
-
 		return editPanel.getImagePic();
-
 	}
 
 	public String getStringForContinent(Continent c) {
