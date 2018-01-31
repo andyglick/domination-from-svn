@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputListener;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
@@ -54,6 +56,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	private int zoom;
 
 	private MapEditor editor;
+        private ListSelectionListener selectionListener;
 
 	public MapEditorPanel(MapEditor a) {
 		editor = a;
@@ -67,6 +70,14 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 
 		mode = MODE_MOVE;
 	}
+        
+        public void setSelectionListener(ListSelectionListener listener) {
+            selectionListener = listener;
+        }
+
+        public Country getSelectedCountry() {
+            return selected;
+        }
 
 	public BufferedImage getImageMap() {
 		return map;
@@ -226,6 +237,10 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	    if (selected != a) {
 		selected = a;
                 repaintSelected();
+                if (selectionListener != null) {
+                    int index = selected == null ? -1 : selected.getColor() - 1;
+                    selectionListener.valueChanged(new ListSelectionEvent(this, index, index, false));
+                }
 	    }
 	}
 

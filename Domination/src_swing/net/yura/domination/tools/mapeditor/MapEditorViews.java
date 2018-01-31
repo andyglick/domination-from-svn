@@ -134,6 +134,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	cardTypes[3] = Card.WILDCARD;
 
 	countriesList.addListSelectionListener(this);
+        editPanel.setSelectionListener(this);
 
         class ColorDotCellRenderer extends DefaultListCellRenderer {
             Color color;
@@ -177,7 +178,15 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
     }
 
     public void valueChanged(ListSelectionEvent e) {
-	editPanel.setSelectedCountry( (Country)countriesList.getSelectedValue() );
+        if (e.getSource() == countriesList) {
+            editPanel.setSelectedCountry((Country)countriesList.getSelectedValue());
+        }
+        else if (e.getSource() == editPanel) {
+            countriesList.setSelectedValue(editPanel.getSelectedCountry(), false);
+        }
+        else {
+            System.err.println("unknown source " + e.getSource());
+        }
     }
 
     public Collection<Country> getSelectedCountries() {
