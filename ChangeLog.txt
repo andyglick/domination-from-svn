@@ -2,7 +2,7 @@ Risk - Yura Mamyrin (yura@yura.net)
 
 CURRENT VERSION:
 
-	Risk Game:	1.1.1.7
+	Risk Game:	1.2.0
 	 * Save:	8
 	 * Network:	12
 
@@ -12,6 +12,13 @@ CURRENT VERSION:
 	Simple GUI:	2
 	Increment1GUI:	2
 	CommandLine:	2
+
+1.2.0
+
+	better support for hi-res windows (no more blurry text)
+	MapEditor: more information shown when publishing new map
+	MapEditor: action buttons affect only selected countries
+	MapEditor: better (cross OS) filename validation for saving maps
 
 1.1.1.7
 
