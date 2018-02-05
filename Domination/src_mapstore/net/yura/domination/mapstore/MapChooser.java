@@ -505,13 +505,18 @@ public class MapChooser implements ActionListener,MapServerListener {
         else if ("sameAuthor".equals(actionCommand)) {
             Object value = list.getSelectedValue();
             // TODO
-            // TODO its too hard to get to the right click menu, as you need to hold and wait
-            // TODO does not work for locale maps, as no author id,
+            // TODO on android its too hard to get to the right click menu, as you need to hold and wait
             // TODO does not make sense for categories
+            // TODO results list still shows old title at top
             // TODO
             if (value instanceof Map) {
                 Map map = (Map)value;
-                makeRequestForMap("author", map.getAuthorId() );
+                if (map.getAuthorId() == null) {
+                    client.makeRequestMapAuthor(MAP_PAGE, getFileUID(map.getMapUrl()));
+                }
+                else {
+                    makeRequestForMap("author", map.getAuthorId());
+                }
             }
         }
         else if ("defaultMap".equals(actionCommand)) {
