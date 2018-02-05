@@ -41,6 +41,8 @@ public class MapServerClient extends HTTPClient {
     public static final int MAP_REQUEST_ID = 2;
     public static final int IMG_REQUEST_ID = 3;
     public static final int PULS_REQUEST_ID = 4;
+    
+    private static final Object GET_MAP_AUTHOR = "get_map_author";
 
     private static final String RATE_URL = "http://maps.yura.net/maps?mapfile=";
 
@@ -139,6 +141,14 @@ public class MapServerClient extends HTTPClient {
                     if (param instanceof java.util.Map) {
                         java.util.Map info = (java.util.Map)param;
                         List<Map> list = (List)info.get("maps");
+                        
+                        if (request.id == GET_MAP_AUTHOR) {
+                            if (!list.isEmpty()) {
+                                makeRequestXML(request.url, "author", list.get(0).getAuthorId());
+                                return;
+                            }
+                        }
+                        
                         // check if needs to be sorted by rating.
                         if (request.params != null && "TOP_RATINGS".equals(request.params.get("sort")) && list.size() > 0) {
                             List<String> urls = new ArrayList(list.size());
@@ -229,6 +239,12 @@ public class MapServerClient extends HTTPClient {
             params.put(key, value);
         }
         makeRequest(string, params, XML_REQUEST_ID, null);
+    }
+
+    public void makeRequestMapAuthor(String url, String mapUid) {
+        Hashtable params = new Hashtable();
+        params.put("mapfile", mapUid);
+        makeRequest(url, params, XML_REQUEST_ID, GET_MAP_AUTHOR);
     }
 
     /**
