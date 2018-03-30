@@ -73,6 +73,12 @@ public class MiniUtil {
 
         File externalMapDir = getExternalMapDir();
 
+        String version = DominationMain.version;
+        String versionName = System.getProperty("versionName");
+        if (version != null && !version.equals(versionName)) {
+            version = versionName + " (" + version + ")";
+        }
+
         return "<html>" +
                 "<div style=\"" +
 // start CSS
@@ -88,7 +94,7 @@ public class MiniUtil {
 // end CSS
                 "\"></div>"+
                 "<h3>yura.net "+RiskUtil.GAME_NAME+"</h3>"+
-                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+DominationMain.version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
+                "<p>"+DominationMain.product+" "+resb.getString("about.version")+" "+version+("true".equals( System.getProperty("debug") )?" DEBUG":"")+"</p>"+
                 "<p>"+"Game Engine: "+" "+RiskUtil.RISK_VERSION +"</p>"+
                 "<p>"+author+"</p>"+
                 "<p>"+copyright+"</p>"+
