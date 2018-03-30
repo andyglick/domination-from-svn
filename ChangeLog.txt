@@ -31,6 +31,7 @@ CURRENT VERSION:
 	Android 63 Sending a message from inside game added
 		   show last few chat messages in chat window
 		   shows how many of each type of AI in online game description
+	Android 64 fix bug with Bitmap.getDensity sometimes returning 0
 
 1.1.1.6
 
