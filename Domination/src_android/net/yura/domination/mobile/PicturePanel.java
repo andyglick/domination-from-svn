@@ -35,7 +35,6 @@ import net.yura.mobile.gui.plaf.Style;
  * <p> Picture Panel </p>
  * @author Yura Mamyrin
  */
-
 public class PicturePanel extends ImageView implements MapPanel {
 
         public final static int NO_COUNTRY = 255;
@@ -389,7 +388,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                         if (state==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
                             Player me = myrisk.getGame().getCurrentPlayer();
-                            List<Card> cards = me.getCards();
+                            List<Card> cards = new ArrayList(me.getCards()); // new array to avoid ConcurrentModificationException
                             for (Card card:cards) {
                                 Country country = card.getCountry();
                                 if (country!=null && country.getOwner() == me ) {
@@ -1057,7 +1056,6 @@ public class PicturePanel extends ImageView implements MapPanel {
                         }
 
                         return false;
-
                 }
 
                 /**
