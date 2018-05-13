@@ -37,12 +37,12 @@ public class MapServerClient extends HTTPClient {
 
     public static final Logger logger = Logger.getLogger(MapServerClient.class.getName());
 
-    public static final int XML_REQUEST_ID = 1;
-    public static final int MAP_REQUEST_ID = 2;
-    public static final int IMG_REQUEST_ID = 3;
-    public static final int PULS_REQUEST_ID = 4;
+    static final int REQUEST_TYPE_XML = 1;
+    static final int REQUEST_TYPE_MAP = 2;
+    static final int REQUEST_TYPE_IMG = 3;
+    static final int REQUEST_TYPE_PLUS = 4;
     
-    private static final Object GET_MAP_AUTHOR = "get_map_author";
+    private static final Object REQUEST_ID_GET_MAP_AUTHOR = "get_map_author";
 
     private static final String RATE_URL = "http://maps.yura.net/maps?mapfile=";
 
@@ -77,7 +77,7 @@ public class MapServerClient extends HTTPClient {
 	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.type == MAP_REQUEST_ID && ((MapDownload) request.id).ignoreErrorInDownload(request.url, responseCode)) {
+        if (request.type == REQUEST_TYPE_MAP && ((MapDownload) request.id).ignoreErrorInDownload(request.url, responseCode)) {
             logger.info("skipped "+request);
             return;
         }
@@ -100,10 +100,10 @@ public class MapServerClient extends HTTPClient {
         // show error dialog to the user
         if (ch!=null) {
             String error = "error:"+(responseCode!=0?" "+responseCode:"")+(ex!=null?" "+ex:"");
-            if (request.type == XML_REQUEST_ID || request.type == PULS_REQUEST_ID) {
+            if (request.type == REQUEST_TYPE_XML || request.type == REQUEST_TYPE_PLUS) {
                 ch.onXMLError(error);
             }
-            else if (request.type == MAP_REQUEST_ID) {
+            else if (request.type == REQUEST_TYPE_MAP) {
                 ch.onDownloadError(error);
             }
             // for images do not pop-up error
@@ -114,7 +114,7 @@ public class MapServerClient extends HTTPClient {
 	ServerRequest request = (ServerRequest)r;
         MapServerListener ch = this.chooser;
 
-        if (request.type == XML_REQUEST_ID) {
+        if (request.type == REQUEST_TYPE_XML) {
             XMLMapAccess access = new XMLMapAccess();
 
             // on android BufferedInputStream makes it much fast, on desktop java does not really make a difference
@@ -142,7 +142,7 @@ public class MapServerClient extends HTTPClient {
                         java.util.Map info = (java.util.Map)param;
                         List<Map> list = (List)info.get("maps");
                         
-                        if (request.id == GET_MAP_AUTHOR) {
+                        if (request.id == REQUEST_ID_GET_MAP_AUTHOR) {
                             if (!list.isEmpty()) {
                                 makeRequestXML(request.url, "author", list.get(0).getAuthorId());
                                 return;
@@ -159,7 +159,7 @@ public class MapServerClient extends HTTPClient {
                             ServerRequest request1 = new ServerRequest();
                             request1.id = new Object[] {request.url, list};
                             request1.url = GooglePlusOne.URL;
-                            request1.type = PULS_REQUEST_ID;
+                            request1.type = REQUEST_TYPE_PLUS;
                             request1.post = true;
                             request1.postData = GooglePlusOne.getRequest(urls);
                             request1.headers = new Hashtable();
@@ -178,13 +178,13 @@ public class MapServerClient extends HTTPClient {
                 }
             }
         }
-        else if (request.type == MAP_REQUEST_ID) {
+        else if (request.type == REQUEST_TYPE_MAP) {
             ((MapDownload)request.id).gotRes(request.url, is );
         }
-        else if (request.type == IMG_REQUEST_ID) {
+        else if (request.type == REQUEST_TYPE_IMG) {
             MapChooser.gotImgFromServer(request.id, request.url, SystemUtil.getData(is, (int)length), ch );
         }
-        else if (request.type == PULS_REQUEST_ID) {
+        else if (request.type == REQUEST_TYPE_PLUS) {
             Object[] tmp = (Object[])request.id;
             String ratedlistUrl = (String)tmp[0];
             List<Map> ratedList = (List<Map>)tmp[1];
@@ -219,12 +219,12 @@ public class MapServerClient extends HTTPClient {
         return rating == null ? 0 : rating;
     }
 
-    private void makeRequest(String url,Hashtable params,int type, Object key) {
+    private void makeRequest(String url,Hashtable params,int type, Object id) {
 	    ServerRequest request = new ServerRequest();
 	    request.type = type;
             request.url = url;
             request.params = params;
-            request.id = key;
+            request.id = id;
             request.headers = headers;
             logger.info("Make Request: "+request);
             // TODO, should be using RiskIO to do this get
@@ -238,13 +238,13 @@ public class MapServerClient extends HTTPClient {
             params = new Hashtable();
             params.put(key, value);
         }
-        makeRequest(string, params, XML_REQUEST_ID, null);
+        makeRequest(string, params, REQUEST_TYPE_XML, null);
     }
 
     public void makeRequestMapAuthor(String url, String mapUid) {
         Hashtable params = new Hashtable();
         params.put("mapfile", mapUid);
-        makeRequest(url, params, XML_REQUEST_ID, GET_MAP_AUTHOR);
+        makeRequest(url, params, REQUEST_TYPE_XML, REQUEST_ID_GET_MAP_AUTHOR);
     }
 
     /**
@@ -252,7 +252,7 @@ public class MapServerClient extends HTTPClient {
      * to make sure we check the disk cache, as the image may have already been downloaded.
      */
     void getImage(String url, Object key) {
-	makeRequest(url, null, IMG_REQUEST_ID, key);
+	makeRequest(url, null, REQUEST_TYPE_IMG, key);
     }
 
     public void downloadMap(String fullMapUrl) {
@@ -304,7 +304,7 @@ public class MapServerClient extends HTTPClient {
 
             urls.add(url);
 
-            makeRequest(url, null, MapServerClient.MAP_REQUEST_ID, this);
+            makeRequest(url, null, MapServerClient.REQUEST_TYPE_MAP, this);
         }
 
         boolean hasUrl(String url) {
