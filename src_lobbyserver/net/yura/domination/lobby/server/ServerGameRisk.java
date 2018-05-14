@@ -67,6 +67,9 @@ public class ServerGameRisk extends TurnBasedGame {
                 public void renameMapFile(String oldName, String newName) {
                     RiskUtil.rename(new File(mapsDir, oldName), new File(mapsDir, newName));
                 }
+                public boolean deleteMapFile(String mapName) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
             };
 
             try {

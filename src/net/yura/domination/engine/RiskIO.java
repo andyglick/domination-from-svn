@@ -27,6 +27,7 @@ public interface RiskIO {
         
         OutputStream saveMapFile(String fileName) throws Exception;
         void renameMapFile(String oldName, String newName);
+        boolean deleteMapFile(String mapName);
 
         /**
          * get callback with either {@link RiskUtil#SUCCESS} or {@link RiskUtil#ERROR}

@@ -127,9 +127,17 @@ public class RiskUIUtil {
                     net.yura.domination.mapstore.GetMap.getMap(filename, observer);
                 }
                 public void renameMapFile(String oldName, String newName) {
-                    File oldFile = new File( getSaveMapDir() ,oldName);
-                    File newFile = new File( getSaveMapDir() ,newName);
+                    File oldFile = new File(getSaveMapDir(), oldName);
+                    File newFile = new File(getSaveMapDir(), newName);
                     RiskUtil.rename(oldFile, newFile);
+                }
+
+                public boolean deleteMapFile(String mapUID) {
+                    File mapFile = new File(getSaveMapDir(), mapUID);
+                    if (mapFile.exists()) {
+                        return mapFile.delete();
+                    }
+                    return false;
                 }
             };
         }
