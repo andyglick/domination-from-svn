@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Observer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,8 +42,6 @@ public class MapServerClient extends HTTPClient {
     static final int REQUEST_TYPE_MAP = 2;
     static final int REQUEST_TYPE_IMG = 3;
     static final int REQUEST_TYPE_PLUS = 4;
-    
-    private static final Object REQUEST_ID_GET_MAP_AUTHOR = "get_map_author";
 
     private static final String RATE_URL = "http://maps.yura.net/maps?mapfile=";
 
@@ -141,12 +140,11 @@ public class MapServerClient extends HTTPClient {
                     if (param instanceof java.util.Map) {
                         java.util.Map info = (java.util.Map)param;
                         List<Map> list = (List)info.get("maps");
-                        
-                        if (request.id == REQUEST_ID_GET_MAP_AUTHOR) {
-                            if (!list.isEmpty()) {
-                                makeRequestXML(request.url, "author", list.get(0).getAuthorId());
-                                return;
-                            }
+
+                        if (request.id instanceof Observer) {
+                            Observer o = (Observer)request.id;
+                            o.update(null, list.isEmpty() ? null : list.get(0));
+                            return;
                         }
                         
                         // check if needs to be sorted by rating.
@@ -241,10 +239,10 @@ public class MapServerClient extends HTTPClient {
         makeRequest(string, params, REQUEST_TYPE_XML, null);
     }
 
-    public void makeRequestMapAuthor(String url, String mapUid) {
+    public void makeRequestMap(String url, String mapUid, Observer o) {
         Hashtable params = new Hashtable();
         params.put("mapfile", mapUid);
-        makeRequest(url, params, REQUEST_TYPE_XML, REQUEST_ID_GET_MAP_AUTHOR);
+        makeRequest(url, params, REQUEST_TYPE_XML, o);
     }
 
     /**

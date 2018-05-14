@@ -86,6 +86,9 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                     public void renameMapFile(String oldName, String newName) {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
+                    public boolean deleteMapFile(String mapName) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
             };
 	}
 

@@ -8,6 +8,8 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import java.util.WeakHashMap;
 import javax.microedition.lcdui.Image;
@@ -58,6 +60,7 @@ public class MapChooser implements ActionListener,MapServerListener {
     public static final String MAP_PAGE=SERVER_URL+"maps?format=xml&version="+Url.encode( RiskUtil.RISK_VERSION );
     public static final String CATEGORIES_PAGE=SERVER_URL+"categories?format=xml&version="+Url.encode( RiskUtil.RISK_VERSION );
 
+    private static final String PREVIEW_FILE_PREFIX = "preview/";
 
     // these are both weak caches, they only keep a object if someone else holds it or a key
     private static ImageManager iconCache = new ImageManager( XULLoader.adjustSizeToDensity(150),XULLoader.adjustSizeToDensity(94) ); // 150x94
@@ -228,9 +231,9 @@ public class MapChooser implements ActionListener,MapServerListener {
                 //String prv = (String)info.get("prv");
                 //if (prv!=null) {
 
-                if (url.startsWith("preview/")) {
+                if (url.startsWith(PREVIEW_FILE_PREFIX)) {
                     try {
-                        in = RiskUtil.openMapStream( url ); // "preview/"+prv
+                        in = RiskUtil.openMapStream( url ); // PREVIEW_FILE_PREFIX+prv
                     }
                     catch (Exception ex) {
                         Logger.warn("cant open " + url, ex);
@@ -379,7 +382,7 @@ public class MapChooser implements ActionListener,MapServerListener {
 
         String prv = (String)info.get("prv");
         if (prv!=null) {
-            prv = "preview/"+prv;
+            prv = PREVIEW_FILE_PREFIX+prv;
             if (!fileExists(prv)) {
                 prv=null;
             }
@@ -395,7 +398,6 @@ public class MapChooser implements ActionListener,MapServerListener {
         mapCache.put(file, new WeakReference(map));
 
         return map;
-
     }
 
     public static String getFileUID(String mapUrl) {
@@ -441,7 +443,6 @@ public class MapChooser implements ActionListener,MapServerListener {
             mainCatList(actionCommand);
 
             client.makeRequestXML( CATEGORIES_PAGE , (String)null, (String)null);
-
         }
         else if ("top25".equals(actionCommand)) {
             mainCatList(actionCommand);
@@ -512,22 +513,65 @@ public class MapChooser implements ActionListener,MapServerListener {
             if (value instanceof Map) {
                 Map map = (Map)value;
                 if (map.getAuthorId() == null) {
-                    client.makeRequestMapAuthor(MAP_PAGE, getFileUID(map.getMapUrl()));
+                    client.makeRequestMap(MAP_PAGE, getFileUID(map.getMapUrl()), new Observer() {
+                        public void update(Observable o, Object map) {
+                            if (map != null) {
+                                client.makeRequestXML(MAP_PAGE, "author", ((Map)map).getAuthorId());
+                            }
+                            else {
+                                setListData(null, null);
+                            }
+                        }
+                    });
                 }
                 else {
                     makeRequestForMap("author", map.getAuthorId());
                 }
             }
         }
+        else if ("delMap".equals(actionCommand)) {
+            Object value = list.getSelectedValue();
+            if (value instanceof Map) {
+                Map map = (Map)value;
+                final String mapUID = getFileUID(map.getMapUrl());
+                if (localMaps.contains(mapUID)) {
+                    client.makeRequestMap(MAP_PAGE, mapUID, new Observer() {
+                        public void update(Observable o, Object map) {
+                            if (map != null) {
+                                java.util.Map mapinfo = RiskUtil.loadInfo(mapUID, false);
+                                String cardsFile = (String) mapinfo.get("crd");
+                                String prvFile = (String) mapinfo.get("prv");
+                                String picFile = (String) mapinfo.get("pic");
+                                String mapFile = (String) mapinfo.get("map");
+                                RiskUtil.streamOpener.deleteMapFile(mapFile);
+                                RiskUtil.streamOpener.deleteMapFile(picFile);
+                                if (prvFile != null) {
+                                    RiskUtil.streamOpener.deleteMapFile(PREVIEW_FILE_PREFIX + prvFile);
+                                }
+                                if (!"risk.cards".equals(cardsFile) && !"nomission.cards".equals(cardsFile)) {
+                                    RiskUtil.streamOpener.deleteMapFile(cardsFile);
+                                }
+                                if (RiskUtil.streamOpener.deleteMapFile(mapUID)) {
+                                    localMaps.remove(mapUID);
+                                    actionPerformed("local");
+                                }
+                                else {
+                                    OptionPane.showMessageDialog(null, "could not delete this map", "error", 0);
+                                }
+                            }
+                            else {
+                                OptionPane.showMessageDialog(null, "can not delete this map", "message", 0);
+                            }
+                        }
+                    });
+                }
+            }
+        }
         else if ("defaultMap".equals(actionCommand)) {
-
             chosenMap( RiskGame.getDefaultMap() );
-
         }
         else if ("cancel".equals(actionCommand)) {
-
             al.actionPerformed(null);
-
         }
         else if ("doMapSearch".equals(actionCommand)) {
             TextComponent.closeNativeEditor();
@@ -575,7 +619,7 @@ public class MapChooser implements ActionListener,MapServerListener {
                 String imap = (String)info.get("map");
                 String prv = (String)info.get("prv");
 
-                if ( !fileExists(pic) || !fileExists(crd) || !fileExists(imap) || (prv!=null && !fileExists("preview/"+prv)) ) {
+                if ( !fileExists(pic) || !fileExists(crd) || !fileExists(imap) || (prv!=null && !fileExists(PREVIEW_FILE_PREFIX+prv)) ) {
                     // we are missing a file, need to re-download this map
 
                     client.downloadMap( getURL(context, map.mapUrl ) );
@@ -586,27 +630,20 @@ public class MapChooser implements ActionListener,MapServerListener {
 
                 // so we already have this map, just fire event to load it
                 chosenMap(fileUID);
-
             }
             else {
-
                 client.downloadMap( getURL(context, map.mapUrl ) );
                 list.repaint();
             }
         }
         else { // this is a local map, we will fire the event right away that we got it
-
             chosenMap(fileUID);
-
         }
-
     }
 
     private void chosenMap(String mapName) {
-
         selectedMap = mapName;
         al.actionPerformed(null);
-
     }
 
     public static String getURL(String context,String mapUrl) {

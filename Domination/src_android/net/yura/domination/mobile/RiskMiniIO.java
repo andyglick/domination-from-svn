@@ -58,9 +58,17 @@ public class RiskMiniIO implements RiskIO {
     }
 
     public void renameMapFile(String oldName, String newName) {
-        File oldFile = new File( MiniUtil.getSaveMapDir() ,oldName);
-        File newFile = new File( MiniUtil.getSaveMapDir() ,newName);
+        File oldFile = new File(MiniUtil.getSaveMapDir(), oldName);
+        File newFile = new File(MiniUtil.getSaveMapDir(), newName);
         RiskUtil.rename(oldFile, newFile);
+    }
+    
+    public boolean deleteMapFile(String mapUID) {
+        File mapFile = new File(MiniUtil.getSaveMapDir(), mapUID);
+        if (mapFile.exists()) {
+            return mapFile.delete();
+        }
+        return false;
     }
 
 }
