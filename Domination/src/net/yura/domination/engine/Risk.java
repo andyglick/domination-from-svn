@@ -165,7 +165,9 @@ public class Risk extends Thread {
 		try {
 			//if (RiskUtil.checkForNoSandbox()) {
                         try {
-				return InetAddress.getLocalHost().getHostName() + randomString;
+				String hostname = InetAddress.getLocalHost().getHostName();
+				hostname = RiskUtil.replaceAll(hostname, " ", ""); // on Mac hostname can have a space
+				return hostname + randomString;
 			}
 			//else {
                         catch(Throwable th) {
