@@ -17,6 +17,7 @@ CURRENT VERSION:
 
 	better support for hi-res windows (no more blurry text)
 	right click to get maps by same author works better
+	fix for game not working when space in host name
 	MapEditor: more information shown when publishing new map
 	MapEditor: action buttons affect only selected countries
 	MapEditor: better (cross OS) filename validation for saving maps
