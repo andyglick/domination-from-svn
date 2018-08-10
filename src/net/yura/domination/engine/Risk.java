@@ -2381,7 +2381,9 @@ RiskUtil.printStackTrace(e);
 		}
 		else if (game.getState()==RiskGame.STATE_GAME_OVER) {
 			//the game is over, {0} has won! close the game to create a new one
-			help = RiskUtil.replaceAll(resb.getString( "core.help.gameover"), "{0}", ((Player)game.getCurrentPlayer()).getName());
+			Player winrar = game.getCurrentPlayer();
+                        // winner should never be null, but its better not to crash if it is
+			help = RiskUtil.replaceAll(resb.getString( "core.help.gameover"), "{0}", winrar==null ? "null" : winrar.getName());
 		}
 		else if (game.getState()==RiskGame.STATE_SELECT_CAPITAL) {
 			help = help + resb.getString( "core.help.selectcapital");
