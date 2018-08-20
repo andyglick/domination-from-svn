@@ -204,22 +204,7 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
 	public void clientHasJoined(String username) {
-// TODO remove this legacy crap
-		String playerid = getPlayerId(username);
-                // this person is NOT a player in the game, they must just be watching
-                if (playerid==null) {
-                    playerid="_watch_";
-                }
-		System.out.println(username+" -> "+playerid);
-                HashMap map = new HashMap();
-                map.put("command", "game");
-                map.put("playerId", playerid );
-                map.put("game", myrisk.getGame() );
-                sendObjectToClient( map , username );
-// END TODO
-                // this is the new method of sending a game
-		//sendObjectToClient( myrisk.getGame() , username );
-
+		sendObjectToClient(myrisk.getGame(), username);
 	}
 
         /**
