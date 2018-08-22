@@ -42,7 +42,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
-    private static final String LOBBY_SERVER = "lobby.yura.net";
+    public static final String LOBBY_SERVER = "lobby.yura.net";
     //private static final String LOBBY_SERVER = "localhost";
 
     public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
@@ -63,7 +63,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private Properties resBundle;
 
-    public MiniLobbyClient(MiniLobbyGame lobbyGame) {
+    public MiniLobbyClient(String server, MiniLobbyGame lobbyGame) {
         game = lobbyGame;
         game.addLobbyGameMoveListener(this);
 
@@ -97,7 +97,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
         mycom = new LobbyCom(uuid,lobbyGame.getAppName(),lobbyGame.getAppVersion());
         mycom.addEventListener(this);
-        mycom.connect(LOBBY_SERVER, 1964);
+        mycom.connect(server, 1964);
     }
 
     public void setPlayGamesSingedIn(boolean signedIn) {

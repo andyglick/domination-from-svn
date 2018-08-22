@@ -28,7 +28,7 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
     Risk risk;
 
     JToolBar toolbar;
-    JButton start,stop,open;
+    JButton start,start2,stop,open;
     
     public LobbyTab(Risk myrisk) {
         getApplicationManager().applet = RiskUIUtil.applet;
@@ -43,6 +43,11 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
 	start.addActionListener(this);
 	toolbar.add(start);
 
+        start2 = new JButton("Connect to Server");
+	start2.setActionCommand("start2");
+	start2.addActionListener(this);
+	toolbar.add(start2);
+        
         stop = new JButton("Stop Lobby");
 	stop.setActionCommand("stop");
 	stop.addActionListener(this);
@@ -62,15 +67,22 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         if ("start".equals(action)) {
-            createLobby();
+            createLobby(MiniLobbyClient.LOBBY_SERVER);
             updateButton();
+        }
+        else if ("start2".equals(action)) {
+            String server = JOptionPane.showInputDialog(this, "Server:", "localhost");
+            if (server != null) {
+                createLobby(server);
+                updateButton();
+            }
         }
         else if ("stop".equals(action)) {
             closeLobby();
             updateButton();
         }
         else if ("open".equals(action)) {
-            String input = JOptionPane.showInputDialog("game id:");
+            String input = JOptionPane.showInputDialog(this, "game id:");
             if (input != null) {
                 try {
                     int id = Integer.parseInt(input);
@@ -94,7 +106,9 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
     
     private void updateButton() {
         start.setEnabled( mlc==null );
+        start2.setEnabled( mlc==null );
         stop.setEnabled( mlc!=null );
+        open.setEnabled( mlc!=null );
     }
 
     public JToolBar getToolBar() {
@@ -109,18 +123,15 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
 
 
 
-    void createLobby() {
-        mlc = SwingMEWrapper.makeMiniLobbyClient(risk, SwingUtilities.getWindowAncestor(this) );
+    void createLobby(String server) {
+        mlc = SwingMEWrapper.makeMiniLobbyClient(server, risk, SwingUtilities.getWindowAncestor(this) );
         mlc.removeBackButton();
         add( mlc.getRoot() );
-        open.setEnabled(true);
     }
     
     void closeLobby() {
         mlc.destroy();
         mlc = null;
         add( new Label("no lobby") ); // can throw when DesktopPane is null (open and close MapStore)
-        open.setEnabled(false);
     }
-
 }
