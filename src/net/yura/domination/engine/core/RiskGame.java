@@ -309,6 +309,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 						throw new Exception("LOAD FILE ERROR: " + e.getMessage() + "\n(This normally means you have selected the wrong set of cards for this map)",e);
 
 					}
+                                        else {
+                                            // we do not err here as this is not a error in the game, but a user file selection error
+                                            // but we should still print the exception so that the error is not hidden from server logs
+                                            e.printStackTrace(System.out);
+                                        }
 
 					return;
 				}
