@@ -390,7 +390,8 @@ public class ServerGameRisk extends TurnBasedGame {
 
 	public void getInputFromSomeone() {
             Player player = myrisk.getGame().getCurrentPlayer();
-            String username = player.getType()==Player.PLAYER_HUMAN?player.getName():null;
+            // Player should never be null, but better not to crash here
+            String username = (player != null && player.getType() == Player.PLAYER_HUMAN) ? player.getName() : null;
             getInputFromClient(username);
 	}
 
