@@ -44,7 +44,7 @@ public class RiskMap {
         return map;
     }
 
-    public Icon getIcon(int w, int h, final Component comp) {
+    public Icon getIcon(int w, int h, Component comp) {
         final int width = GraphicsUtil.scale(w);
         final int height = GraphicsUtil.scale(h);
         long id = ByteBuffer.allocate(8).putInt(width).putInt(height).getLong(0);
@@ -53,7 +53,6 @@ public class RiskMap {
             icon = new Icon() {
                 public void paintIcon(Component c, Graphics g, int x, int y) {
                     if (image == null) {
-                        components.add(comp); // we cant use c, as it may be a renderer
                         if (!requestMade.getAndSet(true)) {
                             executor.submit(new Runnable() {
                                 public void run() {
@@ -94,6 +93,11 @@ public class RiskMap {
                 }
             };
             iconMap.put(id, icon);
+        }
+
+        List<Component> comps = components;
+        if (comps != null) {
+            comps.add(comp);
         }
         return icon;
     }
