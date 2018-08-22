@@ -256,7 +256,8 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
         @Override
-	public void playerResigns(String username) {
+	public boolean playerResigns(String username) {
+            boolean gameRemoved = false;
 
 		String playerid = getPlayerId(username);
 
@@ -298,7 +299,7 @@ public class ServerGameRisk extends TurnBasedGame {
                         sendRename(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP,true);
 
                         if (aliveHumans==0) {
-                            gameFinished( whoHasMostPoints() );
+                            gameRemoved = gameFinished( whoHasMostPoints() );
 
                             // We have no humans and no ais, (we only have resigned human, crap/submissive ais)
                             // so we must pause the game or it will get stuck in a loop of placing armies and
@@ -327,6 +328,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		//	myrisk.parser( AIPlayer.getOutput(myrisk.getGame(),AIPlayer.aicrap) );
 		//}
 
+                return gameRemoved;
 	}
 
         private void sendRename(String oldName, String newName, String newAddress, int newType, boolean doLegacySend) {
