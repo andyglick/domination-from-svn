@@ -2,8 +2,9 @@ package net.yura.domination.lobby.server;
 
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.lobby.server.LobbyLogger;
 
-public class ServerRisk extends Risk {
+public class ServerRisk extends Risk implements LobbyLogger.LobbyGameThread {
 
 	ServerGameRisk sgr;
 	private boolean paused;
@@ -14,6 +15,10 @@ public class ServerRisk extends Risk {
 		super();
 		sgr = a;
 	}
+
+        public int getGameId() {
+            return sgr.getId();
+        }
 
 	public void makeNewGame() {
 		try {

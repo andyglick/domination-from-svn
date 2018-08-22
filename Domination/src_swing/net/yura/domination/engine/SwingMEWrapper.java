@@ -61,14 +61,14 @@ public class SwingMEWrapper {
         
         String result = chooser.getSelectedMap();
         
-        chooser.destroy(); // shutdown abba repo, write index to rms
+        chooser.destroy();
 
         return result;
     }
 
-    public static MiniLobbyClient makeMiniLobbyClient(Risk risk,final Window window) {
+    public static MiniLobbyClient makeMiniLobbyClient(String server, Risk risk,final Window window) {
         MapChooser.loadThemeExtension();
-        return new MiniLobbyClient( new MiniLobbyRisk(risk) {
+        return new MiniLobbyClient(server, new MiniLobbyRisk(risk) {
             private net.yura.domination.lobby.client.GameSetupPanel gsp;
             public void openGameSetup(GameType gameType) {
                 if (gsp==null) {

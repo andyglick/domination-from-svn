@@ -33,7 +33,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
 
     public void openLobby() {
-    	lobby = new net.yura.lobby.mini.MiniLobbyClient( new MiniLobbyRisk(myRisk) {
+    	lobby = new net.yura.lobby.mini.MiniLobbyClient(net.yura.lobby.mini.MiniLobbyClient.LOBBY_SERVER, new MiniLobbyRisk(myRisk) {
             @Override
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
                 show("setup");

@@ -622,7 +622,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             final ME4SEPanel wrapper = new ME4SEPanel();
             wrapper.getApplicationManager().applet = RiskUIUtil.applet;
             
-            mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
+            mlc = SwingMEWrapper.makeMiniLobbyClient(MiniLobbyClient.LOBBY_SERVER, myrisk, window);
             wrapper.add(mlc.getRoot());
 
             mlc.addCloseListener(new net.yura.mobile.gui.ActionListener() {
