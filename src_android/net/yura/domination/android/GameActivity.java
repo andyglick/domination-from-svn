@@ -3,9 +3,11 @@ package net.yura.domination.android;
 import java.io.File;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.example.games.basegameutils.GameHelper;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnSuccessListener;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -28,18 +30,18 @@ import net.yura.domination.mobile.flashgui.MiniFlashRiskAdapter;
 import net.yura.lobby.mini.MiniLobbyClient;
 import net.yura.lobby.model.Game;
 
-public class GameActivity extends AndroidMeActivity implements GameHelper.GameHelperListener,DominationMain.GooglePlayGameServices {
+public class GameActivity extends AndroidMeActivity implements GoogleAccount.SignInListener,DominationMain.GooglePlayGameServices {
 
     private static final Logger logger = Logger.getLogger(GameActivity.class.getName());
 
     /**
      * this code needs to not clash with other codes such as the ones in
-     * {@link GameHelper} 9001,9002
+     * {@link GoogleAccount} 9000
      * {@link RealTimeMultiplayer} 2,3,4
      */
     private static final int RC_REQUEST_ACHIEVEMENTS = 1;
 
-    private GameHelper mHelper;
+    private GoogleAccount googleAccount;
     private RealTimeMultiplayer realTimeMultiplayer;
 
     private String pendingAchievement;
@@ -58,10 +60,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
         System.setProperty("debug", String.valueOf(BuildConfig.DEBUG)); // Temp hack to get around http://b.android.com/52962
         super.onSingleCreate();
 
-        mHelper = new GameHelper(this);
-        mHelper.enableDebugLog(true, "DominationPlay");
+        googleAccount = new GoogleAccount(this);
 
-        realTimeMultiplayer = new RealTimeMultiplayer(mHelper, this, new RealTimeMultiplayer.Lobby() {
+        realTimeMultiplayer = new RealTimeMultiplayer(this, new RealTimeMultiplayer.Lobby() {
             @Override
             public void createNewGame(Game game) {
                 getUi().lobby.createNewGame(game);
@@ -89,21 +90,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
             }
         });
 
-        final GameHelper.GameHelperListener[] listeners = {this, realTimeMultiplayer};
-        mHelper.setup(new GameHelper.GameHelperListener() {
-	    @Override
-	    public void onSignInSucceeded() {
-		for (GameHelper.GameHelperListener listener : listeners) {
-	            listener.onSignInSucceeded();
-	        }
-	    }
-	    @Override
-	    public void onSignInFailed() {
-		for (GameHelper.GameHelperListener listener : listeners) {
-	            listener.onSignInFailed();
-	        }
-	    }
-	}, GameHelper.CLIENT_GAMES);
+        googleAccount.addSignInListener(this);
+        googleAccount.addSignInListener(realTimeMultiplayer);
 
         if (preferences.getBoolean("fullscreen", getDefaultFullScreen(this))) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -162,7 +150,7 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
      */
     @Override
     public void onMidletStarted() {
-        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
             DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
             // TODO WE ARE LEAKING THE ACTIVITY HERE!!!
             // an Activity can be created and destroyed by the system when it feels like it
@@ -171,20 +159,9 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mHelper.onStart(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mHelper.onStop();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+        googleAccount.signInSilently();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
@@ -199,8 +176,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        googleAccount.onActivityResult(requestCode, resultCode, data);
         realTimeMultiplayer.onActivityResult(requestCode, resultCode, data);
-        mHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     // ----------------------------- GameHelper.GameHelperListener -----------------------------
@@ -240,18 +217,18 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
 
     @Override
     public void beginUserInitiatedSignIn() {
-        mHelper.beginUserInitiatedSignIn();
+        googleAccount.startSignInIntent();
     }
 
     @Override
     public void signOut() {
-        mHelper.signOut();
-        mHelper.getGamesClient().unregisterInvitationListener();
+        realTimeMultiplayer.signOut();
+        googleAccount.signOut();
     }
 
     @Override
     public boolean isSignedIn() {
-        return mHelper.isSignedIn();
+        return googleAccount.isSignedIn();
     }
 
     @Override
@@ -287,7 +264,13 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     @Override
     public void showAchievements() {
         if (isSignedIn()) {
-            startActivityForResult(mHelper.getGamesClient().getAchievementsIntent(), RC_REQUEST_ACHIEVEMENTS);
+            Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                    .getAchievementsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
+                @Override
+                public void onSuccess(Intent intent) {
+                    startActivityForResult(intent, RC_REQUEST_ACHIEVEMENTS);
+                }
+            });
         }
         else {
             pendingShowAchievements = true;
@@ -298,7 +281,8 @@ public class GameActivity extends AndroidMeActivity implements GameHelper.GameHe
     @Override
     public void unlockAchievement(String id) {
         if (isSignedIn()) {
-            mHelper.getGamesClient().unlockAchievement(id);
+            Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                    .unlock(id);
         }
         else {
             pendingAchievement = id;

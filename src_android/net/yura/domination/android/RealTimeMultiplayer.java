@@ -20,20 +20,26 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.games.Player;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.games.AnnotatedData;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesCallbackStatusCodes;
+import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.InvitationBuffer;
-import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
-import com.google.android.gms.games.multiplayer.OnInvitationsLoadedListener;
+import com.google.android.gms.games.multiplayer.InvitationCallback;
+import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.OnRealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeReliableMessageSentListener;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
-import com.google.example.games.basegameutils.GameHelper;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateCallback;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateCallback;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 /**
  * if 2 people (B and Q) create games with 1 friend each (C and G) and 2 auto-match players each:
@@ -51,7 +57,7 @@ import com.google.example.games.basegameutils.GameHelper;
  * if Q only got the name of G after it found out B is a creator it will now send G's name to B
  * now B has everyones name and starts the game.
  */
-public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
+public class RealTimeMultiplayer extends InvitationCallback implements GoogleAccount.SignInListener {
 
     private static final int RC_SELECT_PLAYERS = 2;
     private static final int RC_CREATOR_WAITING_ROOM = 3;
@@ -73,11 +79,11 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         }
     });
     private Activity activity;
-    private GameHelper mHelper;
     private Lobby lobby;
-
+    private boolean invitationsLoaded;
     private String gameCreator;
     private Room gameRoom;
+    private String myParticipantId;
     private Game lobbyGame;
 
     interface Lobby {
@@ -86,10 +92,81 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         void getUsername();
     }
 
-    public RealTimeMultiplayer(GameHelper helper, Activity activity, Lobby lobby) {
-        mHelper = helper;
+    private RoomStatusUpdateCallback roomStatusUpdateCallback = new RoomStatusUpdateCallback() {
+        @Override
+        public void onRoomConnecting(@Nullable Room room) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onRoomAutoMatching(@Nullable Room room) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeerInvitedToRoom(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeerDeclined(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeerJoined(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeerLeft(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onConnectedToRoom(@Nullable Room room) {
+            gameRoom = room;
+
+            Games.getPlayersClient(activity, GoogleSignIn.getLastSignedInAccount(activity))
+                    .getCurrentPlayerId().addOnSuccessListener(new OnSuccessListener<String>() {
+                @Override
+                public void onSuccess(String playerId) {
+                    myParticipantId = gameRoom.getParticipantId(playerId);
+                }
+            });
+        }
+
+        @Override
+        public void onDisconnectedFromRoom(@Nullable Room room) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeersConnected(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onPeersDisconnected(@Nullable Room room, @NonNull List<String> list) {
+            gameRoom = room;
+        }
+
+        @Override
+        public void onP2PConnected(@NonNull String s) {
+        }
+
+        @Override
+        public void onP2PDisconnected(@NonNull String s) {
+        }
+    };
+
+    public RealTimeMultiplayer(Activity activity, Lobby lobby) {
         this.activity = activity;
         this.lobby = lobby;
+    }
+
+    RealTimeMultiplayerClient getRealTimeMultiplayerClient() {
+        return Games.getRealTimeMultiplayerClient(activity, GoogleSignIn.getLastSignedInAccount(activity));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,34 +185,58 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
     @Override
     public void onSignInSucceeded() {
-        logger.info("invitationId: " + mHelper.getInvitationId());
-        if (mHelper.getInvitationId() != null) {
-            acceptInvitation(mHelper.getInvitationId());
-        }
-        else {
-            // there is a bug in GooglePlayGameServicesFroyo that mHelper.getInvitationId() returns null
-            // even when there is a invitation, so we use this method instead to get it.
-            // OR we may go into the app directly instead of clicking on the notification.
-            mHelper.getGamesClient().loadInvitations(new OnInvitationsLoadedListener() {
-                @Override
-                public void onInvitationsLoaded(int statusCode, InvitationBuffer buffer) {
-                    logger.info("onInvitationsLoaded: "+statusCode+" "+buffer.getCount()+" "+buffer);
-                    for (Invitation invitation : buffer) {
-                        logger.info("onInvitationsLoaded invitation: "+getCurrentPlayerState(invitation)+" "+invitation);
-                        createAcceptDialog(invitation).show();
+        // we clicked on google play games notification to launch the app, do not display dialog, go directly into the game
+        Games.getGamesClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).getActivationHint().addOnSuccessListener(
+                new OnSuccessListener<Bundle>() {
+                    @Override
+                    public void onSuccess(Bundle bundle) {
+                        if (bundle != null) {
+                            Invitation invitation = bundle.getParcelable(Multiplayer.EXTRA_INVITATION);
+                            logger.info("invitationId: " + invitation);
+                            if (invitation != null) {
+                                acceptInvitation(invitation.getInvitationId());
+                            }
+                        }
                     }
-                    // LOL who closes a buffer!
-                    buffer.close();
                 }
-            });
+        );
+
+        if (!invitationsLoaded) {
+            // we may go into the app directly instead of clicking on the notification.
+            Games.getInvitationsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).loadInvitations().addOnSuccessListener(
+                    new OnSuccessListener<AnnotatedData<InvitationBuffer>>() {
+                        @Override
+                        public void onSuccess(AnnotatedData<InvitationBuffer> invitationBufferAnnotatedData) {
+                            InvitationBuffer buffer = invitationBufferAnnotatedData.get();
+                            logger.info("onInvitationsLoaded: " + buffer.getCount() + " " + buffer);
+                            for (Invitation invitation : buffer) {
+                                logger.info("onInvitationsLoaded invitation: " + invitation);
+                                createAcceptDialog(invitation).show();
+                            }
+                            buffer.release();
+                        }
+                    }
+            );
+
+            Games.getInvitationsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).registerInvitationCallback(this);
+            invitationsLoaded = true;
         }
-        mHelper.getGamesClient().registerInvitationListener(new OnInvitationReceivedListener() {
-            @Override
-            public void onInvitationReceived(final Invitation invitation) {
-                logger.info("Invitation received from: " + invitation.getInviter());
-                createAcceptDialog(invitation).show();
-            }
-        });
+    }
+
+    public void signOut() {
+        Games.getInvitationsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).unregisterInvitationCallback(this);
+        invitationsLoaded = false;
+    }
+
+    @Override
+    public void onInvitationReceived(@NonNull Invitation invitation) {
+        logger.info("Invitation received from: " + invitation.getInviter());
+        createAcceptDialog(invitation).show();
+    }
+
+    @Override
+    public void onInvitationRemoved(@NonNull String s) {
+
     }
 
     @Override
@@ -143,19 +244,13 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         // dont care
     }
 
-    private int getCurrentPlayerState(Invitation invitation) {
-        return getMe(invitation.getParticipants()).getStatus();
-    }
-
     private Participant getMe(List<Participant> participants) {
-        String myId = mHelper.getGamesClient().getCurrentPlayerId();
         for (Participant participant : participants) {
-            Player player = participant.getPlayer();
-            if (player != null && myId.equals(player.getPlayerId())) {
+            if (participant.getParticipantId().equals(myParticipantId)) {
                 return participant;
             }
         }
-        throw new RuntimeException("me not found");
+        throw new RuntimeException(myParticipantId + " not found in " + participants);
     }
 
     public void startGameGooglePlay(Game game) {
@@ -166,9 +261,16 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             throw new RuntimeException("should only have creator "+game.getPlayers());
         }
 
-        Intent intent = mHelper.getGamesClient().getSelectPlayersIntent(GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1);
-        intent.putExtra(EXTRA_SHOW_AUTOMATCH, false);
-        activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
+        getRealTimeMultiplayerClient()
+            .getSelectOpponentsIntent(GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1)
+                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    @Override
+                    public void onSuccess(Intent intent) {
+                        intent.putExtra(EXTRA_SHOW_AUTOMATCH, false);
+                        activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
+                    }
+                }
+        );
     }
 
     private void handlePlayersSelected(int resultCode, Intent data) {
@@ -179,20 +281,19 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
 
         openLoadingDialog("mainmenu.googlePlayGame.waitRoom");
 
-        ArrayList<String> invitees = data.getStringArrayListExtra(GamesClient.EXTRA_PLAYERS);
+        ArrayList<String> invitees = data.getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
         // get auto-match criteria
-        int minAutoMatchPlayers = data.getIntExtra(GamesClient.EXTRA_MIN_AUTOMATCH_PLAYERS, 0);
-        int maxAutoMatchPlayers = data.getIntExtra(GamesClient.EXTRA_MAX_AUTOMATCH_PLAYERS, 0);
+        int minAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MIN_AUTOMATCH_PLAYERS, 0);
+        int maxAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MAX_AUTOMATCH_PLAYERS, 0);
 
         logger.info("Players selected. Creating room. "+invitees+" "+minAutoMatchPlayers+" "+maxAutoMatchPlayers);
 
         RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(
-            new BaseRoomUpdateListener() {
+            new RoomUpdateCallback() {
                 @Override
                 public void onRoomCreated(int statusCode, Room room) {
-                    super.onRoomCreated(statusCode, room);
                     closeLoadingDialog();
-                    if (statusCode != GamesClient.STATUS_OK) {
+                    if (statusCode != GamesCallbackStatusCodes.OK) {
                         String error = "onRoomCreated failed. "+statusCode+" "+getErrorString(statusCode);
                         logger.warning(error);
                         toast(error);
@@ -200,18 +301,33 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                     }
                     gameRoom = room;
                     logger.info("Starting waiting room activity.");
-                    activity.startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_CREATOR_WAITING_ROOM);
+                    getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        @Override
+                        public void onSuccess(Intent intent) {
+                            activity.startActivityForResult(intent, RC_CREATOR_WAITING_ROOM);
+                        }
+                    });
                 }
-            })
-            .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener(){
+
                 @Override
-                public void onRoomUpdated(Room room) {
+                public void onJoinedRoom(int i, @Nullable Room room) {
+                    gameRoom = room;
+                }
+
+                @Override
+                public void onLeftRoom(int i, @NonNull String s) {
+
+                }
+
+                @Override
+                public void onRoomConnected(int i, @Nullable Room room) {
                     gameRoom = room;
                 }
             })
-            .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
+            .setRoomStatusUpdateCallback(roomStatusUpdateCallback)
+            .setOnMessageReceivedListener(new OnRealTimeMessageReceivedListener() {
                 @Override
-                public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+                public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                     onMessageReceived(realTimeMessage);
                 }
             })
@@ -225,7 +341,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         // The variant has to be positive, or else it will throw an Exception.
         roomConfigBuilder.setVariant(lobbyGame.getOptions().hashCode() & 0x7FFFFFFF);
 
-        mHelper.getGamesClient().createRoom(roomConfigBuilder.build());
+        getRealTimeMultiplayerClient().create(roomConfigBuilder.build());
         logger.info("Room created, waiting for it to be ready");
     }
 
@@ -381,12 +497,12 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             }
             byte[] data = bytes.toByteArray();
 
-            mHelper.getGamesClient().sendReliableRealTimeMessage(new RealTimeReliableMessageSentListener() {
+            getRealTimeMultiplayerClient().sendReliableMessage(data, gameRoom.getRoomId(), recipientParticipantId, new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
                 @Override
                 public void onRealTimeMessageSent(int statusCode, int tokenId, String recipientId) {
-                    logger.info(String.format("Message %d sent (%d) to %s", tokenId, statusCode, recipientId));
+                            logger.info(String.format("Message %d sent (%d) to %s", tokenId, statusCode, recipientId));
                 }
-            }, data, gameRoom.getRoomId(), recipientParticipantId);
+            });
 	}
     }
 
@@ -407,7 +523,7 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                 })
                 .setNegativeButton(reject, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mHelper.getGamesClient().declineRoomInvitation(invitationId);
+                        getRealTimeMultiplayerClient().declineInvitation(invitationId);
                     }
                 })
                 .create();
@@ -418,13 +534,12 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         lobbyGame = null;
         gameCreator = null;
 
-        mHelper.getGamesClient().joinRoom(RoomConfig.builder(
-                new BaseRoomUpdateListener() {
+        getRealTimeMultiplayerClient().join(RoomConfig.builder(
+                new RoomUpdateCallback() {
                     @Override
                     public void onJoinedRoom(int statusCode, Room room) {
-                        super.onJoinedRoom(statusCode, room);
                         closeLoadingDialog();
-                        if (statusCode != GamesClient.STATUS_OK) {
+                        if (statusCode != GamesCallbackStatusCodes.OK) {
                             String error = "onJoinedRoom failed. "+statusCode+" "+getErrorString(statusCode);
                             logger.warning(error);
                             toast(error);
@@ -432,18 +547,33 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
                         }
                         gameRoom = room;
                         logger.info("Starting waiting room activity as joiner.");
-                        activity.startActivityForResult(mHelper.getGamesClient().getRealTimeWaitingRoomIntent(room, 1), RC_JOINER_WAITING_ROOM);
+                        getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new OnSuccessListener<Intent>() {
+                            @Override
+                            public void onSuccess(Intent intent) {
+                                activity.startActivityForResult(intent, RC_JOINER_WAITING_ROOM);
+                            }
+                        });
                     }
-                })
-                .setRoomStatusUpdateListener(new BaseRoomStatusUpdateListener() {
+
                     @Override
-                    public void onRoomUpdated(Room room) {
+                    public void onRoomCreated(int i, @Nullable Room room) {
+                        gameRoom = room;
+                    }
+
+                    @Override
+                    public void onLeftRoom(int i, @NonNull String s) {
+
+                    }
+
+                    @Override
+                    public void onRoomConnected(int i, @Nullable Room room) {
                         gameRoom = room;
                     }
                 })
-                .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
+                .setRoomStatusUpdateCallback(roomStatusUpdateCallback)
+                .setOnMessageReceivedListener(new OnRealTimeMessageReceivedListener() {
                     @Override
-                    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+                    public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                         onMessageReceived(realTimeMessage);
                     }
                 })
@@ -468,25 +598,26 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
         Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
     }
 
+    @SuppressWarnings("deprecation")
     static String getErrorString(int statusCode) {
         switch(statusCode) {
-            case GamesClient.STATUS_OK: return "OK"; // 0
-            case GamesClient.STATUS_INTERNAL_ERROR: return "INTERNAL_ERROR"; // 1
-            case GamesClient.STATUS_CLIENT_RECONNECT_REQUIRED: return "CLIENT_RECONNECT_REQUIRED"; // 2
-            case GamesClient.STATUS_NETWORK_ERROR_STALE_DATA: return "NETWORK_ERROR_STALE_DATA"; // 3
-            case GamesClient.STATUS_NETWORK_ERROR_NO_DATA: return "NETWORK_ERROR_NO_DATA"; // 4
-            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_DEFERRED: return "NETWORK_ERROR_OPERATION_DEFERRED"; // 5
-            case GamesClient.STATUS_NETWORK_ERROR_OPERATION_FAILED: return "NETWORK_ERROR_OPERATION_FAILED"; // 6
-            case GamesClient.STATUS_LICENSE_CHECK_FAILED: return "LICENSE_CHECK_FAILED"; // 7
+            case GamesCallbackStatusCodes.OK: return "OK"; // 0
+            case GamesCallbackStatusCodes.INTERNAL_ERROR: return "INTERNAL_ERROR"; // 1
+            case GamesCallbackStatusCodes.CLIENT_RECONNECT_REQUIRED: return "CLIENT_RECONNECT_REQUIRED"; // 2
+            case 3: return "NETWORK_ERROR_STALE_DATA";
+            case 4: return "NETWORK_ERROR_NO_DATA";
+            case 5: return "NETWORK_ERROR_OPERATION_DEFERRED";
+            case 6: return "NETWORK_ERROR_OPERATION_FAILED";
+            case 7: return "LICENSE_CHECK_FAILED";
             case 8: return "APP_MISCONFIGURED";
 
-            case GamesClient.STATUS_ACHIEVEMENT_UNLOCK_FAILURE: return "ACHIEVEMENT_UNLOCK_FAILURE"; // 3000
-            case GamesClient.STATUS_ACHIEVEMENT_UNKNOWN: return "ACHIEVEMENT_UNKNOWN"; // 3001
-            case GamesClient.STATUS_ACHIEVEMENT_NOT_INCREMENTAL: return "ACHIEVEMENT_NOT_INCREMENTAL"; // 3002
-            case GamesClient.STATUS_ACHIEVEMENT_UNLOCKED: return "ACHIEVEMENT_UNLOCKED"; // 3003
+            case 3000: return "ACHIEVEMENT_UNLOCK_FAILURE";
+            case 3001: return "ACHIEVEMENT_UNKNOWN";
+            case 3002: return "ACHIEVEMENT_NOT_INCREMENTAL";
+            case 3003: return "ACHIEVEMENT_UNLOCKED";
 
-            case GamesClient.STATUS_MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED: return "MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED"; // 6000
-            case GamesClient.STATUS_MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER: return "MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER"; // 6001
+            case 6000: return "MULTIPLAYER_ERROR_CREATION_NOT_ALLOWED";
+            case 6001: return "MULTIPLAYER_ERROR_NOT_TRUSTED_TESTER";
             case 6002: return "MULTIPLAYER_ERROR_INVALID_MULTIPLAYER_TYPE";
             case 6003: return "MULTIPLAYER_DISABLED";
             case 6004: return "MULTIPLAYER_ERROR_INVALID_OPERATION";
@@ -500,13 +631,13 @@ public class RealTimeMultiplayer implements GameHelper.GameHelperListener {
             case 6506: return "MATCH_NOT_FOUND";
             case 6507: return "MATCH_ERROR_LOCALLY_MODIFIED";
 
-            case GamesClient.STATUS_REAL_TIME_CONNECTION_FAILED: return "REAL_TIME_CONNECTION_FAILED"; // 7000
-            case GamesClient.STATUS_REAL_TIME_MESSAGE_SEND_FAILED: return "REAL_TIME_MESSAGE_SEND_FAILED"; // 7001
-            case GamesClient.STATUS_INVALID_REAL_TIME_ROOM_ID: return "INVALID_REAL_TIME_ROOM_ID"; // 7002
-            case GamesClient.STATUS_PARTICIPANT_NOT_CONNECTED: return "PARTICIPANT_NOT_CONNECTED"; // 7003
-            case GamesClient.STATUS_REAL_TIME_ROOM_NOT_JOINED: return "REAL_TIME_ROOM_NOT_JOINED"; // 7004
-            case GamesClient.STATUS_REAL_TIME_INACTIVE_ROOM: return "REAL_TIME_INACTIVE_ROOM"; // 7005
-            case GamesClient.STATUS_REAL_TIME_MESSAGE_FAILED: return "REAL_TIME_MESSAGE_FAILED"; // -1
+            case GamesCallbackStatusCodes.REAL_TIME_CONNECTION_FAILED: return "REAL_TIME_CONNECTION_FAILED"; // 7000
+            case GamesCallbackStatusCodes.REAL_TIME_MESSAGE_SEND_FAILED: return "REAL_TIME_MESSAGE_SEND_FAILED"; // 7001
+            case 7002: return "INVALID_REAL_TIME_ROOM_ID";
+            case 7003: return "PARTICIPANT_NOT_CONNECTED";
+            case 7004: return "REAL_TIME_ROOM_NOT_JOINED";
+            case 7005: return "REAL_TIME_INACTIVE_ROOM";
+            case -1: return "REAL_TIME_MESSAGE_FAILED"; // it really is -1
             case 7007: return "OPERATION_IN_FLIGHT";
             default: return "unknown statusCode "+statusCode;
         }

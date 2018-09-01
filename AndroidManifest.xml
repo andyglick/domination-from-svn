@@ -8,7 +8,8 @@
     <!-- android:targetSdkVersion 11 to hide the legacy menu button on tablets -->
     <!-- android:targetSdkVersion 14 to hide the legacy menu button on phones  -->
     <!-- this also has a side effect of hiding the legacy resize button -->
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14" tools:overrideLibrary="com.google.example.games.basegameutils,com.google.android.gms"/>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"
+		tools:overrideLibrary="android.support.fragment,android.arch.lifecycle,com.google.android.gms.games,com.google.android.gms.auth.api.phone,com.google.android.gms.tasks,com.google.android.gms.auth.api,com.google.android.gms.base,android.support.coreutils,android.support.coreui,android.support.mediacompat,android.support.v4,com.google.android.gms.common,com.google.android.gms.auth,android.support.compat,com.google.android.gms.drive" />
 
 	<!-- App receives GCM messages. -->
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -81,7 +82,6 @@
         <activity android:name="net.yura.domination.android.ColorPickerActivity" android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|uiMode|screenSize|smallestScreenSize" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Dialog" />
 
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIxe-Rf-f53FlB4U2LIu_xF0lTNJfcWOALXBn1VA" />
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -1,3 +1,11 @@
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        google()
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -6,21 +14,22 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
     }
 }
 
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(':AndroidME')
-    compile project(':BaseGameUtils')
-    compile fileTree(include: '*.jar', dir: 'libs')
+    implementation project(':AndroidME')
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-games:15.0.1'
 }
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     // this to to avoid error from httpcore-4.1.2.jar and httpcore-4.1.2.jar having the same file
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
