@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.AnnotatedData;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesCallbackStatusCodes;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.InvitationBuffer;
@@ -210,7 +211,7 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
                             InvitationBuffer buffer = invitationBufferAnnotatedData.get();
                             logger.info("onInvitationsLoaded: " + buffer.getCount() + " " + buffer);
                             for (Invitation invitation : buffer) {
-                                logger.info("onInvitationsLoaded invitation: " + invitation);
+                                logger.info("onInvitationsLoaded invitation: "+getCurrentPlayerState(invitation)+" "+invitation);
                                 createAcceptDialog(invitation).show();
                             }
                             buffer.release();
@@ -244,13 +245,19 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
         // dont care
     }
 
+    private int getCurrentPlayerState(Invitation invitation) {
+        return getMe(invitation.getParticipants()).getStatus();
+    }
+
     private Participant getMe(List<Participant> participants) {
+        String myId = GoogleSignIn.getLastSignedInAccount(activity).getId();
         for (Participant participant : participants) {
-            if (participant.getParticipantId().equals(myParticipantId)) {
+            Player player = participant.getPlayer();
+            if (player != null && myId.equals(player.getPlayerId())) {
                 return participant;
             }
         }
-        throw new RuntimeException(myParticipantId + " not found in " + participants);
+        throw new RuntimeException(myId + " not found in " + participants);
     }
 
     public void startGameGooglePlay(Game game) {

@@ -63,7 +63,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
     private Properties resBundle;
 
-    public MiniLobbyClient(String server, MiniLobbyGame lobbyGame) {
+    public MiniLobbyClient(MiniLobbyGame lobbyGame) {
         game = lobbyGame;
         game.addLobbyGameMoveListener(this);
 
@@ -97,10 +97,13 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
 
         mycom = new LobbyCom(uuid,lobbyGame.getAppName(),lobbyGame.getAppVersion());
         mycom.addEventListener(this);
+    }
+
+    public void connect(String server) {
         mycom.connect(server, 1964);
     }
 
-    public void setPlayGamesSingedIn(boolean signedIn) {
+    public void setPlayGamesSingedIn(boolean signedIn, String id, String idToken, String email) {
         Button joinPrivate = (Button)loader.find("joinPrivate");
         if (joinPrivate != null) {
             joinPrivate.setVisible(!signedIn);
@@ -108,6 +111,8 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
             root.revalidate();
             root.repaint();
         }
+        mycom.setEmail(email);
+        mycom.setGoogleIdToken(idToken);
     }
 
     public void removeBackButton() {
@@ -261,6 +266,15 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
                 final Game game = (Game) list.getSelectedValue();
                 game.setName("game");
                 mycom.createNewGame(game);
+            }
+            else {
+                logger.warning(actionCommand+"called when we are "+playerType+" "+myusername);
+            }
+        }
+        else if ("delGame".equals(actionCommand)) {
+            final Game game = (Game) list.getSelectedValue();
+            if (playerType >= Player.PLAYER_MODERATOR && game.getNumOfPlayers() < game.getMaxPlayers()) {
+                mycom.delGame(game.getId());
             }
             else {
                 logger.warning(actionCommand+"called when we are "+playerType+" "+myusername);

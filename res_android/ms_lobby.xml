@@ -17,6 +17,7 @@
             <popupmenu>
                 <menuitem text="Rename Game" action="renameGame"/>
                 <menuitem text="Clear Game Name" action="renameGame2"/>
+                <menuitem text="Del Game" action="delGame"/>
             </popupmenu>
         </list>
         <panel columns="1" left="5" name="Error" right="5" visible="false" weightx="1" weighty="1">

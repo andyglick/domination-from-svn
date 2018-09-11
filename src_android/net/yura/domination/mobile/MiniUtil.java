@@ -245,4 +245,20 @@ public class MiniUtil {
         }
     }
 
+    public static String listToCsv(List<String> listOfStrings, char separator) {
+        StringBuilder sb = new StringBuilder();
+
+        // all but last
+        for(int i = 0; i < listOfStrings.size() - 1 ; i++) {
+            sb.append(listOfStrings.get(i));
+            sb.append(separator);
+        }
+
+        // last string, no separator
+        if(listOfStrings.size() > 0){
+            sb.append(listOfStrings.get(listOfStrings.size()-1));
+        }
+
+        return sb.toString();
+    }
 }
