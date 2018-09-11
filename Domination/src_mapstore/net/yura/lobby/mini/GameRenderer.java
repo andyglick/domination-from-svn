@@ -32,14 +32,15 @@ public class GameRenderer extends DefaultListCellRenderer {
         int size = XULLoader.adjustSizeToDensity(25);
         clock.setSize( size, size );
         clock.setBackground(0x00FFFFFF);
+
+        padding = XULLoader.adjustSizeToDensity(2);
+        gap = XULLoader.adjustSizeToDensity(2);
     }
 
     public Component getListCellRendererComponent(Component list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, null, index, isSelected, cellHasFocus);
 
         game = (Game)value;
-        
-        line1 = game.getName();
 
         sicon.setIcon( lobby.game.getIconForGame(game) );
         setIcon(sicon);
@@ -50,12 +51,14 @@ public class GameRenderer extends DefaultListCellRenderer {
         _now.setTime( new Date(time) );
         clock.setTime(_now);
         clock.setVisible( time!=0 );
-        line2 = lobby.game.getGameDescription(game);
+        line1 = lobby.game.getGameDescription(game);
         if (time!=0) {
-            line2 = TimeoutUtil.formatPeriod( time )+" "+ line2;
+            line1 = TimeoutUtil.formatPeriod( time )+" "+ line1;
         }
 
-        setVerticalTextPosition( line2==null?Graphics.VCENTER:Graphics.TOP);
+        line2 = game.getPlayers() + " " + game.getName();
+
+        setVerticalTextPosition( "".equals(line2) ? Graphics.VCENTER : Graphics.TOP);
 
         part2 = game.getNumOfPlayers()+"/"+game.getMaxPlayers();
 
@@ -75,17 +78,19 @@ public class GameRenderer extends DefaultListCellRenderer {
         g.setFont( font );
         g.setColor( getForeground() );
 
-        // draw line1
-        g.drawString(line1, offsetx, padding);
-
         if (clock.isVisible()) {
-            int offsety = getHeight()-clock.getHeight()-padding;
+            int offsety = padding;
             clock.setForeground( getForeground() );
             g.translate(offsetx, offsety);
             clock.paint(g);
             g.translate(-offsetx, -offsety);
             offsetx = offsetx + clock.getWidth()+padding;
         }
+
+        // draw line1
+        g.drawString(line1, offsetx, padding);
+
+        offsetx = padding+getIcon().getIconWidth()+gap;
 
         int state = getCurrentState();
         // if NOT focused or selected
@@ -109,7 +114,7 @@ public class GameRenderer extends DefaultListCellRenderer {
             case Game.STATE_CAN_JOIN: action = "Join"; color=ColorUtil.GREEN; break;
             case Game.STATE_CAN_LEAVE: action = "Leave"; color=ColorUtil.RED; break;
             case Game.STATE_CAN_PLAY: action = "Play"; color=ColorUtil.BLUE; break;
-            case Game.STATE_CAN_WATCH: action = "Watch"; color=ColorUtil.WHITE; break;
+            case Game.STATE_CAN_WATCH: action = "Watch"; color=0xFFEEEEEE; break;
             default: action = null; color=0; break;
         }
         int actionx=getWidth();
