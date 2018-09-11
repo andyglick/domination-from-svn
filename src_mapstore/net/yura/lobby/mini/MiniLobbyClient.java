@@ -43,7 +43,7 @@ public class MiniLobbyClient implements LobbyClient,ActionListener {
     private static final Logger logger = Logger.getLogger( MiniLobbyClient.class.getName() );
 
     public static final String LOBBY_SERVER = "lobby.yura.net";
-    //private static final String LOBBY_SERVER = "localhost";
+    //public static final String LOBBY_SERVER = "localhost";
 
     public final static String EXTRA_GAME_ID = "net.yura.domination.GAME_ID";
     public final static String EXTRA_GAME_OPTIONS = "net.yura.domination.GAME_OPTIONS";

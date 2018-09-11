@@ -68,7 +68,7 @@ public class SwingMEWrapper {
 
     public static MiniLobbyClient makeMiniLobbyClient(String server, Risk risk,final Window window) {
         MapChooser.loadThemeExtension();
-        return new MiniLobbyClient(server, new MiniLobbyRisk(risk) {
+        MiniLobbyClient miniLobbyClient = new MiniLobbyClient(new MiniLobbyRisk(risk) {
             private net.yura.domination.lobby.client.GameSetupPanel gsp;
             public void openGameSetup(GameType gameType) {
                 if (gsp==null) {
@@ -86,6 +86,8 @@ public class SwingMEWrapper {
                 return RiskUtil.RISK_VERSION;
             }
         } );
+        miniLobbyClient.connect(server);
+        return miniLobbyClient;
     }
 
     public static net.yura.mobile.gui.Graphics2D getSwingMEGraphics(Graphics g) {
