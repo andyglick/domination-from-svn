@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import net.yura.domination.R;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class GoogleAccount {
     private static final int RC_SIGN_IN = 9000;
 
     private Activity activity;
+    private final GoogleSignInOptions GOOGLE_SIGN_IN_OPTIONS;
 
     interface SignInListener {
         void onSignInSucceeded();
@@ -32,6 +34,9 @@ public class GoogleAccount {
 
     public GoogleAccount(Activity activity) {
         this.activity = activity;
+
+        GOOGLE_SIGN_IN_OPTIONS = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestIdToken(activity.getString(R.string.server_client_id)).requestEmail().build();
     }
 
     public void addSignInListener(SignInListener listener) {
@@ -43,8 +48,7 @@ public class GoogleAccount {
     }
 
     public void signInSilently() {
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity,
-                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GOOGLE_SIGN_IN_OPTIONS);
         signInClient.silentSignIn().addOnCompleteListener(activity,
                 new OnCompleteListener<GoogleSignInAccount>() {
                     @Override
@@ -59,8 +63,7 @@ public class GoogleAccount {
     }
 
     public void startSignInIntent() {
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity,
-                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GOOGLE_SIGN_IN_OPTIONS);
         Intent intent = signInClient.getSignInIntent();
         activity.startActivityForResult(intent, RC_SIGN_IN);
     }

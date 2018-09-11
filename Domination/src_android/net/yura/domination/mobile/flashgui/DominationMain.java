@@ -2,6 +2,7 @@ package net.yura.domination.mobile.flashgui;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -52,6 +53,8 @@ public class DominationMain extends Midlet {
     }
 
     public static Preferences appPreferences;
+    public GooglePlayGameServices googlePlayGameServices;
+    public List accounts;
 
     public Risk risk;
     public MiniFlashRiskAdapter adapter;
@@ -339,7 +342,6 @@ public class DominationMain extends Midlet {
         }
     }
 
-    public GooglePlayGameServices googlePlayGameServices;
     public void setGooglePlayGameServices(GooglePlayGameServices listener) {
 	googlePlayGameServices = listener;
     }

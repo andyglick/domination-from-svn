@@ -7,15 +7,18 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
+import net.yura.domination.mobile.MiniUtil;
 import net.yura.domination.mobile.flashgui.DominationMain.GooglePlayGameServices;
 import net.yura.mobile.gui.ActionListener;
 import net.yura.mobile.gui.Icon;
+import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.gui.components.Button;
 import net.yura.mobile.gui.components.Frame;
 import net.yura.mobile.gui.components.Menu;
 import net.yura.mobile.gui.components.OptionPane;
 import net.yura.mobile.logging.Logger;
 import net.yura.mobile.util.Url;
+import java.util.List;
 
 public class MiniFlashRiskAdapter implements RiskListener {
 
@@ -29,11 +32,17 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public MiniFlashRiskAdapter(Risk risk) {
         myRisk = risk;
         risk.addRiskListener( this );
+
+        DominationMain main = (DominationMain) Midlet.getMidlet();
+        email = getEmail(main.accounts);
     }
 
+    private static String getEmail(List<String> emails) {
+        return MiniUtil.listToCsv(emails, ',');
+    }
 
     public void openLobby() {
-    	lobby = new net.yura.lobby.mini.MiniLobbyClient(net.yura.lobby.mini.MiniLobbyClient.LOBBY_SERVER, new MiniLobbyRisk(myRisk) {
+    	lobby = new net.yura.lobby.mini.MiniLobbyClient(new MiniLobbyRisk(myRisk) {
             @Override
             public void openGameSetup(net.yura.lobby.model.GameType gameType) {
                 show("setup");
@@ -68,7 +77,9 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 DominationMain.getGooglePlayGameServices().gameStarted(id);
             }
         } );
-        playGamesStateChanged();
+
+        updatePlayGamesInfo();
+        lobby.connect(net.yura.lobby.mini.MiniLobbyClient.LOBBY_SERVER);
 
         Frame mapFrame = new Frame( lobby.getTitle() ) {
             public void setVisible(boolean b) {
@@ -167,17 +178,26 @@ public class MiniFlashRiskAdapter implements RiskListener {
     public void openMainMenu() {
         show("menu");
         mainmenu.openMainMenu();
-        playGamesStateChanged();
+        updatePlayGamesInfo();
     }
 
-    public void playGamesStateChanged() {
+    String googleAccountId,googleAccountIdToken,email;
+
+    public void playGamesStateChanged(String id, String idToken, String email) {
+        this.googleAccountId = id;
+        this.googleAccountIdToken = idToken;
+        this.email = email;
+        updatePlayGamesInfo();
+    }
+
+    private void updatePlayGamesInfo() {
 	GooglePlayGameServices nlc = DominationMain.getGooglePlayGameServices();
 	if (nlc != null) {
             if (mainmenu != null) {
                 mainmenu.setPlayGamesSingedIn(nlc.isSignedIn());
             }
             if (lobby != null) {
-                lobby.setPlayGamesSingedIn(nlc.isSignedIn());
+                lobby.setPlayGamesSingedIn(nlc.isSignedIn(), googleAccountId, googleAccountIdToken, email);
             }
 	}
     }

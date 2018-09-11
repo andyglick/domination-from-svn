@@ -1,13 +1,19 @@
 package net.yura.domination.android;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.tasks.OnSuccessListener;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -38,6 +44,7 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
      * this code needs to not clash with other codes such as the ones in
      * {@link GoogleAccount} 9000
      * {@link RealTimeMultiplayer} 2,3,4
+     * {@link DominationMain#nativeCallsCount} 100000+
      */
     private static final int RC_REQUEST_ACHIEVEMENTS = 1;
 
@@ -150,18 +157,35 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
      */
     @Override
     public void onMidletStarted() {
+        DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
+
         if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
-            DominationMain dmain = (DominationMain)AndroidMeApp.getMIDlet();
             // TODO WE ARE LEAKING THE ACTIVITY HERE!!!
             // an Activity can be created and destroyed by the system when it feels like it
             dmain.setGooglePlayGameServices(this);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ECLAIR) {
+            AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+            Account[] accounts = manager.getAccounts();
+            List<String> emails = new ArrayList();
+            for (Account account: accounts) {
+                String name = account.name;
+                if (name !=null && name.indexOf('@') > 0) {
+                    emails.add(name);
+                }
+            }
+            dmain.accounts = emails;
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        googleAccount.signInSilently();
+
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            googleAccount.signInSilently();
+        }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
@@ -187,7 +211,13 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
         logger.info("onSignInSucceeded()");
         MiniFlashRiskAdapter ui = getUi();
         if (ui!=null) {
-            ui.playGamesStateChanged();
+
+            GoogleSignInAccount signedInAccount = GoogleSignIn.getLastSignedInAccount(this);
+            String id = signedInAccount.getId();
+            String idToken = signedInAccount.getIdToken();
+            String email = signedInAccount.getEmail();
+
+            ui.playGamesStateChanged(id,idToken,email);
         }
         if (pendingAchievement!=null) {
             unlockAchievement(pendingAchievement);
@@ -201,13 +231,21 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
             startGameGooglePlay(pendingStartGameGooglePlay);
             pendingStartGameGooglePlay = null;
         }
+
+        Games.getPlayersClient(this, GoogleSignIn.getLastSignedInAccount(this)).getCurrentPlayer().addOnSuccessListener(new OnSuccessListener<Player>() {
+            @Override
+            public void onSuccess(Player player) {
+
+                System.out.println("play games username: " + player.getDisplayName());
+            }
+        });
     }
 
     @Override
     public void onSignInFailed() {
         MiniFlashRiskAdapter ui = getUi();
         if (ui!=null) {
-            ui.playGamesStateChanged();
+            ui.playGamesStateChanged(null,null,null);
         }
         // user must have cancelled signing in, so they must not want to see achievements.
         pendingShowAchievements = false;
