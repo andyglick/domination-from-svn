@@ -51,7 +51,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 for (int c = 0; c < names.length; c++) {
                     names[c] = Url.decode(split[c]);
                 }
-                gameSetup.openNewGame(false, names, lobby.whoAmI() + "'s " + RiskUtil.GAME_NAME + " Game");
+                gameSetup.openNewGame(false, names, "Cadet Game");
             }
             @Override
             public String getAppName() {
