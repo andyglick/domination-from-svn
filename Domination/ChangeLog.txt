@@ -29,10 +29,13 @@ CURRENT VERSION:
 	Fix for hi-res mouse wheel getting UI stuck
 	Can create online games with average AI on PC version
 
+	Android 65 new look for online games list, now shows player names
+		   google play games login now allows to play on multiple devices
+		   updated to the latest version of google play games
+	Android 64 fix bug with Bitmap.getDensity sometimes returning 0
 	Android 63 Sending a message from inside game added
 		   show last few chat messages in chat window
 		   shows how many of each type of AI in online game description
-	Android 64 fix bug with Bitmap.getDensity sometimes returning 0
 
 1.1.1.6
 
