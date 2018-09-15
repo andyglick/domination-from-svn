@@ -6,7 +6,7 @@ CURRENT VERSION:
 	 * Save:	8
 	 * Network:	12
 
-	Android		63
+	Android		66
 	Flash GUI:	2
 	Swing GUI:	2
 	Simple GUI:	2
@@ -29,6 +29,7 @@ CURRENT VERSION:
 	Fix for hi-res mouse wheel getting UI stuck
 	Can create online games with average AI on PC version
 
+	Android 66 bug in new google play games fixed
 	Android 65 new look for online games list, now shows player names
 		   google play games login now allows to play on multiple devices
 		   updated to the latest version of google play games
