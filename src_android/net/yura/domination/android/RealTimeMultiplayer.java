@@ -211,7 +211,7 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
                             InvitationBuffer buffer = invitationBufferAnnotatedData.get();
                             logger.info("onInvitationsLoaded: " + buffer.getCount() + " " + buffer);
                             for (Invitation invitation : buffer) {
-                                logger.info("onInvitationsLoaded invitation: "+getCurrentPlayerState(invitation)+" "+invitation);
+                                logger.info("onInvitationsLoaded invitation: " + invitation);
                                 createAcceptDialog(invitation).show();
                             }
                             buffer.release();
@@ -245,19 +245,15 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
         // dont care
     }
 
-    private int getCurrentPlayerState(Invitation invitation) {
-        return getMe(invitation.getParticipants()).getStatus();
-    }
-
     private Participant getMe(List<Participant> participants) {
-        String myId = GoogleSignIn.getLastSignedInAccount(activity).getId();
+        // this is sometimes null and sometimes simply does not match anyone in the game, fuck knows why?
+        //String myPlayerId = GoogleSignIn.getLastSignedInAccount(activity).getId();
         for (Participant participant : participants) {
-            Player player = participant.getPlayer();
-            if (player != null && myId.equals(player.getPlayerId())) {
+            if (myParticipantId != null && myParticipantId.equals(participant.getParticipantId())) {
                 return participant;
             }
         }
-        throw new RuntimeException(myId + " not found in " + participants);
+        throw new RuntimeException(myParticipantId + " not found in " + participants);
     }
 
     public void startGameGooglePlay(Game game) {

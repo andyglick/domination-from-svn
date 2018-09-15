@@ -88,7 +88,7 @@ public class GameRenderer extends DefaultListCellRenderer {
         }
 
         // draw line1
-        g.drawString(line1, offsetx, padding);
+        g.drawString(line1, offsetx, padding * 2);
 
         offsetx = padding+getIcon().getIconWidth()+gap;
 
