@@ -1147,7 +1147,7 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
                             }
                             catch (MissingResourceException ex) {
                                 // fallback if missing
-                                displayString = ais[a];
+                                displayString = "ai " + ais[a];
                             }
                             playerTypes[a+1] = new PlayerType(displayString,"ai "+ais[a]);
                         }

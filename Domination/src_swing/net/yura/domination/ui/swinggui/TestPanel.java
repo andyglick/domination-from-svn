@@ -118,6 +118,13 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			public int getColumnCount() {
 				return columnNames.length;
 			}
+                        
+                        public boolean isCellEditable(int rowIndex, int columnIndex) {
+                            if ("Armies".equals(columnNames[columnIndex])) {
+                                return true;
+                            }
+                            return false;
+                        }
 
 			public int getRowCount() {
 
@@ -145,7 +152,6 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 				Country country = myrisk.getGame().getCountries()[row];
 
 				switch(col) {
-
 					case 0: return new Integer( country.getColor() );
 					case 1: return country.getIdString();
 					case 2: return country.getName();
@@ -170,11 +176,23 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
                                             return new Integer( neighbours.size() );
                                         }
 					default: throw new RuntimeException();
-
 				}
-
 			}
 
+                        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+                            Country country = myrisk.getGame().getCountries()[rowIndex];
+                            switch(columnIndex) {
+                                case 7: int armies = country.getArmies();
+                                        int newArmies = Integer.parseInt(aValue.toString());
+                                        if (newArmies > armies) {
+                                            country.addArmies(newArmies - armies);
+                                        }
+                                        else {
+                                            country.removeArmies(armies - newArmies);
+                                        }
+                                        break;
+                            }
+                        }
 		};
 
 
