@@ -126,7 +126,8 @@ public class DominationMain extends Midlet {
                         "remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak".equals(message) ||
                         "remove failed: ENOENT (No such file or directory) : /data/data/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak".equals(message) ||
                         "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/net.yura.domination_preferences.xml.bak".equals(message) ||
-                        "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak".equals(message)) {
+                        "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/com.google.android.gcm.xml.bak".equals(message) ||
+                        "remove failed: ENOENT (No such file or directory) : /data/user/0/net.yura.domination/shared_prefs/com.google.android.gms.signin.xml.bak".equals(message)) {
                         return true;
                     }
                     if (message != null && (
