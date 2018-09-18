@@ -71,7 +71,7 @@ public class GoogleAccount {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
+            if (result != null && result.isSuccess()) {
                 // The signed in account is stored in the result.
                 GoogleSignInAccount signedInAccount = result.getSignInAccount();
                 signInSuccessful(signedInAccount);
@@ -79,9 +79,10 @@ public class GoogleAccount {
             else {
                 signInFailed();
 
+                // HACK: no idea why sometimes result is null, google doc says it should never be null, bug in GMS?
                 // HACK: for some strange reason, user cancelled actually returns status of ERROR
-                if (result.getStatus() != Status.RESULT_CANCELED && result.getStatus().getStatusCode() != CommonStatusCodes.ERROR) {
-                    String message = result.getStatus().getStatusMessage();
+                if (result == null || result.getStatus() != Status.RESULT_CANCELED && result.getStatus().getStatusCode() != CommonStatusCodes.ERROR) {
+                    String message = result == null ? null : result.getStatus().getStatusMessage();
                     if (message == null || "".equals(message)) {
                         message = "Failed to sign in";
                     }
