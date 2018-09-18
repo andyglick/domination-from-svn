@@ -333,12 +333,24 @@ public class DominationMain extends Midlet {
             appPreferences.put(DEFAULT_CARD_TYPE_KEY, cardTypeCommand);
             appPreferences.putBoolean(DEFAULT_AUTO_PLACE_ALL_KEY, autoPlaceAllBoolean);
             appPreferences.putBoolean(DEFAULT_RECYCLE_CARDS_KEY, recycleCardsBoolean);
-            try {
-                appPreferences.flush();
-            }
-            catch(Exception ex) {
-                Logger.getLogger(DominationMain.class.getName()).log(Level.WARNING, "can not flush prefs", ex);
-            }
+            flushPreferences();
+        }
+    }
+
+    public void setAccounts(List<String> accounts) {
+        this.accounts = accounts;
+        if (appPreferences != null) {
+            appPreferences.put("accounts", MiniUtil.listToCsv(accounts, ','));
+            flushPreferences();
+        }
+    }
+
+    private static void flushPreferences() {
+        try {
+            appPreferences.flush();
+        }
+        catch(Exception ex) {
+            Logger.getLogger(DominationMain.class.getName()).log(Level.WARNING, "can not flush prefs", ex);
         }
     }
 
