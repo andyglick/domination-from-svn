@@ -42,13 +42,12 @@
 		         android:label="@string/app_name"
 		         android:theme="@style/AndroidME.Light.DarkDialog"
 		         android:hardwareAccelerated="true"
-                         android:isGame="true"
+		         android:isGame="true"
+		         android:backupAgent="net.yura.domination.android.TheBackupAgent"
         >
 
 		<meta-data android:name="com.google.android.gms.games.APP_ID"
 		   android:value="@string/app_id" />
-
-        <!-- android:backupAgent="TheBackupAgent" cant get this to work :( -->
 
 		<!-- <service android:name="net.yura.android.AndroidMeService" /> -->
 
