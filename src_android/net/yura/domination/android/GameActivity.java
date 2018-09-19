@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.WindowManager;
@@ -105,6 +106,10 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
         }
 
         handleIntent(getIntent());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            TheBackupAgent.backup(this);
+        }
     }
 
     private void handleIntent(Intent intent) {
