@@ -40,7 +40,6 @@ import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateCallback;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateCallback;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 /**
  * if 2 people (B and Q) create games with 1 friend each (C and G) and 2 auto-match players each:
@@ -129,9 +128,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
             gameRoom = room;
 
             Games.getPlayersClient(activity, GoogleSignIn.getLastSignedInAccount(activity))
-                    .getCurrentPlayerId().addOnSuccessListener(new OnSuccessListener<String>() {
+                    .getCurrentPlayerId().addOnSuccessListener(new GoogleAccount.SafeOnSuccessListener<String>() {
                 @Override
-                public void onSuccess(String playerId) {
+                public void onSuccessSafe(String playerId) {
                     myParticipantId = gameRoom.getParticipantId(playerId);
                 }
             });
@@ -188,9 +187,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
     public void onSignInSucceeded() {
         // we clicked on google play games notification to launch the app, do not display dialog, go directly into the game
         Games.getGamesClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).getActivationHint().addOnSuccessListener(
-                new OnSuccessListener<Bundle>() {
+                new GoogleAccount.SafeOnSuccessListener<Bundle>() {
                     @Override
-                    public void onSuccess(Bundle bundle) {
+                    public void onSuccessSafe(Bundle bundle) {
                         if (bundle != null) {
                             Invitation invitation = bundle.getParcelable(Multiplayer.EXTRA_INVITATION);
                             logger.info("invitationId: " + invitation);
@@ -205,9 +204,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
         if (!invitationsLoaded) {
             // we may go into the app directly instead of clicking on the notification.
             Games.getInvitationsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).loadInvitations().addOnSuccessListener(
-                    new OnSuccessListener<AnnotatedData<InvitationBuffer>>() {
+                    new GoogleAccount.SafeOnSuccessListener<AnnotatedData<InvitationBuffer>>() {
                         @Override
-                        public void onSuccess(AnnotatedData<InvitationBuffer> invitationBufferAnnotatedData) {
+                        public void onSuccessSafe(AnnotatedData<InvitationBuffer> invitationBufferAnnotatedData) {
                             InvitationBuffer buffer = invitationBufferAnnotatedData.get();
                             logger.info("onInvitationsLoaded: " + buffer.getCount() + " " + buffer);
                             for (Invitation invitation : buffer) {
@@ -266,9 +265,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
 
         getRealTimeMultiplayerClient()
             .getSelectOpponentsIntent(GOOGLE_PLAY_GAME_MIN_OTHER_PLAYERS, game.getMaxPlayers() - 1)
-                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                .addOnSuccessListener(new GoogleAccount.SafeOnSuccessListener<Intent>() {
                     @Override
-                    public void onSuccess(Intent intent) {
+                    public void onSuccessSafe(Intent intent) {
                         intent.putExtra(EXTRA_SHOW_AUTOMATCH, false);
                         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
                     }
@@ -304,9 +303,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
                     }
                     gameRoom = room;
                     logger.info("Starting waiting room activity.");
-                    getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new GoogleAccount.SafeOnSuccessListener<Intent>() {
                         @Override
-                        public void onSuccess(Intent intent) {
+                        public void onSuccessSafe(Intent intent) {
                             activity.startActivityForResult(intent, RC_CREATOR_WAITING_ROOM);
                         }
                     });
@@ -550,9 +549,9 @@ public class RealTimeMultiplayer extends InvitationCallback implements GoogleAcc
                         }
                         gameRoom = room;
                         logger.info("Starting waiting room activity as joiner.");
-                        getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        getRealTimeMultiplayerClient().getWaitingRoomIntent(room, 1).addOnSuccessListener(new GoogleAccount.SafeOnSuccessListener<Intent>() {
                             @Override
-                            public void onSuccess(Intent intent) {
+                            public void onSuccessSafe(Intent intent) {
                                 activity.startActivityForResult(intent, RC_JOINER_WAITING_ROOM);
                             }
                         });

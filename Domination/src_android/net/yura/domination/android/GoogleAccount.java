@@ -3,7 +3,6 @@ package net.yura.domination.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -12,11 +11,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import net.yura.domination.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GoogleAccount {
 
@@ -28,6 +28,18 @@ public class GoogleAccount {
     interface SignInListener {
         void onSignInSucceeded();
         void onSignInFailed();
+    }
+
+    public static abstract class SafeOnSuccessListener<TResult> implements OnSuccessListener<TResult> {
+        public void onSuccess(TResult r) {
+            try {
+                onSuccessSafe(r);
+            }
+            catch (Exception ex) {
+                Logger.getLogger(GoogleAccount.class.getName()).log(Level.WARNING, "error handling success", ex);
+            }
+        }
+        public abstract void onSuccessSafe(TResult r);
     }
 
     private List<SignInListener> listeners = new ArrayList();
@@ -49,15 +61,12 @@ public class GoogleAccount {
 
     public void signInSilently() {
         GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GOOGLE_SIGN_IN_OPTIONS);
-        signInClient.silentSignIn().addOnCompleteListener(activity,
-                new OnCompleteListener<GoogleSignInAccount>() {
+        signInClient.silentSignIn().addOnSuccessListener(activity,
+                new SafeOnSuccessListener<GoogleSignInAccount>() {
                     @Override
-                    public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                        if (task.isSuccessful()) {
-                            // The signed in account is stored in the task's result.
-                            GoogleSignInAccount signedInAccount = task.getResult();
-                            signInSuccessful(signedInAccount);
-                        }
+                    public void onSuccessSafe(GoogleSignInAccount signedInAccount) {
+                        // The signed in account is stored in the task's result.
+                        signInSuccessful(signedInAccount);
                     }
                 });
     }
@@ -96,10 +105,10 @@ public class GoogleAccount {
     public void signOut() {
         GoogleSignInClient signInClient = GoogleSignIn.getClient(activity,
                 GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-        signInClient.signOut().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
+        signInClient.signOut().addOnSuccessListener(activity,
+                new SafeOnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onSuccessSafe(Void r) {
                         // at this point, the user is signed out.
                     }
                 });
