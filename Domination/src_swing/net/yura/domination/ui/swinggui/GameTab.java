@@ -163,7 +163,7 @@ public class GameTab extends JPanel implements SwingGUITab, ActionListener {
 		donate.addActionListener( this );
 		donate.setActionCommand("donate");
                 donate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                URL donateNow = this.getClass().getResource("donateNow.gif");
+                URL donateNow = this.getClass().getResource("donate.png");
                 if (donateNow!=null) {
                      donate.setIcon( new ImageIcon( donateNow ) );
                 }

@@ -489,7 +489,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
 		if (GraphicsUtil.insideButton(x, y, 220, 350, W, H)) {
 			return BUTTON_ABOUT;
 		}
-		if (GraphicsUtil.insideButton(x, y, 0, 500, 115, 50)) { // google: 115px x 50px
+		if (GraphicsUtil.insideButton(x, y, 0, 500, 130, 50)) {
 			return BUTTON_DONATE;
 		}
                 // check if we are in the circle lobby button
