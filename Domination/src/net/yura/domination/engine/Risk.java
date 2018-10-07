@@ -254,19 +254,22 @@ public class Risk extends Thread {
             }
 
             public void run() {
-                if (type == GameCommand.UI_COMMAND) {
-                    processFromUI(command);
+                try {
+                    if (type == GameCommand.UI_COMMAND) {
+                        processFromUI(command);
+                    }
+                    else if (type == GameCommand.NETWORK_COMMAND) {
+                        inGameParser(command);
+                    }
+                    else {
+                        throw new RuntimeException();
+                    }
                 }
-                else if (type == GameCommand.NETWORK_COMMAND) {
-                    inGameParser(command);
-                }
-                else {
-                    throw new RuntimeException();
-                }
-
-                if (notifier != null) {
-                    synchronized (notifier) {
-                        notifier.notifyAll();
+                finally {
+                    if (notifier != null) {
+                        synchronized (notifier) {
+                            notifier.notifyAll();
+                        }
                     }
                 }
             }
