@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -192,8 +193,14 @@ public class GameActivity extends AndroidMeActivity implements GoogleAccount.Sig
             googleAccount.signInSilently();
         }
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+        try {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
+        }
+        catch (Exception ex) {
+            // sometimes cancelAll throws a SecurityException, internet says just add try/catch
+            logger.log(Level.WARNING, "error in onResume", ex);
+        }
     }
 
     @Override
