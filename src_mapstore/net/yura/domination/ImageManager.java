@@ -47,6 +47,9 @@ public class ImageManager {
                 images.remove(key); // we got a responce but there was some error and no image
             }
         }
+        else {
+            System.out.println("gotImg, but have no icon " + key);
+        }
     }
 
     public static class LazyIcon extends Icon {
