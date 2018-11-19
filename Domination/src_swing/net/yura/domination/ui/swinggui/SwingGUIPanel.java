@@ -224,8 +224,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
 		gMenuBar.add(gHelp);
 
-
-
+                new PLAF(this);
 
 		//add(gMenuBar, java.awt.BorderLayout.NORTH );
 		// sets menu bar
@@ -245,6 +244,14 @@ public class SwingGUIPanel extends JPanel implements ActionListener{
 
         public JMenuBar getJMenuBar() {
             return gMenuBar;
+        }
+        
+        public JTabbedPane getJTabbedPane() {
+            return tabbedpane;
+        }
+
+        public void firePropertyChange(String string, Object o, Object o1) {
+            super.firePropertyChange(string, o, o1);
         }
 
 	public void checkForUpdates() {

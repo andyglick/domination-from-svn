@@ -51,6 +51,7 @@ public class TranslationBundleTest extends TestCase {
             public OutputStream saveMapFile(String fileName) throws Exception { return null; }
             public void renameMapFile(String oldName, String newName) { }
             public void getMap(String filename, Observer observer) { }
+            public boolean deleteMapFile(String mapName) { return false; }
         };
 
         //Locale[] locales = Locale.getAvailableLocales();
