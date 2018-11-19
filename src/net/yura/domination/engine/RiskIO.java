@@ -27,6 +27,10 @@ public interface RiskIO {
         
         OutputStream saveMapFile(String fileName) throws Exception;
         void renameMapFile(String oldName, String newName);
+        
+        /**
+         * @return did the file get successfully deleted
+         */
         boolean deleteMapFile(String mapName);
 
         /**
