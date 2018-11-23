@@ -1024,7 +1024,17 @@ public class RiskUIUtil {
 
 		// set up system Look&Feel
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+                    String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+                    AffineTransform dat = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform();
+                    
+                    // the system (gtk) theme on linux is broken with hi res screens (fonts are HUGE)
+                    if (dat.getScaleX() != 1.0 && "com.sun.java.swing.plaf.gtk.GTKLookAndFeel".equals(systemLookAndFeel)) {
+                        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+                    }
+                    else {
+			UIManager.setLookAndFeel(systemLookAndFeel);
+                    }
 		}
 		catch (Exception e) {
                         RiskUtil.printStackTrace(e);
