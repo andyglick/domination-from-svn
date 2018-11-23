@@ -154,6 +154,10 @@ public class CardsDialog extends JDialog {
 		note.setEditable(false);
 		GraphicsUtil.setBounds(note, 400, 270, 180, 150);
 		note.setOpaque(false);
+                
+                // in nimbus theme we have to do this extra hack
+                note.setBorder(null);
+                note.setBackground(new Color(0, 0, 0, 0));
 
 		Dimension noteSize = GraphicsUtil.newDimension(180, 120);
 
