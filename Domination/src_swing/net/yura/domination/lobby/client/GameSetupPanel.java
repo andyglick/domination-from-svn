@@ -265,9 +265,13 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 		aiaverage = new JSpinner( new SpinnerNumberModel(0,0,6,1) );
 		aieasy = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
 		aihard = new JSpinner( new SpinnerNumberModel(2,0,6,1) );
+                dontStretch(human);
+                dontStretch(aiaverage);
+                dontStretch(aieasy);
+                dontStretch(aihard);
 
-		JPanel playernum = new JPanel();
-		GraphicsUtil.setBounds(playernum, 300, 310, 400, 60);
+		JComponent playernum = Box.createHorizontalBox();
+		GraphicsUtil.setBounds(playernum, 300, 290, 400, 60);
 		playernum.setOpaque(false);
 		add(playernum);
 
@@ -369,7 +373,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
                 
                 bottompanel.add(new JLabel(resb.getString("newgame.label.name"))); // "Game Name:"
 		gamename = new JTextField();
-                gamename.setMaximumSize(new Dimension(gamename.getMaximumSize().width, gamename.getPreferredSize().height));
+                dontStretch(gamename);
 		bottompanel.add(gamename);
 
                 bottompanel.add(new JLabel(resb.getString("newgame.label.timeout"))); // "Turn Timeout:"
@@ -390,7 +394,7 @@ public class GameSetupPanel extends JPanel implements ActionListener {
                     new Timeout("24hours",hour*24)
                 };
 		timeout = new JComboBox(timeouts);
-                timeout.setMaximumSize(new Dimension(timeout.getMaximumSize().width, timeout.getPreferredSize().height));
+                dontStretch(timeout);
                 timeout.setSelectedIndex(3 /* 1 minute */);
 		bottompanel.add(timeout);
                 
@@ -409,6 +413,11 @@ public class GameSetupPanel extends JPanel implements ActionListener {
 		list.setFixedCellHeight(GraphicsUtil.scale(33));
 
 	}
+        
+        private void dontStretch(JComponent comp) {
+            comp.setMaximumSize(new Dimension(comp.getMaximumSize().width, comp.getPreferredSize().height));
+        }
+        
         private JComboBox timeout;
         class Timeout {
             String name;
