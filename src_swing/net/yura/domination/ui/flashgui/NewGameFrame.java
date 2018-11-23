@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
@@ -1149,6 +1150,9 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
 		button.addFocusListener( new ImageButtonFocusListener(button));
+                
+                // in nimbus, borders that are hidden still take up space, so we set a empty border
+                button.setBorder(new EmptyBorder(0, 0, 0, 0));
 	}
 
 	/**
